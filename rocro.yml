@@ -8,15 +8,3 @@ inspecode:
       -targets: ZimLX
     machine: { cpu: 1.0 }
     thresholds: { num-issues: 999 }
-  - options:
-      -targets: ZimLX
-    machine: { cpu: 1.25 }
-    thresholds: { num-issues: 999 }
-  - options:
-      -targets: ZimLX
-    machine: { cpu: 1.5 }
-    thresholds: { num-issues: 999 }
-  - options:
-      -targets: ZimLX
-    machine: { cpu: 2.0 }
-    thresholds: { num-issues: 999 }
