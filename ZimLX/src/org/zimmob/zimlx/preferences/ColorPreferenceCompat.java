@@ -41,17 +41,17 @@ public class ColorPreferenceCompat extends Preference implements ColorPickerDial
     private int[] presets;
     private int dialogTitle;
 
-    public ColorPreferenceCompat(Context context, AttributeSet attrs) {
+    public ColorPreferenceCompat(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public ColorPreferenceCompat(Context context, AttributeSet attrs, int defStyle) {
+    public ColorPreferenceCompat(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
         init(attrs);
     }
 
-    private void init(AttributeSet attrs) {
+    private void init(final AttributeSet attrs) {
         setPersistent(true);
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ColorPreference);
         showDialog = a.getBoolean(R.styleable.ColorPreference_cpv_showDialog, true);
@@ -96,7 +96,7 @@ public class ColorPreferenceCompat extends Preference implements ColorPickerDial
     }
 
     @Override
-    public void onBindViewHolder(PreferenceViewHolder holder) {
+    public void onBindViewHolder(final PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
         ColorPanelView preview = (ColorPanelView) holder.findViewById(R.id.cpv_preference_preview_color_panel);
         if (preview != null) {
@@ -105,7 +105,7 @@ public class ColorPreferenceCompat extends Preference implements ColorPickerDial
     }
 
     @Override
-    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
+    protected void onSetInitialValue(final boolean restorePersistedValue, final Object defaultValue) {
         if (restorePersistedValue) {
             color = getPersistedInt(0xFF000000);
         } else {
@@ -115,17 +115,17 @@ public class ColorPreferenceCompat extends Preference implements ColorPickerDial
     }
 
     @Override
-    protected Object onGetDefaultValue(TypedArray a, int index) {
+    protected Object onGetDefaultValue(final TypedArray a, final int index) {
         return a.getInteger(index, Color.BLACK);
     }
 
     @Override
-    public void onColorSelected(int dialogId, @ColorInt int color) {
+    public void onColorSelected(final int dialogId, final @ColorInt int color) {
         saveValue(color);
     }
 
     @Override
-    public void onDialogDismissed(int dialogId) {
+    public void onDialogDismissed(final int dialogId) {
         // no-op
     }
 
@@ -134,7 +134,7 @@ public class ColorPreferenceCompat extends Preference implements ColorPickerDial
      *
      * @param color The newly selected color
      */
-    public void saveValue(@ColorInt int color) {
+    public void saveValue(final @ColorInt int color) {
         this.color = color;
         persistInt(this.color);
         notifyChanged();
@@ -155,7 +155,7 @@ public class ColorPreferenceCompat extends Preference implements ColorPickerDial
      *
      * @param presets An array of color ints
      */
-    public void setPresets(@NonNull int[] presets) {
+    public void setPresets(final @NonNull int[] presets) {
         this.presets = presets;
     }
 
@@ -166,7 +166,7 @@ public class ColorPreferenceCompat extends Preference implements ColorPickerDial
      *
      * @param listener The listener to show the dialog
      */
-    public void setOnShowDialogListener(OnShowDialogListener listener) {
+    public void setOnShowDialogListener(final OnShowDialogListener listener) {
         onShowDialogListener = listener;
     }
 

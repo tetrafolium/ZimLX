@@ -29,12 +29,12 @@ import androidx.annotation.NonNull;
 public class TriangleShape extends PathShape {
     private Path mTriangularPath;
 
-    public TriangleShape(Path path, float stdWidth, float stdHeight) {
+    public TriangleShape(final Path path, final float stdWidth, final float stdHeight) {
         super(path, stdWidth, stdHeight);
         mTriangularPath = path;
     }
 
-    public static TriangleShape create(float width, float height, boolean isPointingUp) {
+    public static TriangleShape create(final float width, final float height, final boolean isPointingUp) {
         Path triangularPath = new Path();
         if (isPointingUp) {
             triangularPath.moveTo(0, height);
@@ -51,7 +51,7 @@ public class TriangleShape extends PathShape {
     }
 
     @Override
-    public void getOutline(@NonNull Outline outline) {
+    public void getOutline(final @NonNull Outline outline) {
         outline.setConvexPath(mTriangularPath);
     }
 }

@@ -64,8 +64,8 @@ public class LoaderResults {
 
     private final WeakReference<Callbacks> mCallbacks;
 
-    public LoaderResults(LauncherAppState app, BgDataModel dataModel,
-                         AllAppsList allAppsList, int pageToBindFirst, WeakReference<Callbacks> callbacks) {
+    public LoaderResults(final LauncherAppState app, final BgDataModel dataModel,
+                         final AllAppsList allAppsList, final int pageToBindFirst, final WeakReference<Callbacks> callbacks) {
         mUiExecutor = new MainThreadExecutor();
         mApp = app;
         mBgDataModel = dataModel;
@@ -199,10 +199,10 @@ public class LoaderResults {
      * Filters the set of items who are directly or indirectly (via another container) on the
      * specified screen.
      */
-    public static <T extends ItemInfo> void filterCurrentWorkspaceItems(long currentScreenId,
-            ArrayList<T> allWorkspaceItems,
-            ArrayList<T> currentScreenItems,
-            ArrayList<T> otherScreenItems) {
+    public static <T extends ItemInfo> void filterCurrentWorkspaceItems(final long currentScreenId,
+            final ArrayList<T> allWorkspaceItems,
+            final ArrayList<T> currentScreenItems,
+            final ArrayList<T> otherScreenItems) {
         // Purge any null ItemInfos
         Iterator<T> iter = allWorkspaceItems.iterator();
         while (iter.hasNext()) {
@@ -241,21 +241,21 @@ public class LoaderResults {
 
     /** Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to
      * right) */
-    private void sortWorkspaceItemsSpatially(ArrayList<ItemInfo> workspaceItems) {
+    private void sortWorkspaceItemsSpatially(final ArrayList<ItemInfo> workspaceItems) {
         final InvariantDeviceProfile profile = mApp.getInvariantDeviceProfile();
         final int screenCols = profile.numColumns;
         final int screenCellCount = profile.numColumns * profile.numRows;
         Collections.sort(workspaceItems, new Comparator<ItemInfo>() {
             @Override
-            public int compare(ItemInfo lhs, ItemInfo rhs) {
+            public int compare(final ItemInfo lhs, final ItemInfo rhs) {
                 if (lhs.container == rhs.container) {
                     // Within containers, order by their spatial position in that container
                     switch ((int) lhs.container) {
                     case LauncherSettings.Favorites.CONTAINER_DESKTOP: {
-                        long lr = (lhs.screenId * screenCellCount +
-                                   lhs.cellY * screenCols + lhs.cellX);
-                        long rr = (rhs.screenId * screenCellCount +
-                                   rhs.cellY * screenCols + rhs.cellX);
+                        long lr = (lhs.screenId * screenCellCount
+                                   + lhs.cellY * screenCols + lhs.cellX);
+                        long rr = (rhs.screenId * screenCellCount
+                                   + rhs.cellY * screenCols + rhs.cellX);
                         return Utilities.longCompare(lr, rr);
                     }
                     case LauncherSettings.Favorites.CONTAINER_HOTSEAT: {
@@ -264,8 +264,8 @@ public class LoaderResults {
                     }
                     default:
                         if (FeatureFlags.IS_DOGFOOD_BUILD) {
-                            throw new RuntimeException("Unexpected container type when " +
-                                                       "sorting workspace items.");
+                            throw new RuntimeException("Unexpected container type when "
+                                                       + "sorting workspace items.");
                         }
                         return 0;
                     }
@@ -285,7 +285,7 @@ public class LoaderResults {
         int N = workspaceItems.size();
         for (int i = 0; i < N; i += ITEMS_CHUNK) {
             final int start = i;
-            final int chunkSize = (i + ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N-i);
+            final int chunkSize = (i + ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N - i);
             final Runnable r = () -> {
                 Callbacks callbacks = mCallbacks.get();
                 if (callbacks != null) {
@@ -350,7 +350,7 @@ public class LoaderResults {
         mUiExecutor.execute(r);
     }
 
-    public LooperIdleLock newIdleLock(Object lock) {
+    public LooperIdleLock newIdleLock(final Object lock) {
         LooperIdleLock idleLock = new LooperIdleLock(lock, Looper.getMainLooper());
         // If we are not binding, there is no reason to wait for idle.
         if (mCallbacks.get() == null) {

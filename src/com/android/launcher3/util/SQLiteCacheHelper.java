@@ -19,15 +19,15 @@ import com.android.launcher3.config.FeatureFlags;
 public abstract class SQLiteCacheHelper {
     private static final String TAG = "SQLiteCacheHelper";
 
-    private static final boolean NO_ICON_CACHE = FeatureFlags.IS_DOGFOOD_BUILD &&
-            Utilities.isPropertyEnabled(LogConfig.MEMORY_ONLY_ICON_CACHE);
+    private static final boolean NO_ICON_CACHE = FeatureFlags.IS_DOGFOOD_BUILD
+            && Utilities.isPropertyEnabled(LogConfig.MEMORY_ONLY_ICON_CACHE);
 
     private final String mTableName;
     private final MySQLiteOpenHelper mOpenHelper;
 
     private boolean mIgnoreWrites;
 
-    public SQLiteCacheHelper(Context context, String name, int version, String tableName) {
+    public SQLiteCacheHelper(final Context context, final String name, final int version, final String tableName) {
         if (NO_ICON_CACHE) {
             name = null;
         }
@@ -40,7 +40,7 @@ public abstract class SQLiteCacheHelper {
     /**
      * @see SQLiteDatabase#delete(String, String, String[])
      */
-    public void delete(String whereClause, String[] whereArgs) {
+    public void delete(final String whereClause, final String[] whereArgs) {
         if (mIgnoreWrites) {
             return;
         }
@@ -56,7 +56,7 @@ public abstract class SQLiteCacheHelper {
     /**
      * @see SQLiteDatabase#insertWithOnConflict(String, String, ContentValues, int)
      */
-    public void insertOrReplace(ContentValues values) {
+    public void insertOrReplace(final ContentValues values) {
         if (mIgnoreWrites) {
             return;
         }
@@ -70,7 +70,7 @@ public abstract class SQLiteCacheHelper {
         }
     }
 
-    private void onDiskFull(SQLiteFullException e) {
+    private void onDiskFull(final SQLiteFullException e) {
         Log.e(TAG, "Disk full, all write operations will be ignored", e);
         mIgnoreWrites = true;
     }
@@ -78,7 +78,7 @@ public abstract class SQLiteCacheHelper {
     /**
      * @see SQLiteDatabase#query(String, String[], String, String[], String, String, String)
      */
-    public Cursor query(String[] columns, String selection, String[] selectionArgs) {
+    public Cursor query(final String[] columns, final String selection, final String[] selectionArgs) {
         return mOpenHelper.getReadableDatabase().query(
                    mTableName, columns, selection, selectionArgs, null, null, null);
     }
@@ -94,30 +94,30 @@ public abstract class SQLiteCacheHelper {
      */
     private class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
-        public MySQLiteOpenHelper(Context context, String name, int version) {
+        public MySQLiteOpenHelper(final Context context, final String name, final int version) {
             super(new NoLocaleSqliteContext(context), name, null, version);
         }
 
         @Override
-        public void onCreate(SQLiteDatabase db) {
+        public void onCreate(final SQLiteDatabase db) {
             onCreateTable(db);
         }
 
         @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
             if (oldVersion != newVersion) {
                 clearDB(db);
             }
         }
 
         @Override
-        public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        public void onDowngrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
             if (oldVersion != newVersion) {
                 clearDB(db);
             }
         }
 
-        private void clearDB(SQLiteDatabase db) {
+        private void clearDB(final SQLiteDatabase db) {
             db.execSQL("DROP TABLE IF EXISTS " + mTableName);
             onCreate(db);
         }

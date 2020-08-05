@@ -41,14 +41,14 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
 
     private static final int DISMISS_NOTIFICATION = R.id.action_dismiss_notification;
 
-    public ShortcutMenuAccessibilityDelegate(Launcher launcher) {
+    public ShortcutMenuAccessibilityDelegate(final Launcher launcher) {
         super(launcher);
         mActions.put(DISMISS_NOTIFICATION, new AccessibilityAction(DISMISS_NOTIFICATION,
                      launcher.getText(R.string.action_dismiss_notification)));
     }
 
     @Override
-    public void addSupportedActions(View host, AccessibilityNodeInfo info, boolean fromKeyboard) {
+    public void addSupportedActions(final View host, final AccessibilityNodeInfo info, final boolean fromKeyboard) {
         if ((host.getParent() instanceof DeepShortcutView)) {
             info.addAction(mActions.get(ADD_TO_WORKSPACE));
         } else if (host instanceof NotificationMainView) {
@@ -59,7 +59,7 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
     }
 
     @Override
-    public boolean performAction(View host, ItemInfo item, int action) {
+    public boolean performAction(final View host, final ItemInfo item, final int action) {
         if (action == ADD_TO_WORKSPACE) {
             if (!(host.getParent() instanceof DeepShortcutView)) {
                 return false;

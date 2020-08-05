@@ -47,11 +47,11 @@ public class DbDowngradeHelper {
     public final int version;
     private final SparseArray<String[]> mStatements = new SparseArray<>();
 
-    private DbDowngradeHelper(int version) {
+    private DbDowngradeHelper(final int version) {
         this.version = version;
     }
 
-    public static DbDowngradeHelper parse(File file) throws JSONException, IOException {
+    public static DbDowngradeHelper parse(final File file) throws JSONException, IOException {
         JSONObject obj = new JSONObject(new String(IOUtils.toByteArray(file)));
         DbDowngradeHelper helper = new DbDowngradeHelper(obj.getInt(KEY_VERSION));
         for (int version = helper.version - 1; version > 0; version--) {
@@ -67,8 +67,8 @@ public class DbDowngradeHelper {
         return helper;
     }
 
-    public static void updateSchemaFile(File schemaFile, int expectedVersion,
-                                        Context context, int schemaResId) {
+    public static void updateSchemaFile(final File schemaFile, final int expectedVersion,
+                                        final Context context, final int schemaResId) {
         try {
             if (DbDowngradeHelper.parse(schemaFile).version >= expectedVersion) {
                 return;
@@ -86,7 +86,7 @@ public class DbDowngradeHelper {
         }
     }
 
-    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onDowngrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         ArrayList<String> allCommands = new ArrayList<>();
 
         for (int i = oldVersion - 1; i >= newVersion; i--) {

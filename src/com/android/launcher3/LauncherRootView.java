@@ -25,7 +25,7 @@ public class LauncherRootView extends InsettableFrameLayout {
     private View mAlignedView;
     private WindowStateListener mWindowStateListener;
 
-    public LauncherRootView(Context context, AttributeSet attrs) {
+    public LauncherRootView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
 
         mOpaquePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -47,7 +47,7 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
-    protected boolean fitSystemWindows(Rect insets) {
+    protected boolean fitSystemWindows(final Rect insets) {
         boolean rawInsetsChanged = !mInsets.equals(insets);
         mConsumedInsets.setEmpty();
         boolean drawInsetBar = false;
@@ -58,9 +58,9 @@ public class LauncherRootView extends InsettableFrameLayout {
             mConsumedInsets.bottom = insets.bottom;
             insets = new Rect(0, insets.top, 0, insets.bottom);
             drawInsetBar = true;
-        } else if ((insets.right > 0 || insets.left > 0) &&
-                   (!Utilities.ATLEAST_MARSHMALLOW ||
-                    getContext().getSystemService(ActivityManager.class).isLowRamDevice())) {
+        } else if ((insets.right > 0 || insets.left > 0)
+                   && (!Utilities.ATLEAST_MARSHMALLOW
+                    || getContext().getSystemService(ActivityManager.class).isLowRamDevice())) {
             mConsumedInsets.left = insets.left;
             mConsumedInsets.right = insets.right;
             insets = new Rect(0, insets.top, 0, insets.bottom);
@@ -78,8 +78,8 @@ public class LauncherRootView extends InsettableFrameLayout {
         if (mAlignedView != null) {
             // Apply margins on aligned view to handle consumed insets.
             MarginLayoutParams lp = (MarginLayoutParams) mAlignedView.getLayoutParams();
-            if (lp.leftMargin != mConsumedInsets.left || lp.rightMargin != mConsumedInsets.right ||
-                    lp.bottomMargin != mConsumedInsets.bottom) {
+            if (lp.leftMargin != mConsumedInsets.left || lp.rightMargin != mConsumedInsets.right
+                    || lp.bottomMargin != mConsumedInsets.bottom) {
                 lp.leftMargin = mConsumedInsets.left;
                 lp.rightMargin = mConsumedInsets.right;
                 lp.topMargin = mConsumedInsets.top;
@@ -97,7 +97,7 @@ public class LauncherRootView extends InsettableFrameLayout {
     }
 
     @Override
-    public void setInsets(Rect insets) {
+    public void setInsets(final Rect insets) {
         // If the insets haven't changed, this is a no-op. Avoid unnecessary layout caused by
         // modifying child layout params.
 
@@ -119,7 +119,7 @@ public class LauncherRootView extends InsettableFrameLayout {
 
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(final Canvas canvas) {
         super.dispatchDraw(canvas);
 
         // If the right inset is opaque, draw a black rectangle to ensure that is stays opaque.
@@ -136,12 +136,12 @@ public class LauncherRootView extends InsettableFrameLayout {
         }
     }
 
-    public void setWindowStateListener(WindowStateListener listener) {
+    public void setWindowStateListener(final WindowStateListener listener) {
         mWindowStateListener = listener;
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasWindowFocus) {
+    public void onWindowFocusChanged(final boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
         if (mWindowStateListener != null) {
             mWindowStateListener.onWindowFocusChanged(hasWindowFocus);
@@ -149,7 +149,7 @@ public class LauncherRootView extends InsettableFrameLayout {
     }
 
     @Override
-    protected void onWindowVisibilityChanged(int visibility) {
+    protected void onWindowVisibilityChanged(final int visibility) {
         super.onWindowVisibilityChanged(visibility);
         if (mWindowStateListener != null) {
             mWindowStateListener.onWindowVisibilityChanged(visibility);

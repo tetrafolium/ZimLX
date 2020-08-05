@@ -31,13 +31,13 @@ public class IcuDateTextView extends DoubleShadowTextView {
         super(context, set, 0);
         mTimeChangeReceiver = new BroadcastReceiver() {
             @Override
-            public void onReceive(Context context, Intent intent) {
+            public void onReceive(final Context context, final Intent intent) {
                 reloadDateFormat(!Intent.ACTION_TIME_TICK.equals(intent.getAction()));
             }
         };
     }
 
-    public void reloadDateFormat(boolean forcedChange) {
+    public void reloadDateFormat(final boolean forcedChange) {
         String format;
         if (Utilities.ATLEAST_NOUGAT) {
             mDateFormat = getDateFormat(getContext(), forcedChange, mDateFormat, getId() == R.id.time_above);
@@ -51,7 +51,7 @@ public class IcuDateTextView extends DoubleShadowTextView {
     }
 
     @RequiresApi(24)
-    public static DateFormat getDateFormat(Context context, boolean forcedChange, DateFormat oldFormat, boolean isTimeAbove) {
+    public static DateFormat getDateFormat(final Context context, final boolean forcedChange, final DateFormat oldFormat, final boolean isTimeAbove) {
         if (oldFormat == null || forcedChange) {
             (oldFormat = DateFormat.getInstanceForSkeleton(context
                          .getString(R.string.icu_abbrev_wday_month_day_no_year), Locale.getDefault()))
@@ -84,7 +84,7 @@ public class IcuDateTextView extends DoubleShadowTextView {
         getContext().unregisterReceiver(mTimeChangeReceiver);
     }
 
-    public void onVisibilityAggregated(boolean isVisible) {
+    public void onVisibilityAggregated(final boolean isVisible) {
         if (Utilities.ATLEAST_NOUGAT) {
             super.onVisibilityAggregated(isVisible);
         }

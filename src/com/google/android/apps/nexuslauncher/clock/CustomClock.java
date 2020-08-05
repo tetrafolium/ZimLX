@@ -27,18 +27,18 @@ public class CustomClock {
     private final Context mContext;
     private final Set<AutoUpdateClock> mUpdaters = Collections.newSetFromMap(new WeakHashMap<AutoUpdateClock, Boolean>());
 
-    public CustomClock(Context context) {
+    public CustomClock(final Context context) {
         mContext = context;
 
         mContext.registerReceiver(new BroadcastReceiver() {
             @Override
-            public void onReceive(Context context, Intent intent) {
+            public void onReceive(final Context context, final Intent intent) {
                 loadTimeZone(intent.getStringExtra("time-zone"));
             }
         }, new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED), null, new Handler(Looper.getMainLooper()));
     }
 
-    public static Drawable getClock(Context context, Drawable drawable, Metadata metadata, int iconDpi) {
+    public static Drawable getClock(final Context context, final Drawable drawable, final Metadata metadata, final int iconDpi) {
         ClockLayers clone = getClockLayers(context, drawable, metadata, iconDpi, false).clone();
         if (clone != null) {
             clone.updateAngles();
@@ -47,7 +47,7 @@ public class CustomClock {
         return null;
     }
 
-    private static ClockLayers getClockLayers(Context context, Drawable drawableForDensity, Metadata metadata, int iconDpi, boolean normalizeIcon) {
+    private static ClockLayers getClockLayers(final Context context, final Drawable drawableForDensity, final Metadata metadata, final int iconDpi, final boolean normalizeIcon) {
         Preconditions.assertWorkerThread();
         ClockLayers layers = new ClockLayers();
         layers.mDrawable = drawableForDensity.mutate();
@@ -77,7 +77,7 @@ public class CustomClock {
         return layers;
     }
 
-    public FastBitmapDrawable drawIcon(Bitmap bitmap, Drawable drawableForDensity, Metadata metadata) {
+    public FastBitmapDrawable drawIcon(final Bitmap bitmap, final Drawable drawableForDensity, final Metadata metadata) {
         final AutoUpdateClock updater = new AutoUpdateClock(bitmap, getClockLayers(mContext,
                 drawableForDensity,
                 metadata,
@@ -87,10 +87,10 @@ public class CustomClock {
         return updater;
     }
 
-    private void loadTimeZone(String timeZoneId) {
-        TimeZone timeZone = timeZoneId == null ?
-                            TimeZone.getDefault() :
-                            TimeZone.getTimeZone(timeZoneId);
+    private void loadTimeZone(final String timeZoneId) {
+        TimeZone timeZone = timeZoneId == null
+                            ? TimeZone.getDefault()
+                            : TimeZone.getTimeZone(timeZoneId);
 
         for (AutoUpdateClock a : mUpdaters) {
             a.setTimeZone(timeZone);
@@ -106,7 +106,7 @@ public class CustomClock {
         final int DEFAULT_MINUTE;
         final int DEFAULT_SECOND;
 
-        public Metadata(int hourIndex, int minuteIndex, int secondIndex, int defaultHour, int defaultMinute, int defaultSecond) {
+        public Metadata(final int hourIndex, final int minuteIndex, final int secondIndex, final int defaultHour, final int defaultMinute, final int defaultSecond) {
             HOUR_LAYER_INDEX = hourIndex;
             MINUTE_LAYER_INDEX = minuteIndex;
             SECOND_LAYER_INDEX = secondIndex;

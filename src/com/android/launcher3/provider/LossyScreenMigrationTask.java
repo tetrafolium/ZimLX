@@ -43,7 +43,7 @@ public class LossyScreenMigrationTask extends GridSizeMigrationTask {
     private final LongArrayMap<DbEntry> mUpdates;
 
     protected LossyScreenMigrationTask(
-        Context context, InvariantDeviceProfile idp, SQLiteDatabase db) {
+        final Context context, final InvariantDeviceProfile idp, final SQLiteDatabase db) {
         // Decrease the rows count by 1
         super(context, idp, getValidPackages(context),
               new Point(idp.numColumns, idp.numRows + 1),
@@ -55,17 +55,17 @@ public class LossyScreenMigrationTask extends GridSizeMigrationTask {
     }
 
     @Override
-    protected Cursor queryWorkspace(String[] columns, String where) {
+    protected Cursor queryWorkspace(final String[] columns, final String where) {
         return mDb.query(Favorites.TABLE_NAME, columns, where, null, null, null, null);
     }
 
     @Override
-    protected void update(DbEntry item) {
+    protected void update(final DbEntry item) {
         mUpdates.put(item.id, item.copy());
     }
 
     @Override
-    protected ArrayList<DbEntry> loadWorkspaceEntries(long screen) {
+    protected ArrayList<DbEntry> loadWorkspaceEntries(final long screen) {
         ArrayList<DbEntry> result = super.loadWorkspaceEntries(screen);
         for (DbEntry entry : result) {
             mOriginalItems.put(entry.id, entry.copy());

@@ -110,7 +110,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
 
-    public ShortcutInfo(ShortcutInfo info) {
+    public ShortcutInfo(final ShortcutInfo info) {
         super(info);
         title = info.title;
         intent = new Intent(info.intent);
@@ -122,7 +122,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     /**
      * TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut.
      */
-    public ShortcutInfo(AppInfo info) {
+    public ShortcutInfo(final AppInfo info) {
         super(info);
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
@@ -132,14 +132,14 @@ public class ShortcutInfo extends ItemInfoWithIcon {
      * Creates a {@link ShortcutInfo} from a {@link ShortcutInfoCompat}.
      */
     @TargetApi(Build.VERSION_CODES.N)
-    public ShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
+    public ShortcutInfo(final ShortcutInfoCompat shortcutInfo, final Context context) {
         user = shortcutInfo.getUserHandle();
         itemType = LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
         updateFromDeepShortcutInfo(shortcutInfo, context);
     }
 
     @Override
-    public void onAddToDatabase(ContentWriter writer) {
+    public void onAddToDatabase(final ContentWriter writer) {
         super.onAddToDatabase(writer);
         writer.put(LauncherSettings.BaseLauncherColumns.TITLE, title)
         .put(LauncherSettings.BaseLauncherColumns.INTENT, getIntent())
@@ -160,7 +160,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         return intent;
     }
 
-    public boolean hasStatusFlag(int flag) {
+    public boolean hasStatusFlag(final int flag) {
         return (status & flag) != 0;
     }
 
@@ -177,12 +177,12 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         return mInstallProgress;
     }
 
-    public void setInstallProgress(int progress) {
+    public void setInstallProgress(final int progress) {
         mInstallProgress = progress;
         status |= FLAG_INSTALL_SESSION_ACTIVE;
     }
 
-    public void updateFromDeepShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
+    public void updateFromDeepShortcutInfo(final ShortcutInfoCompat shortcutInfo, final Context context) {
         // {@link ShortcutInfoCompat#getActivity} can change during an update. Recreate the intent
         intent = shortcutInfo.makeIntent();
         title = shortcutInfo.getShortLabel();
@@ -203,8 +203,8 @@ public class ShortcutInfo extends ItemInfoWithIcon {
 
     /** Returns the ShortcutInfo id associated with the deep shortcut. */
     public String getDeepShortcutId() {
-        return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
-               getIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
+        return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT
+               ? getIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
     }
 
     @Override
@@ -221,39 +221,39 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         return cn;
     }
 
-    private void updateDatabase(Context context, boolean updateIcon, boolean reload) {
+    private void updateDatabase(final Context context, final boolean updateIcon, final boolean reload) {
         if (updateIcon)
             ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, swipeUpAction
-                                             , customIconEntry, customIcon, true, reload);
+, customIconEntry, customIcon, true, reload);
         else
             ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, swipeUpAction
-                                             , null, null, false, reload);
+, null, null, false, reload);
     }
 
-    public void onLoadCustomizations(String titleAlias, String swipeUpAction,
-                                     IconPackManager.CustomIconEntry customIcon, Bitmap icon) {
+    public void onLoadCustomizations(final String titleAlias, final String swipeUpAction,
+                                     final IconPackManager.CustomIconEntry customIcon, final Bitmap icon) {
         customTitle = titleAlias;
         customIconEntry = customIcon;
         this.customIcon = icon;
         this.swipeUpAction = swipeUpAction;
     }
 
-    public void setTitle(@NotNull Context context, @Nullable String title) {
+    public void setTitle(final @NotNull Context context, final @Nullable String title) {
         customTitle = title;
         updateDatabase(context, false, true);
     }
 
-    public void setIconEntry(@NotNull Context context, @Nullable IconPackManager.CustomIconEntry iconEntry) {
+    public void setIconEntry(final @NotNull Context context, final @Nullable IconPackManager.CustomIconEntry iconEntry) {
         customIconEntry = iconEntry;
         updateDatabase(context, true, false);
     }
 
-    public void setIcon(@NotNull Context context, @Nullable Bitmap icon) {
+    public void setIcon(final @NotNull Context context, final @Nullable Bitmap icon) {
         customIcon = icon;
         updateDatabase(context, true, true);
     }
 
-    public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
+    public void setSwipeUpAction(final @NonNull Context context, final @Nullable String action) {
         swipeUpAction = action;
         updateDatabase(context, false, true);
     }

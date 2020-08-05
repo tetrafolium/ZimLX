@@ -206,7 +206,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
      * @param context The application's context.
      * @param attrs The attributes set containing the Workspace's customization values.
      */
-    public Folder(Context context, AttributeSet attrs) {
+    public Folder(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         setAlwaysDrawnWithCacheEnabled(false);
         Resources res = getResources();
@@ -238,18 +238,18 @@ public class Folder extends AbstractFloatingView implements DragSource,
             // We disable action mode in older OSes where floating selection menu is not yet
             // available.
             mFolderName.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
-                public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
                     return false;
                 }
 
-                public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
                     return false;
                 }
 
-                public void onDestroyActionMode(ActionMode mode) {
+                public void onDestroyActionMode(final ActionMode mode) {
                 }
 
-                public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                public boolean onPrepareActionMode(final ActionMode mode, final Menu menu) {
                     return false;
                 }
             });
@@ -277,18 +277,18 @@ public class Folder extends AbstractFloatingView implements DragSource,
         });
     }
 
-    public void setClipPath(Path path) {
+    public void setClipPath(final Path path) {
         mClipPath = path;
         invalidate();
     }
 
-    public boolean onLongClick(View v) {
+    public boolean onLongClick(final View v) {
         // Return if global dragging is not enabled
         if (!mLauncher.isDraggingEnabled()) return true;
         return startDrag(v, new DragOptions());
     }
 
-    public boolean startDrag(View v, DragOptions options) {
+    public boolean startDrag(final View v, final DragOptions options) {
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {
             ShortcutInfo item = (ShortcutInfo) tag;
@@ -302,7 +302,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
                 mContent, CellLayout.FOLDER_ACCESSIBILITY_DRAG) {
 
                     @Override
-                    protected void enableAccessibleDrag(boolean enable) {
+                    protected void enableAccessibleDrag(final boolean enable) {
                         super.enableAccessibleDrag(enable);
                         mFooter.setImportantForAccessibility(enable
                                                              ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
@@ -317,7 +317,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
     }
 
     @Override
-    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+    public void onDragStart(final DropTarget.DragObject dragObject, final DragOptions options) {
         if (dragObject.dragSource != this) {
             return;
         }
@@ -387,7 +387,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
         return true;
     }
 
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+    public boolean onEditorAction(final TextView v, final int actionId, final KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             mFolderName.dispatchBackKey();
             return true;
@@ -399,11 +399,11 @@ public class Folder extends AbstractFloatingView implements DragSource,
         return mFolderIcon;
     }
 
-    public void setDragController(DragController dragController) {
+    public void setDragController(final DragController dragController) {
         mDragController = dragController;
     }
 
-    public void setFolderIcon(FolderIcon icon) {
+    public void setFolderIcon(final FolderIcon icon) {
         mFolderIcon = icon;
     }
 
@@ -422,13 +422,13 @@ public class Folder extends AbstractFloatingView implements DragSource,
     }
 
     @Override
-    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
+    public boolean dispatchPopulateAccessibilityEvent(final AccessibilityEvent event) {
         // When the folder gets focus, we don't want to announce the list of items.
         return true;
     }
 
     @Override
-    public View focusSearch(int direction) {
+    public View focusSearch(final int direction) {
         // When the folder is focused, further focus search should be within the folder contents.
         return FocusFinder.getInstance().findNextFocus(this, null, direction);
     }
@@ -440,7 +440,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
         return mInfo;
     }
 
-    void bind(FolderInfo info) {
+    void bind(final FolderInfo info) {
         mInfo = info;
         ArrayList<ShortcutInfo> children = info.contents;
         Collections.sort(children, ITEM_POS_COMPARATOR);
@@ -482,7 +482,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
      * @return A new UserFolder.
      */
     @SuppressLint("InflateParams")
-    static Folder fromXml(Launcher launcher) {
+    static Folder fromXml(final Launcher launcher) {
         return (Folder) launcher.getLayoutInflater()
                .inflate(R.layout.user_folder_icon_normalized, null);
     }
@@ -493,13 +493,13 @@ public class Folder extends AbstractFloatingView implements DragSource,
         }
         a.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationStart(Animator animation) {
+            public void onAnimationStart(final Animator animation) {
                 mState = STATE_ANIMATING;
                 mCurrentAnimator = a;
             }
 
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 mCurrentAnimator = null;
             }
         });
@@ -549,12 +549,12 @@ public class Folder extends AbstractFloatingView implements DragSource,
         AnimatorSet anim = new FolderAnimationManager(this, true /* isOpening */).getAnimator();
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationStart(Animator animation) {
+            public void onAnimationStart(final Animator animation) {
                 mFolderIcon.setBackgroundVisible(false);
                 mFolderIcon.drawLeaveBehindIfExists();
             }
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 mState = STATE_OPEN;
                 announceAccessibilityChanges();
 
@@ -580,7 +580,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
 
                 @SuppressLint("InlinedApi")
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEnd(final Animator animation) {
                     mFolderName.animate().setDuration(FOLDER_NAME_ANIMATION_DURATION)
                     .translationX(0)
                     .setInterpolator(AnimationUtils.loadInterpolator(
@@ -619,12 +619,12 @@ public class Folder extends AbstractFloatingView implements DragSource,
     }
 
     @Override
-    protected boolean isOfType(int type) {
+    protected boolean isOfType(final int type) {
         return (type & TYPE_FOLDER) != 0;
     }
 
     @Override
-    protected void handleClose(boolean animate) {
+    protected void handleClose(final boolean animate) {
         mIsOpen = false;
         if (mFolderIcon.isCustomIcon) {
             mFolderIcon.mFolderName.setIconVisible(true);
@@ -654,7 +654,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
         AnimatorSet a = new FolderAnimationManager(this, false /* isOpening */).getAnimator();
         a.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 closeComplete(true);
                 announceAccessibilityChanges();
             }
@@ -668,7 +668,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
                            : getContext().getString(R.string.folder_closed));
     }
 
-    private void closeComplete(boolean wasAnimated) {
+    private void closeComplete(final boolean wasAnimated) {
         // TODO: Clear all active animations.
         DragLayer parent = (DragLayer) getParent();
         if (parent != null) {
@@ -712,15 +712,15 @@ public class Folder extends AbstractFloatingView implements DragSource,
     }
 
     @Override
-    public boolean acceptDrop(DragObject d) {
+    public boolean acceptDrop(final DragObject d) {
         final ItemInfo item = d.dragInfo;
         final int itemType = item.itemType;
-        return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
-                 itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
-                 itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT));
+        return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+                 || itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
+                 || itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT));
     }
 
-    public void onDragEnter(DragObject d) {
+    public void onDragEnter(final DragObject d) {
         mPrevTargetRank = -1;
         mOnExitAlarm.cancelAlarm();
         // Get the area offset such that the folder only closes if half the drag icon width
@@ -729,7 +729,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
     }
 
     OnAlarmListener mReorderAlarmListener = new OnAlarmListener() {
-        public void onAlarm(Alarm alarm) {
+        public void onAlarm(final Alarm alarm) {
             mContent.realTimeReorder(mEmptyCellRank, mTargetRank);
             mEmptyCellRank = mTargetRank;
         }
@@ -739,14 +739,14 @@ public class Folder extends AbstractFloatingView implements DragSource,
         return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
     }
 
-    private int getTargetRank(DragObject d, float[] recycle) {
+    private int getTargetRank(final DragObject d, final float[] recycle) {
         recycle = d.getVisualCenter(recycle);
         return mContent.findNearestArea(
                    (int) recycle[0] - getPaddingLeft(), (int) recycle[1] - getPaddingTop());
     }
 
     @Override
-    public void onDragOver(DragObject d) {
+    public void onDragOver(final DragObject d) {
         if (mScrollPauseAlarm.alarmPending()) {
             return;
         }
@@ -787,7 +787,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
         }
     }
 
-    private void showScrollHint(int direction, DragObject d) {
+    private void showScrollHint(final int direction, final DragObject d) {
         // Show scroll hint on the right
         if (mScrollHintDir != direction) {
             mContent.showScrollHint(direction);
@@ -807,7 +807,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
     }
 
     OnAlarmListener mOnExitAlarmListener = new OnAlarmListener() {
-        public void onAlarm(Alarm alarm) {
+        public void onAlarm(final Alarm alarm) {
             completeDragExit();
         }
     };
@@ -829,7 +829,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
         mIsExternalDrag = false;
     }
 
-    public void onDragExit(DragObject d) {
+    public void onDragExit(final DragObject d) {
         // We only close the folder if this is a true drag exit, ie. not because
         // a drop has occurred above the folder.
         if (!d.dragComplete) {
@@ -985,10 +985,10 @@ public class Folder extends AbstractFloatingView implements DragSource,
         setPivotX(folderPivotX);
         setPivotY(folderPivotY);
 
-        mFolderIconPivotX = (int) (mFolderIcon.getMeasuredWidth() *
-                                   (1.0f * folderPivotX / width));
-        mFolderIconPivotY = (int) (mFolderIcon.getMeasuredHeight() *
-                                   (1.0f * folderPivotY / height));
+        mFolderIconPivotX = (int) (mFolderIcon.getMeasuredWidth()
+                                   * (1.0f * folderPivotX / width));
+        mFolderIconPivotY = (int) (mFolderIcon.getMeasuredHeight()
+                                   * (1.0f * folderPivotY / height));
 
         lp.width = width;
         lp.height = height;
@@ -1024,11 +1024,11 @@ public class Folder extends AbstractFloatingView implements DragSource,
         return getFolderHeight(getContentAreaHeight());
     }
 
-    private int getFolderHeight(int contentAreaHeight) {
+    private int getFolderHeight(final int contentAreaHeight) {
         return getPaddingTop() + getPaddingBottom() + contentAreaHeight + mFooterHeight;
     }
 
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         int contentWidth = getContentAreaWidth();
         int contentHeight = getContentAreaHeight();
 
@@ -1066,7 +1066,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
      * @param itemCount if greater than the total children count, empty spaces are left at the end,
      * otherwise it is ignored.
      */
-    public void rearrangeChildren(int itemCount) {
+    public void rearrangeChildren(final int itemCount) {
         ArrayList<View> views = getItemsInReadingOrder();
         mContent.arrangeChildren(views, Math.max(itemCount, views.size()));
         mItemsInvalidated = true;
@@ -1150,9 +1150,9 @@ public class Folder extends AbstractFloatingView implements DragSource,
             // When pressing shift+tab in the above state, give the focus to the last item.
             setOnKeyListener(new OnKeyListener() {
                 @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    boolean isShiftPlusTab = keyCode == KeyEvent.KEYCODE_TAB &&
-                                             event.hasModifiers(KeyEvent.META_SHIFT_ON);
+                public boolean onKey(final View v, final int keyCode, final KeyEvent event) {
+                    boolean isShiftPlusTab = keyCode == KeyEvent.KEYCODE_TAB
+                                             && event.hasModifiers(KeyEvent.META_SHIFT_ON);
                     if (isShiftPlusTab && Folder.this.isFocused()) {
                         return lastChild.requestFocus();
                     }
@@ -1162,7 +1162,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
         }
     }
 
-    public void onDrop(DragObject d, DragOptions options) {
+    public void onDrop(final DragObject d, final DragOptions options) {
         // If the icon was dropped while the page was being scrolled, we need to compute
         // the target location again such that the icon is placed of the final page.
         if (!mContent.rankOnCurrentPage(mEmptyCellRank)) {
@@ -1262,17 +1262,17 @@ public class Folder extends AbstractFloatingView implements DragSource,
     // This is used so the item doesn't immediately appear in the folder when added. In one case
     // we need to create the illusion that the item isn't added back to the folder yet, to
     // to correspond to the animation of the icon back into the folder. This is
-    public void hideItem(ShortcutInfo info) {
+    public void hideItem(final ShortcutInfo info) {
         View v = getViewForInfo(info);
         v.setVisibility(INVISIBLE);
     }
-    public void showItem(ShortcutInfo info) {
+    public void showItem(final ShortcutInfo info) {
         View v = getViewForInfo(info);
         v.setVisibility(VISIBLE);
     }
 
     @Override
-    public void onAdd(ShortcutInfo item, int rank) {
+    public void onAdd(final ShortcutInfo item, final int rank) {
         View view = mContent.createAndAddViewForRank(item, rank);
         mLauncher.getModelWriter().addOrMoveItemInDatabase(item, mInfo.id, 0, item.cellX,
                 item.cellY);
@@ -1283,7 +1283,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
         mItemsInvalidated = true;
     }
 
-    public void onRemove(ShortcutInfo item) {
+    public void onRemove(final ShortcutInfo item) {
         mItemsInvalidated = true;
         View v = getViewForInfo(item);
         mContent.removeItem(v);
@@ -1305,14 +1305,14 @@ public class Folder extends AbstractFloatingView implements DragSource,
         return mContent.iterateOverItems(new ItemOperator() {
 
             @Override
-            public boolean evaluate(ItemInfo info, View view) {
+            public boolean evaluate(final ItemInfo info, final View view) {
                 return info == item;
             }
         });
     }
 
     @Override
-    public void onItemsChanged(boolean animate) {
+    public void onItemsChanged(final boolean animate) {
         updateTextViewFocus();
     }
 
@@ -1321,7 +1321,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
         close(false);
     }
 
-    public void onTitleChanged(CharSequence title) {
+    public void onTitleChanged(final CharSequence title) {
     }
 
     public ArrayList<View> getItemsInReadingOrder() {
@@ -1336,11 +1336,11 @@ public class Folder extends AbstractFloatingView implements DragSource,
         return mItemsInReadingOrder;
     }
 
-    public void iterateOverItems(ItemOperator op) {
+    public void iterateOverItems(final ItemOperator op) {
         mContent.iterateOverItems(op);
     }
 
-    public List<BubbleTextView> getItemsOnPage(int page) {
+    public List<BubbleTextView> getItemsOnPage(final int page) {
         ArrayList<View> allItems = getItemsInReadingOrder();
         int lastPage = mContent.getPageCount() - 1;
         int totalItemsInFolder = allItems.size();
@@ -1359,7 +1359,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
         return itemsOnCurrentPage;
     }
 
-    public void onFocusChange(View v, boolean hasFocus) {
+    public void onFocusChange(final View v, final boolean hasFocus) {
         if (v == mFolderName) {
             if (hasFocus) {
                 startEditingFolderName();
@@ -1370,14 +1370,14 @@ public class Folder extends AbstractFloatingView implements DragSource,
     }
 
     @Override
-    public void getHitRectRelativeToDragLayer(Rect outRect) {
+    public void getHitRectRelativeToDragLayer(final Rect outRect) {
         getHitRect(outRect);
         outRect.left -= mScrollAreaOffset;
         outRect.right += mScrollAreaOffset;
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
+    public void fillInLogContainerData(final View v, final ItemInfo info, final Target target, final Target targetParent) {
         target.gridX = info.cellX;
         target.gridY = info.cellY;
         target.pageIndex = mContent.getCurrentPage();
@@ -1385,7 +1385,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(final Canvas canvas) {
         if (mClipPath != null) {
             int save = canvas.save();
             canvas.clipPath(mClipPath);
@@ -1401,7 +1401,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
 
         private final DragObject mDragObject;
 
-        OnScrollHintListener(DragObject object) {
+        OnScrollHintListener(final DragObject object) {
             mDragObject = object;
         }
 
@@ -1409,7 +1409,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
          * Scroll hint has been shown long enough. Now scroll to appropriate page.
          */
         @Override
-        public void onAlarm(Alarm alarm) {
+        public void onAlarm(final Alarm alarm) {
             if (mCurrentScrollDir == SCROLL_LEFT) {
                 mContent.scrollLeft();
                 mScrollHintDir = SCROLL_NONE;
@@ -1432,7 +1432,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
 
         private final DragObject mDragObject;
 
-        OnScrollFinishedListener(DragObject object) {
+        OnScrollFinishedListener(final DragObject object) {
             mDragObject = object;
         }
 
@@ -1440,7 +1440,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
          * Page scroll is complete.
          */
         @Override
-        public void onAlarm(Alarm alarm) {
+        public void onAlarm(final Alarm alarm) {
             // Reorder immediately on page change.
             onDragOver(mDragObject);
         }
@@ -1476,12 +1476,12 @@ public class Folder extends AbstractFloatingView implements DragSource,
     /**
      * Returns a folder which is already open or null
      */
-    public static Folder getOpen(Launcher launcher) {
+    public static Folder getOpen(final Launcher launcher) {
         return getOpenView(launcher, TYPE_FOLDER);
     }
 
     @Override
-    public void logActionCommand(int command) {
+    public void logActionCommand(final int command) {
         mLauncher.getUserEventDispatcher().logActionCommand(
             command, getFolderIcon(), ContainerType.FOLDER);
     }
@@ -1497,7 +1497,7 @@ public class Folder extends AbstractFloatingView implements DragSource,
     }
 
     @Override
-    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+    public boolean onControllerInterceptTouchEvent(final MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             DragLayer dl = mLauncher.getDragLayer();
 

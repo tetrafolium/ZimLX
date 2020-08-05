@@ -35,7 +35,7 @@ public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
     private final WallpaperManager mWm;
     private Method mWCColorHintsMethod;
 
-    WallpaperManagerCompatVOMR1(Context context) throws Throwable {
+    WallpaperManagerCompatVOMR1(final Context context) throws Throwable {
         mWm = context.getSystemService(WallpaperManager.class);
         String className = WallpaperColors.class.getName();
         try {
@@ -47,7 +47,7 @@ public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
 
     @Nullable
     @Override
-    public WallpaperColorsCompat getWallpaperColors(int which) {
+    public WallpaperColorsCompat getWallpaperColors(final int which) {
         return convertColorsObject(mWm.getWallpaperColors(which));
     }
 
@@ -55,14 +55,14 @@ public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
     public void addOnColorsChangedListener(final OnColorsChangedListenerCompat listener) {
         OnColorsChangedListener onChangeListener = new OnColorsChangedListener() {
             @Override
-            public void onColorsChanged(WallpaperColors colors, int which) {
+            public void onColorsChanged(final WallpaperColors colors, final int which) {
                 listener.onColorsChanged(convertColorsObject(colors), which);
             }
         };
         mWm.addOnColorsChangedListener(onChangeListener, null);
     }
 
-    private WallpaperColorsCompat convertColorsObject(WallpaperColors colors) {
+    private WallpaperColorsCompat convertColorsObject(final WallpaperColors colors) {
         if (colors == null) {
             return null;
         }

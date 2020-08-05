@@ -37,7 +37,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
  */
 public abstract class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateListener {
 
-    public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration) {
+    public static AnimatorPlaybackController wrap(final AnimatorSet anim, final long duration) {
         return wrap(anim, duration, null);
     }
 
@@ -47,8 +47,8 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
      * needs to be larger than the total number of pixels so that we don't have jittering due
      * to float (animation-fraction * total duration) to int conversion.
      */
-    public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration,
-            Runnable onCancelRunnable) {
+    public static AnimatorPlaybackController wrap(final AnimatorSet anim, final long duration,
+            final Runnable onCancelRunnable) {
 
         /**
          * TODO: use {@link AnimatorSet#setCurrentPlayTime(long)} once b/68382377 is fixed.
@@ -67,8 +67,8 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
     protected boolean mTargetCancelled = false;
     protected Runnable mOnCancelRunnable;
 
-    protected AnimatorPlaybackController(AnimatorSet anim, long duration,
-                                         Runnable onCancelRunnable) {
+    protected AnimatorPlaybackController(final AnimatorSet anim, final long duration,
+                                         final Runnable onCancelRunnable) {
         mAnim = anim;
         mDuration = duration;
         mOnCancelRunnable = onCancelRunnable;
@@ -80,7 +80,7 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
 
         mAnim.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationCancel(Animator animation) {
+            public void onAnimationCancel(final Animator animation) {
                 mTargetCancelled = true;
                 if (mOnCancelRunnable != null) {
                     mOnCancelRunnable.run();
@@ -89,13 +89,13 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
             }
 
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 mTargetCancelled = false;
                 mOnCancelRunnable = null;
             }
 
             @Override
-            public void onAnimationStart(Animator animation) {
+            public void onAnimationStart(final Animator animation) {
                 mTargetCancelled = false;
             }
         });
@@ -158,16 +158,16 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
      * Sets the action to be called when the animation is completed. Also clears any
      * previously set action.
      */
-    public void setEndAction(Runnable runnable) {
+    public void setEndAction(final Runnable runnable) {
         mEndAction = runnable;
     }
 
     @Override
-    public void onAnimationUpdate(ValueAnimator valueAnimator) {
+    public void onAnimationUpdate(final ValueAnimator valueAnimator) {
         setPlayFraction((float) valueAnimator.getAnimatedValue());
     }
 
-    protected long clampDuration(float fraction) {
+    protected long clampDuration(final float fraction) {
         float playPos = mDuration * fraction;
         if (playPos <= 0) {
             return 0;
@@ -180,7 +180,7 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         dispatchOnStartRecursively(mAnim);
     }
 
-    private void dispatchOnStartRecursively(Animator animator) {
+    private void dispatchOnStartRecursively(final Animator animator) {
         for (AnimatorListener l : nonNullList(animator.getListeners())) {
             l.onAnimationStart(animator);
         }
@@ -196,7 +196,7 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         dispatchOnCancelRecursively(mAnim);
     }
 
-    private void dispatchOnCancelRecursively(Animator animator) {
+    private void dispatchOnCancelRecursively(final Animator animator) {
         for (AnimatorListener l : nonNullList(animator.getListeners())) {
             l.onAnimationCancel(animator);
         }
@@ -208,11 +208,11 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         }
     }
 
-    public void dispatchSetInterpolator(TimeInterpolator interpolator) {
+    public void dispatchSetInterpolator(final TimeInterpolator interpolator) {
         dispatchSetInterpolatorRecursively(mAnim, interpolator);
     }
 
-    private void dispatchSetInterpolatorRecursively(Animator anim, TimeInterpolator interpolator) {
+    private void dispatchSetInterpolatorRecursively(final Animator anim, final TimeInterpolator interpolator) {
         anim.setInterpolator(interpolator);
         if (anim instanceof AnimatorSet) {
             for (Animator child : nonNullList(((AnimatorSet) anim).getChildAnimations())) {
@@ -221,7 +221,7 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         }
     }
 
-    public void setOnCancelRunnable(Runnable runnable) {
+    public void setOnCancelRunnable(final Runnable runnable) {
         mOnCancelRunnable = runnable;
     }
 
@@ -233,8 +233,8 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
 
         private final ValueAnimator[] mChildAnimations;
 
-        private AnimatorPlaybackControllerVL(AnimatorSet anim, long duration,
-                                             Runnable onCancelRunnable) {
+        private AnimatorPlaybackControllerVL(final AnimatorSet anim, final long duration,
+                                             final Runnable onCancelRunnable) {
             super(anim, duration, onCancelRunnable);
 
             // Build animation list
@@ -243,7 +243,7 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
             mChildAnimations = childAnims.toArray(new ValueAnimator[childAnims.size()]);
         }
 
-        private void getAnimationsRecur(AnimatorSet anim, ArrayList<ValueAnimator> out) {
+        private void getAnimationsRecur(final AnimatorSet anim, final ArrayList<ValueAnimator> out) {
             long forceDuration = anim.getDuration();
             TimeInterpolator forceInterpolator = anim.getInterpolator();
             for (Animator child : anim.getChildAnimations()) {
@@ -264,7 +264,7 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         }
 
         @Override
-        public void setPlayFraction(float fraction) {
+        public void setPlayFraction(final float fraction) {
             mCurrentFraction = fraction;
             // Let the animator report the progress but don't apply the progress to child
             // animations if it has been cancelled.
@@ -281,19 +281,19 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
     private class OnAnimationEndDispatcher extends AnimationSuccessListener {
 
         @Override
-        public void onAnimationStart(Animator animation) {
+        public void onAnimationStart(final Animator animation) {
             mCancelled = false;
         }
 
         @Override
-        public void onAnimationSuccess(Animator animator) {
+        public void onAnimationSuccess(final Animator animator) {
             dispatchOnEndRecursively(mAnim);
             if (mEndAction != null) {
                 mEndAction.run();
             }
         }
 
-        private void dispatchOnEndRecursively(Animator animator) {
+        private void dispatchOnEndRecursively(final Animator animator) {
             for (AnimatorListener l : nonNullList(animator.getListeners())) {
                 l.onAnimationEnd(animator);
             }
@@ -306,7 +306,7 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         }
     }
 
-    private static <T> List<T> nonNullList(ArrayList<T> list) {
+    private static <T> List<T> nonNullList(final ArrayList<T> list) {
         return list == null ? Collections.emptyList() : list;
     }
 }

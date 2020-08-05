@@ -52,12 +52,12 @@ public class RecyclerViewFastScroller extends View {
     new Property<RecyclerViewFastScroller, Integer>(Integer.class, "width") {
 
         @Override
-        public Integer get(RecyclerViewFastScroller scrollBar) {
+        public Integer get(final RecyclerViewFastScroller scrollBar) {
             return scrollBar.mWidth;
         }
 
         @Override
-        public void set(RecyclerViewFastScroller scrollBar, Integer value) {
+        public void set(final RecyclerViewFastScroller scrollBar, final Integer value) {
             scrollBar.setTrackWidth(value);
         }
     };
@@ -110,15 +110,15 @@ public class RecyclerViewFastScroller extends View {
     private int mDownY;
     private int mLastY;
 
-    public RecyclerViewFastScroller(Context context) {
+    public RecyclerViewFastScroller(final Context context) {
         this(context, null);
     }
 
-    public RecyclerViewFastScroller(Context context, AttributeSet attrs) {
+    public RecyclerViewFastScroller(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public RecyclerViewFastScroller(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RecyclerViewFastScroller(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         mTrackPaint = new Paint();
@@ -146,7 +146,7 @@ public class RecyclerViewFastScroller extends View {
         ta.recycle();
     }
 
-    public void setRecyclerView(BaseRecyclerView rv, TextView popupView) {
+    public void setRecyclerView(final BaseRecyclerView rv, final TextView popupView) {
         if (mRv != null && mOnScrollListener != null) {
             mRv.removeOnScrollListener(mOnScrollListener);
         }
@@ -154,7 +154,7 @@ public class RecyclerViewFastScroller extends View {
 
         mRv.addOnScrollListener(mOnScrollListener = new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
                 mDy = dy;
 
                 // TODO(winsonc): If we want to animate the section heads while scrolling, we can
@@ -174,7 +174,7 @@ public class RecyclerViewFastScroller extends View {
         mIsThumbDetached = false;
     }
 
-    public void setThumbOffsetY(int y) {
+    public void setThumbOffsetY(final int y) {
         if (mThumbOffsetY == y) {
             return;
         }
@@ -186,7 +186,7 @@ public class RecyclerViewFastScroller extends View {
         return mThumbOffsetY;
     }
 
-    private void setTrackWidth(int width) {
+    private void setTrackWidth(final int width) {
         if (mWidth == width) {
             return;
         }
@@ -210,7 +210,7 @@ public class RecyclerViewFastScroller extends View {
      * Handles the touch event and determines whether to show the fast scroller (or updates it if
      * it is already showing).
      */
-    public boolean handleTouchEvent(MotionEvent ev, Point offset) {
+    public boolean handleTouchEvent(final MotionEvent ev, final Point offset) {
         int x = (int) ev.getX() - offset.x;
         int y = (int) ev.getY() - offset.y;
         switch (ev.getAction()) {
@@ -219,8 +219,8 @@ public class RecyclerViewFastScroller extends View {
             mDownX = x;
             mDownY = mLastY = y;
 
-            if ((Math.abs(mDy) < mDeltaThreshold &&
-                    mRv.getScrollState() != RecyclerView.SCROLL_STATE_IDLE)) {
+            if ((Math.abs(mDy) < mDeltaThreshold
+                    && mRv.getScrollState() != RecyclerView.SCROLL_STATE_IDLE)) {
                 // now the touch events are being passed to the {@link WidgetCell} until the
                 // touch sequence goes over the touch slop.
                 mRv.stopScroll();
@@ -240,9 +240,9 @@ public class RecyclerViewFastScroller extends View {
             // Check if we should start scrolling, but ignore this fastscroll gesture if we have
             // exceeded some fixed movement
             mIgnoreDragGesture |= Math.abs(y - mDownY) > mConfig.getScaledPagingTouchSlop();
-            if (!mIsDragging && !mIgnoreDragGesture && mRv.supportsFastScrolling() &&
-                    isNearThumb(mDownX, mLastY) &&
-                    Math.abs(y - mDownY) > mConfig.getScaledTouchSlop()) {
+            if (!mIsDragging && !mIgnoreDragGesture && mRv.supportsFastScrolling()
+                    && isNearThumb(mDownX, mLastY)
+                    && Math.abs(y - mDownY) > mConfig.getScaledTouchSlop()) {
                 calcTouchOffsetAndPrepToFastScroll(mDownY, mLastY);
             }
             if (mIsDragging) {
@@ -265,7 +265,7 @@ public class RecyclerViewFastScroller extends View {
         return mIsDragging;
     }
 
-    private void calcTouchOffsetAndPrepToFastScroll(int downY, int lastY) {
+    private void calcTouchOffsetAndPrepToFastScroll(final int downY, final int lastY) {
         mIsDragging = true;
         if (mCanThumbDetach) {
             mIsThumbDetached = true;
@@ -275,7 +275,7 @@ public class RecyclerViewFastScroller extends View {
         showActiveScrollbar(true);
     }
 
-    private void updateFastScrollSectionNameAndThumbOffset(int lastY, int y) {
+    private void updateFastScrollSectionNameAndThumbOffset(final int lastY, final int y) {
         // Update the fastscroller section name at this touch position
         int bottom = mRv.getScrollbarTrackHeight() - mThumbHeight;
         float boundedY = (float) Math.max(0, Math.min(bottom, y - mTouchOffsetY));
@@ -290,7 +290,7 @@ public class RecyclerViewFastScroller extends View {
         setThumbOffsetY((int) mLastTouchY);
     }
 
-    public void onDraw(Canvas canvas) {
+    public void onDraw(final Canvas canvas) {
         if (mThumbOffsetY < 0) {
             return;
         }
@@ -312,7 +312,7 @@ public class RecyclerViewFastScroller extends View {
     /**
      * Animates the width of the scrollbar.
      */
-    private void showActiveScrollbar(boolean isScrolling) {
+    private void showActiveScrollbar(final boolean isScrolling) {
         if (mWidthAnimator != null) {
             mWidthAnimator.cancel();
         }
@@ -326,7 +326,7 @@ public class RecyclerViewFastScroller extends View {
     /**
      * Returns whether the specified point is inside the thumb bounds.
      */
-    private boolean isNearThumb(int x, int y) {
+    private boolean isNearThumb(final int x, final int y) {
         int offset = y - mThumbOffsetY;
 
         return x >= 0 && x < getWidth() && offset >= 0 && offset <= mThumbHeight;
@@ -336,18 +336,18 @@ public class RecyclerViewFastScroller extends View {
      * Returns true if AllAppsTransitionController can handle vertical motion
      * beginning at this point.
      */
-    public boolean shouldBlockIntercept(int x, int y) {
+    public boolean shouldBlockIntercept(final int x, final int y) {
         return isNearThumb(x, y);
     }
 
     /**
      * Returns whether the specified x position is near the scroll bar.
      */
-    public boolean isNearScrollBar(int x) {
+    public boolean isNearScrollBar(final int x) {
         return x >= (getWidth() - mMaxWidth) / 2 && x <= (getWidth() + mMaxWidth) / 2;
     }
 
-    private void animatePopupVisibility(boolean visible) {
+    private void animatePopupVisibility(final boolean visible) {
         if (mPopupVisible != visible) {
             mPopupVisible = visible;
             mPopupView.animate().cancel();
@@ -355,7 +355,7 @@ public class RecyclerViewFastScroller extends View {
         }
     }
 
-    private void updatePopupY(int lastTouchY) {
+    private void updatePopupY(final int lastTouchY) {
         int height = mPopupView.getHeight();
         float top = lastTouchY - (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * height)
                     + mRv.getScrollBarTop();
@@ -364,12 +364,12 @@ public class RecyclerViewFastScroller extends View {
         mPopupView.setTranslationY(top);
     }
 
-    public void setColor(int color) {
+    public void setColor(final int color) {
         mThumbPaint.setColor(color);
         //mPopupView.setTextColor(foregroundColor);
     }
 
-    public boolean isHitInParent(float x, float y, Point outOffset) {
+    public boolean isHitInParent(final float x, final float y, final Point outOffset) {
         if (mThumbOffsetY < 0) {
             return false;
         }

@@ -30,7 +30,7 @@ public class LooperIdleLock implements MessageQueue.IdleHandler, Runnable {
 
     private boolean mIsLocked;
 
-    public LooperIdleLock(Object lock, Looper looper) {
+    public LooperIdleLock(final Object lock, final Looper looper) {
         mLock = lock;
         mIsLocked = true;
         if (Utilities.ATLEAST_MARSHMALLOW) {
@@ -56,7 +56,7 @@ public class LooperIdleLock implements MessageQueue.IdleHandler, Runnable {
         return false;
     }
 
-    public boolean awaitLocked(long ms) {
+    public boolean awaitLocked(final long ms) {
         if (mIsLocked) {
             try {
                 // Just in case mFlushingWorkerThread changes but we aren't woken up,

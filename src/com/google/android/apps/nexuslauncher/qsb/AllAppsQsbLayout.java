@@ -53,15 +53,15 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     private boolean mLowPerformanceMode;
 
-    public AllAppsQsbLayout(Context context) {
+    public AllAppsQsbLayout(final Context context) {
         this(context, null);
     }
 
-    public AllAppsQsbLayout(Context context, AttributeSet attributeSet) {
+    public AllAppsQsbLayout(final Context context, final AttributeSet attributeSet) {
         this(context, attributeSet, 0);
     }
 
-    public AllAppsQsbLayout(Context context, AttributeSet attributeSet, int i) {
+    public AllAppsQsbLayout(final Context context, final AttributeSet attributeSet, final int i) {
         super(context, attributeSet, i);
         this.mShadowAlpha = 0;
         setOnClickListener(this);
@@ -78,8 +78,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         mLowPerformanceMode = prefs.getLowPerformanceMode();
         mForegroundColor = prefs.getAccentColor();
         boolean themeBlack = Companion.isBlack(Companion.getInstance(mContext).getCurrentFlags());
-        boolean themeDark = Companion.isDark(Companion.getInstance(mContext).getCurrentFlags()) ||
-                            Companion.isDarkText(Companion.getInstance(mContext).getCurrentFlags());
+        boolean themeDark = Companion.isDark(Companion.getInstance(mContext).getCurrentFlags())
+                            || Companion.isDarkText(Companion.getInstance(mContext).getCurrentFlags());
 
         mBackgroundColor = 0;
         int theme = prefs.getLauncherTheme();
@@ -115,7 +115,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         mHint = findViewById(R.id.qsb_hint);
     }
 
-    public void setInsets(Rect rect) {
+    public void setInsets(final Rect rect) {
         c(Utilities.getDevicePrefs(getContext()));
         MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
         mlp.topMargin = getTopMargin(rect);
@@ -139,7 +139,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         }
     }
 
-    public int getTopMargin(Rect rect) {
+    public int getTopMargin(final Rect rect) {
         return Math.max((int) (-this.Dy), rect.top - this.Dt);
     }
 
@@ -150,7 +150,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
         super.onSharedPreferenceChanged(sharedPreferences, key);
         if (key.equals("pref_allAppsGoogleSearch")) {
             loadPreferences(sharedPreferences);
@@ -158,7 +158,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
-    protected Drawable getIcon(boolean colored) {
+    protected Drawable getIcon(final boolean colored) {
         if (prefs.getAllAppsGlobalSearch()) {
             return super.getIcon(colored);
         } else {
@@ -172,7 +172,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
-    protected Drawable getMicIcon(boolean colored) {
+    protected Drawable getMicIcon(final boolean colored) {
         if (prefs.getAllAppsGlobalSearch()) {
             mMicIconView.setVisibility(View.VISIBLE);
             return super.getMicIcon(colored);
@@ -187,7 +187,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         Ds.b(this);
     }
 
-    protected final int aA(int i) {
+    protected final int aA(final int i) {
         if (this.mActivity.getDeviceProfile().isVerticalBarLayout()) {
             return (i - this.mAppsView.getActiveRecyclerView().getPaddingLeft()) - this.mAppsView
                    .getActiveRecyclerView().getPaddingRight();
@@ -196,11 +196,11 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         return (i - view.getPaddingLeft()) - view.getPaddingRight();
     }
 
-    public final void initialize(AllAppsContainerView allAppsContainerView) {
+    public final void initialize(final AllAppsContainerView allAppsContainerView) {
         this.mAppsView = allAppsContainerView;
         mAppsView.addElevationController(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(final @NonNull RecyclerView recyclerView, final int dx, final int dy) {
                 setShadowAlpha(((BaseRecyclerView) recyclerView).getCurrentScrollY());
             }
         });
@@ -221,14 +221,14 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         dH();
     }
 
-    public void onClick(View view) {
+    public void onClick(final View view) {
         super.onClick(view);
         if (view == this) {
             startSearch("", this.Di);
         }
     }
 
-    public final void l(String str) {
+    public final void l(final String str) {
         startSearch(str, 0);
     }
 
@@ -238,7 +238,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
-    public final void startSearch(String str, int i) {
+    public final void startSearch(final String str, final int i) {
         SearchProviderController controller = SearchProviderController.Companion
                                               .getInstance(mActivity);
         SearchProvider provider = controller.getSearchProvider();
@@ -267,7 +267,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         return shouldUseFallbackSearch(provider);
     }
 
-    private boolean shouldUseFallbackSearch(SearchProvider provider) {
+    private boolean shouldUseFallbackSearch(final SearchProvider provider) {
         return !Utilities
                .getZimPrefs(getContext()).getAllAppsGlobalSearch()
                || provider instanceof AppSearchSearchProvider
@@ -275,7 +275,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                || (!Utilities.ATLEAST_NOUGAT && provider instanceof GoogleSearchProvider);
     }
 
-    public void searchFallback(String query) {
+    public void searchFallback(final String query) {
         ensureFallbackView();
         mFallback.setText(query);
         mFallback.showKeyboard();
@@ -320,7 +320,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         }
     }
 
-    protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
+    protected void onLayout(final boolean z, final int i, final int i2, final int i3, final int i4) {
         super.onLayout(z, i, i2, i3, i4);
         View view = (View) getParent();
         setTranslationX((float) ((view.getPaddingLeft() + (
@@ -328,7 +328,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                                       / 2)) - i));
     }
 
-    public void draw(Canvas canvas) {
+    public void draw(final Canvas canvas) {
         if (this.mShadowAlpha > 0) {
             if (this.Dv == null) {
                 this.Dv = c(
@@ -343,7 +343,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         super.draw(canvas);
     }
 
-    final void setShadowAlpha(int i) {
+    final void setShadowAlpha(final int i) {
         i = Utilities.boundToRange(i, 0, 255);
         if (this.mShadowAlpha != i) {
             this.mShadowAlpha = i;
@@ -358,7 +358,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         return super.dK();
     }
 
-    protected final void c(SharedPreferences sharedPreferences) {
+    protected final void c(final SharedPreferences sharedPreferences) {
         if (mUseFallbackSearch) {
             removeFallbackView();
             this.mUseFallbackSearch = false;
@@ -373,7 +373,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
-    public void preDispatchKeyEvent(KeyEvent keyEvent) {
+    public void preDispatchKeyEvent(final KeyEvent keyEvent) {
 
     }
 
@@ -384,14 +384,14 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
-    protected void clearMainPillBg(Canvas canvas) {
+    protected void clearMainPillBg(final Canvas canvas) {
         if (!mLowPerformanceMode && mClearBitmap != null) {
             drawPill(mClearShadowHelper, mClearBitmap, canvas);
         }
     }
 
     @Override
-    protected void clearPillBg(Canvas canvas, int left, int top, int right) {
+    protected void clearPillBg(final Canvas canvas, final int left, final int top, final int right) {
         if (!mLowPerformanceMode && mClearBitmap != null) {
             mClearShadowHelper.draw(mClearBitmap, canvas, left, top, right);
         }

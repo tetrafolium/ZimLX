@@ -73,7 +73,7 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
      * Initial expanded child count will be ignored if: 1. fragment contains request to highlight a
      * particular row. 2. count value is invalid.
      */
-    public static void adjustInitialExpandedChildCount(SettingsActivity.BaseFragment host) {
+    public static void adjustInitialExpandedChildCount(final SettingsActivity.BaseFragment host) {
         if (host == null) {
             return;
         }
@@ -98,8 +98,8 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
         screen.setInitialExpandedChildrenCount(initialCount);
     }
 
-    public HighlightablePreferenceGroupAdapter(PreferenceGroup preferenceGroup, String key,
-            boolean highlightRequested) {
+    public HighlightablePreferenceGroupAdapter(final PreferenceGroup preferenceGroup, final String key,
+            final boolean highlightRequested) {
         super(preferenceGroup);
         mHighlightKey = key;
         mHighlightRequested = highlightRequested;
@@ -116,13 +116,13 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
     }
 
     @Override
-    public void onBindViewHolder(PreferenceViewHolder holder, int position) {
+    public void onBindViewHolder(final PreferenceViewHolder holder, final int position) {
         super.onBindViewHolder(holder, position);
         updateBackground(holder, position);
     }
 
     @VisibleForTesting
-    void updateBackground(PreferenceViewHolder holder, int position) {
+    void updateBackground(final PreferenceViewHolder holder, final int position) {
         View v = holder.itemView;
         if (position == mHighlightPosition) {
             // This position should be highlighted. If it's highlighted before - skip animation.
@@ -133,7 +133,7 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
         }
     }
 
-    public void requestHighlight(View root, RecyclerView recyclerView) {
+    public void requestHighlight(final View root, final RecyclerView recyclerView) {
         if (mHighlightRequested || recyclerView == null || TextUtils.isEmpty(mHighlightKey)) {
             return;
         }
@@ -164,14 +164,14 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
     }
 
     @VisibleForTesting
-    void requestRemoveHighlightDelayed(View v) {
+    void requestRemoveHighlightDelayed(final View v) {
         v.postDelayed(() -> {
             mHighlightPosition = RecyclerView.NO_POSITION;
             removeHighlightBackground(v, true /* animate */);
         }, HIGHLIGHT_DURATION);
     }
 
-    private void addHighlightBackground(View v, boolean animate) {
+    private void addHighlightBackground(final View v, final boolean animate) {
         v.setTag(R.id.preference_highlighted, true);
         if (!animate) {
             v.setBackgroundColor(mHighlightColor);
@@ -194,7 +194,7 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
         requestRemoveHighlightDelayed(v);
     }
 
-    private void removeHighlightBackground(View v, boolean animate) {
+    private void removeHighlightBackground(final View v, final boolean animate) {
         if (!animate) {
             v.setTag(R.id.preference_highlighted, false);
             v.setBackgroundResource(mNormalBackgroundRes);
@@ -218,7 +218,7 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
             animator -> v.setBackgroundColor((int) animator.getAnimatedValue()));
         colorAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 // Animation complete - the background is now white. Change to mNormalBackgroundRes
                 // so it is white and has ripple on touch.
                 v.setBackgroundResource(mNormalBackgroundRes);

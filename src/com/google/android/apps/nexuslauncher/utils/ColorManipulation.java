@@ -17,7 +17,7 @@ public class ColorManipulation {
         mMatrix = new Matrix();
     }
 
-    public static boolean dC(int RGBA) {
+    public static boolean dC(final int RGBA) {
         int maxDiff = 20;
         if ((RGBA >> 24 & 0xFF) < 50) {
             return true;
@@ -37,7 +37,7 @@ public class ColorManipulation {
         return returnValue;
     }
 
-    public boolean dB(Bitmap ew) {
+    public boolean dB(final Bitmap ew) {
         int height = ew.getHeight();
         int width = ew.getWidth();
         Bitmap bitmap;
@@ -70,7 +70,7 @@ public class ColorManipulation {
         return true;
     }
 
-    private void resizeIfNecessary(int pixelCount) {
+    private void resizeIfNecessary(final int pixelCount) {
         if (mPixels == null || mPixels.length < pixelCount) {
             mPixels = new int[pixelCount];
         }

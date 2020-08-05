@@ -29,15 +29,15 @@ public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
     final static float MAX_SWIPE_ANGLE = (float) Math.PI / 3;
     final static float TOUCH_SLOP_DAMPING_FACTOR = 4;
 
-    public AllAppsPagedView(Context context) {
+    public AllAppsPagedView(final Context context) {
         this(context, null);
     }
 
-    public AllAppsPagedView(Context context, AttributeSet attrs) {
+    public AllAppsPagedView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AllAppsPagedView(Context context, AttributeSet attrs, int defStyle) {
+    public AllAppsPagedView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -48,13 +48,13 @@ public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
     }
 
     @Override
-    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+    protected void onScrollChanged(final int l, final int t, final int oldl, final int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
         mPageIndicator.setScroll(l, mMaxScrollX);
     }
 
     @Override
-    protected void determineScrollingStart(MotionEvent ev) {
+    protected void determineScrollingStart(final MotionEvent ev) {
         float absDeltaX = Math.abs(ev.getX() - getDownMotionX());
         float absDeltaY = Math.abs(ev.getY() - getDownMotionY());
 
@@ -84,7 +84,7 @@ public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
         return false;
     }
 
-    public void addTabs(int count) {
+    public void addTabs(final int count) {
         int childCount = getChildCount();
         LayoutInflater inflater = LayoutInflater.from(getContext());
         for (int i = childCount; i < count; i++) {

@@ -28,7 +28,7 @@ public class PromiseAppInfo extends AppInfo {
 
     public int level = 0;
 
-    public PromiseAppInfo(@NonNull PackageInstallerCompat.PackageInstallInfo installInfo) {
+    public PromiseAppInfo(final @NonNull PackageInstallerCompat.PackageInstallInfo installInfo) {
         componentName = installInfo.componentName;
         intent = new Intent(Intent.ACTION_MAIN)
         .addCategory(Intent.CATEGORY_LAUNCHER)
@@ -48,7 +48,7 @@ public class PromiseAppInfo extends AppInfo {
         return shortcut;
     }
 
-    public Intent getMarketIntent(Context context) {
+    public Intent getMarketIntent(final Context context) {
         return new PackageManagerHelper(context).getMarketIntent(componentName.getPackageName());
     }
 }

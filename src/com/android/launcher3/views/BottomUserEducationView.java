@@ -41,12 +41,12 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
 
     private View mCloseButton;
 
-    public BottomUserEducationView(Context context, AttributeSet attr) {
+    public BottomUserEducationView(final Context context, final AttributeSet attr) {
         this(context, attr, 0);
     }
 
-    public BottomUserEducationView(Context context, AttributeSet attrs,
-                                   int defStyleAttr) {
+    public BottomUserEducationView(final Context context, final AttributeSet attrs,
+                                   final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContent = this;
     }
@@ -59,24 +59,24 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(final boolean changed, final int l, final int t, final int r, final int b) {
         super.onLayout(changed, l, t, r, b);
         setTranslationShift(mTranslationShift);
         expandTouchAreaOfCloseButton();
     }
 
     @Override
-    public void logActionCommand(int command) {
+    public void logActionCommand(final int command) {
         // Since this is on-boarding popup, it is not a user controlled action.
     }
 
     @Override
-    protected boolean isOfType(int type) {
+    protected boolean isOfType(final int type) {
         return (type & TYPE_ON_BOARD_POPUP) != 0;
     }
 
     @Override
-    public void setInsets(Rect insets) {
+    public void setInsets(final Rect insets) {
         // Extend behind left, right, and bottom insets.
         int leftInset = insets.left - mInsets.left;
         int rightInset = insets.right - mInsets.right;
@@ -87,7 +87,7 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
     }
 
     @Override
-    protected void handleClose(boolean animate) {
+    protected void handleClose(final boolean animate) {
         handleClose(animate, DEFAULT_CLOSE_DURATION);
         if (animate) {
             // We animate only when the user is visible, which is a proxy for an explicit
@@ -101,7 +101,7 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
         }
     }
 
-    private void open(boolean animate) {
+    private void open(final boolean animate) {
         if (mIsOpen || mOpenCloseAnimator.isRunning()) {
             return;
         }
@@ -116,7 +116,7 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
         }
     }
 
-    public static void showIfNeeded(Launcher launcher) {
+    public static void showIfNeeded(final Launcher launcher) {
         if (launcher.getSharedPrefs().getBoolean(KEY_SHOWED_BOTTOM_USER_EDUCATION, false)) {
             return;
         }

@@ -28,8 +28,8 @@ public class WallpaperColorsCompat {
     private final int mTertiaryColor;
     private final int mColorHints;
 
-    public WallpaperColorsCompat(int primaryColor, int secondaryColor, int tertiaryColor,
-                                 int colorHints) {
+    public WallpaperColorsCompat(final int primaryColor, final int secondaryColor, final int tertiaryColor,
+                                 final int colorHints) {
         mPrimaryColor = primaryColor;
         mSecondaryColor = secondaryColor;
         mTertiaryColor = tertiaryColor;

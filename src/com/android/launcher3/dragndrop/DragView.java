@@ -137,7 +137,7 @@ public class DragView extends View {
      * @param registrationX The x coordinate of the registration point.
      * @param registrationY The y coordinate of the registration point.
      */
-    public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
+    public DragView(final Launcher launcher, final Bitmap bitmap, final int registrationX, final int registrationY,
                     final float initialScale, final float scaleOnDrop, final float finalScaleDps) {
         super(launcher);
         mLauncher = launcher;
@@ -155,7 +155,7 @@ public class DragView extends View {
         mAnim.setDuration(VIEW_ZOOM_DURATION);
         mAnim.addUpdateListener(new AnimatorUpdateListener() {
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
+            public void onAnimationUpdate(final ValueAnimator animation) {
                 final float value = (Float) animation.getAnimatedValue();
 
                 setScaleX(initialScale + (value * (scale - initialScale)));
@@ -172,7 +172,7 @@ public class DragView extends View {
 
         mAnim.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 if (!mAnimationCancelled) {
                     mDragController.onDragViewAnimationEnd();
                 }
@@ -207,9 +207,9 @@ public class DragView extends View {
         if (!(FeatureFlags.LAUNCHER3_SPRING_ICONS && Utilities.ATLEAST_OREO)) {
             return;
         }
-        if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
-                info.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
-                info.itemType != LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+        if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+                && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             return;
         }
         if (info instanceof FolderInfo && ((FolderInfo) info).usingCustomIcon(mLauncher)) {
@@ -331,7 +331,7 @@ public class DragView extends View {
      * @param outObj this is set to the internal data associated with {@param info},
      *               eg {@link LauncherActivityInfo} or {@link ShortcutInfoCompat}.
      */
-    private Drawable getFullDrawable(ItemInfo info, LauncherAppState appState, Object[] outObj) {
+    private Drawable getFullDrawable(final ItemInfo info, final LauncherAppState appState, final Object[] outObj) {
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
             LauncherActivityInfo activityInfo = LauncherAppsCompat.getInstance(mLauncher)
                                                 .resolveActivity(info.getIntent(), info.user);
@@ -381,7 +381,7 @@ public class DragView extends View {
      **/
 
     @TargetApi(Build.VERSION_CODES.O)
-    private Drawable getBadge(ItemInfo info, LauncherAppState appState, Object obj) {
+    private Drawable getBadge(final ItemInfo info, final LauncherAppState appState, final Object obj) {
         int iconSize = appState.getInvariantDeviceProfile().iconBitmapSize;
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             boolean iconBadged = (info instanceof ItemInfoWithIcon)
@@ -408,14 +408,14 @@ public class DragView extends View {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         setMeasuredDimension(mBitmap.getWidth(), mBitmap.getHeight());
     }
 
     /**
      * Sets the scale of the view over the normal workspace icon size.
      */
-    public void setIntrinsicIconScaleFactor(float scale) {
+    public void setIntrinsicIconScaleFactor(final float scale) {
         mIntrinsicIconScale = scale;
     }
 
@@ -439,7 +439,7 @@ public class DragView extends View {
         return mDragRegion.height();
     }
 
-    public void setDragVisualizeOffset(Point p) {
+    public void setDragVisualizeOffset(final Point p) {
         mDragVisualizeOffset = p;
     }
 
@@ -447,7 +447,7 @@ public class DragView extends View {
         return mDragVisualizeOffset;
     }
 
-    public void setDragRegion(Rect r) {
+    public void setDragRegion(final Rect r) {
         mDragRegion = r;
     }
 
@@ -460,7 +460,7 @@ public class DragView extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         mHasDrawn = true;
 
         if (mDrawBitmap) {
@@ -493,17 +493,17 @@ public class DragView extends View {
         }
     }
 
-    public void setCrossFadeBitmap(Bitmap crossFadeBitmap) {
+    public void setCrossFadeBitmap(final Bitmap crossFadeBitmap) {
         mCrossFadeBitmap = crossFadeBitmap;
     }
 
-    public void crossFade(int duration) {
+    public void crossFade(final int duration) {
         ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
         va.setDuration(duration);
         va.setInterpolator(Interpolators.DEACCEL_1_5);
         va.addUpdateListener(new AnimatorUpdateListener() {
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
+            public void onAnimationUpdate(final ValueAnimator animation) {
                 mCrossFadeProgress = animation.getAnimatedFraction();
                 invalidate();
             }
@@ -511,7 +511,7 @@ public class DragView extends View {
         va.start();
     }
 
-    public void setColor(int color) {
+    public void setColor(final int color) {
         if (mPaint == null) {
             mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
         }
@@ -533,7 +533,7 @@ public class DragView extends View {
         }
     }
 
-    private void animateFilterTo(float[] targetFilter) {
+    private void animateFilterTo(final float[] targetFilter) {
         float[] oldFilter = mCurrentFilter == null ? new ColorMatrix().getArray() : mCurrentFilter;
         mCurrentFilter = Arrays.copyOf(oldFilter, oldFilter.length);
 
@@ -546,7 +546,7 @@ public class DragView extends View {
         mFilterAnimator.addUpdateListener(new AnimatorUpdateListener() {
 
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
+            public void onAnimationUpdate(final ValueAnimator animation) {
                 updateColorFilter();
             }
         });
@@ -558,7 +558,7 @@ public class DragView extends View {
     }
 
     @Override
-    public void setAlpha(float alpha) {
+    public void setAlpha(final float alpha) {
         super.setAlpha(alpha);
         mPaint.setAlpha((int) (255 * alpha));
         invalidate();
@@ -570,7 +570,7 @@ public class DragView extends View {
      * @param touchX the x coordinate the user touched in DragLayer coordinates
      * @param touchY the y coordinate the user touched in DragLayer coordinates
      */
-    public void show(int touchX, int touchY) {
+    public void show(final int touchX, final int touchY) {
         mDragLayer.addView(this);
 
         // Start the pick-up animation
@@ -601,7 +601,7 @@ public class DragView extends View {
      * @param touchX the x coordinate the user touched in DragLayer coordinates
      * @param touchY the y coordinate the user touched in DragLayer coordinates
      */
-    public void move(int touchX, int touchY) {
+    public void move(final int touchX, final int touchY) {
         if (touchX > 0 && touchY > 0 && mLastTouchX > 0 && mLastTouchY > 0
                 && mScaledMaskPath != null) {
             mTranslateX.animateToPos(mLastTouchX - touchX);
@@ -612,7 +612,7 @@ public class DragView extends View {
         applyTranslation();
     }
 
-    public void animateTo(int toTouchX, int toTouchY, Runnable onCompleteRunnable, int duration) {
+    public void animateTo(final int toTouchX, final int toTouchY, final Runnable onCompleteRunnable, final int duration) {
         mTempLoc[0] = toTouchX - mRegistrationX;
         mTempLoc[1] = toTouchY - mRegistrationY;
         mDragLayer.animateViewIntoPosition(this, mTempLoc, 1f, mScaleOnDrop, mScaleOnDrop,
@@ -628,7 +628,7 @@ public class DragView extends View {
         applyTranslation();
         mAnim.addUpdateListener(new AnimatorUpdateListener() {
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
+            public void onAnimationUpdate(final ValueAnimator animation) {
                 float fraction = 1 - animation.getAnimatedFraction();
                 mAnimatedShiftX = (int) (fraction * shiftX);
                 mAnimatedShiftY = (int) (fraction * shiftY);
@@ -661,12 +661,12 @@ public class DragView extends View {
         private static final FloatPropertyCompat<SpringFloatValue> VALUE =
         new FloatPropertyCompat<SpringFloatValue>("value") {
             @Override
-            public float getValue(SpringFloatValue object) {
+            public float getValue(final SpringFloatValue object) {
                 return object.mValue;
             }
 
             @Override
-            public void setValue(SpringFloatValue object, float value) {
+            public void setValue(final SpringFloatValue object, final float value) {
                 object.mValue = value;
                 object.mView.invalidate();
             }
@@ -683,7 +683,7 @@ public class DragView extends View {
 
         private float mValue;
 
-        public SpringFloatValue(View view, float range) {
+        public SpringFloatValue(final View view, final float range) {
             mView = view;
             mSpring = new SpringAnimation(this, VALUE, 0)
             .setMinValue(-range).setMaxValue(range)
@@ -693,7 +693,7 @@ public class DragView extends View {
             mDelta = view.getResources().getDisplayMetrics().density * PARALLAX_MAX_IN_DP;
         }
 
-        public void animateToPos(float value) {
+        public void animateToPos(final float value) {
             mSpring.animateToFinalPosition(Utilities.boundToRange(value, -mDelta, mDelta));
         }
     }
@@ -702,7 +702,7 @@ public class DragView extends View {
 
         private final int mSize;
 
-        public FixedSizeEmptyDrawable(int size) {
+        public FixedSizeEmptyDrawable(final int size) {
             super(Color.TRANSPARENT);
             mSize = size;
         }

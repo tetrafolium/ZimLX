@@ -42,11 +42,11 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
     private boolean mLoadAnimationCompleted;
     private boolean mFirstDrawCompleted;
 
-    public void attachTo(Launcher launcher) {
+    public void attachTo(final Launcher launcher) {
         attachTo(launcher, launcher.getWorkspace(), true /* waitForLoadAnimation */);
     }
 
-    public void attachTo(Launcher launcher, View attachedView, boolean waitForLoadAnimation) {
+    public void attachTo(final Launcher launcher, final View attachedView, final boolean waitForLoadAnimation) {
         mLauncher = launcher;
         mAttachedView = attachedView;
         mAttachedView.addOnAttachStateChangeListener(this);
@@ -64,18 +64,18 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
     }
 
     @Override
-    public void execute(Runnable command) {
+    public void execute(final Runnable command) {
         mTasks.add(command);
         LauncherModel.setWorkerPriority(Process.THREAD_PRIORITY_BACKGROUND);
     }
 
     @Override
-    public void onViewAttachedToWindow(View v) {
+    public void onViewAttachedToWindow(final View v) {
         attachObserver();
     }
 
     @Override
-    public void onViewDetachedFromWindow(View v) {
+    public void onViewDetachedFromWindow(final View v) {
     }
 
     @Override

@@ -45,32 +45,32 @@ public class FiveSecsProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri,
-                        String[] projection,
-                        String selection,
-                        String[] selectionArgs,
-                        String sortOrder) {
+    public Cursor query(final @NonNull Uri uri,
+                        final String[] projection,
+                        final String selection,
+                        final String[] selectionArgs,
+                        final String sortOrder) {
         throw new UnsupportedOperationException("Unsupported");
     }
 
     @Nullable
     @Override
-    public String getType(@NonNull Uri uri) {
+    public String getType(final @NonNull Uri uri) {
         // Not supported
         return null;
     }
 
     @Nullable
     @Override
-    public Uri insert(@NonNull Uri uri, ContentValues values) {
+    public Uri insert(final @NonNull Uri uri, final ContentValues values) {
         // Not supported
         throw new UnsupportedOperationException("Unsupported");
     }
 
     @Override
-    public int delete(@NonNull Uri uri,
-                      String selection,
-                      String[] selectionArgs) {
+    public int delete(final @NonNull Uri uri,
+                      final String selection,
+                      final String[] selectionArgs) {
         checkCallingPackage();
         if (PATH_RESET_5SEC_DELAY.equals(uri.getLastPathSegment())) {
             getContext().startActivity(new Intent(getContext(), BlankActivity.class));
@@ -80,10 +80,10 @@ public class FiveSecsProvider extends ContentProvider {
     }
 
     @Override
-    public int update(@NonNull Uri uri,
-                      ContentValues values,
-                      String selection,
-                      String[] selectionArgs) {
+    public int update(final @NonNull Uri uri,
+                      final ContentValues values,
+                      final String selection,
+                      final String[] selectionArgs) {
         // Not supported
         throw new UnsupportedOperationException("Unsupported");
     }

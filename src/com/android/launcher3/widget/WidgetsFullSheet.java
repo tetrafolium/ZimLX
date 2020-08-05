@@ -51,7 +51,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     private WidgetsRecyclerView mRecyclerView;
 
-    public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WidgetsFullSheet(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LauncherAppState apps = LauncherAppState.getInstance(context);
         mAdapter = new WidgetsListAdapter(context,
@@ -60,7 +60,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     }
 
-    public WidgetsFullSheet(Context context, AttributeSet attrs) {
+    public WidgetsFullSheet(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
@@ -99,7 +99,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Override
-    public void setInsets(Rect insets) {
+    public void setInsets(final Rect insets) {
         mInsets.set(insets);
 
         mRecyclerView.setPadding(
@@ -116,7 +116,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         int widthUsed;
         if (mInsets.bottom > 0) {
             widthUsed = 0;
@@ -134,7 +134,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(final boolean changed, final int l, final int t, final int r, final int b) {
         int width = r - l;
         int height = b - t;
 
@@ -157,7 +157,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mAdapter.setWidgets(mLauncher.getPopupDataProvider().getAllWidgets());
     }
 
-    private void open(boolean animate) {
+    private void open(final boolean animate) {
         if (animate) {
             if (mLauncher.getDragLayer().getInsets().bottom > 0) {
                 mContent.setAlpha(0);
@@ -171,7 +171,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                                  getContext(), android.R.interpolator.linear_out_slow_in));
             mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEnd(final Animator animation) {
                     mRecyclerView.setLayoutFrozen(false);
                     mAdapter.setApplyBitmapDeferred(false, mRecyclerView);
                     mOpenCloseAnimator.removeListener(this);
@@ -190,23 +190,23 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Override
-    protected void handleClose(boolean animate) {
+    protected void handleClose(final boolean animate) {
         handleClose(animate, DEFAULT_OPEN_DURATION);
     }
 
     @Override
-    protected boolean isOfType(int type) {
+    protected boolean isOfType(final int type) {
         return (type & TYPE_WIDGETS_FULL_SHEET) != 0;
     }
 
     @Override
-    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+    public boolean onControllerInterceptTouchEvent(final MotionEvent ev) {
         // Disable swipe down when recycler view is scrolling
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
             RecyclerViewFastScroller scroller = mRecyclerView.getScrollbar();
-            if (scroller.getThumbOffsetY() >= 0 &&
-                    mLauncher.getDragLayer().isEventOverView(scroller, ev)) {
+            if (scroller.getThumbOffsetY() >= 0
+                    && mLauncher.getDragLayer().isEventOverView(scroller, ev)) {
                 mNoIntercept = true;
             } else if (mLauncher.getDragLayer().isEventOverView(mContent, ev)) {
                 mNoIntercept = !mRecyclerView.shouldContainerScroll(ev, mLauncher.getDragLayer());
@@ -215,7 +215,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         return super.onControllerInterceptTouchEvent(ev);
     }
 
-    public static WidgetsFullSheet show(Launcher launcher, boolean animate) {
+    public static WidgetsFullSheet show(final Launcher launcher, final boolean animate) {
         WidgetsFullSheet sheet = (WidgetsFullSheet) launcher.getLayoutInflater()
                                  .inflate(R.layout.widgets_full_sheet, launcher.getDragLayer(), false);
         sheet.mIsOpen = true;

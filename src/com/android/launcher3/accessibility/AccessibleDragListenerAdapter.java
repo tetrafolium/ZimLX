@@ -38,13 +38,13 @@ public class AccessibleDragListenerAdapter implements DragListener {
      * @param dragType either {@link CellLayout#WORKSPACE_ACCESSIBILITY_DRAG} or
      *                 {@link CellLayout#FOLDER_ACCESSIBILITY_DRAG}
      */
-    public AccessibleDragListenerAdapter(ViewGroup parent, int dragType) {
+    public AccessibleDragListenerAdapter(final ViewGroup parent, final int dragType) {
         mViewGroup = parent;
         mDragType = dragType;
     }
 
     @Override
-    public void onDragStart(DragObject dragObject, DragOptions options) {
+    public void onDragStart(final DragObject dragObject, final DragOptions options) {
         enableAccessibleDrag(true);
     }
 
@@ -54,13 +54,13 @@ public class AccessibleDragListenerAdapter implements DragListener {
         Launcher.getLauncher(mViewGroup.getContext()).getDragController().removeDragListener(this);
     }
 
-    protected void enableAccessibleDrag(boolean enable) {
+    protected void enableAccessibleDrag(final boolean enable) {
         for (int i = 0; i < mViewGroup.getChildCount(); i++) {
             setEnableForLayout((CellLayout) mViewGroup.getChildAt(i), enable);
         }
     }
 
-    protected final void setEnableForLayout(CellLayout layout, boolean enable) {
+    protected final void setEnableForLayout(final CellLayout layout, final boolean enable) {
         layout.enableAccessibleDrag(enable, mDragType);
     }
 }

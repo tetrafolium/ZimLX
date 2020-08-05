@@ -46,7 +46,7 @@ public class RestoreDbTask {
     private static final String INFO_COLUMN_NAME = "name";
     private static final String INFO_COLUMN_DEFAULT_VALUE = "dflt_value";
 
-    public static boolean performRestore(DatabaseHelper helper) {
+    public static boolean performRestore(final DatabaseHelper helper) {
         SQLiteDatabase db = helper.getWritableDatabase();
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             new RestoreDbTask().sanitizeDB(helper, db);
@@ -58,11 +58,11 @@ public class RestoreDbTask {
         }
     }
 
-    public static boolean isPending(Context context) {
+    public static boolean isPending(final Context context) {
         return Utilities.getPrefs(context).getBoolean(RESTORE_TASK_PENDING, false);
     }
 
-    public static void setPending(Context context, boolean isPending) {
+    public static void setPending(final Context context, final boolean isPending) {
         FileLog.d(TAG, "Restore data received through full backup " + isPending);
         Utilities.getPrefs(context).edit().putBoolean(RESTORE_TASK_PENDING, isPending).commit();
     }
@@ -76,7 +76,7 @@ public class RestoreDbTask {
      * 3. If the user serial for primary profile is different than that of the previous device,
      * update the entries to the new profile id.
      */
-    private void sanitizeDB(DatabaseHelper helper, SQLiteDatabase db) throws Exception {
+    private void sanitizeDB(final DatabaseHelper helper, final SQLiteDatabase db) throws Exception {
         long oldProfileId = getDefaultProfileId(db);
         // Delete all entries which do not belong to the main user
         int itemsDeleted = db.delete(
@@ -93,10 +93,10 @@ public class RestoreDbTask {
         db.update(Favorites.TABLE_NAME, values, null, null);
 
         // Mark widgets with appropriate restore flag
-        values.put(Favorites.RESTORED, LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
-                   LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
-                   LauncherAppWidgetInfo.FLAG_UI_NOT_READY |
-                   (keepAllIcons ? LauncherAppWidgetInfo.FLAG_RESTORE_STARTED : 0));
+        values.put(Favorites.RESTORED, LauncherAppWidgetInfo.FLAG_ID_NOT_VALID
+                   | LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY
+                   | LauncherAppWidgetInfo.FLAG_UI_NOT_READY
+                   | (keepAllIcons ? LauncherAppWidgetInfo.FLAG_RESTORE_STARTED : 0));
         db.update(Favorites.TABLE_NAME, values, "itemType = ?",
                   new String[] {Integer.toString(Favorites.ITEM_TYPE_APPWIDGET)});
 
@@ -110,7 +110,7 @@ public class RestoreDbTask {
     /**
      * Updates profile id of all entries and changes the default value for the column.
      */
-    protected void migrateProfileId(SQLiteDatabase db, long newProfileId) {
+    protected void migrateProfileId(final SQLiteDatabase db, final long newProfileId) {
         // Update existing entries.
         ContentValues values = new ContentValues();
         values.put(Favorites.PROFILE_ID, newProfileId);
@@ -126,7 +126,7 @@ public class RestoreDbTask {
     /**
      * Returns the profile id used in the favorites table of the provided db.
      */
-    protected long getDefaultProfileId(SQLiteDatabase db) throws Exception {
+    protected long getDefaultProfileId(final SQLiteDatabase db) throws Exception {
         try (Cursor c = db.rawQuery("PRAGMA table_info (favorites)", null)) {
             int nameIndex = c.getColumnIndex(INFO_COLUMN_NAME);
             while (c.moveToNext()) {

@@ -49,15 +49,15 @@ public class PinItemDragListener extends BaseItemDragListener {
     private final PinItemRequest mRequest;
     private final CancellationSignal mCancelSignal;
 
-    public PinItemDragListener(PinItemRequest request, Rect previewRect,
-                               int previewBitmapWidth, int previewViewWidth) {
+    public PinItemDragListener(final PinItemRequest request, final Rect previewRect,
+                               final int previewBitmapWidth, final int previewViewWidth) {
         super(previewRect, previewBitmapWidth, previewViewWidth);
         mRequest = request;
         mCancelSignal = new CancellationSignal();
     }
 
     @Override
-    protected boolean onDragStart(DragEvent event) {
+    protected boolean onDragStart(final DragEvent event) {
         if (!mRequest.isValid()) {
             return false;
         }
@@ -65,7 +65,7 @@ public class PinItemDragListener extends BaseItemDragListener {
     }
 
     @Override
-    public boolean init(Launcher launcher, boolean alreadyOnHome) {
+    public boolean init(final Launcher launcher, final boolean alreadyOnHome) {
         super.init(launcher, alreadyOnHome);
         if (!alreadyOnHome) {
             UiFactory.useFadeOutAnimationForLauncherStart(launcher, mCancelSignal);
@@ -104,8 +104,8 @@ public class PinItemDragListener extends BaseItemDragListener {
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target,
-                                       LauncherLogProto.Target targetParent) {
+    public void fillInLogContainerData(final View v, final ItemInfo info, final LauncherLogProto.Target target,
+                                       final LauncherLogProto.Target targetParent) {
         targetParent.containerType = LauncherLogProto.ContainerType.PINITEM;
     }
 
@@ -115,10 +115,10 @@ public class PinItemDragListener extends BaseItemDragListener {
         mCancelSignal.cancel();
     }
 
-    public static RemoteViews getPreview(PinItemRequest request) {
+    public static RemoteViews getPreview(final PinItemRequest request) {
         Bundle extras = request.getExtras();
-        if (extras != null &&
-                extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW) instanceof RemoteViews) {
+        if (extras != null
+                && extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW) instanceof RemoteViews) {
             return (RemoteViews) extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW);
         }
         return null;

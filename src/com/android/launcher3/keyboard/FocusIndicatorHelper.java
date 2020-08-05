@@ -42,12 +42,12 @@ public abstract class FocusIndicatorHelper implements
     public static final Property<FocusIndicatorHelper, Float> ALPHA =
     new Property<FocusIndicatorHelper, Float>(Float.TYPE, "alpha") {
         @Override
-        public void set(FocusIndicatorHelper object, Float value) {
+        public void set(final FocusIndicatorHelper object, final Float value) {
             object.setAlpha(value);
         }
 
         @Override
-        public Float get(FocusIndicatorHelper object) {
+        public Float get(final FocusIndicatorHelper object) {
             return object.mAlpha;
         }
     };
@@ -56,12 +56,12 @@ public abstract class FocusIndicatorHelper implements
     Float.TYPE, "shift") {
 
         @Override
-        public void set(FocusIndicatorHelper object, Float value) {
+        public void set(final FocusIndicatorHelper object, final Float value) {
             object.mShift = value;
         }
 
         @Override
-        public Float get(FocusIndicatorHelper object) {
+        public Float get(final FocusIndicatorHelper object) {
             return object.mShift;
         }
     };
@@ -91,7 +91,7 @@ public abstract class FocusIndicatorHelper implements
     private ObjectAnimator mCurrentAnimation;
     private float mAlpha;
 
-    public FocusIndicatorHelper(View container) {
+    public FocusIndicatorHelper(final View container) {
         mContainer = container;
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -103,13 +103,13 @@ public abstract class FocusIndicatorHelper implements
         mShift = 0;
     }
 
-    protected void setAlpha(float alpha) {
+    protected void setAlpha(final float alpha) {
         mAlpha = alpha;
         mPaint.setAlpha((int) (mAlpha * mMaxAlpha));
     }
 
     @Override
-    public void onAnimationUpdate(ValueAnimator animation) {
+    public void onAnimationUpdate(final ValueAnimator animation) {
         invalidateDirty();
     }
 
@@ -125,7 +125,7 @@ public abstract class FocusIndicatorHelper implements
         }
     }
 
-    public void draw(Canvas c) {
+    public void draw(final Canvas c) {
         if (mAlpha > 0) {
             Rect newRect = getDrawRect();
             if (newRect != null) {
@@ -151,7 +151,7 @@ public abstract class FocusIndicatorHelper implements
     }
 
     @Override
-    public void onFocusChange(View v, boolean hasFocus) {
+    public void onFocusChange(final View v, final boolean hasFocus) {
         if (hasFocus) {
             endCurrentAnimation();
 
@@ -197,7 +197,7 @@ public abstract class FocusIndicatorHelper implements
         }
     }
 
-    protected void setCurrentView(View v) {
+    protected void setCurrentView(final View v) {
         mCurrentView = v;
         mShift = 0;
         mTargetView = null;
@@ -213,20 +213,20 @@ public abstract class FocusIndicatorHelper implements
         private final boolean mCallOnCancel;
         private boolean mCalled = false;
 
-        public ViewSetListener(View v, boolean callOnCancel) {
+        public ViewSetListener(final View v, final boolean callOnCancel) {
             mViewToSet = v;
             mCallOnCancel = callOnCancel;
         }
 
         @Override
-        public void onAnimationCancel(Animator animation) {
+        public void onAnimationCancel(final Animator animation) {
             if (!mCallOnCancel) {
                 mCalled = true;
             }
         }
 
         @Override
-        public void onAnimationEnd(Animator animation) {
+        public void onAnimationEnd(final Animator animation) {
             if (!mCalled) {
                 setCurrentView(mViewToSet);
                 mCalled = true;
@@ -239,12 +239,12 @@ public abstract class FocusIndicatorHelper implements
      */
     public static class SimpleFocusIndicatorHelper extends FocusIndicatorHelper {
 
-        public SimpleFocusIndicatorHelper(View container) {
+        public SimpleFocusIndicatorHelper(final View container) {
             super(container);
         }
 
         @Override
-        public void viewToRect(View v, Rect outRect) {
+        public void viewToRect(final View v, final Rect outRect) {
             outRect.set(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
         }
     }

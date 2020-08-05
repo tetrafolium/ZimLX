@@ -27,14 +27,14 @@ public class BitmapRenderer {
 
     public static final boolean USE_HARDWARE_BITMAP = Utilities.ATLEAST_P;
 
-    public static Bitmap createSoftwareBitmap(int width, int height, Renderer renderer) {
+    public static Bitmap createSoftwareBitmap(final int width, final int height, final Renderer renderer) {
         Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         renderer.draw(new Canvas(result));
         return result;
     }
 
     @TargetApi(Build.VERSION_CODES.P)
-    public static Bitmap createHardwareBitmap(int width, int height, Renderer renderer) {
+    public static Bitmap createHardwareBitmap(final int width, final int height, final Renderer renderer) {
         if (!USE_HARDWARE_BITMAP) {
             return createSoftwareBitmap(width, height, renderer);
         }

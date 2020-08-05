@@ -79,14 +79,14 @@ public class ContextUtils {
     //
     protected Context _context;
 
-    public ContextUtils(Context context) {
+    public ContextUtils(final Context context) {
         _context = context;
     }
 
     /**
      * Load an image into a {@link ImageView} and apply a color filter
      */
-    public static void setDrawableWithColorToImageView(ImageView imageView, @DrawableRes int drawableResId, @ColorRes int colorResId) {
+    public static void setDrawableWithColorToImageView(final ImageView imageView, final @DrawableRes int drawableResId, final @ColorRes int colorResId) {
         imageView.setImageResource(drawableResId);
         imageView.setColorFilter(ContextCompat.getColor(imageView.getContext(), colorResId));
     }
@@ -100,21 +100,21 @@ public class ContextUtils {
      *
      * @return A valid id if the id could be found, else 0
      */
-    public int getResId(ResType resType, final String name) {
+    public int getResId(final ResType resType, final String name) {
         return _context.getResources().getIdentifier(name, resType.name().toLowerCase(), _context.getPackageName());
     }
 
     /**
      * Get String by given string ressource id (nuermic)
      */
-    public String rstr(@StringRes int strResId) {
+    public String rstr(final @StringRes int strResId) {
         return _context.getString(strResId);
     }
 
     /**
      * Get String by given string ressource identifier (textual)
      */
-    public String rstr(String strResKey) {
+    public String rstr(final String strResKey) {
         try {
             return rstr(getResId(ResType.STRING, strResKey));
         } catch (Resources.NotFoundException e) {
@@ -125,14 +125,14 @@ public class ContextUtils {
     /**
      * Get drawable from given ressource identifier
      */
-    public Drawable rdrawable(@DrawableRes int resId) {
+    public Drawable rdrawable(final @DrawableRes int resId) {
         return ContextCompat.getDrawable(_context, resId);
     }
 
     /**
      * Get color by given color ressource id
      */
-    public int rcolor(@ColorRes int resId) {
+    public int rcolor(final @ColorRes int resId) {
         return ContextCompat.getColor(_context, resId);
     }
 
@@ -158,7 +158,7 @@ public class ContextUtils {
      * @param intColor  The color coded in int
      * @param withAlpha Optional; Set first bool parameter to true to also include alpha value
      */
-    public String colorToHexString(int intColor, boolean... withAlpha) {
+    public String colorToHexString(final int intColor, final boolean... withAlpha) {
         boolean a = withAlpha != null && withAlpha.length >= 1 && withAlpha[0];
         return String.format(a ? "#%08X" : "#%06X", (a ? 0xFFFFFFFF : 0xFFFFFF) & intColor);
     }
@@ -247,7 +247,7 @@ public class ContextUtils {
      * of the package set in manifest (root element).
      * Falls back to applicationId of the app which may differ from manifest.
      */
-    public Object getBuildConfigValue(String fieldName) {
+    public Object getBuildConfigValue(final String fieldName) {
         //String pkg = getPackageName() + ".BuildConfig";
         String pkg = "com.android.launcher3.BuildConfig";
         try {
@@ -262,7 +262,7 @@ public class ContextUtils {
     /**
      * Get a BuildConfig bool value
      */
-    public Boolean bcbool(String fieldName, Boolean defaultValue) {
+    public Boolean bcbool(final String fieldName, final Boolean defaultValue) {
         Object field = getBuildConfigValue(fieldName);
         if (field != null && field instanceof Boolean) {
             return (Boolean) field;
@@ -273,7 +273,7 @@ public class ContextUtils {
     /**
      * Get a BuildConfig string value
      */
-    public String bcstr(String fieldName, String defaultValue) {
+    public String bcstr(final String fieldName, final String defaultValue) {
         Object field = getBuildConfigValue(fieldName);
         if (field != null && field instanceof String) {
             return (String) field;
@@ -284,7 +284,7 @@ public class ContextUtils {
     /**
      * Get a BuildConfig string value
      */
-    public Integer bcint(String fieldName, int defaultValue) {
+    public Integer bcint(final String fieldName, final int defaultValue) {
         Object field = getBuildConfigValue(fieldName);
         if (field != null && field instanceof Integer) {
             return (Integer) field;
@@ -326,7 +326,7 @@ public class ContextUtils {
         }
     }
 
-    public String readTextfileFromRawRes(@RawRes int rawResId, String linePrefix, String linePostfix) {
+    public String readTextfileFromRawRes(final @RawRes int rawResId, final String linePrefix, final String linePostfix) {
         StringBuilder sb = new StringBuilder();
         BufferedReader br = null;
         String line;
@@ -373,7 +373,7 @@ public class ContextUtils {
     /**
      * Check if app with given {@code packageName} is installed
      */
-    public boolean isAppInstalled(String packageName) {
+    public boolean isAppInstalled(final String packageName) {
         PackageManager pm = _context.getApplicationContext().getPackageManager();
         try {
             pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
@@ -386,7 +386,7 @@ public class ContextUtils {
     /**
      * Restart the current app. Supply the class to start on startup
      */
-    public void restartApp(Class classToStart) {
+    public void restartApp(final Class classToStart) {
         Intent inte = new Intent(_context, classToStart);
         PendingIntent inteP = PendingIntent.getActivity(_context, 555, inte, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
@@ -403,7 +403,7 @@ public class ContextUtils {
      * Load a markdown file from a {@link RawRes}, prepend each line with {@code prepend} text
      * and convert markdown to html using {@link SimpleMarkdownParser}
      */
-    public String loadMarkdownForTextViewFromRaw(@RawRes int rawMdFile, String prepend) {
+    public String loadMarkdownForTextViewFromRaw(final @RawRes int rawMdFile, final String prepend) {
         try {
             return new SimpleMarkdownParser()
                    .parse(_context.getResources().openRawResource(rawMdFile),
@@ -420,7 +420,7 @@ public class ContextUtils {
      * Load html into a {@link Spanned} object and set the
      * {@link TextView}'s text using {@link TextView#setText(CharSequence)}
      */
-    public void setHtmlToTextView(TextView textView, String html) {
+    public void setHtmlToTextView(final TextView textView, final String html) {
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(new SpannableString(htmlToSpanned(html)));
     }
@@ -449,7 +449,7 @@ public class ContextUtils {
      * Get an {@link Locale} out of a android language code
      * The {@code androidLC} may be in any of the forms: de, en, de-rAt
      */
-    public Locale getLocaleByAndroidCode(String androidLC) {
+    public Locale getLocaleByAndroidCode(final String androidLC) {
         if (!TextUtils.isEmpty(androidLC)) {
             return androidLC.contains("-r")
                    ? new Locale(androidLC.substring(0, 2), androidLC.substring(4, 6)) // de-rAt
@@ -463,7 +463,7 @@ public class ContextUtils {
      * {@code androidLC} may be in any of the forms: en, de, de-rAt
      * If given an empty string, the default (system) locale gets loaded
      */
-    public void setAppLanguage(String androidLC) {
+    public void setAppLanguage(final String androidLC) {
         Locale locale = getLocaleByAndroidCode(androidLC);
         Configuration config = _context.getResources().getConfiguration();
         config.locale = (locale != null && !androidLC.isEmpty())
@@ -475,7 +475,7 @@ public class ContextUtils {
      * Try to guess if the color on top of the given {@code colorOnBottomInt}
      * should be light or dark. Returns true if top color should be light
      */
-    public boolean shouldColorOnTopBeLight(@ColorInt int colorOnBottomInt) {
+    public boolean shouldColorOnTopBeLight(final @ColorInt int colorOnBottomInt) {
         return 186 > (((0.299 * Color.red(colorOnBottomInt))
                        + ((0.587 * Color.green(colorOnBottomInt))
                           + (0.114 * Color.blue(colorOnBottomInt)))));
@@ -484,7 +484,7 @@ public class ContextUtils {
     /**
      * Convert a html string to an android {@link Spanned} object
      */
-    public Spanned htmlToSpanned(String html) {
+    public Spanned htmlToSpanned(final String html) {
         Spanned result;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             result = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
@@ -513,7 +513,7 @@ public class ContextUtils {
      *
      * @param files Files and folders to scan
      */
-    public void mediaScannerScanFile(File... files) {
+    public void mediaScannerScanFile(final File... files) {
         if (android.os.Build.VERSION.SDK_INT > 19) {
             String[] paths = new String[files.length];
             for (int i = 0; i < files.length; i++) {
@@ -530,7 +530,7 @@ public class ContextUtils {
     /**
      * Get a {@link Bitmap} out of a {@link Drawable}
      */
-    public Bitmap drawableToBitmap(Drawable drawable) {
+    public Bitmap drawableToBitmap(final Drawable drawable) {
         Bitmap bitmap = null;
         if (drawable instanceof VectorDrawableCompat
                 || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && drawable instanceof VectorDrawable)
@@ -554,7 +554,7 @@ public class ContextUtils {
     /**
      * Get a {@link Bitmap} out of a {@link DrawableRes}
      */
-    public Bitmap drawableToBitmap(@DrawableRes int drawableId) {
+    public Bitmap drawableToBitmap(final @DrawableRes int drawableId) {
         return drawableToBitmap(ContextCompat.getDrawable(_context, drawableId));
     }
 
@@ -563,7 +563,7 @@ public class ContextUtils {
      * Specifying a {@code maxDimen} is also possible and a value below 2000
      * is recommended, otherwise a {@link OutOfMemoryError} may occur
      */
-    public Bitmap loadImageFromFilesystem(File imagePath, int maxDimen) {
+    public Bitmap loadImageFromFilesystem(final File imagePath, final int maxDimen) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(imagePath.getAbsolutePath(), options);
@@ -579,7 +579,7 @@ public class ContextUtils {
      * @param maxDimen Max size of the Bitmap (width or height)
      * @return the scaling factor that needs to be applied to the bitmap
      */
-    public int calculateInSampleSize(BitmapFactory.Options options, int maxDimen) {
+    public int calculateInSampleSize(final BitmapFactory.Options options, final int maxDimen) {
         // Raw height and width of image
         int height = options.outHeight;
         int width = options.outWidth;
@@ -595,7 +595,7 @@ public class ContextUtils {
      * Scale the bitmap so both dimensions are lower or equal to {@code maxDimen}
      * This keeps the aspect ratio
      */
-    public Bitmap scaleBitmap(Bitmap bitmap, int maxDimen) {
+    public Bitmap scaleBitmap(final Bitmap bitmap, final int maxDimen) {
         int picSize = Math.min(bitmap.getHeight(), bitmap.getWidth());
         float scale = 1.f * maxDimen / picSize;
         Matrix matrix = new Matrix();
@@ -606,7 +606,7 @@ public class ContextUtils {
     /**
      * Write the given {@link Bitmap} to {@code imageFile}, in {@link CompressFormat#JPEG} format
      */
-    public boolean writeImageToFileJpeg(File imageFile, Bitmap image) {
+    public boolean writeImageToFileJpeg(final File imageFile, final Bitmap image) {
         return writeImageToFile(imageFile, image, Bitmap.CompressFormat.JPEG, 95);
     }
 
@@ -619,7 +619,7 @@ public class ContextUtils {
      * @param quality    Quality level, defaults to 95
      * @return True if writing was successful
      */
-    public boolean writeImageToFile(File targetFile, Bitmap image, CompressFormat format, Integer quality) {
+    public boolean writeImageToFile(final File targetFile, final Bitmap image, final CompressFormat format, final Integer quality) {
         File folder = new File(targetFile.getParent());
         if (quality == null || quality < 0 || quality > 100) {
             quality = 95;
@@ -657,7 +657,7 @@ public class ContextUtils {
      * Draw text in the center of the given {@link DrawableRes}
      * This may be useful for e.g. badge counts
      */
-    public Bitmap drawTextOnDrawable(@DrawableRes int drawableRes, String text, int textSize) {
+    public Bitmap drawTextOnDrawable(final @DrawableRes int drawableRes, final String text, final int textSize) {
         Resources resources = _context.getResources();
         float scale = resources.getDisplayMetrics().density;
         Bitmap bitmap = drawableToBitmap(drawableRes);
@@ -682,7 +682,7 @@ public class ContextUtils {
      * Try to tint all {@link Menu}s {@link MenuItem}s with given color
      */
     @SuppressWarnings("ConstantConditions")
-    public void tintMenuItems(Menu menu, boolean recurse, @ColorInt int iconColor) {
+    public void tintMenuItems(final Menu menu, final boolean recurse, final @ColorInt int iconColor) {
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
             tintDrawable(item.getIcon(), iconColor);
@@ -695,14 +695,14 @@ public class ContextUtils {
     /**
      * Loads {@link Drawable} by given {@link DrawableRes} and applies a color
      */
-    public Drawable tintDrawable(@DrawableRes int drawableRes, @ColorInt int color) {
+    public Drawable tintDrawable(final @DrawableRes int drawableRes, final @ColorInt int color) {
         return tintDrawable(rdrawable(drawableRes), color);
     }
 
     /**
      * Tint a {@link Drawable} with given {@code color}
      */
-    public Drawable tintDrawable(@Nullable Drawable drawable, @ColorInt int color) {
+    public Drawable tintDrawable(final @Nullable Drawable drawable, final @ColorInt int color) {
         if (drawable != null) {
             drawable = DrawableCompat.wrap(drawable);
             DrawableCompat.setTint(drawable.mutate(), color);
@@ -714,7 +714,7 @@ public class ContextUtils {
      * Try to make icons in Toolbar/ActionBars SubMenus visible
      * This may not work on some devices and it maybe won't work on future android updates
      */
-    public void setSubMenuIconsVisiblity(Menu menu, boolean visible) {
+    public void setSubMenuIconsVisiblity(final Menu menu, final boolean visible) {
         if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
             try {
                 @SuppressLint("PrivateApi") Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);

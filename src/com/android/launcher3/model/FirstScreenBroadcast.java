@@ -60,7 +60,7 @@ public class FirstScreenBroadcast {
 
     private final MultiHashMap<String, String> mPackagesForInstaller;
 
-    public FirstScreenBroadcast(HashMap<String, SessionInfo> sessionInfoForPackage) {
+    public FirstScreenBroadcast(final HashMap<String, SessionInfo> sessionInfoForPackage) {
         mPackagesForInstaller = getPackagesForInstaller(sessionInfoForPackage);
     }
 
@@ -69,7 +69,7 @@ public class FirstScreenBroadcast {
      * of packages with active sessions for that installer.
      */
     private MultiHashMap<String, String> getPackagesForInstaller(
-        HashMap<String, SessionInfo> sessionInfoForPackage) {
+        final HashMap<String, SessionInfo> sessionInfoForPackage) {
         MultiHashMap<String, String> packagesForInstaller = new MultiHashMap<>();
         for (Map.Entry<String, SessionInfo> entry : sessionInfoForPackage.entrySet()) {
             packagesForInstaller.addToList(entry.getValue().getInstallerPackageName(),
@@ -82,7 +82,7 @@ public class FirstScreenBroadcast {
      * Sends a broadcast to all package installers that have items with active sessions on the users
      * first screen.
      */
-    public void sendBroadcasts(Context context, List<ItemInfo> firstScreenItems) {
+    public void sendBroadcasts(final Context context, final List<ItemInfo> firstScreenItems) {
         for (Map.Entry<String, ArrayList<String>> entry : mPackagesForInstaller.entrySet()) {
             sendBroadcastToInstaller(context, entry.getKey(), entry.getValue(), firstScreenItems);
         }
@@ -93,8 +93,8 @@ public class FirstScreenBroadcast {
      * @param packages             List of packages with active sessions for this package installer.
      * @param firstScreenItems     List of items on the first screen.
      */
-    private void sendBroadcastToInstaller(Context context, String installerPackageName,
-                                          List<String> packages, List<ItemInfo> firstScreenItems) {
+    private void sendBroadcastToInstaller(final Context context, final String installerPackageName,
+                                          final List<String> packages, final List<ItemInfo> firstScreenItems) {
         Set<String> folderItems = new HashSet<>();
         Set<String> workspaceItems = new HashSet<>();
         Set<String> hotseatItems = new HashSet<>();
@@ -143,7 +143,7 @@ public class FirstScreenBroadcast {
                                         new Intent(), PendingIntent.FLAG_ONE_SHOT)));
     }
 
-    private static String getPackageName(ItemInfo info) {
+    private static String getPackageName(final ItemInfo info) {
         String packageName = null;
         if (info instanceof LauncherAppWidgetInfo) {
             LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) info;
@@ -156,7 +156,7 @@ public class FirstScreenBroadcast {
         return packageName;
     }
 
-    private static void printList(String packageInstaller, String label, Set<String> packages) {
+    private static void printList(final String packageInstaller, final String label, final Set<String> packages) {
         for (String pkg : packages) {
             Log.d(TAG, packageInstaller + ":" + label + ":" + pkg);
         }

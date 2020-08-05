@@ -45,20 +45,20 @@ public class BaseTestingActivity extends Activity implements View.OnClickListene
     private final BroadcastReceiver mCommandReceiver = new BroadcastReceiver() {
 
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             handleCommand(intent);
         }
     };
     private LinearLayout mView;
     private int mMargin;
 
-    public static Intent getCommandIntent(Class<?> clazz, String method) {
+    public static Intent getCommandIntent(final Class<?> clazz, final String method) {
         return new Intent(clazz.getName() + SUFFIX_COMMAND)
                .putExtra(EXTRA_METHOD, method);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mMargin = Math.round(TypedValue.applyDimension(
@@ -71,7 +71,7 @@ public class BaseTestingActivity extends Activity implements View.OnClickListene
         registerReceiver(mCommandReceiver, new IntentFilter(mAction + SUFFIX_COMMAND));
     }
 
-    protected void addButton(String title, String method) {
+    protected void addButton(final String title, final String method) {
         Button button = new Button(this);
         button.setText(title);
         button.setTag(method);
@@ -95,18 +95,18 @@ public class BaseTestingActivity extends Activity implements View.OnClickListene
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(final View view) {
         handleCommand(new Intent().putExtra(EXTRA_METHOD, (String) view.getTag()));
     }
 
-    private void handleCommand(Intent cmd) {
+    private void handleCommand(final Intent cmd) {
         String methodName = cmd.getStringExtra(EXTRA_METHOD);
         try {
             Method method = null;
             for (Method m : this.getClass().getDeclaredMethods()) {
-                if (methodName.equals(m.getName()) &&
-                        !Modifier.isStatic(m.getModifiers()) &&
-                        Modifier.isPublic(m.getModifiers())) {
+                if (methodName.equals(m.getName())
+                        && !Modifier.isStatic(m.getModifiers())
+                        && Modifier.isPublic(m.getModifiers())) {
                     method = m;
                     break;
                 }

@@ -39,15 +39,15 @@ public class CustomWidgetDragListener extends BaseItemDragListener {
     private final LauncherAppWidgetProviderInfo mProvider;
     private final CancellationSignal mCancelSignal;
 
-    public CustomWidgetDragListener(LauncherAppWidgetProviderInfo provider, Rect previewRect,
-                                    int previewBitmapWidth, int previewViewWidth) {
+    public CustomWidgetDragListener(final LauncherAppWidgetProviderInfo provider, final Rect previewRect,
+                                    final int previewBitmapWidth, final int previewViewWidth) {
         super(previewRect, previewBitmapWidth, previewViewWidth);
         mProvider = provider;
         mCancelSignal = new CancellationSignal();
     }
 
     @Override
-    public boolean init(Launcher launcher, boolean alreadyOnHome) {
+    public boolean init(final Launcher launcher, final boolean alreadyOnHome) {
         super.init(launcher, alreadyOnHome);
         if (!alreadyOnHome) {
             UiFactory.useFadeOutAnimationForLauncherStart(launcher, mCancelSignal);
@@ -66,8 +66,8 @@ public class CustomWidgetDragListener extends BaseItemDragListener {
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target,
-                                       LauncherLogProto.Target targetParent) {
+    public void fillInLogContainerData(final View v, final ItemInfo info, final LauncherLogProto.Target target,
+                                       final LauncherLogProto.Target targetParent) {
         targetParent.containerType = LauncherLogProto.ContainerType.PINITEM;
     }
 

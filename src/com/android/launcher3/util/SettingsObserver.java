@@ -38,13 +38,13 @@ public interface SettingsObserver {
         private ContentResolver mResolver;
         private String mKeySetting;
 
-        public Secure(ContentResolver resolver) {
+        public Secure(final ContentResolver resolver) {
             super(new Handler());
             mResolver = resolver;
         }
 
         @Override
-        public void register(String keySetting, String... dependentSettings) {
+        public void register(final String keySetting, final String... dependentSettings) {
             mKeySetting = keySetting;
             mResolver.registerContentObserver(
                 Settings.Secure.getUriFor(mKeySetting), false, this);
@@ -61,7 +61,7 @@ public interface SettingsObserver {
         }
 
         @Override
-        public void onChange(boolean selfChange) {
+        public void onChange(final boolean selfChange) {
             super.onChange(selfChange);
             onSettingChanged(Settings.Secure.getInt(mResolver, mKeySetting, 1) == 1);
         }
@@ -71,13 +71,13 @@ public interface SettingsObserver {
         private ContentResolver mResolver;
         private String mKeySetting;
 
-        public System(ContentResolver resolver) {
+        public System(final ContentResolver resolver) {
             super(new Handler());
             mResolver = resolver;
         }
 
         @Override
-        public void register(String keySetting, String... dependentSettings) {
+        public void register(final String keySetting, final String... dependentSettings) {
             mKeySetting = keySetting;
             mResolver.registerContentObserver(
                 Settings.System.getUriFor(mKeySetting), false, this);
@@ -94,7 +94,7 @@ public interface SettingsObserver {
         }
 
         @Override
-        public void onChange(boolean selfChange) {
+        public void onChange(final boolean selfChange) {
             super.onChange(selfChange);
             onSettingChanged(Settings.System.getInt(mResolver, mKeySetting, 1) == 1);
         }

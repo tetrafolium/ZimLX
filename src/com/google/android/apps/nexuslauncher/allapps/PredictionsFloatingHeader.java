@@ -42,11 +42,11 @@ import static com.google.android.apps.nexuslauncher.allapps.PredictionRowView.Di
 @TargetApi(26)
 public class PredictionsFloatingHeader extends FloatingHeaderView implements Insettable {
     private static final FloatProperty<PredictionsFloatingHeader> CONTENT_ALPHA = new FloatProperty<PredictionsFloatingHeader>("contentAlpha") {
-        public void setValue(PredictionsFloatingHeader predictionsFloatingHeader, float f) {
+        public void setValue(final PredictionsFloatingHeader predictionsFloatingHeader, final float f) {
             predictionsFloatingHeader.setContentAlpha(f);
         }
 
-        public Float get(PredictionsFloatingHeader predictionsFloatingHeader) {
+        public Float get(final PredictionsFloatingHeader predictionsFloatingHeader) {
             return predictionsFloatingHeader.mContentAlpha;
         }
     };
@@ -58,11 +58,11 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     private boolean mShowAllAppsLabel;
     private Context mContext;
 
-    public PredictionsFloatingHeader(Context context) {
+    public PredictionsFloatingHeader(final Context context) {
         this(context, null);
     }
 
-    public PredictionsFloatingHeader(Context context, AttributeSet attributeSet) {
+    public PredictionsFloatingHeader(final Context context, final AttributeSet attributeSet) {
         super(context, attributeSet);
         mContentAlpha = 1.0f;
         mHeaderTopPadding = context.getResources().getDimensionPixelSize(R.dimen.all_apps_header_top_padding);
@@ -77,7 +77,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     }
 
     @Override
-    public void setup(AllAppsContainerView.AdapterHolder[] mAH, boolean tabsHidden) {
+    public void setup(final AllAppsContainerView.AdapterHolder[] mAH, final boolean tabsHidden) {
         mPredictionRowView.setup(this, Utilities.getZimPrefs(mContext).getShowPredictions());
         mTabsHidden = tabsHidden;
         updateExpectedHeight();
@@ -112,7 +112,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     }
 
     @Override
-    public void setInsets(Rect rect) {
+    public void setInsets(final Rect rect) {
         DeviceProfile deviceProfile = Launcher.getLauncher(getContext()).getDeviceProfile();
         int i = deviceProfile.desiredWorkspaceLeftRightMarginPx + deviceProfile.cellLayoutPaddingLeftRightPx;
         mPredictionRowView.setPadding(i, mPredictionRowView.getPaddingTop(), i, mPredictionRowView.getPaddingBottom());
@@ -128,7 +128,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     }
 
     @Override
-    protected void applyScroll(int uncappedY, int currentY) {
+    protected void applyScroll(final int uncappedY, final int currentY) {
         if (uncappedY < currentY - mHeaderTopPadding) {
             mPredictionRowView.setScrolledOut(true);
             return;
@@ -145,7 +145,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     }
 
     @Override
-    public void setContentVisibility(boolean hasHeader, boolean hasContent, PropertySetter propertySetter, Interpolator interpolator) {
+    public void setContentVisibility(final boolean hasHeader, final boolean hasContent, final PropertySetter propertySetter, final Interpolator interpolator) {
         if (hasHeader && !hasContent && mIsCollapsed) {
             Launcher.getLauncher(getContext()).getAppsView().getSearchUiManager().resetSearch();
         }
@@ -158,14 +158,14 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         setShowAllAppsLabel(Utilities.ATLEAST_MARSHMALLOW && Utilities.getZimPrefs(getContext()).getShowAllAppsLabel());
     }
 
-    public void setShowAllAppsLabel(boolean show) {
+    public void setShowAllAppsLabel(final boolean show) {
         if (mShowAllAppsLabel != show) {
             mShowAllAppsLabel = show;
             headerChanged();
         }
     }
 
-    private void setContentAlpha(float alpha) {
+    private void setContentAlpha(final float alpha) {
         mContentAlpha = alpha;
         mTabLayout.setAlpha(alpha);
     }
@@ -174,7 +174,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         return Utilities.getZimPrefs(mContext).getShowPredictions();
     }
 
-    public void setCollapsed(boolean collapsed) {
+    public void setCollapsed(final boolean collapsed) {
         if (collapsed != mIsCollapsed) {
             mIsCollapsed = collapsed;
             mPredictionRowView.setCollapsed(collapsed);
@@ -182,7 +182,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         }
     }
 
-    public void setPredictedApps(boolean z, List<ComponentKeyMapper> list) {
+    public void setPredictedApps(final boolean z, final List<ComponentKeyMapper> list) {
         mPredictionRowView.setPredictedApps(z, list);
     }
 }

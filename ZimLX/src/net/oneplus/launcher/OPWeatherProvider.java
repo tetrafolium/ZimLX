@@ -67,7 +67,7 @@ public class OPWeatherProvider {
 
         private int index;
 
-        WEATHER_COLUMNS(int i) {
+        WEATHER_COLUMNS(final int i) {
             this.index = i;
         }
     }
@@ -97,12 +97,12 @@ public class OPWeatherProvider {
         int weatherCode;
         WeatherIconManager.Icon icon;
 
-        WEATHER_TYPE(@IntRange(from = 1000, to = 9999) int i, WeatherIconManager.Icon icon) {
+        WEATHER_TYPE(final @IntRange(from = 1000, to = 9999) int i, final WeatherIconManager.Icon icon) {
             weatherCode = i;
             this.icon = icon;
         }
 
-        public static WEATHER_TYPE getWeather(int i) {
+        public static WEATHER_TYPE getWeather(final int i) {
             for (WEATHER_TYPE weather_type : values()) {
                 if (weather_type.weatherCode == i) {
                     Log.d(TAG, "get weather: " + weather_type);
@@ -148,13 +148,13 @@ public class OPWeatherProvider {
             super(new Handler());
         }
 
-        public void onChange(boolean z) {
+        public void onChange(final boolean z) {
             super.onChange(z);
             mUiWorkerHandler.post(OPWeatherProvider.this::queryWeatherInformation);
         }
     }
 
-    public OPWeatherProvider(Context context) {
+    public OPWeatherProvider(final Context context) {
         mContext = context;
         mObserver = new WeatherObserver();
         mCallbacks = new ArrayList<>();
@@ -188,14 +188,14 @@ public class OPWeatherProvider {
         getCurrentWeatherInformation(null);
     }
 
-    public void getCurrentWeatherInformation(IWeatherCallback iWeatherCallback) {
+    public void getCurrentWeatherInformation(final IWeatherCallback iWeatherCallback) {
         WeatherData offlineWeatherInformation = getOfflineWeatherInformation();
         if (offlineWeatherInformation != null) {
             updateWeatherCallbacks(offlineWeatherInformation, iWeatherCallback);
         }
     }
 
-    public void subscribeCallback(@NonNull IWeatherCallback iWeatherCallback) {
+    public void subscribeCallback(final @NonNull IWeatherCallback iWeatherCallback) {
         Log.i(TAG,
               "subscribe new weather callback: " + iWeatherCallback.getClass().getSimpleName());
         if (!isAppEnabled()) {
@@ -209,7 +209,7 @@ public class OPWeatherProvider {
         getCurrentWeatherInformation(iWeatherCallback);
     }
 
-    public void unsubscribeCallback(@NonNull IWeatherCallback iWeatherCallback) {
+    public void unsubscribeCallback(final @NonNull IWeatherCallback iWeatherCallback) {
         if (mCallbacks.contains(iWeatherCallback)) {
             Log.i(TAG, "un-subscribe the weather callback: " + iWeatherCallback.getClass()
                   .getSimpleName());
@@ -219,7 +219,7 @@ public class OPWeatherProvider {
         Log.d(TAG, "the target callback is not found in the callback list");
     }
 
-    public void registerContentObserver(ContentResolver contentResolver) {
+    public void registerContentObserver(final ContentResolver contentResolver) {
         if (isAppEnabled()) {
             if (mObserver == null) {
                 mObserver = new WeatherObserver();
@@ -251,7 +251,7 @@ public class OPWeatherProvider {
         Log.w(TAG, "the weather application is not installed");
     }
 
-    public void unregisterContentObserver(ContentResolver contentResolver) {
+    public void unregisterContentObserver(final ContentResolver contentResolver) {
         mCallbacks.clear();
         if (mObserver != null) {
             String str = TAG;
@@ -288,7 +288,7 @@ public class OPWeatherProvider {
         }
     }
 
-    private void processWeatherInformation(Cursor cursor) {
+    private void processWeatherInformation(final Cursor cursor) {
         StringBuilder stringBuilder;
         if (cursor == null) {
             Log.e(TAG, "cannot get weather information by querying content resolver");
@@ -351,8 +351,8 @@ public class OPWeatherProvider {
         }
     }
 
-    private void updateWeatherCallbacks(WeatherData weatherData,
-                                        IWeatherCallback iWeatherCallback) {
+    private void updateWeatherCallbacks(final WeatherData weatherData,
+                                        final IWeatherCallback iWeatherCallback) {
         if (iWeatherCallback == null) {
             Log.d(TAG, "push the weather information to the callbacks");
             for (IWeatherCallback callback : mCallbacks) {
@@ -368,7 +368,7 @@ public class OPWeatherProvider {
         iWeatherCallback.onWeatherUpdated(weatherData);
     }
 
-    private void writePreferences(WeatherData weatherData) {
+    private void writePreferences(final WeatherData weatherData) {
         PreferenceManager.getDefaultSharedPreferences(mContext).edit()
         .putLong(KEY_TIMESTAMP, weatherData.timestamp)
         .putString(KEY_CITY_NAME, weatherData.cityName)

@@ -18,11 +18,11 @@ public class InsettableFrameLayout extends FrameLayout implements Insettable {
         return mInsets;
     }
 
-    public InsettableFrameLayout(Context context, AttributeSet attrs) {
+    public InsettableFrameLayout(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void setFrameLayoutChildInsets(View child, Rect newInsets, Rect oldInsets) {
+    public void setFrameLayoutChildInsets(final View child, final Rect newInsets, final Rect oldInsets) {
         final LayoutParams lp = (LayoutParams) child.getLayoutParams();
 
         if (child instanceof Insettable) {
@@ -37,7 +37,7 @@ public class InsettableFrameLayout extends FrameLayout implements Insettable {
     }
 
     @Override
-    public void setInsets(Rect insets) {
+    public void setInsets(final Rect insets) {
         final int n = getChildCount();
         for (int i = 0; i < n; i++) {
             final View child = getChildAt(i);
@@ -47,7 +47,7 @@ public class InsettableFrameLayout extends FrameLayout implements Insettable {
     }
 
     @Override
-    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+    public LayoutParams generateLayoutParams(final AttributeSet attrs) {
         return new InsettableFrameLayout.LayoutParams(getContext(), attrs);
     }
 
@@ -58,19 +58,19 @@ public class InsettableFrameLayout extends FrameLayout implements Insettable {
 
     // Override to allow type-checking of LayoutParams.
     @Override
-    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+    protected boolean checkLayoutParams(final ViewGroup.LayoutParams p) {
         return p instanceof InsettableFrameLayout.LayoutParams;
     }
 
     @Override
-    protected LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+    protected LayoutParams generateLayoutParams(final ViewGroup.LayoutParams p) {
         return new LayoutParams(p);
     }
 
     public static class LayoutParams extends FrameLayout.LayoutParams {
         boolean ignoreInsets = false;
 
-        public LayoutParams(Context c, AttributeSet attrs) {
+        public LayoutParams(final Context c, final AttributeSet attrs) {
             super(c, attrs);
             TypedArray a = c.obtainStyledAttributes(attrs,
                                                     R.styleable.InsettableFrameLayout_Layout);
@@ -79,22 +79,22 @@ public class InsettableFrameLayout extends FrameLayout implements Insettable {
             a.recycle();
         }
 
-        public LayoutParams(int width, int height) {
+        public LayoutParams(final int width, final int height) {
             super(width, height);
         }
 
-        public LayoutParams(ViewGroup.LayoutParams lp) {
+        public LayoutParams(final ViewGroup.LayoutParams lp) {
             super(lp);
         }
     }
 
     @Override
-    public void onViewAdded(View child) {
+    public void onViewAdded(final View child) {
         super.onViewAdded(child);
         setFrameLayoutChildInsets(child, mInsets, new Rect());
     }
 
-    public static void dispatchInsets(ViewGroup parent, Rect insets) {
+    public static void dispatchInsets(final ViewGroup parent, final Rect insets) {
         final int n = parent.getChildCount();
         for (int i = 0; i < n; i++) {
             final View child = parent.getChildAt(i);

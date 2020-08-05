@@ -29,13 +29,13 @@ public class PropertyResetListener<T, V> extends AnimatorListenerAdapter {
     private Property<T, V> mPropertyToReset;
     private V mResetToValue;
 
-    public PropertyResetListener(Property<T, V> propertyToReset, V resetToValue) {
+    public PropertyResetListener(final Property<T, V> propertyToReset, final V resetToValue) {
         mPropertyToReset = propertyToReset;
         mResetToValue = resetToValue;
     }
 
     @Override
-    public void onAnimationEnd(Animator animation) {
+    public void onAnimationEnd(final Animator animation) {
         mPropertyToReset.set((T) ((ObjectAnimator) animation).getTarget(), mResetToValue);
     }
 }

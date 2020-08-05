@@ -28,53 +28,53 @@ import java.io.PrintWriter;
 
 public class UiFactory {
 
-    public static TouchController[] createTouchControllers(Launcher launcher) {
+    public static TouchController[] createTouchControllers(final Launcher launcher) {
         return new TouchController[] {
                    launcher.getDragController(), new AllAppsSwipeController(launcher)
                };
     }
 
-    public static void setOnTouchControllersChangedListener(Context context, Runnable listener) {
+    public static void setOnTouchControllersChangedListener(final Context context, final Runnable listener) {
     }
 
-    public static StateHandler[] getStateHandler(Launcher launcher) {
+    public static StateHandler[] getStateHandler(final Launcher launcher) {
         return new StateHandler[] {
                    launcher.getAllAppsController(), launcher.getWorkspace()
                };
     }
 
-    public static void resetOverview(Launcher launcher) {
+    public static void resetOverview(final Launcher launcher) {
     }
 
-    public static void onLauncherStateOrFocusChanged(Launcher launcher) {
+    public static void onLauncherStateOrFocusChanged(final Launcher launcher) {
     }
 
-    public static void onCreate(Launcher launcher) {
+    public static void onCreate(final Launcher launcher) {
     }
 
-    public static void onStart(Launcher launcher) {
+    public static void onStart(final Launcher launcher) {
     }
 
-    public static void onEnterAnimationComplete(Context context) {
+    public static void onEnterAnimationComplete(final Context context) {
     }
 
-    public static void onLauncherStateOrResumeChanged(Launcher launcher) {
+    public static void onLauncherStateOrResumeChanged(final Launcher launcher) {
     }
 
-    public static void onTrimMemory(Launcher launcher, int level) {
+    public static void onTrimMemory(final Launcher launcher, final int level) {
     }
 
-    public static void useFadeOutAnimationForLauncherStart(Launcher launcher,
-            CancellationSignal cancellationSignal) {
+    public static void useFadeOutAnimationForLauncherStart(final Launcher launcher,
+            final CancellationSignal cancellationSignal) {
     }
 
-    public static boolean dumpActivity(Activity activity, PrintWriter writer) {
+    public static boolean dumpActivity(final Activity activity, final PrintWriter writer) {
         return false;
     }
 
-    public static void prepareToShowOverview(Launcher launcher) {
+    public static void prepareToShowOverview(final Launcher launcher) {
     }
 
-    public static void setBackButtonAlpha(Launcher launcher, float alpha, boolean animate) {
+    public static void setBackButtonAlpha(final Launcher launcher, final float alpha, final boolean animate) {
     }
 }

@@ -102,7 +102,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     private static final Handler sHandler = new Handler(LauncherModel.getWorkerLooper()) {
 
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(final Message msg) {
             switch (msg.what) {
             case MSG_ADD_TO_QUEUE: {
                 Pair<Context, PendingInstallShortcutInfo> pair =
@@ -159,8 +159,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
     };
 
-    public static void removeFromInstallQueue(Context context, HashSet<String> packageNames,
-            UserHandle user) {
+    public static void removeFromInstallQueue(final Context context, final HashSet<String> packageNames,
+            final UserHandle user) {
         if (packageNames.isEmpty()) {
             return;
         }
@@ -181,8 +181,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             String encoded = newStringsIter.next();
             try {
                 Decoder decoder = new Decoder(encoded, context);
-                if (packageNames.contains(getIntentPackage(decoder.launcherIntent)) &&
-                        user.equals(decoder.user)) {
+                if (packageNames.contains(getIntentPackage(decoder.launcherIntent))
+                        && user.equals(decoder.user)) {
                     newStringsIter.remove();
                 }
             } catch (JSONException | URISyntaxException e) {
@@ -193,7 +193,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         sp.edit().putStringSet(APPS_PENDING_INSTALL, newStrings).apply();
     }
 
-    public void onReceive(Context context, Intent data) {
+    public void onReceive(final Context context, final Intent data) {
         if (!ACTION_INSTALL_SHORTCUT.equals(data.getAction())) {
             return;
         }
@@ -215,7 +215,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     /**
      * @return true is the extra is either null or is of type {@param type}
      */
-    private static boolean isValidExtraType(Intent intent, String key, Class type) {
+    private static boolean isValidExtraType(final Intent intent, final String key, final Class type) {
         Object extra = intent.getParcelableExtra(key);
         return extra == null || type.isInstance(extra);
     }
@@ -223,11 +223,11 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     /**
      * Verifies the intent and creates a {@link PendingInstallShortcutInfo}
      */
-    private static PendingInstallShortcutInfo createPendingInfo(Context context, Intent data) {
-        if (!isValidExtraType(data, Intent.EXTRA_SHORTCUT_INTENT, Intent.class) ||
-                !(isValidExtraType(data, Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                                   Intent.ShortcutIconResource.class)) ||
-                !(isValidExtraType(data, Intent.EXTRA_SHORTCUT_ICON, Bitmap.class))) {
+    private static PendingInstallShortcutInfo createPendingInfo(final Context context, final Intent data) {
+        if (!isValidExtraType(data, Intent.EXTRA_SHORTCUT_INTENT, Intent.class)
+                || !(isValidExtraType(data, Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                                   Intent.ShortcutIconResource.class))
+                || !(isValidExtraType(data, Intent.EXTRA_SHORTCUT_ICON, Bitmap.class))) {
 
             if (DBG) Log.e(TAG, "Invalid install shortcut intent");
             return null;
@@ -243,28 +243,28 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         return convertToLauncherActivityIfPossible(info);
     }
 
-    public static ShortcutInfo fromShortcutIntent(Context context, Intent data) {
+    public static ShortcutInfo fromShortcutIntent(final Context context, final Intent data) {
         PendingInstallShortcutInfo info = createPendingInfo(context, data);
         return info == null ? null : (ShortcutInfo) info.getItemInfo().first;
     }
 
-    public static ShortcutInfo fromActivityInfo(LauncherActivityInfo info, Context context) {
+    public static ShortcutInfo fromActivityInfo(final LauncherActivityInfo info, final Context context) {
         return (ShortcutInfo) (new PendingInstallShortcutInfo(info, context).getItemInfo().first);
     }
 
-    public static void queueShortcut(ShortcutInfoCompat info, Context context) {
+    public static void queueShortcut(final ShortcutInfoCompat info, final Context context) {
         queuePendingShortcutInfo(new PendingInstallShortcutInfo(info, context), context);
     }
 
-    public static void queueWidget(AppWidgetProviderInfo info, int widgetId, Context context) {
+    public static void queueWidget(final AppWidgetProviderInfo info, final int widgetId, final Context context) {
         queuePendingShortcutInfo(new PendingInstallShortcutInfo(info, widgetId, context), context);
     }
 
-    public static void queueActivityInfo(LauncherActivityInfo activity, Context context) {
+    public static void queueActivityInfo(final LauncherActivityInfo activity, final Context context) {
         queuePendingShortcutInfo(new PendingInstallShortcutInfo(activity, context), context);
     }
 
-    public static HashSet<ShortcutKey> getPendingShortcuts(Context context) {
+    public static HashSet<ShortcutKey> getPendingShortcuts(final Context context) {
         HashSet<ShortcutKey> result = new HashSet<>();
 
         Set<String> strings = Utilities.getPrefs(context).getStringSet(APPS_PENDING_INSTALL, null);
@@ -285,21 +285,21 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         return result;
     }
 
-    private static void queuePendingShortcutInfo(PendingInstallShortcutInfo info, Context context) {
+    private static void queuePendingShortcutInfo(final PendingInstallShortcutInfo info, final Context context) {
         // Queue the item up for adding if launcher has not loaded properly yet
         Message.obtain(sHandler, MSG_ADD_TO_QUEUE, Pair.create(context, info)).sendToTarget();
         flushInstallQueue(context);
     }
 
-    public static void enableInstallQueue(int flag) {
+    public static void enableInstallQueue(final int flag) {
         sInstallQueueDisabledFlags |= flag;
     }
-    public static void disableAndFlushInstallQueue(int flag, Context context) {
+    public static void disableAndFlushInstallQueue(final int flag, final Context context) {
         sInstallQueueDisabledFlags &= ~flag;
         flushInstallQueue(context);
     }
 
-    static void flushInstallQueue(Context context) {
+    static void flushInstallQueue(final Context context) {
         if (sInstallQueueDisabledFlags != 0) {
             return;
         }
@@ -311,7 +311,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
      * the application name instead.
      */
     @Thunk
-    static CharSequence ensureValidName(Context context, Intent intent, CharSequence name) {
+    static CharSequence ensureValidName(final Context context, final Intent intent, final CharSequence name) {
         if (name == null) {
             try {
                 PackageManager pm = context.getPackageManager();
@@ -339,7 +339,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         /**
          * Initializes a PendingInstallShortcutInfo received from a different app.
          */
-        public PendingInstallShortcutInfo(Intent data, UserHandle user, Context context) {
+        public PendingInstallShortcutInfo(final Intent data, final UserHandle user, final Context context) {
             activityInfo = null;
             shortcutInfo = null;
             providerInfo = null;
@@ -356,7 +356,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         /**
          * Initializes a PendingInstallShortcutInfo to represent a launcher target.
          */
-        public PendingInstallShortcutInfo(LauncherActivityInfo info, Context context) {
+        public PendingInstallShortcutInfo(final LauncherActivityInfo info, final Context context) {
             activityInfo = info;
             shortcutInfo = null;
             providerInfo = null;
@@ -372,7 +372,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         /**
          * Initializes a PendingInstallShortcutInfo to represent a launcher target.
          */
-        public PendingInstallShortcutInfo(ShortcutInfoCompat info, Context context) {
+        public PendingInstallShortcutInfo(final ShortcutInfoCompat info, final Context context) {
             activityInfo = null;
             shortcutInfo = info;
             providerInfo = null;
@@ -389,7 +389,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
          * Initializes a PendingInstallShortcutInfo to represent a launcher target.
          */
         public PendingInstallShortcutInfo(
-            AppWidgetProviderInfo info, int widgetId, Context context) {
+            final AppWidgetProviderInfo info, final int widgetId, final Context context) {
             activityInfo = null;
             shortcutInfo = null;
             providerInfo = info;
@@ -439,9 +439,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
                 if (launchIntent.getAction() == null) {
                     launchIntent.setAction(Intent.ACTION_VIEW);
-                } else if (launchIntent.getAction().equals(Intent.ACTION_MAIN) &&
-                           launchIntent.getCategories() != null &&
-                           launchIntent.getCategories().contains(Intent.CATEGORY_LAUNCHER)) {
+                } else if (launchIntent.getAction().equals(Intent.ACTION_MAIN)
+                           && launchIntent.getCategories() != null
+                           && launchIntent.getCategories().contains(Intent.CATEGORY_LAUNCHER)) {
                     launchIntent.addFlags(
                         Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                 }
@@ -526,12 +526,12 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
     }
 
-    private static String getIntentPackage(Intent intent) {
+    private static String getIntentPackage(final Intent intent) {
         return intent.getComponent() == null
                ? intent.getPackage() : intent.getComponent().getPackageName();
     }
 
-    private static PendingInstallShortcutInfo decode(String encoded, Context context) {
+    private static PendingInstallShortcutInfo decode(final String encoded, final Context context) {
         try {
             Decoder decoder = new Decoder(encoded, context);
             if (decoder.optBoolean(APP_SHORTCUT_TYPE_KEY)) {
@@ -555,8 +555,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                                .getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
                 AppWidgetProviderInfo info = AppWidgetManager.getInstance(context)
                                              .getAppWidgetInfo(widgetId);
-                if (info == null || !info.provider.equals(decoder.launcherIntent.getComponent()) ||
-                        !info.getProfile().equals(decoder.user)) {
+                if (info == null || !info.provider.equals(decoder.launcherIntent.getComponent())
+                        || !info.getProfile().equals(decoder.user)) {
                     return null;
                 }
                 return new PendingInstallShortcutInfo(info, widgetId, context);
@@ -592,7 +592,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         public final Intent launcherIntent;
         public final UserHandle user;
 
-        private Decoder(String encoded, Context context) throws JSONException, URISyntaxException {
+        private Decoder(final String encoded, final Context context) throws JSONException, URISyntaxException {
             super(encoded);
             launcherIntent = Intent.parseUri(getString(LAUNCH_INTENT_KEY), 0);
             user = has(USER_HANDLE_KEY) ? UserManagerCompat.getInstance(context)
@@ -611,7 +611,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
      * @return the newly created info or the original one.
      */
     private static PendingInstallShortcutInfo convertToLauncherActivityIfPossible(
-        PendingInstallShortcutInfo original) {
+        final PendingInstallShortcutInfo original) {
         if (original.isLauncherActivity()) {
             // Already an activity target
             return original;
@@ -629,7 +629,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         return new PendingInstallShortcutInfo(info, original.mContext);
     }
 
-    private static ShortcutInfo createShortcutInfo(Intent data, LauncherAppState app) {
+    private static ShortcutInfo createShortcutInfo(final Intent data, final LauncherAppState app) {
         Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
         Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);

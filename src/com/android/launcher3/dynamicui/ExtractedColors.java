@@ -92,7 +92,7 @@ public class ExtractedColors {
         mColors = Arrays.copyOf(DEFAULT_VALUES, DEFAULT_VALUES.length);
     }
 
-    public void setColorAtIndex(int index, int color) {
+    public void setColorAtIndex(final int index, final int color) {
         if (index > VERSION_INDEX && index < mColors.length) {
             mColors[index] = color;
         } else {
@@ -115,13 +115,13 @@ public class ExtractedColors {
      * Loads colors and wallpaper id from {@link Utilities#getPrefs(Context)}.
      * These were saved there in {@link ColorExtractionService}.
      */
-    public void load(Context context) {
+    public void load(final Context context) {
         String encodedString = Utilities.getPrefs(context).getString(
                                    ExtractionUtils.EXTRACTED_COLORS_PREFERENCE_KEY, VERSION + "");
 
         String[] splitColorsString = encodedString.split(COLOR_SEPARATOR);
-        if (splitColorsString.length == DEFAULT_VALUES.length &&
-                Integer.parseInt(splitColorsString[VERSION_INDEX]) == VERSION) {
+        if (splitColorsString.length == DEFAULT_VALUES.length
+                && Integer.parseInt(splitColorsString[VERSION_INDEX]) == VERSION) {
             // Parse and apply the saved values.
             for (int i = 0; i < mColors.length; i++) {
                 mColors[i] = Integer.parseInt(splitColorsString[i]);
@@ -135,14 +135,14 @@ public class ExtractedColors {
     /**
      * @param index must be one of the index values defined at the top of this class.
      */
-    public int getColor(int index) {
+    public int getColor(final int index) {
         return mColors[index];
     }
 
     /**
      * @param index must be one of the index values defined at the top of this class.
      */
-    public int getColor(int index, int defaultColor) {
+    public int getColor(final int index, final int defaultColor) {
         if (index > VERSION_INDEX && index < mColors.length) {
             int color = mColors[index];
             return color == -1 ? defaultColor : color;
@@ -155,7 +155,7 @@ public class ExtractedColors {
      * - 18% white for super dark
      * - 25% white otherwise
      */
-    public void updateHotseatPalette(Palette hotseatPalette) {
+    public void updateHotseatPalette(final Palette hotseatPalette) {
         int hotseatColor;
         if (hotseatPalette != null && ExtractionUtils.isSuperLight(hotseatPalette)) {
             hotseatColor = ColorUtils.setAlphaComponent(Color.BLACK, (int) (0.12f * 255));
@@ -167,18 +167,18 @@ public class ExtractedColors {
         setColorAtIndex(HOTSEAT_INDEX, hotseatColor);
     }
 
-    public void updateStatusBarPalette(Palette statusBarPalette) {
-        setColorAtIndex(STATUS_BAR_INDEX, ExtractionUtils.isSuperLight(statusBarPalette) ?
-                        DEFAULT_LIGHT : DEFAULT_DARK);
+    public void updateStatusBarPalette(final Palette statusBarPalette) {
+        setColorAtIndex(STATUS_BAR_INDEX, ExtractionUtils.isSuperLight(statusBarPalette)
+                        ? DEFAULT_LIGHT : DEFAULT_DARK);
     }
 
-    public void updateWallpaperThemePalette(@Nullable Palette wallpaperPalette) {
+    public void updateWallpaperThemePalette(final @Nullable Palette wallpaperPalette) {
         int defaultColor = DEFAULT_VALUES[WALLPAPER_VIBRANT_INDEX];
         setColorAtIndex(WALLPAPER_VIBRANT_INDEX, wallpaperPalette == null
                         ? defaultColor : wallpaperPalette.getVibrantColor(defaultColor));
     }
 
-    public void addOnChangeListener(OnChangeListener listener) {
+    public void addOnChangeListener(final OnChangeListener listener) {
         mListeners.add(listener);
     }
 

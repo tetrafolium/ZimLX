@@ -26,7 +26,7 @@ import com.android.launcher3.config.FeatureFlags;
  */
 public class Preconditions {
 
-    public static void assertNotNull(Object o) {
+    public static void assertNotNull(final Object o) {
         if (FeatureFlags.IS_DOGFOOD_BUILD && o == null) {
             throw new IllegalStateException();
         }
@@ -50,7 +50,7 @@ public class Preconditions {
         }
     }
 
-    private static boolean isSameLooper(Looper looper) {
+    private static boolean isSameLooper(final Looper looper) {
         return Looper.myLooper() == looper;
     }
 }

@@ -50,15 +50,15 @@ public class AllAppsSearchBarController
 
     protected SearchAlgorithm mSearchAlgorithm;
 
-    public void setVisibility(int visibility) {
+    public void setVisibility(final int visibility) {
         mInput.setVisibility(visibility);
     }
     /**
      * Sets the references to the apps model and the search result callback.
      */
     public final void initialize(
-        SearchAlgorithm searchAlgorithm, ExtendedEditText input,
-        Launcher launcher, Callbacks cb) {
+        final SearchAlgorithm searchAlgorithm, final ExtendedEditText input,
+        final Launcher launcher, final Callbacks cb) {
         mCb = cb;
         mLauncher = launcher;
 
@@ -71,12 +71,12 @@ public class AllAppsSearchBarController
     }
 
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
         // Do nothing
     }
 
     @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
         // Do nothing
     }
 
@@ -102,7 +102,7 @@ public class AllAppsSearchBarController
     }
 
     @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+    public boolean onEditorAction(final TextView v, final int actionId, final KeyEvent event) {
         // Skip if it's not the right action
         if (actionId != EditorInfo.IME_ACTION_SEARCH) {
             return false;
@@ -136,7 +136,7 @@ public class AllAppsSearchBarController
     }
 
     @Override
-    public void onFocusChange(View view, boolean hasFocus) {
+    public void onFocusChange(final View view, final boolean hasFocus) {
         if (!hasFocus) {
             mInput.hideKeyboard();
         }

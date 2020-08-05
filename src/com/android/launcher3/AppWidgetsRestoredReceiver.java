@@ -27,7 +27,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
      * Updates the app widgets whose id has changed during the restore process.
      */
     @WorkerThread
-    static void restoreAppWidgetIds(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
+    static void restoreAppWidgetIds(final Context context, final int[] oldWidgetIds, final int[] newWidgetIds) {
         AppWidgetHost appWidgetHost = new LauncherAppWidgetHost(context);
         if (FeatureFlags.GO_DISABLE_WIDGETS) {
             Log.e(TAG, "Skipping widget ID remap as widgets not supported");
@@ -88,7 +88,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(final Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
         if (AppWidgetManager.ACTION_APPWIDGET_HOST_RESTORED.equals(intent.getAction())) {
             int hostId = intent.getIntExtra(AppWidgetManager.EXTRA_HOST_ID, 0);
             Log.d(TAG, "Widget ID map received for host:" + hostId);

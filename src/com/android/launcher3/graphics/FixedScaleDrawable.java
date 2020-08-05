@@ -28,7 +28,7 @@ public class FixedScaleDrawable extends DrawableWrapper {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(final Canvas canvas) {
         //int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
         int saveCount = canvas.save();
         canvas.scale(mScaleX, mScaleY,
@@ -38,14 +38,14 @@ public class FixedScaleDrawable extends DrawableWrapper {
     }
 
     @Override
-    public void inflate(Resources r, XmlPullParser parser, AttributeSet attrs) {
+    public void inflate(final Resources r, final XmlPullParser parser, final AttributeSet attrs) {
     }
 
     @Override
-    public void inflate(Resources r, XmlPullParser parser, AttributeSet attrs, Theme theme) {
+    public void inflate(final Resources r, final XmlPullParser parser, final AttributeSet attrs, final Theme theme) {
     }
 
-    public void setScale(float scale) {
+    public void setScale(final float scale) {
         float h = getIntrinsicHeight();
         float w = getIntrinsicWidth();
         mScaleX = scale * LEGACY_ICON_SCALE;

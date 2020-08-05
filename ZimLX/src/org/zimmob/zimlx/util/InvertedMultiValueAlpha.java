@@ -28,12 +28,12 @@ public class InvertedMultiValueAlpha {
     new Property<InvertedAlphaProperty, Float>(Float.TYPE, "value") {
 
         @Override
-        public Float get(InvertedAlphaProperty alphaProperty) {
+        public Float get(final InvertedAlphaProperty alphaProperty) {
             return 1 - alphaProperty.mValue;
         }
 
         @Override
-        public void set(InvertedAlphaProperty object, Float value) {
+        public void set(final InvertedAlphaProperty object, final Float value) {
             object.setValue(value);
         }
     };
@@ -43,7 +43,7 @@ public class InvertedMultiValueAlpha {
 
     private int mValidMask;
 
-    public InvertedMultiValueAlpha(Consumer<Float> consumer, int size) {
+    public InvertedMultiValueAlpha(final Consumer<Float> consumer, final int size) {
         mConsumer = consumer;
         mMyProperties = new InvertedAlphaProperty[size];
 
@@ -55,7 +55,7 @@ public class InvertedMultiValueAlpha {
         }
     }
 
-    public InvertedAlphaProperty getProperty(int index) {
+    public InvertedAlphaProperty getProperty(final int index) {
         return mMyProperties[index];
     }
 
@@ -67,11 +67,11 @@ public class InvertedMultiValueAlpha {
         // Factor of all other alpha channels, only valid if mMyMask is present in mValidMask.
         private float mOthers = 1;
 
-        InvertedAlphaProperty(int myMask) {
+        InvertedAlphaProperty(final int myMask) {
             mMyMask = myMask;
         }
 
-        public void setValue(float value) {
+        public void setValue(final float value) {
             value = 1 - value;
             if (mValue == value) {
                 return;

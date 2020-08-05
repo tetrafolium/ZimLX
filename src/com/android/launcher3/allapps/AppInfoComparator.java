@@ -34,14 +34,14 @@ public class AppInfoComparator implements Comparator<AppInfo> {
     private final UserHandle mMyUser;
     private final LabelComparator mLabelComparator;
 
-    public AppInfoComparator(Context context) {
+    public AppInfoComparator(final Context context) {
         mUserManager = UserManagerCompat.getInstance(context);
         mMyUser = Process.myUserHandle();
         mLabelComparator = new LabelComparator();
     }
 
     @Override
-    public int compare(AppInfo a, AppInfo b) {
+    public int compare(final AppInfo a, final AppInfo b) {
         // Order by the title in the current locale
         int result = mLabelComparator.compare(a.title.toString(), b.title.toString());
         if (result != 0) {

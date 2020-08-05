@@ -29,14 +29,14 @@ class PreviewItemDrawingParams {
     FolderPreviewItemAnim anim;
     Drawable drawable;
 
-    PreviewItemDrawingParams(float transX, float transY, float scale, float overlayAlpha) {
+    PreviewItemDrawingParams(final float transX, final float transY, final float scale, final float overlayAlpha) {
         this.transX = transX;
         this.transY = transY;
         this.scale = scale;
         this.overlayAlpha = overlayAlpha;
     }
 
-    public void update(float transX, float transY, float scale) {
+    public void update(final float transX, final float transY, final float scale) {
         // We ensure the update will not interfere with an animation on the layout params
         // If the final values differ, we cancel the animation.
         if (anim != null) {

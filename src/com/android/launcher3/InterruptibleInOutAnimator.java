@@ -44,7 +44,7 @@ public class InterruptibleInOutAnimator {
     private boolean mFirstRun = true;
     private Object mTag = null;
 
-    public InterruptibleInOutAnimator(View view, long duration, float fromValue, float toValue) {
+    public InterruptibleInOutAnimator(final View view, final long duration, final float fromValue, final float toValue) {
         mAnimator = LauncherAnimUtils.ofFloat(fromValue, toValue).setDuration(duration);
         mOriginalDuration = duration;
         mOriginalFromValue = fromValue;
@@ -52,17 +52,17 @@ public class InterruptibleInOutAnimator {
 
         mAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 mDirection = STOPPED;
             }
         });
     }
 
-    private void animate(int direction) {
+    private void animate(final int direction) {
         final long currentPlayTime = mAnimator.getCurrentPlayTime();
         final float toValue = (direction == IN) ? mOriginalToValue : mOriginalFromValue;
-        final float startValue = mFirstRun ? mOriginalFromValue :
-                                 ((Float) mAnimator.getAnimatedValue()).floatValue();
+        final float startValue = mFirstRun ? mOriginalFromValue
+                                 : ((Float) mAnimator.getAnimatedValue()).floatValue();
 
         // Make sure it's stopped before we modify any values
         cancel();
@@ -120,7 +120,7 @@ public class InterruptibleInOutAnimator {
         return mTag;
     }
 
-    public void setTag(Object tag) {
+    public void setTag(final Object tag) {
         mTag = tag;
     }
 

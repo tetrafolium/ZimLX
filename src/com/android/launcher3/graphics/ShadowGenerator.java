@@ -58,7 +58,7 @@ public class ShadowGenerator {
     // Singleton object guarded by {@link #LOCK}
     private static ShadowGenerator sShadowGenerator;
 
-    public ShadowGenerator(Context context) {
+    public ShadowGenerator(final Context context) {
         mIconSize = LauncherAppState.getIDP(context).iconBitmapSize;
         mCanvas = new Canvas();
         mBlurPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
@@ -66,7 +66,7 @@ public class ShadowGenerator {
         mDefaultBlurMaskFilter = new BlurMaskFilter(mIconSize * BLUR_FACTOR, Blur.NORMAL);
     }
 
-    public static ShadowGenerator getInstance(Context context) {
+    public static ShadowGenerator getInstance(final Context context) {
         // TODO: This currently fails as the system default icon also needs a shadow as it
         // uses adaptive icon.
         // Preconditions.assertNonUiThread();
@@ -78,12 +78,12 @@ public class ShadowGenerator {
         return sShadowGenerator;
     }
 
-    public synchronized void recreateIcon(Bitmap icon, Canvas out) {
+    public synchronized void recreateIcon(final Bitmap icon, final Canvas out) {
         recreateIcon(icon, mDefaultBlurMaskFilter, AMBIENT_SHADOW_ALPHA, KEY_SHADOW_ALPHA, out);
     }
 
-    public synchronized void recreateIcon(Bitmap icon, BlurMaskFilter blurMaskFilter,
-                                          int ambientAlpha, int keyAlpha, Canvas out) {
+    public synchronized void recreateIcon(final Bitmap icon, final BlurMaskFilter blurMaskFilter,
+                                          final int ambientAlpha, final int keyAlpha, final Canvas out) {
         int[] offset = new int[2];
         mBlurPaint.setMaskFilter(blurMaskFilter);
         Bitmap shadow = icon.extractAlpha(mBlurPaint, offset);
@@ -101,8 +101,8 @@ public class ShadowGenerator {
         out.drawBitmap(icon, 0, 0, mDrawPaint);
     }
 
-    public synchronized Bitmap recreateIcon(Bitmap icon, boolean resize,
-                                            BlurMaskFilter blurMaskFilter, int ambientAlpha, int keyAlpha) {
+    public synchronized Bitmap recreateIcon(final Bitmap icon, final boolean resize,
+                                            final BlurMaskFilter blurMaskFilter, final int ambientAlpha, final int keyAlpha) {
         int width = resize ? mIconSize : icon.getWidth();
         int height = resize ? mIconSize : icon.getHeight();
         int[] offset = new int[2];
@@ -131,7 +131,7 @@ public class ShadowGenerator {
      * Returns the minimum amount by which an icon with {@param bounds} should be scaled
      * so that the shadows do not get clipped.
      */
-    public static float getScaleForBounds(RectF bounds) {
+    public static float getScaleForBounds(final RectF bounds) {
         float scale = 1;
 
         // For top, left & right, we need same space.
@@ -160,17 +160,17 @@ public class ShadowGenerator {
         public int keyShadowAlpha = KEY_SHADOW_ALPHA;
         public float radius;
 
-        public Builder(int color) {
+        public Builder(final int color) {
             this.color = color;
         }
 
-        public Builder setupBlurForSize(int height) {
+        public Builder setupBlurForSize(final int height) {
             shadowBlur = height * 1f / 32;
             keyShadowDistance = height * 1f / 16;
             return this;
         }
 
-        public Bitmap createPill(int width, int height) {
+        public Bitmap createPill(final int width, final int height) {
             /*radius = height / 2f;
 
             int centerX = Math.round(width / 2f + shadowBlur);
@@ -186,7 +186,7 @@ public class ShadowGenerator {
             return createPill(width, height, height / 2f);
         }
 
-        public Bitmap createPill(int width, int height, float radius) {
+        public Bitmap createPill(final int width, final int height, final float radius) {
             this.radius = radius;
 
             int centerX = Math.round(width / 2f + shadowBlur);
@@ -201,7 +201,7 @@ public class ShadowGenerator {
             return result;
         }
 
-        public void drawShadow(Canvas c) {
+        public void drawShadow(final Canvas c) {
             Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
             p.setColor(color);
 

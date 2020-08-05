@@ -46,12 +46,12 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
     private class MyDragPreviewProvider extends DragPreviewProvider {
         protected final Point mPositionShift = new Point();
 
-        public MyDragPreviewProvider(View view, Point point) {
+        public MyDragPreviewProvider(final View view, final Point point) {
             super(view, view.getContext());
             this.mPositionShift.set(point.x, point.y);
         }
 
-        public float getScaleAndPosition(Bitmap bitmap, int[] iArr) {
+        public float getScaleAndPosition(final Bitmap bitmap, final int[] iArr) {
             Launcher launcher = Launcher.getLauncher(this.mView.getContext());
             launcher.getDragLayer().getLocationInDragLayer(this.mView, iArr);
             float iconSize = ((float) ActionView.this.getIconSize()) / ((float) launcher.getDeviceProfile().iconSizePx);
@@ -71,11 +71,11 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
         }
     }
 
-    public ActionView(@NonNull Context context) {
+    public ActionView(final @NonNull Context context) {
         this(context, null);
     }
 
-    public ActionView(@NonNull Context context, @Nullable AttributeSet attributeSet) {
+    public ActionView(final @NonNull Context context, final @Nullable AttributeSet attributeSet) {
         super(context, attributeSet);
         this.mLastTouchPos = new Point();
         this.mIsRTL = Utilities.isRtl(getResources());
@@ -89,7 +89,7 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
         setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
     }
 
-    public void setAction(Action action, int i) {
+    public void setAction(final Action action, final int i) {
         this.mAction = action;
         this.mPos = i;
     }
@@ -107,18 +107,18 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
         //actionsController.get(getContext()).getLogger().logClick(this.mAction.id, this.mPos);
     }
 
-    protected void onMeasure(int i, int i2) {
+    protected void onMeasure(final int i, final int i2) {
         super.onMeasure(0, i2);
         this.mMeasuredUnspecifiedWidth = getMeasuredWidth();
         super.onMeasure(i, i2);
     }
 
-    protected void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+    protected void onTextChanged(final CharSequence charSequence, final int i, final int i2, final int i3) {
         super.onTextChanged(charSequence, i, i2, i3);
         requestLayout();
     }
 
-    public void onDraw(Canvas canvas) {
+    public void onDraw(final Canvas canvas) {
         float measuredWidth = ((float) (getMeasuredWidth() - this.mMeasuredUnspecifiedWidth)) / 2.0f;
         if (measuredWidth > 0.0f) {
             if (this.mIsRTL) {
@@ -132,7 +132,7 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
         super.onDraw(canvas);
     }
 
-    public boolean onTouchEvent(MotionEvent motionEvent) {
+    public boolean onTouchEvent(final MotionEvent motionEvent) {
         int action = motionEvent.getAction();
         if (action == 0 || action == 2) {
             this.mLastTouchPos.set((int) motionEvent.getX(), (int) motionEvent.getY());
@@ -140,7 +140,7 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
         return super.onTouchEvent(motionEvent);
     }
 
-    public void getIconBounds(Rect rect) {
+    public void getIconBounds(final Rect rect) {
         int measuredWidth = (getMeasuredWidth() - this.mMeasuredUnspecifiedWidth) / 2;
         int paddingLeft = getPaddingLeft() + measuredWidth;
         int iconSize = getIconSize() + paddingLeft;
@@ -162,7 +162,7 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
         }
         final DragController dragController = launcher.getDragController();
         dragController.addDragListener(new DragListener() {
-            public void onDragStart(DragObject dragObject, DragOptions dragOptions) {
+            public void onDragStart(final DragObject dragObject, final DragOptions dragOptions) {
                 view.setVisibility(View.INVISIBLE);
             }
 

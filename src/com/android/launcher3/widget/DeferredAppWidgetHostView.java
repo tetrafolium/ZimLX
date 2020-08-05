@@ -37,7 +37,7 @@ public class DeferredAppWidgetHostView extends LauncherAppWidgetHostView {
     private final TextPaint mPaint;
     private Layout mSetupTextLayout;
 
-    public DeferredAppWidgetHostView(Context context) {
+    public DeferredAppWidgetHostView(final Context context) {
         super(context);
         setWillNotDraw(false);
 
@@ -50,12 +50,12 @@ public class DeferredAppWidgetHostView extends LauncherAppWidgetHostView {
     }
 
     @Override
-    public void updateAppWidget(RemoteViews remoteViews) {
+    public void updateAppWidget(final RemoteViews remoteViews) {
         // Not allowed
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         AppWidgetProviderInfo info = getAppWidgetInfo();
@@ -74,7 +74,7 @@ public class DeferredAppWidgetHostView extends LauncherAppWidgetHostView {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         if (mSetupTextLayout != null) {
             canvas.translate(getPaddingLeft() * 2,
                              (getHeight() - mSetupTextLayout.getHeight()) / 2);

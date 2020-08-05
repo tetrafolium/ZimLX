@@ -40,7 +40,7 @@ public class MediaListener extends MediaController.Callback
     private final Handler mHandler = new Handler();
     private final Handler mWorkHandler;
 
-    MediaListener(Context context, Runnable onChange, Handler handler) {
+    MediaListener(final Context context, final Runnable onChange, final Handler handler) {
         mComponent = new ComponentName(context, NotificationListener.class);
         mManager = (MediaSessionManager) context.getSystemService(Context.MEDIA_SESSION_SERVICE);
         mOnChange = onChange;
@@ -71,7 +71,7 @@ public class MediaListener extends MediaController.Callback
         return mTracking.controller.getPackageName();
     }
 
-    private void updateControllers(List<MediaController> controllers) {
+    private void updateControllers(final List<MediaController> controllers) {
         for (MediaController mc : mControllers) {
             mc.unregisterCallback(this);
         }
@@ -82,11 +82,11 @@ public class MediaListener extends MediaController.Callback
     }
 
     @Override
-    public void onActiveSessionsChanged(List<MediaController> controllers) {
+    public void onActiveSessionsChanged(final List<MediaController> controllers) {
         mWorkHandler.post(() -> updateTracking(controllers));
     }
 
-    private void updateTracking(List<MediaController> controllers) {
+    private void updateTracking(final List<MediaController> controllers) {
         if (controllers == null) {
             try {
                 controllers = mManager.getActiveSessions(mComponent);
@@ -120,20 +120,20 @@ public class MediaListener extends MediaController.Callback
         mHandler.post(mOnChange);
     }
 
-    private void pressButton(int keyCode) {
+    private void pressButton(final int keyCode) {
         if (mTracking != null) {
             mTracking.pressButton(keyCode);
         }
     }
 
-    void toggle(boolean finalClick) {
+    void toggle(final boolean finalClick) {
         if (!finalClick) {
             Log.d(TAG, "Toggle");
             pressButton(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
         }
     }
 
-    void next(boolean finalClick) {
+    void next(final boolean finalClick) {
         if (finalClick) {
             Log.d(TAG, "Next");
             pressButton(KeyEvent.KEYCODE_MEDIA_NEXT);
@@ -141,7 +141,7 @@ public class MediaListener extends MediaController.Callback
         }
     }
 
-    void previous(boolean finalClick) {
+    void previous(final boolean finalClick) {
         if (finalClick) {
             Log.d(TAG, "Previous");
             pressButton(KeyEvent.KEYCODE_MEDIA_PREVIOUS);
@@ -150,11 +150,11 @@ public class MediaListener extends MediaController.Callback
     }
 
     // If there is no notification, consider the state to be stopped.
-    private boolean hasNotification(@Nullable MediaController mc) {
+    private boolean hasNotification(final @Nullable MediaController mc) {
         return findNotification(mc) != null;
     }
 
-    private StatusBarNotification findNotification(@Nullable MediaController mc) {
+    private StatusBarNotification findNotification(final @Nullable MediaController mc) {
         if (mc == null) return null;
         MediaSession.Token controllerToken = mc.getSessionToken();
         for (StatusBarNotification notif : mNotificationsManager.getNotifications()) {
@@ -170,12 +170,12 @@ public class MediaListener extends MediaController.Callback
     /**
      * Events that refresh the current handler.
      */
-    public void onPlaybackStateChanged(PlaybackState state) {
+    public void onPlaybackStateChanged(final PlaybackState state) {
         super.onPlaybackStateChanged(state);
         onActiveSessionsChanged(null);
     }
 
-    public void onMetadataChanged(MediaMetadata metadata) {
+    public void onMetadataChanged(final MediaMetadata metadata) {
         super.onMetadataChanged(metadata);
         onActiveSessionsChanged(null);
     }
@@ -210,7 +210,7 @@ public class MediaListener extends MediaController.Callback
         private StatusBarNotification sbn;
         private MediaInfo info;
 
-        private MediaNotificationController(MediaController controller) {
+        private MediaNotificationController(final MediaController controller) {
             this.controller = controller;
             this.sbn = findNotification(controller);
             reloadInfo();
@@ -243,7 +243,7 @@ public class MediaListener extends MediaController.Callback
             return isPlaying();
         }
 
-        private void pressButton(int keyCode) {
+        private void pressButton(final int keyCode) {
             controller.dispatchMediaButtonEvent(new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));
             controller.dispatchMediaButtonEvent(new KeyEvent(KeyEvent.ACTION_UP, keyCode));
         }

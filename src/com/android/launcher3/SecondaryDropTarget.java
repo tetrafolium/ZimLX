@@ -52,11 +52,11 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
 
     protected int mCurrentAccessibilityAction = -1;
 
-    public SecondaryDropTarget(Context context, AttributeSet attrs) {
+    public SecondaryDropTarget(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SecondaryDropTarget(Context context, AttributeSet attrs, int defStyle) {
+    public SecondaryDropTarget(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
         mCacheExpireAlarm = new Alarm();
@@ -69,7 +69,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         setupUi(UNINSTALL);
     }
 
-    protected void setupUi(int action) {
+    protected void setupUi(final int action) {
         if (action == mCurrentAccessibilityAction) {
             return;
         }
@@ -87,7 +87,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     }
 
     @Override
-    public void onAlarm(Alarm alarm) {
+    public void onAlarm(final Alarm alarm) {
         mUninstallDisabledCache.clear();
     }
 
@@ -105,12 +105,12 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     }
 
     @Override
-    protected boolean supportsDrop(ItemInfo info) {
+    protected boolean supportsDrop(final ItemInfo info) {
         return supportsAccessibilityDrop(info, getViewUnderDrag(info));
     }
 
     @Override
-    public boolean supportsAccessibilityDrop(ItemInfo info, View view) {
+    public boolean supportsAccessibilityDrop(final ItemInfo info, final View view) {
         if (view instanceof AppWidgetHostView) {
             if (getReconfigurableWidgetId(view) != INVALID_APPWIDGET_ID) {
                 setupUi(RECONFIGURE);
@@ -147,11 +147,11 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     /**
      * @return the component name that should be uninstalled or null.
      */
-    private ComponentName getUninstallTarget(ItemInfo item) {
+    private ComponentName getUninstallTarget(final ItemInfo item) {
         Intent intent = null;
         UserHandle user = null;
-        if (item != null &&
-                item.itemType == LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION) {
+        if (item != null
+                && item.itemType == LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION) {
             intent = item.getIntent();
             user = item.user;
         }
@@ -167,7 +167,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     }
 
     @Override
-    public void onDrop(DragObject d, DragOptions options) {
+    public void onDrop(final DragObject d, final DragOptions options) {
         // Defer onComplete
         d.dragSource = new DeferredOnComplete(d.dragSource, getContext());
         super.onDrop(d, options);
@@ -187,9 +187,9 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         }
     }
 
-    private View getViewUnderDrag(ItemInfo info) {
-        if (info instanceof LauncherAppWidgetInfo && info.container == CONTAINER_DESKTOP &&
-                mLauncher.getWorkspace().getDragInfo() != null) {
+    private View getViewUnderDrag(final ItemInfo info) {
+        if (info instanceof LauncherAppWidgetInfo && info.container == CONTAINER_DESKTOP
+                && mLauncher.getWorkspace().getDragInfo() != null) {
             return mLauncher.getWorkspace().getDragInfo().cell;
         }
         return null;
@@ -199,7 +199,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
      * Verifies that the view is an reconfigurable widget and returns the corresponding widget Id,
      * otherwise return {@code INVALID_APPWIDGET_ID}
      */
-    private int getReconfigurableWidgetId(View view) {
+    private int getReconfigurableWidgetId(final View view) {
         if (!(view instanceof AppWidgetHostView)) {
             return INVALID_APPWIDGET_ID;
         }
@@ -219,7 +219,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
      * Performs the drop action and returns the target component for the dragObject or null if
      * the action was not performed.
      */
-    protected ComponentName performDropAction(View view, ItemInfo info) {
+    protected ComponentName performDropAction(final View view, final ItemInfo info) {
         if (mCurrentAccessibilityAction == RECONFIGURE) {
             int widgetId = getReconfigurableWidgetId(view);
             if (widgetId != INVALID_APPWIDGET_ID) {
@@ -249,7 +249,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     }
 
     @Override
-    public void onAccessibilityDrop(View view, ItemInfo item) {
+    public void onAccessibilityDrop(final View view, final ItemInfo item) {
         performDropAction(view, item);
     }
 
@@ -265,20 +265,20 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         private String mPackageName;
         private DragObject mDragObject;
 
-        public DeferredOnComplete(DragSource original, Context context) {
+        public DeferredOnComplete(final DragSource original, final Context context) {
             mOriginal = original;
             mContext = context;
         }
 
         @Override
-        public void onDropCompleted(View target, DragObject d,
-                                    boolean success) {
+        public void onDropCompleted(final View target, final DragObject d,
+                                    final boolean success) {
             mDragObject = d;
         }
 
         @Override
-        public void fillInLogContainerData(View v, ItemInfo info, Target target,
-                                           Target targetParent) {
+        public void fillInLogContainerData(final View v, final ItemInfo info, final Target target,
+                                           final Target targetParent) {
             mOriginal.fillInLogContainerData(v, info, target, targetParent);
         }
 

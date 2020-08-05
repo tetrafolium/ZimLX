@@ -63,8 +63,8 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     private final TextPaint mPaint;
     private Layout mSetupTextLayout;
 
-    public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
-                                    IconCache cache, boolean disabledForSafeMode) {
+    public PendingAppWidgetHostView(final Context context, final LauncherAppWidgetInfo info,
+                                    final IconCache cache, final boolean disabledForSafeMode) {
         super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme));
 
         mInfo = info;
@@ -92,8 +92,8 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     }
 
     @Override
-    public void updateAppWidgetSize(Bundle newOptions, int minWidth, int minHeight, int maxWidth,
-                                    int maxHeight) {
+    public void updateAppWidgetSize(final Bundle newOptions, final int minWidth, final int minHeight, final int maxWidth,
+                                    final int maxHeight) {
         // No-op
     }
 
@@ -108,7 +108,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     }
 
     @Override
-    public void setOnClickListener(OnClickListener l) {
+    public void setOnClickListener(final OnClickListener l) {
         mClickListener = l;
     }
 
@@ -117,13 +117,13 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mDrawableSizeChanged = true;
     }
 
     @Override
-    public void reapplyItemInfo(ItemInfoWithIcon info) {
+    public void reapplyItemInfo(final ItemInfoWithIcon info) {
         if (mCenterDrawable != null) {
             mCenterDrawable.setCallback(null);
             mCenterDrawable = null;
@@ -155,7 +155,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         invalidate();
     }
 
-    private void updateSettingColor(int dominantColor) {
+    private void updateSettingColor(final int dominantColor) {
         // Make the dominant color bright.
         float[] hsv = new float[3];
         Color.colorToHSV(dominantColor, hsv);
@@ -165,7 +165,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     }
 
     @Override
-    protected boolean verifyDrawable(Drawable who) {
+    protected boolean verifyDrawable(final Drawable who) {
         return (who == mCenterDrawable) || super.verifyDrawable(who);
     }
 
@@ -176,7 +176,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         // AppWidgetHostView blocks all click events on the root view. Instead handle click events
         // on the content and pass it along.
         if (mClickListener != null) {
@@ -250,8 +250,8 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
                 if (minHeightWithText < availableHeight) {
                     // We can draw the text as well
-                    iconTop = (getHeight() - textHeight -
-                               grid.iconDrawablePaddingPx - actualIconSize) / 2;
+                    iconTop = (getHeight() - textHeight
+                               - grid.iconDrawablePaddingPx - actualIconSize) / 2;
 
                 } else {
                     // We can't draw the text. Let the iconTop be same as before.
@@ -278,7 +278,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         if (mCenterDrawable == null) {
             // Nothing to draw
             return;

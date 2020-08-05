@@ -86,7 +86,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     private InstantAppResolver mInstantAppResolver;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mRequest = LauncherAppsCompatVO.getPinItemRequest(getIntent());
@@ -126,13 +126,13 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     }
 
     @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
+    public boolean onTouch(final View view, final MotionEvent motionEvent) {
         mLastTouchPos.set(motionEvent.getX(), motionEvent.getY());
         return false;
     }
 
     @Override
-    public boolean onLongClick(View view) {
+    public boolean onLongClick(final View view) {
         // Find the position of the preview relative to the touch location.
         WidgetImageView img = mWidgetCell.getWidgetView();
 
@@ -167,11 +167,11 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         view.startDragAndDrop(data, new DragShadowBuilder(view) {
 
             @Override
-            public void onDrawShadow(Canvas canvas) {
+            public void onDrawShadow(final Canvas canvas) {
             }
 
             @Override
-            public void onProvideShadowMetrics(Point outShadowSize, Point outShadowTouchPoint) {
+            public void onProvideShadowMetrics(final Point outShadowSize, final Point outShadowTouchPoint) {
                 outShadowSize.set(SHADOW_SIZE, SHADOW_SIZE);
                 outShadowTouchPoint.set(SHADOW_SIZE / 2, SHADOW_SIZE / 2);
             }
@@ -223,7 +223,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     /**
      * Called when the cancel button is clicked.
      */
-    public void onCancelClick(View v) {
+    public void onCancelClick(final View v) {
         logCommand(Action.Command.CANCEL);
         finish();
     }
@@ -231,7 +231,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     /**
      * Called when place-automatically button is clicked.
      */
-    public void onPlaceAutomaticallyClick(View v) {
+    public void onPlaceAutomaticallyClick(final View v) {
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
             InstallShortcutReceiver.queueShortcut(
                 new ShortcutInfoCompat(mRequest.getShortcutInfo()), this);
@@ -254,7 +254,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
                                      mRequest.getAppWidgetProviderInfo(this), REQUEST_BIND_APPWIDGET);
     }
 
-    private void acceptWidget(int widgetId) {
+    private void acceptWidget(final int widgetId) {
         InstallShortcutReceiver.queueWidget(mRequest.getAppWidgetProviderInfo(this), widgetId, this);
         mWidgetOptions.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         mRequest.accept(mWidgetOptions);
@@ -269,7 +269,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         if (requestCode == REQUEST_BIND_APPWIDGET) {
             int widgetId = data != null
                            ? data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mPendingBindWidgetId)
@@ -287,19 +287,19 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_EXTRA_WIDGET_ID, mPendingBindWidgetId);
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mPendingBindWidgetId = savedInstanceState
                                .getInt(STATE_EXTRA_WIDGET_ID, mPendingBindWidgetId);
     }
 
-    private void logCommand(int command) {
+    private void logCommand(final int command) {
         getUserEventDispatcher().dispatchUserEvent(newLauncherEvent(
                     newCommandAction(command),
                     newItemTarget(mWidgetCell.getWidgetView(), mInstantAppResolver),

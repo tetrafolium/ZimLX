@@ -16,7 +16,7 @@ import com.android.launcher3.widget.PendingItemDragHelper;
 public class ItemDragListener extends BaseItemDragListener {
     private final LauncherActivityInfo mActivityInfo;
 
-    public ItemDragListener(LauncherActivityInfo activityInfo, Rect rect) {
+    public ItemDragListener(final LauncherActivityInfo activityInfo, final Rect rect) {
         super(rect, rect.width(), rect.width());
         mActivityInfo = activityInfo;
     }
@@ -34,6 +34,6 @@ public class ItemDragListener extends BaseItemDragListener {
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target, LauncherLogProto.Target targetParent) {
+    public void fillInLogContainerData(final View v, final ItemInfo info, final LauncherLogProto.Target target, final LauncherLogProto.Target targetParent) {
     }
 }

@@ -27,11 +27,11 @@ public class MultiHashMap<K, V> extends HashMap<K, ArrayList<V>> {
     public MultiHashMap() {
     }
 
-    public MultiHashMap(int size) {
+    public MultiHashMap(final int size) {
         super(size);
     }
 
-    public void addToList(K key, V value) {
+    public void addToList(final K key, final V value) {
         ArrayList<V> list = get(key);
         if (list == null) {
             list = new ArrayList<>();

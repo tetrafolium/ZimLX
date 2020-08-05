@@ -49,12 +49,12 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
     /**
      * @param itemList items to add on the workspace
      */
-    public AddWorkspaceItemsTask(List<Pair<ItemInfo, Object>> itemList) {
+    public AddWorkspaceItemsTask(final List<Pair<ItemInfo, Object>> itemList) {
         mItemList = itemList;
     }
 
     @Override
-    public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+    public void execute(final LauncherAppState app, final BgDataModel dataModel, final AllAppsList apps) {
         if (mItemList.isEmpty()) {
             return;
         }
@@ -72,8 +72,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
             List<ItemInfo> filteredItems = new ArrayList<>();
             for (Pair<ItemInfo, Object> entry : mItemList) {
                 ItemInfo item = entry.first;
-                if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
-                        item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
+                if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+                        || item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                     // Short-circuit this logic if the icon exists somewhere on the workspace
                     if (shortcutExists(dataModel, item.getIntent(), item.user)) {
                         continue;
@@ -98,8 +98,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                 int[] cordinates = coords.second;
 
                 ItemInfo itemInfo;
-                if (item instanceof ShortcutInfo || item instanceof FolderInfo ||
-                        item instanceof LauncherAppWidgetInfo) {
+                if (item instanceof ShortcutInfo || item instanceof FolderInfo
+                        || item instanceof LauncherAppWidgetInfo) {
                     itemInfo = item;
                 } else if (item instanceof AppInfo) {
                     itemInfo = ((AppInfo) item).makeShortcut();
@@ -123,7 +123,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         if (!addedItemsFinal.isEmpty()) {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
-                public void execute(Callbacks callbacks) {
+                public void execute(final Callbacks callbacks) {
                     final ArrayList<ItemInfo> addAnimated = new ArrayList<>();
                     final ArrayList<ItemInfo> addNotAnimated = new ArrayList<>();
                     if (!addedItemsFinal.isEmpty()) {
@@ -144,7 +144,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         }
     }
 
-    protected void updateScreens(Context context, ArrayList<Long> workspaceScreens) {
+    protected void updateScreens(final Context context, final ArrayList<Long> workspaceScreens) {
         LauncherModel.updateWorkspaceScreenOrder(context, workspaceScreens);
     }
 
@@ -152,7 +152,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
      * Returns true if the shortcuts already exists on the workspace. This must be called after
      * the workspace has been loaded. We identify a shortcut by its intent.
      */
-    protected boolean shortcutExists(BgDataModel dataModel, Intent intent, UserHandle user) {
+    protected boolean shortcutExists(final BgDataModel dataModel, final Intent intent, final UserHandle user) {
         final String compPkgName, intentWithPkg, intentWithoutPkg;
         if (intent == null) {
             // Skip items with null intents
@@ -209,10 +209,10 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
      * @return screenId and the coordinates for the item.
      */
     protected Pair<Long, int[]> findSpaceForItem(
-        LauncherAppState app, BgDataModel dataModel,
-        ArrayList<Long> workspaceScreens,
-        ArrayList<Long> addedWorkspaceScreensFinal,
-        int spanX, int spanY) {
+        final LauncherAppState app, final BgDataModel dataModel,
+        final ArrayList<Long> workspaceScreens,
+        final ArrayList<Long> addedWorkspaceScreensFinal,
+        final int spanX, final int spanY) {
         LongSparseArray<ArrayList<ItemInfo>> screenItems = new LongSparseArray<>();
 
         // Use sBgItemsIdMap as all the items are already loaded.
@@ -276,8 +276,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
     }
 
     private boolean findNextAvailableIconSpaceInScreen(
-        LauncherAppState app, ArrayList<ItemInfo> occupiedPos,
-        int[] xy, int spanX, int spanY) {
+        final LauncherAppState app, final ArrayList<ItemInfo> occupiedPos,
+        final int[] xy, final int spanX, final int spanY) {
         InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
 
         GridOccupancy occupied = new GridOccupancy(profile.numColumns, profile.numRows);

@@ -38,15 +38,15 @@ public abstract class BaseRecyclerView extends RecyclerView {
 
     protected RecyclerViewFastScroller mScrollbar;
 
-    public BaseRecyclerView(Context context) {
+    public BaseRecyclerView(final Context context) {
         this(context, null);
     }
 
-    public BaseRecyclerView(Context context, AttributeSet attrs) {
+    public BaseRecyclerView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public BaseRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BaseRecyclerView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -100,8 +100,8 @@ public abstract class BaseRecyclerView extends RecyclerView {
      *
      * @param scrollY the current scroll y
      */
-    protected void synchronizeScrollBarThumbOffsetToViewScroll(int scrollY,
-            int availableScrollHeight) {
+    protected void synchronizeScrollBarThumbOffsetToViewScroll(final int scrollY,
+            final int availableScrollHeight) {
         // Only show the scrollbar if there is height to be scrolled
         if (availableScrollHeight <= 0) {
             mScrollbar.setThumbOffsetY(-1);
@@ -123,7 +123,7 @@ public abstract class BaseRecyclerView extends RecyclerView {
      *
      * @param ev MotionEvent in {@param eventSource}
      */
-    public boolean shouldContainerScroll(MotionEvent ev, View eventSource) {
+    public boolean shouldContainerScroll(final MotionEvent ev, final View eventSource) {
         int[] point = new int[2];
         point[0] = (int) ev.getX();
         point[1] = (int) ev.getY();
@@ -168,5 +168,5 @@ public abstract class BaseRecyclerView extends RecyclerView {
     /**
      * <p>Override in each subclass of this base class.
      */
-    public void onFastScrollCompleted() {}
+    public void onFastScrollCompleted() { }
 }

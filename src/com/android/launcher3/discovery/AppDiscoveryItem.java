@@ -37,17 +37,17 @@ public class AppDiscoveryItem {
     public final String price;
     public final Bitmap bitmap;
 
-    public AppDiscoveryItem(String packageName,
-                            boolean isInstantApp,
-                            boolean isRecent,
-                            float starRating,
-                            long reviewCount,
-                            CharSequence title,
-                            String publisher,
-                            Bitmap bitmap,
-                            String price,
-                            Intent launchIntent,
-                            Intent installIntent) {
+    public AppDiscoveryItem(final String packageName,
+                            final boolean isInstantApp,
+                            final boolean isRecent,
+                            final float starRating,
+                            final long reviewCount,
+                            final CharSequence title,
+                            final String publisher,
+                            final Bitmap bitmap,
+                            final String price,
+                            final Intent launchIntent,
+                            final Intent installIntent) {
         this.packageName = packageName;
         this.isInstantApp = isInstantApp;
         this.isRecent = isRecent;

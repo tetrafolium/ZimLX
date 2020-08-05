@@ -15,7 +15,7 @@ import org.zimmob.zimlx.override.CustomInfoProvider;
 @Keep
 public class CustomEditShortcut extends SystemShortcut.Custom {
 
-    public CustomEditShortcut(Context context) {
+    public CustomEditShortcut(final Context context) {
         super();
     }
 
@@ -26,7 +26,7 @@ public class CustomEditShortcut extends SystemShortcut.Custom {
             private boolean mOpened = false;
 
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 if (!mOpened) {
                     mOpened = true;
                     AbstractFloatingView.closeAllOpenViews(launcher);

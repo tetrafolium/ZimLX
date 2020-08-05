@@ -42,14 +42,14 @@ public class UserManagerCompatVL extends UserManagerCompat {
     // and not {@link Object#equals}
     protected ArrayMap<UserHandle, Long> mUserToSerialMap;
 
-    UserManagerCompatVL(Context context) {
+    UserManagerCompatVL(final Context context) {
         mUserManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
         mPm = context.getPackageManager();
         mContext = context;
     }
 
     @Override
-    public long getSerialNumberForUser(UserHandle user) {
+    public long getSerialNumberForUser(final UserHandle user) {
         synchronized (this) {
             if (mUserToSerialMap != null) {
                 Long serial = mUserToSerialMap.get(user);
@@ -60,7 +60,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
     }
 
     @Override
-    public UserHandle getUserForSerialNumber(long serialNumber) {
+    public UserHandle getUserForSerialNumber(final long serialNumber) {
         synchronized (this) {
             if (mUsers != null) {
                 return mUsers.get(serialNumber);
@@ -70,12 +70,12 @@ public class UserManagerCompatVL extends UserManagerCompat {
     }
 
     @Override
-    public boolean isQuietModeEnabled(UserHandle user) {
+    public boolean isQuietModeEnabled(final UserHandle user) {
         return false;
     }
 
     @Override
-    public boolean isUserUnlocked(UserHandle user) {
+    public boolean isUserUnlocked(final UserHandle user) {
         return true;
     }
 
@@ -85,7 +85,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
     }
 
     @Override
-    public boolean requestQuietModeEnabled(boolean enableQuietMode, UserHandle user) {
+    public boolean requestQuietModeEnabled(final boolean enableQuietMode, final UserHandle user) {
         return false;
     }
 
@@ -123,7 +123,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
     }
 
     @Override
-    public CharSequence getBadgedLabelForUser(CharSequence label, UserHandle user) {
+    public CharSequence getBadgedLabelForUser(final CharSequence label, final UserHandle user) {
         if (user == null) {
             return label;
         }
@@ -131,7 +131,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
     }
 
     @Override
-    public long getUserCreationTime(UserHandle user) {
+    public long getUserCreationTime(final UserHandle user) {
         SharedPreferences prefs = ManagedProfileHeuristic.prefs(mContext);
         String key = USER_CREATION_TIME_KEY + getSerialNumberForUser(user);
         if (!prefs.contains(key)) {

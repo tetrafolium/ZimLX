@@ -28,7 +28,7 @@ public class PackageItemInfo extends ItemInfoWithIcon {
      */
     public String packageName;
 
-    public PackageItemInfo(String packageName) {
+    public PackageItemInfo(final String packageName) {
         this.packageName = packageName;
     }
 

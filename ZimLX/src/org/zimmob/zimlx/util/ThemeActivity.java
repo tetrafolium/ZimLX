@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class ThemeActivity extends AppCompatActivity {
     ZimPreferences prefs;
 
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         prefs = Utilities.getZimPrefs(this);
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -21,7 +21,7 @@ public class ThemeActivity extends AppCompatActivity {
         }
     }
 
-    private int dark(int color) {
+    private int dark(final int color) {
         int a = Color.alpha(color);
         int r = Color.red(color);
         int g = Color.green(color);

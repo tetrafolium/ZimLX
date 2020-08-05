@@ -34,7 +34,7 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
     public AppWidgetHostView boundWidget;
     public Bundle bindOptions = null;
 
-    public PendingAddWidgetInfo(LauncherAppWidgetProviderInfo i) {
+    public PendingAddWidgetInfo(final LauncherAppWidgetProviderInfo i) {
         if (i.isCustomWidget()) {
             itemType = LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
         } else {

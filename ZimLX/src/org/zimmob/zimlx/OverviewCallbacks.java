@@ -29,7 +29,7 @@ public class OverviewCallbacks {
 
     private static OverviewCallbacks sInstance;
 
-    public static OverviewCallbacks get(Context context) {
+    public static OverviewCallbacks get(final Context context) {
         Preconditions.assertUIThread();
         if (sInstance == null) {
             sInstance = Utilities.getOverrideObject(OverviewCallbacks.class,

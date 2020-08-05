@@ -52,7 +52,7 @@ public class Partner {
     private final String mPackageName;
     private final Resources mResources;
 
-    private Partner(String packageName, Resources res) {
+    private Partner(final String packageName, final Resources res) {
         mPackageName = packageName;
         mResources = res;
     }
@@ -60,7 +60,7 @@ public class Partner {
     /**
      * Find and return partner details, or {@code null} if none exists.
      */
-    public static synchronized Partner get(PackageManager pm) {
+    public static synchronized Partner get(final PackageManager pm) {
         if (!sSearched) {
             Pair<String, Resources> apkInfo = Utilities.findSystemApk(ACTION_PARTNER_CUSTOMIZATION, pm);
             if (apkInfo != null) {
@@ -110,7 +110,7 @@ public class Partner {
         return resId != 0 && getResources().getBoolean(resId);
     }
     */
-    public void applyInvariantDeviceProfileOverrides(InvariantDeviceProfile inv, DisplayMetrics dm) {
+    public void applyInvariantDeviceProfileOverrides(final InvariantDeviceProfile inv, final DisplayMetrics dm) {
         int numRows = -1;
         int numColumns = -1;
         float iconSize = -1;

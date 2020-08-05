@@ -30,7 +30,7 @@ public class NotificationGroup {
         mChildKeys = new HashSet<>();
     }
 
-    public void setGroupSummaryKey(String groupSummaryKey) {
+    public void setGroupSummaryKey(final String groupSummaryKey) {
         mGroupSummaryKey = groupSummaryKey;
     }
 
@@ -38,11 +38,11 @@ public class NotificationGroup {
         return mGroupSummaryKey;
     }
 
-    public void addChildKey(String childKey) {
+    public void addChildKey(final String childKey) {
         mChildKeys.add(childKey);
     }
 
-    public void removeChildKey(String childKey) {
+    public void removeChildKey(final String childKey) {
         mChildKeys.remove(childKey);
     }
 

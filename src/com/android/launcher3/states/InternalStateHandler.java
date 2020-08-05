@@ -46,7 +46,7 @@ public abstract class InternalStateHandler extends Binder {
      */
     protected abstract boolean init(Launcher launcher, boolean alreadyOnHome);
 
-    public final Intent addToIntent(Intent intent) {
+    public final Intent addToIntent(final Intent intent) {
         Bundle extras = new Bundle();
         extras.putBinder(EXTRA_STATE_HANDLER, this);
         intent.putExtras(extras);
@@ -65,16 +65,16 @@ public abstract class InternalStateHandler extends Binder {
         return sScheduler.hasPending();
     }
 
-    public static boolean handleCreate(Launcher launcher, Intent intent) {
+    public static boolean handleCreate(final Launcher launcher, final Intent intent) {
         return handleIntent(launcher, intent, false, false);
     }
 
-    public static boolean handleNewIntent(Launcher launcher, Intent intent, boolean alreadyOnHome) {
+    public static boolean handleNewIntent(final Launcher launcher, final Intent intent, final boolean alreadyOnHome) {
         return handleIntent(launcher, intent, alreadyOnHome, true);
     }
 
     private static boolean handleIntent(
-        Launcher launcher, Intent intent, boolean alreadyOnHome, boolean explicitIntent) {
+        final Launcher launcher, final Intent intent, final boolean alreadyOnHome, final boolean explicitIntent) {
         boolean result = false;
         if (intent != null && intent.getExtras() != null) {
             IBinder stateBinder = intent.getExtras().getBinder(EXTRA_STATE_HANDLER);
@@ -97,7 +97,7 @@ public abstract class InternalStateHandler extends Binder {
         private WeakReference<InternalStateHandler> mPendingHandler = new WeakReference<>(null);
         private MainThreadExecutor mMainThreadExecutor;
 
-        public void schedule(InternalStateHandler handler) {
+        public void schedule(final InternalStateHandler handler) {
             synchronized (this) {
                 mPendingHandler = new WeakReference<>(handler);
                 if (mMainThreadExecutor == null) {
@@ -121,7 +121,7 @@ public abstract class InternalStateHandler extends Binder {
             initIfPending(launcher, launcher.isStarted());
         }
 
-        public boolean initIfPending(Launcher launcher, boolean alreadyOnHome) {
+        public boolean initIfPending(final Launcher launcher, final boolean alreadyOnHome) {
             InternalStateHandler pendingHandler = mPendingHandler.get();
             if (pendingHandler != null) {
                 if (!pendingHandler.init(launcher, alreadyOnHome)) {
@@ -132,7 +132,7 @@ public abstract class InternalStateHandler extends Binder {
             return false;
         }
 
-        public boolean clearReference(InternalStateHandler handler) {
+        public boolean clearReference(final InternalStateHandler handler) {
             synchronized (this) {
                 if (mPendingHandler.get() == handler) {
                     mPendingHandler.clear();

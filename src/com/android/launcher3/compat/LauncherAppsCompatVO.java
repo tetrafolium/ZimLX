@@ -46,7 +46,7 @@ import androidx.annotation.Nullable;
 @TargetApi(26)
 public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
 
-    LauncherAppsCompatVO(Context context) {
+    LauncherAppsCompatVO(final Context context) {
         super(context);
     }
 
@@ -67,10 +67,10 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
      */
     @Nullable
     public static ShortcutInfo createShortcutInfoFromPinItemRequest(
-        Context context, final PinItemRequest request, final long acceptDelay) {
-        if (request != null &&
-                request.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT &&
-                request.isValid()) {
+        final Context context, final PinItemRequest request, final long acceptDelay) {
+        if (request != null
+                && request.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT
+                && request.isValid()) {
 
             if (acceptDelay <= 0) {
                 if (!request.accept()) {
@@ -107,13 +107,13 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
         }
     }
 
-    public static PinItemRequest getPinItemRequest(Intent intent) {
+    public static PinItemRequest getPinItemRequest(final Intent intent) {
         Parcelable extra = intent.getParcelableExtra(LauncherApps.EXTRA_PIN_ITEM_REQUEST);
         return extra instanceof PinItemRequest ? (PinItemRequest) extra : null;
     }
 
     @Override
-    public ApplicationInfo getApplicationInfo(String packageName, int flags, UserHandle user) {
+    public ApplicationInfo getApplicationInfo(final String packageName, final int flags, final UserHandle user) {
         try {
             ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
             return (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
@@ -125,7 +125,7 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
 
     @Override
     public List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(
-        @Nullable PackageUserKey packageUser) {
+        final @Nullable PackageUserKey packageUser) {
         List<ShortcutConfigActivityInfo> result = new ArrayList<>();
         UserHandle myUser = Process.myUserHandle();
 
@@ -144,8 +144,8 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
             List<LauncherActivityInfo> activities =
                 mLauncherApps.getShortcutConfigActivityList(packageName, user);
             for (LauncherActivityInfo activityInfo : activities) {
-                if (ignoreTargetSdk || activityInfo.getApplicationInfo().targetSdkVersion >=
-                        Build.VERSION_CODES.O) {
+                if (ignoreTargetSdk || activityInfo.getApplicationInfo().targetSdkVersion
+                        >= Build.VERSION_CODES.O) {
                     result.add(new ShortcutConfigActivityInfoVO(activityInfo));
                 }
             }

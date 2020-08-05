@@ -81,9 +81,9 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
 
         assertTrue(mActivityMonitor.itemExists(new ItemOperator() {
             @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info instanceof LauncherAppWidgetInfo &&
-                       ((LauncherAppWidgetInfo) info).providerName.equals(widgetInfo.provider);
+            public boolean evaluate(final ItemInfo info, final View view) {
+                return info instanceof LauncherAppWidgetInfo
+                       && ((LauncherAppWidgetInfo) info).providerName.equals(widgetInfo.provider);
             }
         }).call());
     }

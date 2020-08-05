@@ -10,21 +10,21 @@ import com.android.launcher3.views.DoubleShadowBubbleTextView;
 public class DoubleShadowTextView extends TextView {
     private final DoubleShadowBubbleTextView.ShadowInfo mShadowInfo;
 
-    public DoubleShadowTextView(Context context) {
+    public DoubleShadowTextView(final Context context) {
         this(context, null);
     }
 
-    public DoubleShadowTextView(Context context, AttributeSet attrs) {
+    public DoubleShadowTextView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public DoubleShadowTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public DoubleShadowTextView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mShadowInfo = new DoubleShadowBubbleTextView.ShadowInfo(context, attrs, defStyleAttr);
         setShadowLayer(Math.max(mShadowInfo.keyShadowBlur + mShadowInfo.keyShadowOffset, mShadowInfo.ambientShadowBlur), 0f, 0f, mShadowInfo.keyShadowColor);
     }
 
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         if (mShadowInfo.skipDoubleShadow(this)) {
             super.onDraw(canvas);
             return;

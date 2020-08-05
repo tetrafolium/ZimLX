@@ -45,16 +45,16 @@ public abstract class AppWidgetManagerCompat {
     final AppWidgetManager mAppWidgetManager;
     final Context mContext;
 
-    AppWidgetManagerCompat(Context context) {
+    AppWidgetManagerCompat(final Context context) {
         mContext = context;
         mAppWidgetManager = AppWidgetManager.getInstance(context);
     }
 
-    boolean isBlacklisted(String packageName) {
+    boolean isBlacklisted(final String packageName) {
         return Utilities.isEmui() && (packageName.toLowerCase().contains("huawei") || EMUI_BLACKLIST.contains(packageName));
     }
 
-    public static AppWidgetManagerCompat getInstance(Context context) {
+    public static AppWidgetManagerCompat getInstance(final Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
                 if (Utilities.ATLEAST_OREO) {
@@ -67,11 +67,11 @@ public abstract class AppWidgetManagerCompat {
         }
     }
 
-    public AppWidgetProviderInfo getAppWidgetInfo(int appWidgetId) {
+    public AppWidgetProviderInfo getAppWidgetInfo(final int appWidgetId) {
         return mAppWidgetManager.getAppWidgetInfo(appWidgetId);
     }
 
-    public LauncherAppWidgetProviderInfo getLauncherAppWidgetInfo(int appWidgetId) {
+    public LauncherAppWidgetProviderInfo getLauncherAppWidgetInfo(final int appWidgetId) {
         if (FeatureFlags.ENABLE_CUSTOM_WIDGETS
                 && appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
             return CustomWidgetParser.getWidgetProvider(mContext, appWidgetId);

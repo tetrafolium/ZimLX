@@ -11,7 +11,7 @@ public abstract class FlagOp {
     public static FlagOp addFlag(final int flag) {
         return new FlagOp() {
             @Override
-            public int apply(int flags) {
+            public int apply(final int flags) {
                 return flags | flag;
             }
         };
@@ -20,13 +20,13 @@ public abstract class FlagOp {
     public static FlagOp removeFlag(final int flag) {
         return new FlagOp() {
             @Override
-            public int apply(int flags) {
+            public int apply(final int flags) {
                 return flags & ~flag;
             }
         };
     }
 
-    public int apply(int flags) {
+    public int apply(final int flags) {
         return flags;
     }
 }

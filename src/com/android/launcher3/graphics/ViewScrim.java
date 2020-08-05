@@ -31,12 +31,12 @@ public abstract class ViewScrim<T extends View> {
     public static Property<ViewScrim, Float> PROGRESS =
     new Property<ViewScrim, Float>(Float.TYPE, "progress") {
         @Override
-        public Float get(ViewScrim viewScrim) {
+        public Float get(final ViewScrim viewScrim) {
             return viewScrim.mProgress;
         }
 
         @Override
-        public void set(ViewScrim object, Float value) {
+        public void set(final ViewScrim object, final Float value) {
             object.setProgress(value);
         }
     };
@@ -44,7 +44,7 @@ public abstract class ViewScrim<T extends View> {
     protected final T mView;
     protected float mProgress = 0;
 
-    public ViewScrim(T view) {
+    public ViewScrim(final T view) {
         mView = view;
     }
 
@@ -52,7 +52,7 @@ public abstract class ViewScrim<T extends View> {
         mView.setTag(R.id.view_scrim, this);
     }
 
-    public void setProgress(float progress) {
+    public void setProgress(final float progress) {
         if (mProgress != progress) {
             mProgress = progress;
             onProgressChanged();
@@ -72,7 +72,7 @@ public abstract class ViewScrim<T extends View> {
         }
     }
 
-    public static ViewScrim get(View view) {
+    public static ViewScrim get(final View view) {
         return (ViewScrim) view.getTag(R.id.view_scrim);
     }
 }

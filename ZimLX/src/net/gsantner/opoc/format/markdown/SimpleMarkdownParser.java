@@ -38,7 +38,7 @@ public class SimpleMarkdownParser {
     public final static SmpFilter FILTER_ANDROID_TEXTVIEW;
     public final static SmpFilter FILTER_WEB = new SmpFilter() {
         @Override
-        public String filter(String text) {
+        public String filter(final String text) {
             // Don't start new line if 2 empty lines and heading
             while (text.contains("\n\n#")) {
                 text = text.replace("\n\n#", "\n#");
@@ -62,13 +62,13 @@ public class SimpleMarkdownParser {
                    .replaceAll("(?m)\\*(.*)\\*", "<i>$1</i>") // italic (DEP: temp star code)
                    .replace("●", "*") // restore escaped star symbol (DEP: b,i)
                    .replaceAll("(?m)  $", "<br/>") // new line (DEP: ul)
-                   ;
+;
             return text;
         }
     };
     public final static SmpFilter FILTER_CHANGELOG = new SmpFilter() {
         @Override
-        public String filter(String text) {
+        public String filter(final String text) {
             text = text
                    .replace("New:", "<font color='#276230'>New:</font>")
                    .replace("Added:", "<font color='#276230'>Added:</font>")
@@ -80,7 +80,7 @@ public class SimpleMarkdownParser {
                    .replace("Improved:", "<font color='#555555'>Improved:</font>")
                    .replace("Modified:", "<font color='#555555'>Modified:</font>")
                    .replace("Mod:", "<font color='#555555'>Mod:</font>")
-                   ;
+;
             return text;
         }
     };
@@ -92,7 +92,7 @@ public class SimpleMarkdownParser {
     static {
         FILTER_ANDROID_TEXTVIEW = new SmpFilter() {
             @Override
-            public String filter(String text) {
+            public String filter(final String text) {
                 // TextView supports a limited set of html tags, most notably
                 // a href, b, big, font size&color, i, li, small, u
 
@@ -119,7 +119,7 @@ public class SimpleMarkdownParser {
                        .replaceAll("(?m)\\*(.*)\\*", "<i>$1</i>") // italic (DEP: temp star code)
                        .replace("●", "*") // restore escaped star symbol (DEP: b,i)
                        .replaceAll("(?m)  $", "<br/>") // new line (DEP: ul)
-                       ;
+;
             }
         };
     }
@@ -144,16 +144,16 @@ public class SimpleMarkdownParser {
     //########################
     //## Methods
     //########################
-    public SimpleMarkdownParser setDefaultSmpFilter(SmpFilter defaultSmpFilter) {
+    public SimpleMarkdownParser setDefaultSmpFilter(final SmpFilter defaultSmpFilter) {
         _defaultSmpFilter = defaultSmpFilter;
         return this;
     }
 
-    public SimpleMarkdownParser parse(String filepath, SmpFilter... smpFilters) throws IOException {
+    public SimpleMarkdownParser parse(final String filepath, final SmpFilter... smpFilters) throws IOException {
         return parse(new FileInputStream(filepath), "", smpFilters);
     }
 
-    public SimpleMarkdownParser parse(InputStream inputStream, String lineMdPrefix, SmpFilter... smpFilters) throws IOException {
+    public SimpleMarkdownParser parse(final InputStream inputStream, final String lineMdPrefix, final SmpFilter... smpFilters) throws IOException {
         StringBuilder sb = new StringBuilder();
         BufferedReader br = null;
         String line;
@@ -180,7 +180,7 @@ public class SimpleMarkdownParser {
         return this;
     }
 
-    public SimpleMarkdownParser parse(String markdown, String lineMdPrefix, SmpFilter... smpFilters) {
+    public SimpleMarkdownParser parse(final String markdown, final String lineMdPrefix, final SmpFilter... smpFilters) {
         _html = markdown;
         if (smpFilters.length == 0) {
             smpFilters = new SmpFilter[] {_defaultSmpFilter};
@@ -195,7 +195,7 @@ public class SimpleMarkdownParser {
         return _html;
     }
 
-    public SimpleMarkdownParser setHtml(String html) {
+    public SimpleMarkdownParser setHtml(final String html) {
         _html = html;
         return this;
     }
@@ -205,12 +205,12 @@ public class SimpleMarkdownParser {
         return this;
     }
 
-    public SimpleMarkdownParser replaceBulletCharacter(String replacment) {
+    public SimpleMarkdownParser replaceBulletCharacter(final String replacment) {
         _html = _html.replace("&#8226;", replacment);
         return this;
     }
 
-    public SimpleMarkdownParser replaceColor(String hexColor, int newIntColor) {
+    public SimpleMarkdownParser replaceColor(final String hexColor, final int newIntColor) {
         _html = _html.replace(hexColor, String.format("#%06X", 0xFFFFFF & newIntColor));
         return this;
     }

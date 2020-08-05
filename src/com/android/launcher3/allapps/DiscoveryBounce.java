@@ -47,7 +47,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
     private final Launcher mLauncher;
     private final Animator mDiscoBounceAnimation;
 
-    public DiscoveryBounce(Launcher launcher, float delta) {
+    public DiscoveryBounce(final Launcher launcher, final float delta) {
         super(launcher, null);
         mLauncher = launcher;
         AllAppsTransitionController controller = mLauncher.getAllAppsController();
@@ -57,7 +57,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
         mDiscoBounceAnimation.setTarget(new VerticalProgressWrapper(controller, delta));
         mDiscoBounceAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 handleClose(false);
             }
         });
@@ -87,13 +87,13 @@ public class DiscoveryBounce extends AbstractFloatingView {
     }
 
     @Override
-    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+    public boolean onControllerInterceptTouchEvent(final MotionEvent ev) {
         handleClose(false);
         return false;
     }
 
     @Override
-    protected void handleClose(boolean animate) {
+    protected void handleClose(final boolean animate) {
         if (mIsOpen) {
             mIsOpen = false;
             mLauncher.getDragLayer().removeView(this);
@@ -104,26 +104,26 @@ public class DiscoveryBounce extends AbstractFloatingView {
     }
 
     @Override
-    public void logActionCommand(int command) {
+    public void logActionCommand(final int command) {
         // Since this is on-boarding popup, it is not a user controlled action.
     }
 
     @Override
-    protected boolean isOfType(int type) {
+    protected boolean isOfType(final int type) {
         return (type & TYPE_DISCOVERY_BOUNCE) != 0;
     }
 
-    private void show(int containerType) {
+    private void show(final int containerType) {
         mIsOpen = true;
         mLauncher.getDragLayer().addView(this);
         mLauncher.getUserEventDispatcher().logActionBounceTip(containerType);
     }
 
-    public static void showForHomeIfNeeded(Launcher launcher) {
+    public static void showForHomeIfNeeded(final Launcher launcher) {
         showForHomeIfNeeded(launcher, true);
     }
 
-    private static void showForHomeIfNeeded(Launcher launcher, boolean withDelay) {
+    private static void showForHomeIfNeeded(final Launcher launcher, final boolean withDelay) {
         if (!launcher.isInState(NORMAL)
                 || launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)
                 || AbstractFloatingView.getTopOpenView(launcher) != null
@@ -140,11 +140,11 @@ public class DiscoveryBounce extends AbstractFloatingView {
         new DiscoveryBounce(launcher, 0).show(HOTSEAT);
     }
 
-    public static void showForOverviewIfNeeded(Launcher launcher) {
+    public static void showForOverviewIfNeeded(final Launcher launcher) {
         showForOverviewIfNeeded(launcher, true);
     }
 
-    private static void showForOverviewIfNeeded(Launcher launcher, boolean withDelay) {
+    private static void showForOverviewIfNeeded(final Launcher launcher, final boolean withDelay) {
         if (!launcher.isInState(OVERVIEW)
                 || !launcher.hasBeenResumed()
                 || launcher.isForceInvisible()
@@ -176,7 +176,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
         private final float mDelta;
         private final AllAppsTransitionController mController;
 
-        private VerticalProgressWrapper(AllAppsTransitionController controller, float delta) {
+        private VerticalProgressWrapper(final AllAppsTransitionController controller, final float delta) {
             mController = controller;
             mDelta = delta;
         }
@@ -185,7 +185,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
             return mController.getProgress() + mDelta;
         }
 
-        public void setProgress(float progress) {
+        public void setProgress(final float progress) {
             mController.setProgress(progress - mDelta);
         }
     }

@@ -23,16 +23,16 @@ import android.view.accessibility.AccessibilityManager;
 
 public class AccessibilityManagerCompat {
 
-    public static boolean isAccessibilityEnabled(Context context) {
+    public static boolean isAccessibilityEnabled(final Context context) {
         return getManager(context).isEnabled();
     }
 
-    public static boolean isObservedEventType(Context context, int eventType) {
+    public static boolean isObservedEventType(final Context context, final int eventType) {
         // TODO: Use new API once available
         return isAccessibilityEnabled(context);
     }
 
-    public static void sendCustomAccessibilityEvent(View target, int type, String text) {
+    public static void sendCustomAccessibilityEvent(final View target, final int type, final String text) {
         if (isObservedEventType(target.getContext(), type)) {
             AccessibilityEvent event = AccessibilityEvent.obtain(type);
             target.onInitializeAccessibilityEvent(event);
@@ -41,7 +41,7 @@ public class AccessibilityManagerCompat {
         }
     }
 
-    private static AccessibilityManager getManager(Context context) {
+    private static AccessibilityManager getManager(final Context context) {
         return (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
     }
 }

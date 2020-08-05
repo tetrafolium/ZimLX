@@ -36,7 +36,7 @@ public class WidgetListRowEntry {
      */
     public String titleSectionName;
 
-    public WidgetListRowEntry(PackageItemInfo pkgItem, ArrayList<WidgetItem> items) {
+    public WidgetListRowEntry(final PackageItemInfo pkgItem, final ArrayList<WidgetItem> items) {
         this.pkgItem = pkgItem;
         this.widgets = items;
     }

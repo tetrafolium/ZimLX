@@ -55,7 +55,7 @@ public class ManagedProfileHeuristic {
     private static final long AUTO_ADD_TO_FOLDER_DURATION = 8 * 60 * 60 * 1000;
 
     public static void onAllAppsLoaded(final Context context,
-                                       List<LauncherActivityInfo> apps, UserHandle user) {
+                                       final List<LauncherActivityInfo> apps, final UserHandle user) {
         if (Process.myUserHandle().equals(user)) {
             return;
         }
@@ -93,7 +93,7 @@ public class ManagedProfileHeuristic {
     /**
      * Verifies that entries corresponding to {@param users} exist and removes all invalid entries.
      */
-    public static void processAllUsers(List<UserHandle> users, Context context) {
+    public static void processAllUsers(final List<UserHandle> users, final Context context) {
         UserManagerCompat userManager = UserManagerCompat.getInstance(context);
         HashSet<String> validKeys = new HashSet<>();
         for (UserHandle user : users) {
@@ -114,7 +114,7 @@ public class ManagedProfileHeuristic {
      * For each user, if a work folder has not been created, mark it such that the folder will
      * never get created.
      */
-    public static void markExistingUsersForNoFolderCreation(Context context) {
+    public static void markExistingUsersForNoFolderCreation(final Context context) {
         UserManagerCompat userManager = UserManagerCompat.getInstance(context);
         UserHandle myUser = Process.myUserHandle();
 
@@ -133,7 +133,7 @@ public class ManagedProfileHeuristic {
         }
     }
 
-    public static SharedPreferences prefs(Context context) {
+    public static SharedPreferences prefs(final Context context) {
         return context.getSharedPreferences(
                    LauncherFiles.MANAGED_USER_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
@@ -159,7 +159,7 @@ public class ManagedProfileHeuristic {
 
         boolean folderPendingAddition;
 
-        public UserFolderInfo(Context context, UserHandle user, BgDataModel dataModel) {
+        public UserFolderInfo(final Context context, final UserHandle user, final BgDataModel dataModel) {
             this.user = user;
 
             UserManagerCompat um = UserManagerCompat.getInstance(context);
@@ -190,7 +190,7 @@ public class ManagedProfileHeuristic {
          * {@link ShortcutInfo} or a wrapped {@link FolderInfo} or null.
          */
         public ItemInfo convertToWorkspaceItem(
-            ShortcutInfo shortcut, LauncherActivityInfo activityInfo) {
+            final ShortcutInfo shortcut, final LauncherActivityInfo activityInfo) {
             if (activityInfo.getFirstInstallTime() >= addIconToFolderTime) {
                 return shortcut;
             }
@@ -218,7 +218,7 @@ public class ManagedProfileHeuristic {
             }
         }
 
-        public void applyPendingState(ModelWriter writer) {
+        public void applyPendingState(final ModelWriter writer) {
             if (folderInfo == null) {
                 return;
             }

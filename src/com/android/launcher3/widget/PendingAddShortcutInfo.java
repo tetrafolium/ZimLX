@@ -27,7 +27,7 @@ public class PendingAddShortcutInfo extends PendingAddItemInfo {
 
     public ShortcutConfigActivityInfo activityInfo;
 
-    public PendingAddShortcutInfo(ShortcutConfigActivityInfo activityInfo) {
+    public PendingAddShortcutInfo(final ShortcutConfigActivityInfo activityInfo) {
         this.activityInfo = activityInfo;
         componentName = activityInfo.getComponent();
         user = activityInfo.getUser();

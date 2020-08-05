@@ -25,13 +25,13 @@ public class DisplayRotationListener extends OrientationEventListener {
 
     private final Runnable mCallback;
 
-    public DisplayRotationListener(Context context, Runnable callback) {
+    public DisplayRotationListener(final Context context, final Runnable callback) {
         super(context);
         mCallback = callback;
     }
 
     @Override
-    public void onOrientationChanged(int i) {
+    public void onOrientationChanged(final int i) {
         mCallback.run();
     }
 }

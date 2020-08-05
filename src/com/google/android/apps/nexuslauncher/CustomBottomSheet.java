@@ -66,17 +66,17 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
     private boolean mForceOpen;
 
-    public CustomBottomSheet(Context context, AttributeSet attrs) {
+    public CustomBottomSheet(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public CustomBottomSheet(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomBottomSheet(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mFragmentManager = mLauncher.getFragmentManager();
     }
 
     @Override
-    public void populateAndShow(ItemInfo itemInfo) {
+    public void populateAndShow(final ItemInfo itemInfo) {
         super.populateAndShow(itemInfo);
         mItemInfo = itemInfo;
 
@@ -151,7 +151,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
     }
 
     @Override
-    protected void handleClose(boolean animate, long defaultDuration) {
+    protected void handleClose(final boolean animate, final long defaultDuration) {
         if (mForceOpen) return;
         super.handleClose(animate, defaultDuration);
     }
@@ -198,12 +198,12 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         private CustomInfoProvider mProvider;
 
         @Override
-        public void onCreate(Bundle savedInstanceState) {
+        public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.app_edit_prefs);
         }
 
-        public void loadForApp(ItemInfo info, Runnable setForceOpen, Runnable unsetForceOpen, Runnable reopen) {
+        public void loadForApp(final ItemInfo info, final Runnable setForceOpen, final Runnable unsetForceOpen, final Runnable reopen) {
             itemInfo = info;
             this.setForceOpen = setForceOpen;
             this.unsetForceOpen = unsetForceOpen;
@@ -282,7 +282,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             // TODO: Add link to edit bottom sheet for drawer folder
         }
 
-        private void onSelectHandler(GestureHandler handler) {
+        private void onSelectHandler(final GestureHandler handler) {
             previousHandler = selectedHandler;
             selectedHandler = handler;
             if (handler.getConfigIntent() != null) {
@@ -294,7 +294,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         }
 
         @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
             if (requestCode == PrefsFragment.requestCode) {
                 if (resultCode == Activity.RESULT_OK) {
                     selectedHandler.onConfigResult(data);
@@ -355,7 +355,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         }
 
         @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
+        public boolean onPreferenceChange(final Preference preference, final Object newValue) {
             boolean enabled = (boolean) newValue;
             Launcher launcher = Launcher.getLauncher(getActivity());
             switch (preference.getKey()) {
@@ -369,7 +369,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         }
 
         @Override
-        public boolean onPreferenceClick(Preference preference) {
+        public boolean onPreferenceClick(final Preference preference) {
             switch (preference.getKey()) {
             case "componentName":
             case "versionName":
@@ -385,7 +385,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         }
     }
 
-    public static void show(Launcher launcher, ItemInfo itemInfo) {
+    public static void show(final Launcher launcher, final ItemInfo itemInfo) {
         CustomBottomSheet cbs = (CustomBottomSheet) launcher.getLayoutInflater()
                                 .inflate(R.layout.app_edit_bottom_sheet, launcher.getDragLayer(), false);
         cbs.populateAndShow(itemInfo);

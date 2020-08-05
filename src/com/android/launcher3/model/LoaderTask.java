@@ -110,8 +110,8 @@ public class LoaderTask implements Runnable {
 
     private boolean mStopped;
 
-    public LoaderTask(LauncherAppState app, AllAppsList bgAllAppsList, BgDataModel dataModel,
-                      LoaderResults results) {
+    public LoaderTask(final LauncherAppState app, final AllAppsList bgAllAppsList, final BgDataModel dataModel,
+                      final LoaderResults results) {
         mApp = app;
         mBgAllAppsList = bgAllAppsList;
         mBgDataModel = dataModel;
@@ -253,8 +253,8 @@ public class LoaderTask implements Runnable {
             HomeWidgetMigrationTask.migrateIfNeeded(context);
         }
 
-        if (!clearDb && GridSizeMigrationTask.ENABLED &&
-                !GridSizeMigrationTask.migrateGridIfNeeded(context)) {
+        if (!clearDb && GridSizeMigrationTask.ENABLED
+                && !GridSizeMigrationTask.migrateGridIfNeeded(context)) {
             // Migration failed. Clear workspace.
             clearDb = true;
         }
@@ -361,8 +361,8 @@ public class LoaderTask implements Runnable {
                                 continue;
                             }
 
-                            int disabledState = quietMode.get(c.serialNumber) ?
-                                                ShortcutInfo.FLAG_DISABLED_QUIET_USER : 0;
+                            int disabledState = quietMode.get(c.serialNumber)
+                                                ? ShortcutInfo.FLAG_DISABLED_QUIET_USER : 0;
                             ComponentName cn = intent.getComponent();
                             targetPkg = cn == null ? intent.getPackage() : cn.getPackageName();
                             titleAlias = c.getString(titleAliasIndex);
@@ -379,16 +379,16 @@ public class LoaderTask implements Runnable {
                                     continue;
                                 }
                             }
-                            if (TextUtils.isEmpty(targetPkg) &&
-                                    c.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
+                            if (TextUtils.isEmpty(targetPkg)
+                                    && c.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                                 c.markDeleted("Only legacy shortcuts can have null package");
                                 continue;
                             }
 
                             // If there is no target package, its an implicit intent
                             // (legacy shortcut) which is always valid
-                            boolean validTarget = TextUtils.isEmpty(targetPkg) ||
-                                                  mLauncherApps.isPackageEnabledForProfile(targetPkg, c.user);
+                            boolean validTarget = TextUtils.isEmpty(targetPkg)
+                                                  || mLauncherApps.isPackageEnabledForProfile(targetPkg, c.user);
 
                             if (cn != null && validTarget) {
                                 // If the apk is present and the shortcut points to a specific
@@ -472,18 +472,18 @@ public class LoaderTask implements Runnable {
                                 c.markRestored();
                             }
 
-                            boolean useLowResIcon = !c.isOnWorkspaceOrHotseat() &&
-                                                    !verifier.isItemInPreview(c.getInt(rankIndex));
+                            boolean useLowResIcon = !c.isOnWorkspaceOrHotseat()
+                                                    && !verifier.isItemInPreview(c.getInt(rankIndex));
 
                             if (c.restoreFlag != 0) {
                                 // Already verified above that user is same as default user
                                 info = c.getRestoredItemInfo(intent);
-                            } else if (c.itemType ==
-                                       LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                            } else if (c.itemType
+                                       == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                                 info = c.getAppShortcutInfo(
                                            intent, allowMissingTarget, useLowResIcon);
-                            } else if (c.itemType ==
-                                       LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                            } else if (c.itemType
+                                       == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
 
                                 ShortcutKey key = ShortcutKey.fromIntent(intent, c.user);
                                 if (unlockedUsers.get(c.serialNumber)) {
@@ -531,13 +531,13 @@ public class LoaderTask implements Runnable {
                                 // App shortcuts that used to be automatically added to Launcher
                                 // didn't always have the correct intent flags set, so do that
                                 // here
-                                if (intent.getAction() != null &&
-                                        intent.getCategories() != null &&
-                                        intent.getAction().equals(Intent.ACTION_MAIN) &&
-                                        intent.getCategories().contains(Intent.CATEGORY_LAUNCHER)) {
+                                if (intent.getAction() != null
+                                        && intent.getCategories() != null
+                                        && intent.getAction().equals(Intent.ACTION_MAIN)
+                                        && intent.getCategories().contains(Intent.CATEGORY_LAUNCHER)) {
                                     intent.addFlags(
-                                        Intent.FLAG_ACTIVITY_NEW_TASK |
-                                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                                        Intent.FLAG_ACTIVITY_NEW_TASK
+                                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                                 }
                             }
 
@@ -595,8 +595,8 @@ public class LoaderTask implements Runnable {
                         // Follow through
                         case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
                             // Read all Launcher-specific widget details
-                            boolean customWidget = c.itemType ==
-                                                   LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
+                            boolean customWidget = c.itemType
+                                                   == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
 
                             int appWidgetId = c.getInt(appWidgetIdIndex);
                             String savedProvider = c.getString(appWidgetProviderIndex);
@@ -618,8 +618,8 @@ public class LoaderTask implements Runnable {
                                         c.user));
 
                             final boolean isProviderReady = isValidProvider(provider);
-                            if (!isSafeMode && !customWidget &&
-                                    wasProviderReady && !isProviderReady) {
+                            if (!isSafeMode && !customWidget
+                                    && wasProviderReady && !isProviderReady) {
                                 c.markDeleted(
                                     "Deleting widget that isn't installed anymore: "
                                     + provider);
@@ -631,9 +631,9 @@ public class LoaderTask implements Runnable {
                                     // The provider is available. So the widget is either
                                     // available or not available. We do not need to track
                                     // any future restore updates.
-                                    int status = c.restoreFlag &
-                                                 ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED &
-                                                 ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
+                                    int status = c.restoreFlag
+                                                 & ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED
+                                                 & ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
                                     if (!wasProviderReady) {
                                         // If provider was not previously ready, update the
                                         // status and UI flag.
@@ -682,16 +682,16 @@ public class LoaderTask implements Runnable {
                                 appWidgetInfo.user = c.user;
 
                                 if (!c.isOnWorkspaceOrHotseat()) {
-                                    c.markDeleted("Widget found where container != " +
-                                                  "CONTAINER_DESKTOP nor CONTAINER_HOTSEAT - ignoring!");
+                                    c.markDeleted("Widget found where container != "
+                                                  + "CONTAINER_DESKTOP nor CONTAINER_HOTSEAT - ignoring!");
                                     continue;
                                 }
 
                                 if (!customWidget) {
                                     String providerName =
                                         appWidgetInfo.providerName.flattenToString();
-                                    if (!providerName.equals(savedProvider) ||
-                                            (appWidgetInfo.restoreStatus != c.restoreFlag)) {
+                                    if (!providerName.equals(savedProvider)
+                                            || (appWidgetInfo.restoreStatus != c.restoreFlag)) {
                                         c.updater()
                                         .put(LauncherSettings.Favorites.APPWIDGET_PROVIDER,
                                              providerName)
@@ -701,8 +701,8 @@ public class LoaderTask implements Runnable {
                                     }
                                 }
 
-                                if (appWidgetInfo.restoreStatus !=
-                                        LauncherAppWidgetInfo.RESTORE_COMPLETED) {
+                                if (appWidgetInfo.restoreStatus
+                                        != LauncherAppWidgetInfo.RESTORE_COMPLETED) {
                                     String pkg = appWidgetInfo.providerName.getPackageName();
                                     appWidgetInfo.pendingItemInfo = new PackageItemInfo(pkg);
                                     appWidgetInfo.pendingItemInfo.user = appWidgetInfo.user;
@@ -851,8 +851,8 @@ public class LoaderTask implements Runnable {
 
         if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS) {
             // get all active sessions and add them to the all apps list
-            for (PackageInstaller.SessionInfo info :
-                    mPackageInstaller.getAllVerifiedSessions()) {
+            for (PackageInstaller.SessionInfo info
+                    : mPackageInstaller.getAllVerifiedSessions()) {
                 mBgAllAppsList.addPromiseApp(mApp.getContext(),
                                              PackageInstallerCompat.PackageInstallInfo.fromInstallingState(info));
             }
@@ -875,7 +875,7 @@ public class LoaderTask implements Runnable {
         }
     }
 
-    public static boolean isValidProvider(AppWidgetProviderInfo provider) {
+    public static boolean isValidProvider(final AppWidgetProviderInfo provider) {
         return (provider != null) && (provider.provider != null)
                && (provider.provider.getPackageName() != null);
     }

@@ -14,7 +14,7 @@ import static com.google.android.apps.nexuslauncher.smartspace.nano.SmartspacePr
 import static com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.b;
 
 public class SmartspaceBroadcastReceiver extends BroadcastReceiver {
-    private void cg(b b, Context context, Intent intent, boolean b2) {
+    private void cg(final b b, final Context context, final Intent intent, final boolean b2) {
         if (b.cy) {
             SmartspaceController.get(context).cV(null);
             return;
@@ -26,7 +26,7 @@ public class SmartspaceBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
         byte[] byteArrayExtra = intent.getByteArrayExtra("com.google.android.apps.nexuslauncher.extra.SMARTSPACE_CARD");
         if (byteArrayExtra != null) {
             a a = new a();

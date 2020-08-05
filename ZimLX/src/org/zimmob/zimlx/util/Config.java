@@ -27,13 +27,13 @@ public class Config {
     public final Set<String> minibarItems = new HashSet<>();
     String[] items = {"10", "11", "12", "13", "14", "15", "16", "17", "18"};
 
-    public Config(Context context) {
+    public Config(final Context context) {
         this.context = context;
         minibarItems.addAll(Arrays.asList(items));
     }
 
     @NotNull
-    public static Config getInstance(@NotNull Context context) {
+    public static Config getInstance(final @NotNull Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
                 sInstance = new Config(context.getApplicationContext());

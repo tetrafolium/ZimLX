@@ -12,22 +12,22 @@ public class PropertyListBuilder {
 
     private final ArrayList<PropertyValuesHolder> mProperties = new ArrayList<>();
 
-    public PropertyListBuilder translationX(float value) {
+    public PropertyListBuilder translationX(final float value) {
         mProperties.add(PropertyValuesHolder.ofFloat(View.TRANSLATION_X, value));
         return this;
     }
 
-    public PropertyListBuilder translationY(float value) {
+    public PropertyListBuilder translationY(final float value) {
         mProperties.add(PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, value));
         return this;
     }
 
-    public PropertyListBuilder scaleX(float value) {
+    public PropertyListBuilder scaleX(final float value) {
         mProperties.add(PropertyValuesHolder.ofFloat(View.SCALE_X, value));
         return this;
     }
 
-    public PropertyListBuilder scaleY(float value) {
+    public PropertyListBuilder scaleY(final float value) {
         mProperties.add(PropertyValuesHolder.ofFloat(View.SCALE_Y, value));
         return this;
     }
@@ -35,11 +35,11 @@ public class PropertyListBuilder {
     /**
      * Helper method to set both scaleX and scaleY
      */
-    public PropertyListBuilder scale(float value) {
+    public PropertyListBuilder scale(final float value) {
         return scaleX(value).scaleY(value);
     }
 
-    public PropertyListBuilder alpha(float value) {
+    public PropertyListBuilder alpha(final float value) {
         mProperties.add(PropertyValuesHolder.ofFloat(View.ALPHA, value));
         return this;
     }

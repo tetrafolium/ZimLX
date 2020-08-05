@@ -28,10 +28,10 @@ import com.android.launcher3.Utilities;
  * Various utility methods associated with theming.
  */
 public class Themes {
-    public static int getColorAccent(Context context) {
+    public static int getColorAccent(final Context context) {
         return Utilities.getZimPrefs(context).getAccentColor();
     }
-    public static int getAttrColor(Context context, int attr) {
+    public static int getAttrColor(final Context context, final int attr) {
         TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
 
         int colorAccent = ta.getColor(0, 0);
@@ -39,21 +39,21 @@ public class Themes {
         return colorAccent;
     }
 
-    public static boolean getAttrBoolean(Context context, int attr) {
+    public static boolean getAttrBoolean(final Context context, final int attr) {
         TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
         boolean value = ta.getBoolean(0, false);
         ta.recycle();
         return value;
     }
 
-    public static Drawable getAttrDrawable(Context context, int attr) {
+    public static Drawable getAttrDrawable(final Context context, final int attr) {
         TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
         Drawable value = ta.getDrawable(0);
         ta.recycle();
         return value;
     }
 
-    public static int getAttrInteger(Context context, int attr) {
+    public static int getAttrInteger(final Context context, final int attr) {
         TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
         int value = ta.getInteger(0, 0);
         ta.recycle();
@@ -63,7 +63,7 @@ public class Themes {
     /**
      * Returns the alpha corresponding to the theme attribute {@param attr}, in the range [0, 255].
      */
-    public static int getAlpha(Context context, int attr) {
+    public static int getAlpha(final Context context, final int attr) {
         TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
         float alpha = ta.getFloat(0, 0);
         ta.recycle();
@@ -82,7 +82,7 @@ public class Themes {
      * @param color  The color r g b a
      * @param target The ColorMatrix to scale
      */
-    public static void setColorScaleOnMatrix(int color, ColorMatrix target) {
+    public static void setColorScaleOnMatrix(final int color, final ColorMatrix target) {
         target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
                         Color.blue(color) / 255f, Color.alpha(color) / 255f);
     }
@@ -98,7 +98,7 @@ public class Themes {
      * @param dstColor The color to create by applying target on srcColor
      * @param target   The ColorMatrix to transform the color
      */
-    public static void setColorChangeOnMatrix(int srcColor, int dstColor, ColorMatrix target) {
+    public static void setColorChangeOnMatrix(final int srcColor, final int dstColor, final ColorMatrix target) {
         target.reset();
         target.getArray()[4] = Color.red(dstColor) - Color.red(srcColor);
         target.getArray()[9] = Color.green(dstColor) - Color.green(srcColor);

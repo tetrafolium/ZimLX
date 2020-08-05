@@ -21,7 +21,7 @@ public class ClippedFolderIconLayoutRule {
     private boolean mIsRtl;
     private float mBaselineIconScale;
 
-    public void init(int availableSpace, float intrinsicIconSize, boolean rtl) {
+    public void init(final int availableSpace, final float intrinsicIconSize, final boolean rtl) {
         mAvailableSpace = availableSpace;
         mRadius = ITEM_RADIUS_SCALE_FACTOR * availableSpace / 2f;
         mIconSize = intrinsicIconSize;
@@ -29,8 +29,8 @@ public class ClippedFolderIconLayoutRule {
         mBaselineIconScale = availableSpace / (intrinsicIconSize * 1f);
     }
 
-    public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
-            PreviewItemDrawingParams params) {
+    public PreviewItemDrawingParams computePreviewItemDrawingParams(final int index, final int curNumItems,
+            final PreviewItemDrawingParams params) {
         float totalScale = scaleForItem(curNumItems);
         float transX;
         float transY;
@@ -70,7 +70,7 @@ public class ClippedFolderIconLayoutRule {
      * Positions in the grid: 0 1  // 0 is row 0, col 1
      *                        2 3  // 3 is row 1, col 1
      */
-    private void getGridPosition(int row, int col, float[] result) {
+    private void getGridPosition(final int row, final int col, final float[] result) {
         // We use position 0 and 3 to calculate the x and y distances between items.
         getPosition(0, 4, result);
         float left = result[0];
@@ -84,7 +84,7 @@ public class ClippedFolderIconLayoutRule {
         result[1] = top + (row * dy);
     }
 
-    private void getPosition(int index, int curNumItems, float[] result) {
+    private void getPosition(final int index, final int curNumItems, final float[] result) {
         // The case of two items is homomorphic to the case of one.
         curNumItems = Math.max(curNumItems, 2);
 
@@ -113,8 +113,8 @@ public class ClippedFolderIconLayoutRule {
         }
 
         // We bump the radius up between 0 and MAX_RADIUS_DILATION % as the number of items increase
-        float radius = mRadius * (1 + MAX_RADIUS_DILATION * (curNumItems -
-                                  MIN_NUM_ITEMS_IN_PREVIEW) / (MAX_NUM_ITEMS_IN_PREVIEW - MIN_NUM_ITEMS_IN_PREVIEW));
+        float radius = mRadius * (1 + MAX_RADIUS_DILATION * (curNumItems
+                                  - MIN_NUM_ITEMS_IN_PREVIEW) / (MAX_NUM_ITEMS_IN_PREVIEW - MIN_NUM_ITEMS_IN_PREVIEW));
         double theta = theta0 + index * (2 * Math.PI / curNumItems) * direction;
 
         float halfIconSize = (mIconSize * scaleForItem(curNumItems)) / 2;
@@ -127,7 +127,7 @@ public class ClippedFolderIconLayoutRule {
 
     }
 
-    public float scaleForItem(int numItems) {
+    public float scaleForItem(final int numItems) {
         // Scale is determined by the number of items in the preview.
         final float scale;
         if (numItems <= 2) {

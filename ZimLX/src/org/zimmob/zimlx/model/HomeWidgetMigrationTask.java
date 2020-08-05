@@ -50,10 +50,10 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
     private final Context mContext;
     private final int mTrgX, mTrgY;
 
-    private HomeWidgetMigrationTask(Context context,
-                                    InvariantDeviceProfile idp,
-                                    HashSet<String> validPackages,
-                                    Point size) {
+    private HomeWidgetMigrationTask(final Context context,
+                                    final InvariantDeviceProfile idp,
+                                    final HashSet<String> validPackages,
+                                    final Point size) {
         super(context, idp, validPackages, size, size);
 
         mContext = context;
@@ -119,7 +119,7 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
     }
 
     @SuppressLint("ApplySharedPref")
-    public static void migrateIfNeeded(Context context) {
+    public static void migrateIfNeeded(final Context context) {
         SharedPreferences prefs = Utilities.getPrefs(context);
 
         boolean needsMigration = !prefs.getBoolean(PREF_MIGRATION_STATUS, false)

@@ -91,7 +91,7 @@ public class LoaderCursorTest {
         mLoaderCursor.allUsers.put(0, Process.myUserHandle());
     }
 
-    private void initCursor(int itemType, String title) {
+    private void initCursor(final int itemType, final String title) {
         mCursor.newRow()
         .add(_ID, 1)
         .add(PROFILE_ID, 0)
@@ -226,8 +226,8 @@ public class LoaderCursorTest {
                         newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 3L), workspaceScreens));
     }
 
-    private ItemInfo newItemInfo(int cellX, int cellY, int spanX, int spanY,
-                                 long container, long screenId) {
+    private ItemInfo newItemInfo(final int cellX, final int cellY, final int spanX, final int spanY,
+                                 final long container, final long screenId) {
         ItemInfo info = new ItemInfo();
         info.cellX = cellX;
         info.cellY = cellY;

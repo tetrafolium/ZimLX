@@ -38,7 +38,7 @@ import java.util.List;
  **/
 public class ColorExtractionAlgorithm {
 
-    public static ColorExtractionAlgorithm newInstance(Context context) {
+    public static ColorExtractionAlgorithm newInstance(final Context context) {
         return Utilities.getOverrideObject(ColorExtractionAlgorithm.class,
                                            context.getApplicationContext(), R.string.color_extraction_impl_class);
     }
@@ -58,15 +58,15 @@ public class ColorExtractionAlgorithm {
     // Temporary variable to avoid allocations
     private float[] mTmpHSL = new float[3];
 
-    public Pair<Integer, Integer> extractInto(WallpaperColorsCompat inWallpaperColors) {
+    public Pair<Integer, Integer> extractInto(final WallpaperColorsCompat inWallpaperColors) {
         if (inWallpaperColors == null) {
             return applyFallback(inWallpaperColors);
         }
 
         final List<Integer> mainColors = getMainColors(inWallpaperColors);
         final int mainColorsSize = mainColors.size();
-        final boolean supportsDarkText = (inWallpaperColors.getColorHints() &
-                                          WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) != 0;
+        final boolean supportsDarkText = (inWallpaperColors.getColorHints()
+                                          & WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) != 0;
 
         if (mainColorsSize == 0) {
             return applyFallback(inWallpaperColors);
@@ -157,7 +157,7 @@ public class ColorExtractionAlgorithm {
         return new Pair<>(mainColor, secondaryColor);
     }
 
-    public static Pair<Integer, Integer> applyFallback(WallpaperColorsCompat inWallpaperColors) {
+    public static Pair<Integer, Integer> applyFallback(final WallpaperColorsCompat inWallpaperColors) {
         boolean light = inWallpaperColors != null
                         && (inWallpaperColors.getColorHints()
                             & WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) != 0;
@@ -166,7 +166,7 @@ public class ColorExtractionAlgorithm {
         return new Pair<>(innerColor, outerColor);
     }
 
-    private int getColorInt(int fitIndex, float[] h, float[] s, float[] l) {
+    private int getColorInt(final int fitIndex, final float[] h, final float[] s, final float[] l) {
         mTmpHSL[0] = fract(h[fitIndex]) * 360.0f;
         mTmpHSL[1] = s[fitIndex];
         mTmpHSL[2] = l[fitIndex];
@@ -179,7 +179,7 @@ public class ColorExtractionAlgorithm {
      * @param hsl float array with 3 components (H 0..360, S 0..1 and L 0..1)
      * @return true if color should be avoided
      */
-    private boolean isBlacklisted(float[] hsl) {
+    private boolean isBlacklisted(final float[] hsl) {
         for (ColorRange badRange : BLACKLISTED_COLORS) {
             if (badRange.containsColor(hsl[0], hsl[1], hsl[2])) {
                 return true;
@@ -199,7 +199,7 @@ public class ColorExtractionAlgorithm {
      * @param max   maximum accepted value (clamp)
      * @return new shifted palette
      */
-    private static float[] fit(float[] data, float v, int index, float min, float max) {
+    private static float[] fit(final float[] data, final float v, final int index, final float min, final float max) {
         float[] fitData = new float[data.length];
         float delta = v - data[index];
 
@@ -219,7 +219,7 @@ public class ColorExtractionAlgorithm {
      * @param l       lightness
      * @return closest index or -1 if palette is empty.
      */
-    private static int bestFit(@NonNull TonalPalette palette, float h, float s, float l) {
+    private static int bestFit(final @NonNull TonalPalette palette, final float h, final float s, final float l) {
         int minErrorIndex = -1;
         float minError = Float.POSITIVE_INFINITY;
 
@@ -238,7 +238,7 @@ public class ColorExtractionAlgorithm {
     }
 
     @Nullable
-    private static TonalPalette findTonalPalette(float h, float s) {
+    private static TonalPalette findTonalPalette(final float h, final float s) {
         // Fallback to a grey palette if the color is too desaturated.
         // This avoids hue shifts.
         if (s < 0.05f) {
@@ -286,7 +286,7 @@ public class ColorExtractionAlgorithm {
         return best;
     }
 
-    private static float fract(float v) {
+    private static float fract(final float v) {
         return v - (float) Math.floor(v);
     }
 
@@ -297,7 +297,7 @@ public class ColorExtractionAlgorithm {
         final float minHue;
         final float maxHue;
 
-        TonalPalette(float[] h, float[] s, float[] l) {
+        TonalPalette(final float[] h, final float[] s, final float[] l) {
             if (h.length != s.length || s.length != l.length) {
                 throw new IllegalArgumentException("All arrays should have the same size. h: "
                                                    + Arrays.toString(h) + " s: " + Arrays.toString(s) + " l: "
@@ -876,13 +876,13 @@ public class ColorExtractionAlgorithm {
         private Range<Float> mSaturation;
         private Range<Float> mLightness;
 
-        ColorRange(Range<Float> hue, Range<Float> saturation, Range<Float> lightness) {
+        ColorRange(final Range<Float> hue, final Range<Float> saturation, final Range<Float> lightness) {
             mHue = hue;
             mSaturation = saturation;
             mLightness = lightness;
         }
 
-        boolean containsColor(float h, float s, float l) {
+        boolean containsColor(final float h, final float s, final float l) {
             if (!mHue.contains(h)) {
                 return false;
             } else if (!mSaturation.contains(s)) {
@@ -904,7 +904,7 @@ public class ColorExtractionAlgorithm {
         }
     }
 
-    private static List<Integer> getMainColors(WallpaperColorsCompat wallpaperColors) {
+    private static List<Integer> getMainColors(final WallpaperColorsCompat wallpaperColors) {
         LinkedList<Integer> colors = new LinkedList<>();
         if (wallpaperColors.getPrimaryColor() != 0) {
             colors.add(wallpaperColors.getPrimaryColor());

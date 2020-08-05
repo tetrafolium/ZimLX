@@ -33,7 +33,7 @@ public class TestLauncherProvider extends LauncherProvider {
     }
 
     private static class MyDatabaseHelper extends DatabaseHelper {
-        public MyDatabaseHelper(Context context) {
+        public MyDatabaseHelper(final Context context) {
             super(context, null, null);
             initIds();
         }
@@ -48,7 +48,7 @@ public class TestLauncherProvider extends LauncherProvider {
         }
 
         @Override
-        protected void handleOneTimeDataUpgrade(SQLiteDatabase db) {
+        protected void handleOneTimeDataUpgrade(final SQLiteDatabase db) {
         }
     }
 }

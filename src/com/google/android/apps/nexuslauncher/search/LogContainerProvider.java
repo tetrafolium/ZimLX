@@ -11,13 +11,13 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 class LogContainerProvider extends FrameLayout implements UserEventDispatcher.LogContainerProvider {
     private final int mPredictedRank;
 
-    public LogContainerProvider(Context context, int predictedRank) {
+    public LogContainerProvider(final Context context, final int predictedRank) {
         super(context);
         mPredictedRank = predictedRank;
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target, LauncherLogProto.Target targetParent) {
+    public void fillInLogContainerData(final View v, final ItemInfo info, final LauncherLogProto.Target target, final LauncherLogProto.Target targetParent) {
         if (mPredictedRank >= 0) {
             targetParent.containerType = 7;
             target.predictedRank = mPredictedRank;

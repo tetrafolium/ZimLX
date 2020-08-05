@@ -25,12 +25,12 @@ public abstract class RunnableWithId implements Runnable {
 
     public final int id;
 
-    public RunnableWithId(int id) {
+    public RunnableWithId(final int id) {
         this.id = id;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return obj instanceof RunnableWithId && ((RunnableWithId) obj).id == id;
     }
 }

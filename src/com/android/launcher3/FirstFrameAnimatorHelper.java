@@ -47,21 +47,21 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
     private boolean mHandlingOnAnimationUpdate;
     private boolean mAdjustedSecondFrameTime;
 
-    public FirstFrameAnimatorHelper(ValueAnimator animator, View target) {
+    public FirstFrameAnimatorHelper(final ValueAnimator animator, final View target) {
         mTarget = target;
         animator.addUpdateListener(this);
     }
 
-    public FirstFrameAnimatorHelper(ViewPropertyAnimator vpa, View target) {
+    public FirstFrameAnimatorHelper(final ViewPropertyAnimator vpa, final View target) {
         mTarget = target;
         vpa.setListener(this);
     }
 
-    public static void setIsVisible(boolean visible) {
+    public static void setIsVisible(final boolean visible) {
         sVisible = visible;
     }
 
-    public static void initializeDrawListener(View view) {
+    public static void initializeDrawListener(final View view) {
         if (sGlobalDrawListener != null) {
             view.getViewTreeObserver().removeOnDrawListener(sGlobalDrawListener);
         }
@@ -82,7 +82,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
     }
 
     // only used for ViewPropertyAnimators
-    public void onAnimationStart(Animator animation) {
+    public void onAnimationStart(final Animator animation) {
         final ValueAnimator va = (ValueAnimator) animation;
         va.addUpdateListener(FirstFrameAnimatorHelper.this);
         onAnimationUpdate(va);
@@ -98,9 +98,9 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
         final long currentPlayTime = animation.getCurrentPlayTime();
         boolean isFinalFrame = Float.compare(1f, animation.getAnimatedFraction()) == 0;
 
-        if (!mHandlingOnAnimationUpdate &&
-                sVisible &&
-                // If the current play time exceeds the duration, or the animated fraction is 1,
+        if (!mHandlingOnAnimationUpdate
+                && sVisible
+                && // If the current play time exceeds the duration, or the animated fraction is 1,
                 // the animation will get finished, even if we call setCurrentPlayTime -- therefore
                 // don't adjust the animation in that case
                 currentPlayTime < animation.getDuration() && !isFinalFrame) {
@@ -117,10 +117,10 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
                 // For the second frame, if the first frame took more than 16ms,
                 // adjust the start time and pretend it took only 16ms anyway. This
                 // prevents a large jump in the animation due to an expensive first frame
-            } else if (frameNum == 1 && currentTime < mStartTime + MAX_DELAY &&
-                       !mAdjustedSecondFrameTime &&
-                       currentTime > mStartTime + IDEAL_FRAME_DURATION &&
-                       currentPlayTime > IDEAL_FRAME_DURATION) {
+            } else if (frameNum == 1 && currentTime < mStartTime + MAX_DELAY
+                       && !mAdjustedSecondFrameTime
+                       && currentTime > mStartTime + IDEAL_FRAME_DURATION
+                       && currentPlayTime > IDEAL_FRAME_DURATION) {
                 animation.setCurrentPlayTime(IDEAL_FRAME_DURATION);
                 mAdjustedSecondFrameTime = true;
             } else {
@@ -139,10 +139,10 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
         }
     }
 
-    public void print(ValueAnimator animation) {
+    public void print(final ValueAnimator animation) {
         float flatFraction = animation.getCurrentPlayTime() / (float) animation.getDuration();
-        Log.d(TAG, sGlobalFrameCounter +
-              "(" + (sGlobalFrameCounter - mStartFrame) + ") " + mTarget + " dirty? " +
-              mTarget.isDirty() + " " + flatFraction + " " + this + " " + animation);
+        Log.d(TAG, sGlobalFrameCounter
+              + "(" + (sGlobalFrameCounter - mStartFrame) + ") " + mTarget + " dirty? "
+              + mTarget.isDirty() + " " + flatFraction + " " + this + " " + animation);
     }
 }

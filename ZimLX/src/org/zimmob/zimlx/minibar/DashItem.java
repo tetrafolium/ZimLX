@@ -18,7 +18,7 @@ public class DashItem {
     public Action action;
     public int viewType;
 
-    public static DashItem asApp(AppInfo appInfo, int id) {
+    public static DashItem asApp(final AppInfo appInfo, final int id) {
         DashItem item = new DashItem();
         item.title = appInfo.title.toString();
         item.description = appInfo.contentDescription.toString();
@@ -29,7 +29,7 @@ public class DashItem {
         return item;
     }
 
-    public static DashItem asCustomItem(Action action, String label, String description, int icon, int id) {
+    public static DashItem asCustomItem(final Action action, final String label, final String description, final int icon, final int id) {
         DashItem item = new DashItem();
         item.action = action;
         item.title = label;

@@ -46,7 +46,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
 
     protected abstract int getQsbView(boolean withMic);
 
-    public BaseGContainerView(Context paramContext, AttributeSet paramAttributeSet, int paramInt) {
+    public BaseGContainerView(final Context paramContext, final AttributeSet paramAttributeSet, final int paramInt) {
         super(paramContext, paramAttributeSet, paramInt);
         Utilities.getPrefs(paramContext).registerOnSharedPreferenceChangeListener(this);
     }
@@ -91,14 +91,14 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         }
     }
 
-    public void onClick(View paramView) {
+    public void onClick(final View paramView) {
         SearchProviderController controller = SearchProviderController.Companion.getInstance(getContext());
         if (controller.isGoogle()) {
             getContext().sendOrderedBroadcast(getPillAnimationIntent("com.google.nexuslauncher.FAST_TEXT_SEARCH"),
                                               null,
             new BroadcastReceiver() {
                 @Override
-                public void onReceive(Context context, Intent intent) {
+                public void onReceive(final Context context, final Intent intent) {
                     if (getResultCode() == 0) {
                         startQsbActivity(BaseGContainerView.TEXT_ASSIST);
                     } else {
@@ -114,7 +114,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
             SearchProvider provider = controller.getSearchProvider();
             provider.startSearch(new Function1<Intent, Unit>() {
                 @Override
-                public Unit invoke(Intent intent) {
+                public Unit invoke(final Intent intent) {
                     getContext().startActivity(intent, ActivityOptionsCompat.makeClipRevealAnimation(mQsbView, 0, 0, mQsbView.getWidth(), mQsbView.getWidth()).toBundle());
                     return null;
                 }
@@ -122,7 +122,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         }
     }
 
-    private Intent getPillAnimationIntent(String action) {
+    private Intent getPillAnimationIntent(final String action) {
         int[] qsbLocation = new int[2];
         mQsbView.getLocationOnScreen(qsbLocation);
 
@@ -141,7 +141,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
                .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
-    private Point midLocation(View view, Rect rect) {
+    private Point midLocation(final View view, final Rect rect) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         Point point = new Point();
@@ -150,7 +150,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         return point;
     }
 
-    protected void setGoogleAnimationStart(Rect rect, Intent intent) {
+    protected void setGoogleAnimationStart(final Rect rect, final Intent intent) {
     }
 
     private void loadWindowFocus() {
@@ -162,7 +162,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
     }
 
     @Override
-    public void onWindowFocusChanged(boolean newWindowHasFocus) {
+    public void onWindowFocusChanged(final boolean newWindowHasFocus) {
         super.onWindowFocusChanged(newWindowHasFocus);
         if (!newWindowHasFocus && mWindowHasFocus) {
             hideQsbImmediately();
@@ -172,7 +172,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
     }
 
     @Override
-    protected void onWindowVisibilityChanged(int paramInt) {
+    protected void onWindowVisibilityChanged(final int paramInt) {
         super.onWindowVisibilityChanged(paramInt);
         changeVisibility(false);
     }
@@ -194,7 +194,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         }
     }
 
-    private void changeVisibility(boolean makeVisible) { //bc
+    private void changeVisibility(final boolean makeVisible) { //bc
         mWindowHasFocus = false;
         if (qsbHidden) {
             qsbHidden = false;
@@ -214,7 +214,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         }
     }
 
-    private void startQsbActivity(String action) {
+    private void startQsbActivity(final String action) {
         Context context = getContext();
         try {
             context.startActivity(new Intent(action).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -240,7 +240,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String s) {
         if ("pref_globalSearchProvider".equals(s)) {
             if (!Utilities.getZimPrefs(getContext()).getUsePillQsb()) {
                 loadIcon();

@@ -34,13 +34,13 @@ public class FolderIconPreviewVerifier {
     private int mGridCountX;
     private boolean mDisplayingUpperLeftQuadrant = false;
 
-    public FolderIconPreviewVerifier(InvariantDeviceProfile profile) {
+    public FolderIconPreviewVerifier(final InvariantDeviceProfile profile) {
         mMaxGridCountX = profile.numFolderColumns;
         mMaxGridCountY = profile.numFolderRows;
         mMaxItemsPerPage = mMaxGridCountX * mMaxGridCountY;
     }
 
-    public void setFolderInfo(FolderInfo info) {
+    public void setFolderInfo(final FolderInfo info) {
         int numItemsInFolder = info.contents.size();
         FolderPagedView.calculateGridSize(numItemsInFolder, 0, 0, mMaxGridCountX,
                                           mMaxGridCountY, mMaxItemsPerPage, mGridSize);
@@ -52,7 +52,7 @@ public class FolderIconPreviewVerifier {
     /**
      * Returns whether the item with {@param rank} is in the default Folder icon preview.
      */
-    public boolean isItemInPreview(int rank) {
+    public boolean isItemInPreview(final int rank) {
         return isItemInPreview(0, rank);
     }
 
@@ -61,7 +61,7 @@ public class FolderIconPreviewVerifier {
      * @param rank The rank of the item.
      * @return True iff the icon is in the 2x2 upper left quadrant of the Folder.
      */
-    public boolean isItemInPreview(int page, int rank) {
+    public boolean isItemInPreview(final int page, final int rank) {
         // First page items are laid out such that the first 4 items are always in the upper
         // left quadrant. For all other pages, we need to check the row and col.
         if (page > 0 || mDisplayingUpperLeftQuadrant) {

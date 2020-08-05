@@ -39,7 +39,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
     private boolean mLockedToDefaultPage;
     private int mNumScreens;
 
-    public WallpaperOffsetInterpolator(Workspace workspace) {
+    public WallpaperOffsetInterpolator(final Workspace workspace) {
         mWorkspace = workspace;
         mIsRtl = Utilities.isRtl(workspace.getResources());
         mHandler = new OffsetHandler(workspace.getContext());
@@ -48,7 +48,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
     /**
      * Locks the wallpaper offset to the offset in the default state of Launcher.
      */
-    public void setLockToDefaultPage(boolean lockToDefaultPage) {
+    public void setLockToDefaultPage(final boolean lockToDefaultPage) {
         mLockedToDefaultPage = lockToDefaultPage;
     }
 
@@ -61,7 +61,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
      *
      * TODO: do different behavior if it's  a live wallpaper?
      */
-    private void wallpaperOffsetForScroll(int scroll, int numScrollingPages, final int[] out) {
+    private void wallpaperOffsetForScroll(final int scroll, final int numScrollingPages, final int[] out) {
         out[1] = 1;
 
         // To match the default wallpaper behavior in the system, we default to either the left
@@ -73,8 +73,8 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
 
         // Distribute the wallpaper parallax over a minimum of MIN_PARALLAX_PAGE_SPAN workspace
         // screens, not including the custom screen, and empty screens (if > MIN_PARALLAX_PAGE_SPAN)
-        int numPagesForWallpaperParallax = mWallpaperIsLiveWallpaper ? numScrollingPages :
-                                           Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages);
+        int numPagesForWallpaperParallax = mWallpaperIsLiveWallpaper ? numScrollingPages
+                                           : Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages);
 
         // Offset by the custom screen
         int leftPageIndex;
@@ -98,8 +98,8 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
 
         // Sometimes the left parameter of the pages is animated during a layout transition;
         // this parameter offsets it to keep the wallpaper from animating as well
-        int adjustedScroll = scroll - leftPageScrollX -
-                             mWorkspace.getLayoutTransitionOffsetForPage(0);
+        int adjustedScroll = scroll - leftPageScrollX
+                             - mWorkspace.getLayoutTransitionOffsetForPage(0);
         adjustedScroll = Utilities.boundToRange(adjustedScroll, 0, scrollRange);
         out[1] = (numPagesForWallpaperParallax - 1) * scrollRange;
 
@@ -113,7 +113,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
         out[0] = rtlOffset + adjustedScroll * (numScrollingPages - 1);
     }
 
-    public float wallpaperOffsetForScroll(int scroll) {
+    public float wallpaperOffsetForScroll(final int scroll) {
         wallpaperOffsetForScroll(scroll, getNumScreensExcludingEmpty(), sTempInt);
         return ((float) sTempInt[0]) / sTempInt[1];
     }
@@ -158,7 +158,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
         Message.obtain(mHandler, MSG_JUMP_TO_FINAL, mWindowToken).sendToTarget();
     }
 
-    public void setWindowToken(IBinder token) {
+    public void setWindowToken(final IBinder token) {
         mWindowToken = token;
         if (mWindowToken == null && mRegistered) {
             mWorkspace.getContext().unregisterReceiver(this);
@@ -172,7 +172,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
         mWallpaperIsLiveWallpaper =
             WallpaperManager.getInstance(mWorkspace.getContext()).getWallpaperInfo() != null;
         updateOffset();
@@ -197,14 +197,14 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
         private float mFinalOffset;
         private float mOffsetX;
 
-        public OffsetHandler(Context context) {
+        public OffsetHandler(final Context context) {
             super(UiThreadHelper.getBackgroundLooper());
             mInterpolator = Interpolators.DEACCEL_1_5;
             mWM = WallpaperManager.getInstance(context);
         }
 
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(final Message msg) {
             final IBinder token = (IBinder) msg.obj;
             if (token == null) {
                 return;
@@ -227,8 +227,8 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
                                                   - mAnimationStartTime;
                     float t0 = durationSinceAnimation / (float) ANIMATION_DURATION;
                     float t1 = mInterpolator.getInterpolation(t0);
-                    mCurrentOffset = mAnimationStartOffset +
-                                     (mFinalOffset - mAnimationStartOffset) * t1;
+                    mCurrentOffset = mAnimationStartOffset
+                                     + (mFinalOffset - mAnimationStartOffset) * t1;
                     mAnimating = durationSinceAnimation < ANIMATION_DURATION;
                 } else {
                     mCurrentOffset = mFinalOffset;
@@ -263,7 +263,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
             }
         }
 
-        private void setOffsetSafely(IBinder token) {
+        private void setOffsetSafely(final IBinder token) {
             try {
                 mWM.setWallpaperOffsets(token, mCurrentOffset, 0.5f);
             } catch (IllegalArgumentException e) {

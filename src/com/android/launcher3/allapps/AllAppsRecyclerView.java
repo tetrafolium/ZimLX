@@ -59,19 +59,19 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     private AllAppsBackgroundDrawable mEmptySearchBackground;
     private int mEmptySearchBackgroundTopOffset;
 
-    public AllAppsRecyclerView(Context context) {
+    public AllAppsRecyclerView(final Context context) {
         this(context, null);
     }
 
-    public AllAppsRecyclerView(Context context, AttributeSet attrs) {
+    public AllAppsRecyclerView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AllAppsRecyclerView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public AllAppsRecyclerView(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
         super(context, attrs, defStyleAttr);
         Resources res = getResources();
         mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(
@@ -82,7 +82,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     /**
      * Sets the list of apps in this view, used to determine the fastscroll position.
      */
-    public void setApps(AlphabeticalAppsList apps, boolean usingTabs) {
+    public void setApps(final AlphabeticalAppsList apps, final boolean usingTabs) {
         mApps = apps;
         mFastScrollHelper = new AllAppsFastScrollHelper(this, apps);
     }
@@ -117,7 +117,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     }
 
     @Override
-    public void onDraw(Canvas c) {
+    public void onDraw(final Canvas c) {
         // Draw the background
         if (mEmptySearchBackground != null && mEmptySearchBackground.getAlpha() > 0) {
             mEmptySearchBackground.draw(c);
@@ -127,18 +127,18 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     }
 
     @Override
-    protected boolean verifyDrawable(Drawable who) {
+    protected boolean verifyDrawable(final Drawable who) {
         return who == mEmptySearchBackground || super.verifyDrawable(who);
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
         updateEmptySearchBackgroundBounds();
         updatePoolSize();
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
+    public void fillInLogContainerData(final View v, final ItemInfo info, final Target target, final Target targetParent) {
         if (mApps.hasFilter()) {
             targetParent.containerType = ContainerType.SEARCHRESULT;
         } else {
@@ -168,7 +168,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent e) {
+    public boolean onInterceptTouchEvent(final MotionEvent e) {
         boolean result = super.onInterceptTouchEvent(e);
         if (!result && e.getAction() == MotionEvent.ACTION_DOWN
                 && mEmptySearchBackground != null && mEmptySearchBackground.getAlpha() > 0) {
@@ -181,7 +181,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      */
     @Override
-    public String scrollToPositionAtProgress(float touchFraction) {
+    public String scrollToPositionAtProgress(final float touchFraction) {
         int rowCount = mApps.getNumAppRows();
         if (rowCount == 0) {
             return "";
@@ -216,7 +216,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     }
 
     @Override
-    public void setAdapter(Adapter adapter) {
+    public void setAdapter(final Adapter adapter) {
         super.setAdapter(adapter);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             public void onChanged() {
@@ -246,7 +246,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
      * Updates the bounds for the scrollbar.
      */
     @Override
-    public void onUpdateScrollbar(int dy) {
+    public void onUpdateScrollbar(final int dy) {
         if (mApps == null) {
             return;
         }
@@ -293,8 +293,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
                         int offset = (int) ((dy * thumbScrollY) / (float) scrollBarY);
                         thumbScrollY += Math.max(offset, diffScrollY);
                     } else {
-                        int offset = (int) ((dy * (availableScrollBarHeight - thumbScrollY)) /
-                                            (float) (availableScrollBarHeight - scrollBarY));
+                        int offset = (int) ((dy * (availableScrollBarHeight - thumbScrollY))
+                                            / (float) (availableScrollBarHeight - scrollBarY));
                         thumbScrollY += Math.min(offset, diffScrollY);
                     }
                     thumbScrollY = Math.max(0, Math.min(availableScrollBarHeight, thumbScrollY));
@@ -335,14 +335,14 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         if (position == NO_POSITION) {
             return -1;
         }
-        return getPaddingTop() +
-               getCurrentScrollY(position, getLayoutManager().getDecoratedTop(child));
+        return getPaddingTop()
+               + getCurrentScrollY(position, getLayoutManager().getDecoratedTop(child));
     }
 
-    public int getCurrentScrollY(int position, int offset) {
+    public int getCurrentScrollY(final int position, final int offset) {
         List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-        AlphabeticalAppsList.AdapterItem posItem = position < items.size() ?
-                items.get(position) : null;
+        AlphabeticalAppsList.AdapterItem posItem = position < items.size()
+                ? items.get(position) : null;
         int y = mCachedScrollPositions.get(position, -1);
         if (y < 0) {
             y = 0;
@@ -350,8 +350,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
                 AlphabeticalAppsList.AdapterItem item = items.get(i);
                 if (AllAppsGridAdapter.isIconViewType(item.viewType)) {
                     // Break once we reach the desired row
-                    if (posItem != null && posItem.viewType == item.viewType &&
-                            posItem.rowIndex == item.rowIndex) {
+                    if (posItem != null && posItem.viewType == item.viewType
+                            && posItem.rowIndex == item.rowIndex) {
                         break;
                     }
                     // Otherwise, only account for the first icon in the row since they are the same
@@ -422,7 +422,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         return false;
     }
 
-    public void setScrollbarColor(int color) {
+    public void setScrollbarColor(final int color) {
         mScrollbar.setColor(color);
     }
 }

@@ -32,7 +32,7 @@ public class ComponentKey {
 
     private final int mHashCode;
 
-    public ComponentKey(ComponentName componentName, UserHandle user) {
+    public ComponentKey(final ComponentName componentName, final UserHandle user) {
         Preconditions.assertNotNull(componentName);
         Preconditions.assertNotNull(user);
         this.componentName = componentName;
@@ -46,7 +46,7 @@ public class ComponentKey {
      * [flattenedComponentString#userId].  If the userId is not present, then it defaults
      * to the current user.
      */
-    public ComponentKey(Context context, String componentKeyStr) {
+    public ComponentKey(final Context context, final String componentKeyStr) {
         int userDelimiterIndex = componentKeyStr.indexOf("#");
         if (userDelimiterIndex != -1) {
             String componentStr = componentKeyStr.substring(0, userDelimiterIndex);
@@ -70,7 +70,7 @@ public class ComponentKey {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         ComponentKey other = (ComponentKey) o;
         return other.componentName.equals(componentName) && other.user.equals(user);
     }

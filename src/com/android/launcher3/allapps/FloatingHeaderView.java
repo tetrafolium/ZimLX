@@ -44,11 +44,11 @@ public class FloatingHeaderView extends LinearLayout implements
     private final Point mTempOffset = new Point();
     private final RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        public void onScrollStateChanged(final RecyclerView recyclerView, final int newState) {
         }
 
         @Override
-        public void onScrolled(RecyclerView rv, int dx, int dy) {
+        public void onScrolled(final RecyclerView rv, final int dx, final int dy) {
             if (rv != mCurrentRV) {
                 return;
             }
@@ -78,11 +78,11 @@ public class FloatingHeaderView extends LinearLayout implements
     protected int mMaxTranslation;
     private int mActiveRV = 0;
 
-    public FloatingHeaderView(@NonNull Context context) {
+    public FloatingHeaderView(final @NonNull Context context) {
         this(context, null);
     }
 
-    public FloatingHeaderView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public FloatingHeaderView(final @NonNull Context context, final @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -92,7 +92,7 @@ public class FloatingHeaderView extends LinearLayout implements
         mTabLayout = findViewById(R.id.tabs_scroller);
     }
 
-    public void setup(AdapterHolder[] mAH, boolean tabsHidden) {
+    public void setup(final AdapterHolder[] mAH, final boolean tabsHidden) {
         mTabsHidden = tabsHidden;
         mTabLayout.setVisibility(tabsHidden ? View.GONE : View.VISIBLE);
         for (AllAppsRecyclerView recyclerView : mRVs) {
@@ -109,14 +109,14 @@ public class FloatingHeaderView extends LinearLayout implements
         reset(false);
     }
 
-    private AllAppsRecyclerView setupRV(AllAppsRecyclerView old, AllAppsRecyclerView updated) {
+    private AllAppsRecyclerView setupRV(final AllAppsRecyclerView old, final AllAppsRecyclerView updated) {
         if (old != updated && updated != null) {
             updated.addOnScrollListener(mOnScrollListener);
         }
         return updated;
     }
 
-    public void setCurrentActive(int active) {
+    public void setCurrentActive(final int active) {
         mCurrentRV = mRVs.get(active);
         mActiveRV = active;
     }
@@ -131,7 +131,7 @@ public class FloatingHeaderView extends LinearLayout implements
         }
     }
 
-    private boolean canSnapAt(int currentScrollY) {
+    private boolean canSnapAt(final int currentScrollY) {
         return Math.abs(currentScrollY) <= mMaxTranslation;
     }
 
@@ -159,7 +159,7 @@ public class FloatingHeaderView extends LinearLayout implements
         }
     }
 
-    protected void applyScroll(int uncappedY, int currentY) {
+    protected void applyScroll(final int uncappedY, final int currentY) {
     }
 
     protected void apply() {
@@ -174,7 +174,7 @@ public class FloatingHeaderView extends LinearLayout implements
         }
     }
 
-    public void reset(boolean animate) {
+    public void reset(final boolean animate) {
         if (mAnimator.isStarted()) {
             mAnimator.cancel();
         }
@@ -197,13 +197,13 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     @Override
-    public void onAnimationUpdate(ValueAnimator animation) {
+    public void onAnimationUpdate(final ValueAnimator animation) {
         mTranslationY = (Integer) animation.getAnimatedValue();
         apply();
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onInterceptTouchEvent(final MotionEvent ev) {
         if (!mAllowTouchForwarding) {
             mForwardToRecyclerView = false;
             return super.onInterceptTouchEvent(ev);
@@ -216,7 +216,7 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(final MotionEvent event) {
         if (mForwardToRecyclerView) {
             // take this view's and parent view's (view pager) location into account
             calcOffset(mTempOffset);
@@ -231,18 +231,18 @@ public class FloatingHeaderView extends LinearLayout implements
         }
     }
 
-    private void calcOffset(Point p) {
+    private void calcOffset(final Point p) {
         p.x = getLeft() - mCurrentRV.getLeft() - mParent.getLeft();
         p.y = getTop() - mCurrentRV.getTop() - mParent.getTop();
     }
 
-    public void setContentVisibility(boolean hasHeader, boolean hasContent, PropertySetter setter,
-                                     Interpolator fadeInterpolator) {
+    public void setContentVisibility(final boolean hasHeader, final boolean hasContent, final PropertySetter setter,
+                                     final Interpolator fadeInterpolator) {
         setter.setViewAlpha(this, hasContent ? 1 : 0, fadeInterpolator);
         allowTouchForwarding(hasContent);
     }
 
-    protected void allowTouchForwarding(boolean allow) {
+    protected void allowTouchForwarding(final boolean allow) {
         mAllowTouchForwarding = allow;
     }
 

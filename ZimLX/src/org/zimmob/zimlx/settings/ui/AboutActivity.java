@@ -26,7 +26,7 @@ public class AboutActivity extends ThemeActivity {
     private int currentTheme = 0;
     private ThemeOverride.ThemeSet themeSet;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         Utilities.setupPirateLocale(this);
         themeSet = new ThemeOverride.Settings();
         themeOverride = new ThemeOverride(themeSet, this);

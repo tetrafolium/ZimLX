@@ -14,29 +14,29 @@ public class LauncherClientService extends BaseClientService {
     public WeakReference<LauncherClient> mClient;
     private boolean mStopped;
 
-    static LauncherClientService getInstance(Context context) {
+    static LauncherClientService getInstance(final Context context) {
         if (sInstance == null) {
             sInstance = new LauncherClientService(context.getApplicationContext());
         }
         return sInstance;
     }
 
-    private LauncherClientService(Context context) {
+    private LauncherClientService(final Context context) {
         super(context, Context.BIND_AUTO_CREATE | Context.BIND_WAIVE_PRIORITY);
     }
 
-    public final void setStopped(boolean stopped) {
+    public final void setStopped(final boolean stopped) {
         mStopped = stopped;
         cleanUp();
     }
 
     @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
+    public void onServiceConnected(final ComponentName name, final IBinder service) {
         setClient(ILauncherOverlay.Stub.asInterface(service));
     }
 
     @Override
-    public void onServiceDisconnected(ComponentName name) {
+    public void onServiceDisconnected(final ComponentName name) {
         setClient(null);
         cleanUp();
     }
@@ -47,7 +47,7 @@ public class LauncherClientService extends BaseClientService {
         }
     }
 
-    private void setClient(ILauncherOverlay overlay) {
+    private void setClient(final ILauncherOverlay overlay) {
         mOverlay = overlay;
         LauncherClient client = getClient();
         if (client != null) {

@@ -58,12 +58,12 @@ public class ShadowDrawable extends Drawable {
         this(new ShadowDrawableState());
     }
 
-    private ShadowDrawable(ShadowDrawableState state) {
+    private ShadowDrawable(final ShadowDrawableState state) {
         mState = state;
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(final Canvas canvas) {
         Rect bounds = getBounds();
         if (bounds.isEmpty()) {
             return;
@@ -75,13 +75,13 @@ public class ShadowDrawable extends Drawable {
     }
 
     @Override
-    public void setAlpha(int alpha) {
+    public void setAlpha(final int alpha) {
         mPaint.setAlpha(alpha);
         invalidateSelf();
     }
 
     @Override
-    public void setColorFilter(ColorFilter colorFilter) {
+    public void setColorFilter(final ColorFilter colorFilter) {
         mPaint.setColorFilter(colorFilter);
         invalidateSelf();
     }
@@ -112,7 +112,7 @@ public class ShadowDrawable extends Drawable {
     }
 
     @Override
-    public void applyTheme(Resources.Theme t) {
+    public void applyTheme(final Resources.Theme t) {
         TypedArray ta = t.obtainStyledAttributes(new int[] {R.attr.isWorkspaceDarkText});
         boolean isDark = ta.getBoolean(0, false);
         ta.recycle();
@@ -156,8 +156,8 @@ public class ShadowDrawable extends Drawable {
         mState.mLastDrawnBitmap = bitmap;
     }
 
-    public static ShadowDrawable wrap(Context context, Drawable d, int shadowColorRes,
-                                      float elevationDps, int darkTintColorRes) {
+    public static ShadowDrawable wrap(final Context context, final Drawable d, final int shadowColorRes,
+                                      final float elevationDps, final int darkTintColorRes) {
         ShadowDrawable sd = new ShadowDrawable();
         sd.setChild(d);
         sd.mState.mShadowColor = ContextCompat.getColor(context, shadowColorRes);
@@ -171,14 +171,14 @@ public class ShadowDrawable extends Drawable {
         return sd;
     }
 
-    public Drawable setChild(Drawable newDrawable) {
+    public Drawable setChild(final Drawable newDrawable) {
         return (new ShadowDrawableState(mState, newDrawable)).newDrawable();
     }
 
 
     @Override
-    public void inflate(Resources r, XmlPullParser parser, AttributeSet attrs,
-                        Resources.Theme theme) throws XmlPullParserException, IOException {
+    public void inflate(final Resources r, final XmlPullParser parser, final AttributeSet attrs,
+                        final Resources.Theme theme) throws XmlPullParserException, IOException {
         super.inflate(r, parser, attrs, theme);
 
         final TypedArray a = theme == null
@@ -224,7 +224,7 @@ public class ShadowDrawable extends Drawable {
 
         }
 
-        private ShadowDrawableState(ShadowDrawableState oldState, Drawable newDrawable) {
+        private ShadowDrawableState(final ShadowDrawableState oldState, final Drawable newDrawable) {
             mChangingConfigurations = newDrawable.getChangingConfigurations();
             mIntrinsicWidth = newDrawable.getIntrinsicWidth() + 2 * oldState.mShadowSize;
             mIntrinsicHeight = newDrawable.getIntrinsicHeight() + 2 * oldState.mShadowSize;

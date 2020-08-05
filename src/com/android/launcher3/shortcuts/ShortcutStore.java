@@ -48,13 +48,13 @@ public class ShortcutStore implements Callback {
         public ShortcutKey mShortcutKey;
         public ShortcutInfo mShortcutInfo;
 
-        public Store(ShortcutKey shortcutKey, ShortcutInfo shortcutInfo) {
+        public Store(final ShortcutKey shortcutKey, final ShortcutInfo shortcutInfo) {
             mShortcutKey = shortcutKey;
             mShortcutInfo = shortcutInfo;
         }
     }
 
-    public static synchronized ShortcutStore getInstance(Context context) {
+    public static synchronized ShortcutStore getInstance(final Context context) {
         synchronized (ShortcutStore.class) {
             Preconditions.assertUIThread();
             if (sShortcutStore == null) {
@@ -64,12 +64,12 @@ public class ShortcutStore implements Callback {
         return sShortcutStore;
     }
 
-    private ShortcutStore(Context context) {
+    private ShortcutStore(final Context context) {
         mContext = context;
         mComponentToShortcutMap = new HashMap();
     }
 
-    public boolean handleMessage(Message message) {
+    public boolean handleMessage(final Message message) {
         if (message.what == 0) {
             List<ShortcutKey> keys = message.obj != null ? (List) message.obj : Collections.EMPTY_LIST;
             ArrayList transactionList = new ArrayList();
@@ -96,7 +96,7 @@ public class ShortcutStore implements Callback {
         }
     }
 
-    private ShortcutInfo getInfo(ShortcutKey shortcutKey) {
+    private ShortcutInfo getInfo(final ShortcutKey shortcutKey) {
         LauncherIcons obtain;
         List queryForFullDetails = DeepShortcutManager.getInstance(mContext).queryForFullDetails(shortcutKey.componentName.getPackageName(), Collections.singletonList(shortcutKey.getId()), shortcutKey.user);
         if (queryForFullDetails.isEmpty()) {

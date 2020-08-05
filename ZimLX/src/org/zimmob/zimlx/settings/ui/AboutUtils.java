@@ -39,7 +39,7 @@ public class AboutUtils {
     private Activity activity;
     private Context context;
 
-    public AboutUtils(Activity activity, Context context) {
+    public AboutUtils(final Activity activity, final Context context) {
         this.activity = activity;
         this.context = context;
     }
@@ -47,9 +47,9 @@ public class AboutUtils {
     public void showGooglePlayEntryForThisApp() {
         String pkgId = "details?id=" + activity.getPackageName();
         Intent goToMarket = new Intent(Intent.ACTION_VIEW, Uri.parse("market://" + pkgId));
-        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
-                            (Build.VERSION.SDK_INT >= 25 ? Intent.FLAG_ACTIVITY_NEW_DOCUMENT : Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET) |
-                            Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY
+                            | (Build.VERSION.SDK_INT >= 25 ? Intent.FLAG_ACTIVITY_NEW_DOCUMENT : Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+                            | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         try {
             activity.startActivity(goToMarket);
         } catch (ActivityNotFoundException e) {
@@ -69,11 +69,11 @@ public class AboutUtils {
         }
     }
 
-    public void showDialogWithHtmlTextView(@StringRes int resTitleId, String html) {
+    public void showDialogWithHtmlTextView(final @StringRes int resTitleId, final String html) {
         showDialogWithHtmlTextView(resTitleId, html, true, null);
     }
 
-    public void showDialogWithHtmlTextView(@StringRes int resTitleId, String text, boolean isHtml, DialogInterface.OnDismissListener dismissedListener) {
+    public void showDialogWithHtmlTextView(final @StringRes int resTitleId, final String text, final boolean isHtml, final DialogInterface.OnDismissListener dismissedListener) {
         AppCompatTextView textView = new AppCompatTextView(context);
         int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16,
                       context.getResources().getDisplayMetrics());
@@ -90,7 +90,7 @@ public class AboutUtils {
         dialog.show();
     }
 
-    public void updateAppSummary(Preference prefx) {
+    public void updateAppSummary(final Preference prefx) {
         Locale locale = Locale.getDefault();
         Preference pref;
         if ((pref = prefx) != null && pref.getSummary() == null) {
@@ -99,7 +99,7 @@ public class AboutUtils {
         }
     }
 
-    public void updateAppInfoSummary(Preference prefx) {
+    public void updateAppInfoSummary(final Preference prefx) {
         Locale locale = Locale.getDefault();
         Preference pref;
         String tmp;
@@ -118,7 +118,7 @@ public class AboutUtils {
     }
 
 
-    public Spanned htmlToSpanned(String html) {
+    public Spanned htmlToSpanned(final String html) {
         Spanned result;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             result = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
@@ -128,7 +128,7 @@ public class AboutUtils {
         return result;
     }
 
-    public String bcstr(String fieldName, String defaultValue) {
+    public String bcstr(final String fieldName, final String defaultValue) {
         Object field = getBuildConfigValue(fieldName);
         if (field != null && field instanceof String) {
             return (String) field;
@@ -136,7 +136,7 @@ public class AboutUtils {
         return defaultValue;
     }
 
-    public String readTextfileFromRawRes(@RawRes int rawResId, String linePrefix, String linePostfix) {
+    public String readTextfileFromRawRes(final @RawRes int rawResId, final String linePrefix, final String linePostfix) {
         StringBuilder sb = new StringBuilder();
         BufferedReader br = null;
         String line;
@@ -164,7 +164,7 @@ public class AboutUtils {
         return sb.toString();
     }
 
-    public Object getBuildConfigValue(String fieldName) {
+    public Object getBuildConfigValue(final String fieldName) {
         //String pkg = getPackageName() + ".BuildConfig";
         String pkg = "com.android.launcher3.BuildConfig";
         try {
@@ -238,14 +238,14 @@ public class AboutUtils {
     /**
      * Get String by given string ressource id (nuermic)
      */
-    public String rstr(@StringRes int strResId) {
+    public String rstr(final @StringRes int strResId) {
         return context.getString(strResId);
     }
 
     /**
      * Get String by given string ressource identifier (textual)
      */
-    public String rstr(String strResKey) {
+    public String rstr(final String strResKey) {
         try {
             return rstr(getResId(ContextUtils.ResType.STRING, strResKey));
         } catch (Resources.NotFoundException e) {
@@ -253,11 +253,11 @@ public class AboutUtils {
         }
     }
 
-    public int getResId(ContextUtils.ResType resType, final String name) {
+    public int getResId(final ContextUtils.ResType resType, final String name) {
         return context.getResources().getIdentifier(name, resType.name().toLowerCase(), context.getPackageName());
     }
 
-    public boolean setClipboard(CharSequence text) {
+    public boolean setClipboard(final CharSequence text) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             android.text.ClipboardManager cm = ((android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE));
             if (cm != null) {

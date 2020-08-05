@@ -34,7 +34,7 @@ public class DynamicClock extends BroadcastReceiver {
     private final Context mContext;
     private ClockLayers mLayers;
 
-    public DynamicClock(Context context) {
+    public DynamicClock(final Context context) {
         mUpdaters = Collections.newSetFromMap(new WeakHashMap<AutoUpdateClock, Boolean>());
         mLayers = new ClockLayers();
         mContext = context;
@@ -53,13 +53,13 @@ public class DynamicClock extends BroadcastReceiver {
 
         mContext.registerReceiver(new BroadcastReceiver() {
             @Override
-            public void onReceive(Context context, Intent intent) {
+            public void onReceive(final Context context, final Intent intent) {
                 loadTimeZone(intent.getStringExtra("time-zone"));
             }
         }, new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED), null, new Handler(Looper.getMainLooper()));
     }
 
-    public static Drawable getClock(Context context, int iconDpi) {
+    public static Drawable getClock(final Context context, final int iconDpi) {
         ClockLayers clone = getClockLayers(context, iconDpi, false).clone();
         if (clone != null) {
             clone.updateAngles();
@@ -68,7 +68,7 @@ public class DynamicClock extends BroadcastReceiver {
         return null;
     }
 
-    private static ClockLayers getClockLayers(Context context, int iconDpi, boolean normalizeIcon) {
+    private static ClockLayers getClockLayers(final Context context, final int iconDpi, final boolean normalizeIcon) {
         Preconditions.assertWorkerThread();
         ClockLayers layers = new ClockLayers();
         try {
@@ -113,10 +113,10 @@ public class DynamicClock extends BroadcastReceiver {
         return layers;
     }
 
-    private void loadTimeZone(String timeZoneId) {
-        TimeZone timeZone = timeZoneId == null ?
-                            TimeZone.getDefault() :
-                            TimeZone.getTimeZone(timeZoneId);
+    private void loadTimeZone(final String timeZoneId) {
+        TimeZone timeZone = timeZoneId == null
+                            ? TimeZone.getDefault()
+                            : TimeZone.getTimeZone(timeZoneId);
 
         for (AutoUpdateClock a : mUpdaters) {
             a.setTimeZone(timeZone);
@@ -134,21 +134,21 @@ public class DynamicClock extends BroadcastReceiver {
         });
     }
 
-    private void updateWrapper(ClockLayers wrapper) {
+    private void updateWrapper(final ClockLayers wrapper) {
         this.mLayers = wrapper;
         for (AutoUpdateClock updater : mUpdaters) {
             updater.updateLayers(wrapper.clone());
         }
     }
 
-    public AutoUpdateClock drawIcon(Bitmap bitmap) {
+    public AutoUpdateClock drawIcon(final Bitmap bitmap) {
         final AutoUpdateClock updater = new AutoUpdateClock(bitmap, mLayers.clone());
         mUpdaters.add(updater);
         return updater;
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
         updateMainThread();
     }
 }

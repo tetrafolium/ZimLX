@@ -44,7 +44,7 @@ public class ItemLongClickListener {
     public static OnLongClickListener INSTANCE_ALL_APPS =
         ItemLongClickListener::onAllAppsItemLongClick;
 
-    private static boolean onWorkspaceItemLongClick(View v) {
+    private static boolean onWorkspaceItemLongClick(final View v) {
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!canStartDrag(launcher)) return false;
         if (!launcher.isInState(NORMAL) && !launcher.isInState(OVERVIEW)) return false;
@@ -55,8 +55,8 @@ public class ItemLongClickListener {
         return true;
     }
 
-    public static void beginDrag(View v, Launcher launcher, ItemInfo info,
-                                 DragOptions dragOptions) {
+    public static void beginDrag(final View v, final Launcher launcher, final ItemInfo info,
+                                 final DragOptions dragOptions) {
         if (info.container >= 0) {
             Folder folder = Folder.getOpen(launcher);
             if (folder != null) {
@@ -73,7 +73,7 @@ public class ItemLongClickListener {
         launcher.getWorkspace().startDrag(longClickCellInfo, dragOptions);
     }
 
-    private static boolean onAllAppsItemLongClick(View v) {
+    private static boolean onAllAppsItemLongClick(final View v) {
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!canStartDrag(launcher)) return false;
         // When we have exited all apps or are in transition, disregard long clicks
@@ -84,7 +84,7 @@ public class ItemLongClickListener {
         final DragController dragController = launcher.getDragController();
         dragController.addDragListener(new DragController.DragListener() {
             @Override
-            public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+            public void onDragStart(final DropTarget.DragObject dragObject, final DragOptions options) {
                 v.setVisibility(INVISIBLE);
             }
 
@@ -102,7 +102,7 @@ public class ItemLongClickListener {
         return false;
     }
 
-    public static boolean canStartDrag(Launcher launcher) {
+    public static boolean canStartDrag(final Launcher launcher) {
         if (launcher == null) {
             return false;
         }

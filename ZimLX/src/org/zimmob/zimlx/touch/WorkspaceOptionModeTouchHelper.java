@@ -29,28 +29,28 @@ public class WorkspaceOptionModeTouchHelper {
     private int mWorkspaceOptionModeEndPage;
     private int mWorkspaceOptionModeStartPage;
 
-    private static float computeDampeningFactor(float f) {
+    private static float computeDampeningFactor(final float f) {
         return f / (15.915494f + f);
     }
 
-    private float disSquare(float f, float f2, float f3, float f4) {
+    private float disSquare(final float f, final float f2, final float f3, final float f4) {
         f -= f3;
         f2 -= f4;
         return (f * f) + (f2 * f2);
     }
 
-    public static float interpolate(float f, float f2, float f3) {
+    public static float interpolate(final float f, final float f2, final float f3) {
         return ((1.0f - f3) * f) + (f3 * f2);
     }
 
-    public WorkspaceOptionModeTouchHelper(Launcher launcher) {
+    public WorkspaceOptionModeTouchHelper(final Launcher launcher) {
         mLauncher = launcher;
         mScreenWidth = launcher.getDeviceProfile().widthPx;
         mMinSnapDistance = mScreenWidth / 3;
         mMinSnapVelocity = 1;
     }
 
-    public boolean dispatchTouchEvent(MotionEvent motionEvent) {
+    public boolean dispatchTouchEvent(final MotionEvent motionEvent) {
         if (!mLauncher.isInState(LauncherState.OPTIONS) || AbstractFloatingView.getTopOpenView(mLauncher) != null) {
             return false;
         }
@@ -64,7 +64,7 @@ public class WorkspaceOptionModeTouchHelper {
         }
     }
 
-    private boolean handleTouchDown(MotionEvent motionEvent) {
+    private boolean handleTouchDown(final MotionEvent motionEvent) {
         if (!isAcceptTouchDownRegion(motionEvent)) {
             return false;
         }
@@ -79,7 +79,7 @@ public class WorkspaceOptionModeTouchHelper {
         return true;
     }
 
-    private boolean handleTouchMove(MotionEvent motionEvent) {
+    private boolean handleTouchMove(final MotionEvent motionEvent) {
         if (!mIsInTouchCycle) {
             return false;
         }
@@ -94,7 +94,7 @@ public class WorkspaceOptionModeTouchHelper {
         return true;
     }
 
-    private boolean handleTouchOther(MotionEvent motionEvent) {
+    private boolean handleTouchOther(final MotionEvent motionEvent) {
         if (!mIsInTouchCycle) {
             return false;
         }
@@ -120,14 +120,14 @@ public class WorkspaceOptionModeTouchHelper {
         return true;
     }
 
-    private int getNextPage(int page, boolean positive) {
+    private int getNextPage(final int page, final boolean positive) {
         page += positive ? 1 : -1;
         if (page < mWorkspaceOptionModeStartPage) return mWorkspaceOptionModeStartPage;
         if (page > mWorkspaceOptionModeEndPage) return mWorkspaceOptionModeEndPage;
         return page;
     }
 
-    private boolean isAcceptTouchDownRegion(MotionEvent motionEvent) {
+    private boolean isAcceptTouchDownRegion(final MotionEvent motionEvent) {
         Workspace workspace = mLauncher.getWorkspace();
         mTouchDownY = (int) motionEvent.getY();
         mTouchDownX = (int) motionEvent.getX();
@@ -150,11 +150,11 @@ public class WorkspaceOptionModeTouchHelper {
         return false;
     }
 
-    private boolean isPossibleClick(MotionEvent motionEvent) {
+    private boolean isPossibleClick(final MotionEvent motionEvent) {
         return disSquare(mTouchDownX, mTouchDownY, motionEvent.getX(), motionEvent.getY()) <= mPossibleClickDistanceSquare;
     }
 
-    public float computeVelocity(float f, long j) {
+    public float computeVelocity(final float f, final long j) {
         long j2 = mCurrentMillis;
         mCurrentMillis = j;
         float f2 = (float) (mCurrentMillis - j2);

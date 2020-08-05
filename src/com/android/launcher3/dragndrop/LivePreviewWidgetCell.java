@@ -20,15 +20,15 @@ public class LivePreviewWidgetCell extends WidgetCell {
 
     private RemoteViews mPreview;
 
-    public LivePreviewWidgetCell(Context context) {
+    public LivePreviewWidgetCell(final Context context) {
         this(context, null);
     }
 
-    public LivePreviewWidgetCell(Context context, AttributeSet attrs) {
+    public LivePreviewWidgetCell(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public LivePreviewWidgetCell(Context context, AttributeSet attrs, int defStyle) {
+    public LivePreviewWidgetCell(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -39,8 +39,8 @@ public class LivePreviewWidgetCell extends WidgetCell {
      * <p>
      * TODO: Consider moving this to the background thread.
      */
-    public static Bitmap generateFromRemoteViews(BaseActivity activity, RemoteViews views,
-            LauncherAppWidgetProviderInfo info, int previewSize, int[] preScaledWidthOut) {
+    public static Bitmap generateFromRemoteViews(final BaseActivity activity, final RemoteViews views,
+            final LauncherAppWidgetProviderInfo info, final int previewSize, final int[] preScaledWidthOut) {
 
         DeviceProfile dp = activity.getDeviceProfile();
         int viewWidth = dp.cellWidthPx * info.spanX;
@@ -80,7 +80,7 @@ public class LivePreviewWidgetCell extends WidgetCell {
         return preview;
     }
 
-    public void setPreview(RemoteViews view) {
+    public void setPreview(final RemoteViews view) {
         mPreview = view;
     }
 

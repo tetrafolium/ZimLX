@@ -30,11 +30,11 @@ public class DashUtils {
         DashItem.asCustomItem(Action.AppSettings, "App Settings", Launcher.mContext.getString(R.string.minibar_11), R.drawable.ic_font_download, 16)
     };
 
-    public static void RunAction(DashAction.Action action, final Context context) {
+    public static void RunAction(final DashAction.Action action, final Context context) {
         RunAction(new DashAction(action, null), context);
     }
 
-    private static void RunAction(DashAction action, Context context) {
+    private static void RunAction(final DashAction action, final Context context) {
         switch (action.action) {
         case EditMinibar:
             String fragment = "org.zimmob.zimlx.minibar.DashFragment";
@@ -89,7 +89,7 @@ public class DashUtils {
         }
     }
 
-    public static DashItem getDashItemFromString(String string) {
+    public static DashItem getDashItemFromString(final String string) {
         for (DashItem item : actionDisplayItems) {
             if (Integer.toString(item.id).equals(string)) {
                 return item;

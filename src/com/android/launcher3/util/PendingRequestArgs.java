@@ -31,11 +31,11 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
 
     public static final Parcelable.Creator<PendingRequestArgs> CREATOR =
     new Parcelable.Creator<PendingRequestArgs>() {
-        public PendingRequestArgs createFromParcel(Parcel source) {
+        public PendingRequestArgs createFromParcel(final Parcel source) {
             return new PendingRequestArgs(source);
         }
 
-        public PendingRequestArgs[] newArray(int size) {
+        public PendingRequestArgs[] newArray(final int size) {
             return new PendingRequestArgs[size];
         }
     };
@@ -46,7 +46,7 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
     private final int mObjectType;
     private final Parcelable mObject;
 
-    public PendingRequestArgs(ItemInfo info) {
+    public PendingRequestArgs(final ItemInfo info) {
         mArg1 = 0;
         mObjectType = TYPE_NONE;
         mObject = null;
@@ -54,13 +54,13 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
         copyFrom(info);
     }
 
-    private PendingRequestArgs(int arg1, int objectType, Parcelable object) {
+    private PendingRequestArgs(final int arg1, final int objectType, final Parcelable object) {
         mArg1 = arg1;
         mObjectType = objectType;
         mObject = object;
     }
 
-    public PendingRequestArgs(Parcel parcel) {
+    public PendingRequestArgs(final Parcel parcel) {
         readFromValues(ContentValues.CREATOR.createFromParcel(parcel));
         user = parcel.readParcelable(null);
 
@@ -70,14 +70,14 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
     }
 
     public static PendingRequestArgs forWidgetInfo(
-        int appWidgetId, WidgetAddFlowHandler widgetHandler, ItemInfo info) {
+        final int appWidgetId, final WidgetAddFlowHandler widgetHandler, final ItemInfo info) {
         PendingRequestArgs args =
             new PendingRequestArgs(appWidgetId, TYPE_APP_WIDGET, widgetHandler);
         args.copyFrom(info);
         return args;
     }
 
-    public static PendingRequestArgs forIntent(int requestCode, Intent intent, ItemInfo info) {
+    public static PendingRequestArgs forIntent(final int requestCode, final Intent intent, final ItemInfo info) {
         PendingRequestArgs args = new PendingRequestArgs(requestCode, TYPE_INTENT, intent);
         args.copyFrom(info);
         return args;
@@ -89,7 +89,7 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         ContentValues itemValues = new ContentValues();
         writeToValues(new ContentWriter(itemValues, null));
         itemValues.writeToParcel(dest, flags);

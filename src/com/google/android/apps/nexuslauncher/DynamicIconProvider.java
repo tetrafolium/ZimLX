@@ -36,11 +36,11 @@ public class DynamicIconProvider extends IconProvider {
     private final PackageManager mPackageManager;
     private int mDateOfMonth;
 
-    public DynamicIconProvider(Context context) {
+    public DynamicIconProvider(final Context context) {
         mContext = context;
         mDateChangeReceiver = new BroadcastReceiver() {
             @Override
-            public void onReceive(Context context, Intent intent) {
+            public void onReceive(final Context context, final Intent intent) {
                 if (!Utilities.ATLEAST_NOUGAT) {
                     int dateOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
                     if (dateOfMonth == mDateOfMonth) {
@@ -73,7 +73,7 @@ public class DynamicIconProvider extends IconProvider {
         return Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1;
     }
 
-    private int getDayResId(Bundle bundle, Resources resources) {
+    private int getDayResId(final Bundle bundle, final Resources resources) {
         if (bundle != null) {
             int dateArrayId = bundle.getInt(GOOGLE_CALENDAR + ".dynamic_icons_nexus_round", 0);
             if (dateArrayId != 0) {
@@ -89,12 +89,12 @@ public class DynamicIconProvider extends IconProvider {
         return 0;
     }
 
-    private boolean isCalendar(String s) {
+    private boolean isCalendar(final String s) {
         return GOOGLE_CALENDAR.equals(s);
     }
 
     @Override
-    public Drawable getIcon(LauncherActivityInfo launcherActivityInfo, int iconDpi, boolean flattenDrawable) {
+    public Drawable getIcon(final LauncherActivityInfo launcherActivityInfo, final int iconDpi, final boolean flattenDrawable) {
         Drawable drawable = null;
         String packageName = launcherActivityInfo.getApplicationInfo().packageName;
         if (isCalendar(packageName)) {
@@ -107,10 +107,10 @@ public class DynamicIconProvider extends IconProvider {
                 }
             } catch (NameNotFoundException ignored) {
             }
-        } else if (!flattenDrawable &&
-                   Utilities.ATLEAST_OREO &&
-                   DynamicClock.DESK_CLOCK.equals(launcherActivityInfo.getComponentName()) &&
-                   Process.myUserHandle().equals(launcherActivityInfo.getUser())) {
+        } else if (!flattenDrawable
+                   && Utilities.ATLEAST_OREO
+                   && DynamicClock.DESK_CLOCK.equals(launcherActivityInfo.getComponentName())
+                   && Process.myUserHandle().equals(launcherActivityInfo.getUser())) {
             drawable = DynamicClock.getClock(mContext, iconDpi);
         }
         return drawable == null ? super.getIcon(launcherActivityInfo, iconDpi, flattenDrawable) : drawable;

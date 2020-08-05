@@ -32,7 +32,7 @@ public class TintedDrawableSpan extends DynamicDrawableSpan {
     private final Drawable mDrawable;
     private int mOldTint;
 
-    public TintedDrawableSpan(Context context, int resourceId) {
+    public TintedDrawableSpan(final Context context, final int resourceId) {
         super(ALIGN_BOTTOM);
         mDrawable = context.getDrawable(resourceId);
         mOldTint = 0;
@@ -40,7 +40,7 @@ public class TintedDrawableSpan extends DynamicDrawableSpan {
     }
 
     @Override
-    public int getSize(Paint paint, CharSequence text, int start, int end, FontMetricsInt fm) {
+    public int getSize(final Paint paint, final CharSequence text, final int start, final int end, final FontMetricsInt fm) {
         fm = fm == null ? paint.getFontMetricsInt() : fm;
         int iconSize = fm.bottom - fm.top;
         if (Utilities.ATLEAST_NOUGAT) {
@@ -52,8 +52,8 @@ public class TintedDrawableSpan extends DynamicDrawableSpan {
     }
 
     @Override
-    public void draw(Canvas canvas, CharSequence text,
-                     int start, int end, float x, int top, int y, int bottom, Paint paint) {
+    public void draw(final Canvas canvas, final CharSequence text,
+                     final int start, final int end, final float x, final int top, final int y, final int bottom, final Paint paint) {
         int color = paint.getColor();
         if (mOldTint != color) {
             mOldTint = color;

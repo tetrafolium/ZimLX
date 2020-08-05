@@ -41,7 +41,7 @@ public class RequestPinItemActivity extends BaseTestingActivity {
     private int mRemoteViewColor = Color.TRANSPARENT;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         addButton("Pin Shortcut", "pinShortcut");
@@ -49,15 +49,15 @@ public class RequestPinItemActivity extends BaseTestingActivity {
         addButton("Pin Widget with config", "pinWidgetWithConfig");
     }
 
-    public void setCallback(PendingIntent callback) {
+    public void setCallback(final PendingIntent callback) {
         mCallback = callback;
     }
 
-    public void setRemoteViewColor(int color) {
+    public void setRemoteViewColor(final int color) {
         mRemoteViewColor = color;
     }
 
-    public void setShortcutId(String id) {
+    public void setShortcutId(final String id) {
         mShortcutId = id;
     }
 
@@ -89,7 +89,7 @@ public class RequestPinItemActivity extends BaseTestingActivity {
         requestWidget(new ComponentName(this, AppWidgetWithConfig.class));
     }
 
-    private void requestWidget(ComponentName cn) {
+    private void requestWidget(final ComponentName cn) {
         Bundle extras = null;
         if (mRemoteViewColor != Color.TRANSPARENT) {
             int layoutId = getResources().getIdentifier(

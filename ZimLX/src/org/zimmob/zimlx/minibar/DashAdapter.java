@@ -16,7 +16,7 @@ public class DashAdapter extends BaseAdapter {
     private Context context;
     private List<DashItem> dashItems;
 
-    public DashAdapter(Context context, List<DashItem> items) {
+    public DashAdapter(final Context context, final List<DashItem> items) {
         this.context = context;
         this.dashItems = items;
     }
@@ -25,15 +25,15 @@ public class DashAdapter extends BaseAdapter {
         return dashItems.size();
     }
 
-    public Object getItem(int item) {
+    public Object getItem(final int item) {
         return dashItems.get(item);
     }
 
-    public long getItemId(int position) {
+    public long getItemId(final int position) {
         return position;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, final View convertView, final ViewGroup parent) {
         View view;
         ImageView iv;
         if (convertView == null) {

@@ -44,7 +44,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
     @Thunk
     int mWidgetLoadingId = -1;
 
-    public WidgetHostViewLoader(Launcher launcher, View view) {
+    public WidgetHostViewLoader(final Launcher launcher, final View view) {
         mLauncher = launcher;
         mHandler = new Handler();
         mView = view;
@@ -52,7 +52,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
     }
 
     @Override
-    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+    public void onDragStart(final DropTarget.DragObject dragObject, final DragOptions options) {
         preloadWidget();
     }
 
@@ -152,7 +152,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
         return true;
     }
 
-    public static Bundle getDefaultOptionsForWidget(Context context, PendingAddWidgetInfo info) {
+    public static Bundle getDefaultOptionsForWidget(final Context context, final PendingAddWidgetInfo info) {
         Rect rect = new Rect();
         AppWidgetResizeFrame.getWidgetSizeRanges(context, info.spanX, info.spanY, rect);
         Rect padding = AppWidgetHostView.getDefaultPaddingForWidget(context,

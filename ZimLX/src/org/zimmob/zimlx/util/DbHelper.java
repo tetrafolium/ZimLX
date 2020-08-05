@@ -30,23 +30,23 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private SQLiteDatabase db;
 
-    public DbHelper(Context c) {
+    public DbHelper(final Context c) {
         super(c, DATABASE_HOME, null, 1);
         db = getWritableDatabase();
     }
 
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(final SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_COUNT);
     }
 
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         // discard the data and start over
         db.execSQL(SQL_DELETE + TABLE_APP_COUNT);
         onCreate(db);
     }
 
     @Override
-    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onDowngrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
 
@@ -68,7 +68,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return apps;
     }
 
-    public void updateAppCount(String packageName) {
+    public void updateAppCount(final String packageName) {
         String SQL_QUERY = "SELECT package_count FROM app_count WHERE package_name='" + packageName + "';";
         Cursor cursor = db.rawQuery(SQL_QUERY, null);
         int appCount = 0;
@@ -86,14 +86,14 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
-    private void saveAppCount(String packageName) {
+    private void saveAppCount(final String packageName) {
         ContentValues itemValues = new ContentValues();
         itemValues.put(COLUMN_PACKAGE_NAME, packageName);
         itemValues.put(COLUMN_PACKAGE_COUNT, 0);
         db.insert(TABLE_APP_COUNT, null, itemValues);
     }
 
-    public void deleteApp(String packageName) {
+    public void deleteApp(final String packageName) {
         db.delete(TABLE_APP_COUNT, "package_name='" + packageName + "'", null);
     }
 }

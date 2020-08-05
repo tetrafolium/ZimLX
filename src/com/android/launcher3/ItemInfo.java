@@ -112,13 +112,13 @@ public class ItemInfo {
         user = Process.myUserHandle();
     }
 
-    ItemInfo(ItemInfo info) {
+    ItemInfo(final ItemInfo info) {
         copyFrom(info);
         // tempdebug:
         LauncherModel.checkItemInfo(this);
     }
 
-    public void copyFrom(ItemInfo info) {
+    public void copyFrom(final ItemInfo info) {
         id = info.id;
         cellX = info.cellX;
         cellY = info.cellY;
@@ -145,7 +145,7 @@ public class ItemInfo {
         }
     }
 
-    public void writeToValues(ContentWriter writer) {
+    public void writeToValues(final ContentWriter writer) {
         writer.put(LauncherSettings.Favorites.ITEM_TYPE, itemType)
         .put(LauncherSettings.Favorites.CONTAINER, container)
         .put(LauncherSettings.Favorites.SCREEN, screenId)
@@ -156,7 +156,7 @@ public class ItemInfo {
         .put(LauncherSettings.Favorites.RANK, rank);
     }
 
-    public void readFromValues(ContentValues values) {
+    public void readFromValues(final ContentValues values) {
         itemType = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
         container = values.getAsLong(LauncherSettings.Favorites.CONTAINER);
         screenId = values.getAsLong(LauncherSettings.Favorites.SCREEN);
@@ -170,7 +170,7 @@ public class ItemInfo {
     /**
      * Write the fields of this item to the DB
      */
-    public void onAddToDatabase(ContentWriter writer) {
+    public void onAddToDatabase(final ContentWriter writer) {
         if (screenId == Workspace.EXTRA_EMPTY_SCREEN_ID) {
             // We should never persist an item on the extra empty screen.
             throw new RuntimeException("Screen id should not be EXTRA_EMPTY_SCREEN_ID");

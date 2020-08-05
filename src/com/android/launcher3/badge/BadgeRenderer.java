@@ -68,7 +68,7 @@ public class BadgeRenderer {
     private boolean showNotificationCount;
     private int backgroundColor;
 
-    public BadgeRenderer(@NotNull Context context, int iconSizePx) {
+    public BadgeRenderer(final @NotNull Context context, final int iconSizePx) {
         mContext = context;
         Resources res = context.getResources();
         mSize = (int) (SIZE_PERCENTAGE * iconSizePx);
@@ -100,8 +100,8 @@ public class BadgeRenderer {
      * @param badgeScale     The progress of the animation, from 0 to 1.
      * @param spaceForOffset How much space is available to offset the badge up and to the right.
      */
-    public void draw(Canvas canvas, @Nullable BadgeInfo badgeInfo,
-                     Rect iconBounds, float badgeScale, Point spaceForOffset) {
+    public void draw(final Canvas canvas, final @Nullable BadgeInfo badgeInfo,
+                     final Rect iconBounds, final float badgeScale, final Point spaceForOffset) {
         mTextPaint.setColor(Color.WHITE);
         showNotificationCount = Utilities.getZimPrefs(mContext).getNotificationCount();
 
@@ -174,10 +174,10 @@ public class BadgeRenderer {
 
         private final int mPadding;
         private final Bitmap mCircleClipBitmap;
-        private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG |
-                                               Paint.FILTER_BITMAP_FLAG);
+        private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG
+                                               | Paint.FILTER_BITMAP_FLAG);
 
-        public IconDrawer(int padding) {
+        public IconDrawer(final int padding) {
             mPadding = padding;
             mCircleClipBitmap = Bitmap.createBitmap(mSize, mSize, Bitmap.Config.ALPHA_8);
             Canvas canvas = new Canvas();
@@ -185,7 +185,7 @@ public class BadgeRenderer {
             canvas.drawCircle(mSize / 2, mSize / 2, mSize / 2 - padding, mPaint);
         }
 
-        public void drawIcon(Shader icon, Canvas canvas) {
+        public void drawIcon(final Shader icon, final Canvas canvas) {
             mPaint.setShader(icon);
             canvas.drawBitmap(mCircleClipBitmap, -mSize / 2, -mSize / 2, mPaint);
             mPaint.setShader(null);

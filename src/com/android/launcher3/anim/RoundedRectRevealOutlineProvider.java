@@ -32,8 +32,8 @@ public class RoundedRectRevealOutlineProvider extends RevealOutlineAnimation {
     private final Rect mStartRect;
     private final Rect mEndRect;
 
-    public RoundedRectRevealOutlineProvider(float startRadius, float endRadius, Rect startRect,
-                                            Rect endRect) {
+    public RoundedRectRevealOutlineProvider(final float startRadius, final float endRadius, final Rect startRect,
+                                            final Rect endRect) {
         mStartRadius = startRadius;
         mEndRadius = endRadius;
         mStartRect = startRect;
@@ -46,7 +46,7 @@ public class RoundedRectRevealOutlineProvider extends RevealOutlineAnimation {
     }
 
     @Override
-    public void setProgress(float progress) {
+    public void setProgress(final float progress) {
         mOutlineRadius = (1 - progress) * mStartRadius + progress * mEndRadius;
 
         mOutline.left = (int) ((1 - progress) * mStartRect.left + progress * mEndRect.left);

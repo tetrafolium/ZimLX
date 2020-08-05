@@ -9,12 +9,12 @@ import java.util.Comparator;
 public class InstallTimeComparator implements Comparator<AppInfo> {
     private final PackageManager mPackageManager;
 
-    public InstallTimeComparator(PackageManager packageManager) {
+    public InstallTimeComparator(final PackageManager packageManager) {
         mPackageManager = packageManager;
     }
 
     @Override
-    public int compare(AppInfo app1, AppInfo app2) {
+    public int compare(final AppInfo app1, final AppInfo app2) {
         try {
             long app1InstallTime = mPackageManager.getPackageInfo(app1.componentName.getPackageName(), 0).firstInstallTime;
             long app2InstallTime = mPackageManager.getPackageInfo(app2.componentName.getPackageName(), 0).firstInstallTime;

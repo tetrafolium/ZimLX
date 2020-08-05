@@ -82,7 +82,7 @@ public class AdaptiveIconGenerator {
 
     private AdaptiveIconCompat tmp;
 
-    public AdaptiveIconGenerator(Context context, @NonNull Drawable icon) {
+    public AdaptiveIconGenerator(final Context context, final @NonNull Drawable icon) {
         this.context = context;
         this.icon = AdaptiveIconCompat.wrap(icon);
         ZimPreferences prefs = Utilities.getZimPrefs(context);

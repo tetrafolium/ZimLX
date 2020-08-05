@@ -53,19 +53,19 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     protected TouchController mActiveController;
     private TouchCompleteListener mTouchCompleteListener;
 
-    public BaseDragLayer(Context context, AttributeSet attrs, int alphaChannelCount) {
+    public BaseDragLayer(final Context context, final AttributeSet attrs, final int alphaChannelCount) {
         super(context, attrs);
         mActivity = (T) BaseActivity.fromContext(context);
         mMultiValueAlpha = new MultiValueAlpha(this, alphaChannelCount);
     }
 
-    public boolean isEventOverView(View view, MotionEvent ev) {
+    public boolean isEventOverView(final View view, final MotionEvent ev) {
         getDescendantRectRelativeToSelf(view, mHitRect);
         return mHitRect.contains((int) ev.getX(), (int) ev.getY());
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onInterceptTouchEvent(final MotionEvent ev) {
         int action = ev.getAction();
 
         if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
@@ -79,7 +79,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
         return findActiveController(ev);
     }
 
-    protected boolean findActiveController(MotionEvent ev) {
+    protected boolean findActiveController(final MotionEvent ev) {
         mActiveController = null;
 
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
@@ -98,7 +98,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     }
 
     @Override
-    public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
+    public boolean onRequestSendAccessibilityEvent(final View child, final AccessibilityEvent event) {
         // Shortcuts can appear above folder
         View topView = AbstractFloatingView.getTopOpenViewWithType(mActivity,
                        AbstractFloatingView.TYPE_ACCESSIBLE);
@@ -114,7 +114,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     }
 
     @Override
-    public void addChildrenForAccessibility(ArrayList<View> childrenForAccessibility) {
+    public void addChildrenForAccessibility(final ArrayList<View> childrenForAccessibility) {
         View topView = AbstractFloatingView.getTopOpenViewWithType(mActivity,
                        AbstractFloatingView.TYPE_ACCESSIBLE);
         if (topView != null) {
@@ -125,7 +125,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
         }
     }
 
-    protected void addAccessibleChildToList(View child, ArrayList<View> outList) {
+    protected void addAccessibleChildToList(final View child, final ArrayList<View> outList) {
         if (child.isImportantForAccessibility()) {
             outList.add(child);
         } else {
@@ -134,7 +134,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     }
 
     @Override
-    public void onViewRemoved(View child) {
+    public void onViewRemoved(final View child) {
         super.onViewRemoved(child);
         if (child instanceof AbstractFloatingView) {
             // Handles the case where the view is removed without being properly closed.
@@ -149,7 +149,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(final MotionEvent ev) {
         int action = ev.getAction();
         if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             if (mTouchCompleteListener != null) {
@@ -173,7 +173,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
      * @param r          The rect into which to place the results.
      * @return The factor by which this descendant is scaled relative to this DragLayer.
      */
-    public float getDescendantRectRelativeToSelf(View descendant, Rect r) {
+    public float getDescendantRectRelativeToSelf(final View descendant, final Rect r) {
         mTmpXY[0] = 0;
         mTmpXY[1] = 0;
         float scale = getDescendantCoordRelativeToSelf(descendant, mTmpXY);
@@ -184,13 +184,13 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
         return scale;
     }
 
-    public float getLocationInDragLayer(View child, int[] loc) {
+    public float getLocationInDragLayer(final View child, final int[] loc) {
         loc[0] = 0;
         loc[1] = 0;
         return getDescendantCoordRelativeToSelf(child, loc);
     }
 
-    public float getDescendantCoordRelativeToSelf(View descendant, int[] coord) {
+    public float getDescendantCoordRelativeToSelf(final View descendant, final int[] coord) {
         return getDescendantCoordRelativeToSelf(descendant, coord, false);
     }
 
@@ -206,8 +206,8 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
      * this scale factor is assumed to be equal in X and Y, and so if at any point this
      * assumption fails, we will need to return a pair of scale factors.
      */
-    public float getDescendantCoordRelativeToSelf(View descendant, int[] coord,
-            boolean includeRootScroll) {
+    public float getDescendantCoordRelativeToSelf(final View descendant, final int[] coord,
+            final boolean includeRootScroll) {
         return Utilities.getDescendantCoordRelativeToAncestor(descendant, this,
                 coord, includeRootScroll);
     }
@@ -215,11 +215,11 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     /**
      * Inverse of {@link #getDescendantCoordRelativeToSelf(View, int[])}.
      */
-    public void mapCoordInSelfToDescendant(View descendant, int[] coord) {
+    public void mapCoordInSelfToDescendant(final View descendant, final int[] coord) {
         Utilities.mapCoordInSelfToDescendant(descendant, this, coord);
     }
 
-    public void getViewRectRelativeToSelf(View v, Rect r) {
+    public void getViewRectRelativeToSelf(final View v, final Rect r) {
         int[] loc = new int[2];
         getLocationInWindow(loc);
         int x = loc[0];
@@ -235,13 +235,13 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     }
 
     @Override
-    public boolean dispatchUnhandledMove(View focused, int direction) {
+    public boolean dispatchUnhandledMove(final View focused, final int direction) {
         // Consume the unhandled move if a container is open, to avoid switching pages underneath.
         return AbstractFloatingView.getTopOpenView(mActivity) != null;
     }
 
     @Override
-    protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
+    protected boolean onRequestFocusInDescendants(final int direction, final Rect previouslyFocusedRect) {
         View topView = AbstractFloatingView.getTopOpenView(mActivity);
         if (topView != null) {
             return topView.requestFocus(direction, previouslyFocusedRect);
@@ -251,7 +251,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     }
 
     @Override
-    public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
+    public void addFocusables(final ArrayList<View> views, final int direction, final int focusableMode) {
         View topView = AbstractFloatingView.getTopOpenView(mActivity);
         if (topView != null) {
             topView.addFocusables(views, direction);
@@ -260,7 +260,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
         }
     }
 
-    public void setTouchCompleteListener(TouchCompleteListener listener) {
+    public void setTouchCompleteListener(final TouchCompleteListener listener) {
         mTouchCompleteListener = listener;
     }
 
@@ -269,7 +269,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     }
 
     @Override
-    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+    public LayoutParams generateLayoutParams(final AttributeSet attrs) {
         return new LayoutParams(getContext(), attrs);
     }
 
@@ -280,16 +280,16 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
 
     // Override to allow type-checking of LayoutParams.
     @Override
-    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+    protected boolean checkLayoutParams(final ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
     }
 
     @Override
-    protected LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+    protected LayoutParams generateLayoutParams(final ViewGroup.LayoutParams p) {
         return new LayoutParams(p);
     }
 
-    public AlphaProperty getAlphaProperty(int index) {
+    public AlphaProperty getAlphaProperty(final int index) {
         return mMultiValueAlpha.getProperty(index);
     }
 
@@ -297,19 +297,19 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
         public int x, y;
         public boolean customPosition = false;
 
-        public LayoutParams(Context c, AttributeSet attrs) {
+        public LayoutParams(final Context c, final AttributeSet attrs) {
             super(c, attrs);
         }
 
-        public LayoutParams(int width, int height) {
+        public LayoutParams(final int width, final int height) {
             super(width, height);
         }
 
-        public LayoutParams(ViewGroup.LayoutParams lp) {
+        public LayoutParams(final ViewGroup.LayoutParams lp) {
             super(lp);
         }
 
-        public void setWidth(int width) {
+        public void setWidth(final int width) {
             this.width = width;
         }
 
@@ -317,7 +317,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
             return width;
         }
 
-        public void setHeight(int height) {
+        public void setHeight(final int height) {
             this.height = height;
         }
 
@@ -325,7 +325,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
             return height;
         }
 
-        public void setX(int x) {
+        public void setX(final int x) {
             this.x = x;
         }
 
@@ -333,7 +333,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
             return x;
         }
 
-        public void setY(int y) {
+        public void setY(final int y) {
             this.y = y;
         }
 
@@ -342,7 +342,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
         }
     }
 
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(final boolean changed, final int l, final int t, final int r, final int b) {
         super.onLayout(changed, l, t, r, b);
         int count = getChildCount();
         for (int i = 0; i < count; i++) {

@@ -47,8 +47,8 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     private AllAppsList mAllAppsList;
     private Executor mUiExecutor;
 
-    public void init(LauncherAppState app, LauncherModel model,
-                     BgDataModel dataModel, AllAppsList allAppsList, Executor uiExecutor) {
+    public void init(final LauncherAppState app, final LauncherModel model,
+                     final BgDataModel dataModel, final AllAppsList allAppsList, final Executor uiExecutor) {
         mApp = app;
         mModel = model;
         mDataModel = dataModel;
@@ -99,29 +99,29 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
         if (!updatedShortcuts.isEmpty()) {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
-                public void execute(Callbacks callbacks) {
+                public void execute(final Callbacks callbacks) {
                     callbacks.bindShortcutsChanged(updatedShortcuts, user);
                 }
             });
         }
     }
 
-    public void bindDeepShortcuts(BgDataModel dataModel) {
+    public void bindDeepShortcuts(final BgDataModel dataModel) {
         final MultiHashMap<ComponentKey, String> shortcutMapCopy = dataModel.deepShortcutMap.clone();
         scheduleCallbackTask(new CallbackTask() {
             @Override
-            public void execute(Callbacks callbacks) {
+            public void execute(final Callbacks callbacks) {
                 callbacks.bindDeepShortcutMap(shortcutMapCopy);
             }
         });
     }
 
-    public void bindUpdatedWidgets(BgDataModel dataModel) {
+    public void bindUpdatedWidgets(final BgDataModel dataModel) {
         final ArrayList<WidgetListRowEntry> widgets =
             dataModel.widgetsModel.getWidgetsList(mApp.getContext());
         scheduleCallbackTask(new CallbackTask() {
             @Override
-            public void execute(Callbacks callbacks) {
+            public void execute(final Callbacks callbacks) {
                 callbacks.bindAllWidgets(widgets);
             }
         });
@@ -133,7 +133,7 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
         // Call the components-removed callback
         scheduleCallbackTask(new CallbackTask() {
             @Override
-            public void execute(Callbacks callbacks) {
+            public void execute(final Callbacks callbacks) {
                 callbacks.bindWorkspaceComponentsRemoved(matcher);
             }
         });

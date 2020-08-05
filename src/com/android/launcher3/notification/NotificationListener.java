@@ -88,7 +88,7 @@ public class NotificationListener extends NotificationListenerService {
 
     private final Handler.Callback mWorkerCallback = new Handler.Callback() {
         @Override
-        public boolean handleMessage(Message message) {
+        public boolean handleMessage(final Message message) {
             switch (message.what) {
             case MSG_NOTIFICATION_POSTED:
                 mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
@@ -119,7 +119,7 @@ public class NotificationListener extends NotificationListenerService {
 
     private final Handler.Callback mUiCallback = new Handler.Callback() {
         @Override
-        public boolean handleMessage(Message message) {
+        public boolean handleMessage(final Message message) {
             switch (message.what) {
             case MSG_NOTIFICATION_POSTED:
                 if (sNotificationsChangedListener != null) {
@@ -170,7 +170,7 @@ public class NotificationListener extends NotificationListenerService {
         return sIsConnected ? sNotificationListenerInstance : null;
     }
 
-    public static void setNotificationsChangedListener(NotificationsChangedListener listener) {
+    public static void setNotificationsChangedListener(final NotificationsChangedListener listener) {
         sNotificationsChangedListener = listener;
 
         NotificationListener notificationListener = getInstanceIfConnected();
@@ -185,7 +185,7 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     public static void setStatusBarNotificationsChangedListener
-    (StatusBarNotificationsChangedListener listener) {
+    (final StatusBarNotificationsChangedListener listener) {
         sStatusBarNotificationsChangedListener = listener;
     }
 
@@ -204,7 +204,7 @@ public class NotificationListener extends NotificationListenerService {
 
         mNotificationBadgingObserver = new SettingsObserver.Secure(getContentResolver()) {
             @Override
-            public void onSettingChanged(boolean isNotificationBadgingEnabled) {
+            public void onSettingChanged(final boolean isNotificationBadgingEnabled) {
                 if (!isNotificationBadgingEnabled) {
                     requestUnbind();
                 }
@@ -248,7 +248,7 @@ public class NotificationListener extends NotificationListenerService {
         final NotificationKeyData notificationKey;
         final boolean shouldBeFilteredOut;
 
-        NotificationPostedMsg(StatusBarNotification sbn) {
+        NotificationPostedMsg(final StatusBarNotification sbn) {
             packageUserKey = PackageUserKey.fromNotification(sbn);
             notificationKey = NotificationKeyData.fromNotification(sbn);
             shouldBeFilteredOut = shouldBeFilteredOut(sbn);
@@ -288,13 +288,13 @@ public class NotificationListener extends NotificationListenerService {
         }
     }
 
-    public void cancelNotificationFromLauncher(String key) {
+    public void cancelNotificationFromLauncher(final String key) {
         mLastKeyDismissedByLauncher = key;
         cancelNotification(key);
     }
 
     @Override
-    public void onNotificationRankingUpdate(RankingMap rankingMap) {
+    public void onNotificationRankingUpdate(final RankingMap rankingMap) {
         super.onNotificationRankingUpdate(rankingMap);
         String[] keys = rankingMap.getOrderedKeys();
         for (StatusBarNotification sbn : getActiveNotifications(keys)) {
@@ -302,7 +302,7 @@ public class NotificationListener extends NotificationListenerService {
         }
     }
 
-    private void updateGroupKeyIfNecessary(StatusBarNotification sbn) {
+    private void updateGroupKeyIfNecessary(final StatusBarNotification sbn) {
         String childKey = sbn.getKey();
         String oldGroupKey = mNotificationGroupKeyMap.get(childKey);
         String newGroupKey = sbn.getGroupKey();
@@ -336,7 +336,7 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     /** This makes a potentially expensive binder call and should be run on a background thread. */
-    public List<StatusBarNotification> getNotificationsForKeys(List<NotificationKeyData> keys) {
+    public List<StatusBarNotification> getNotificationsForKeys(final List<NotificationKeyData> keys) {
         StatusBarNotification[] notifications = NotificationListener.this
                                                 .getActiveNotifications(NotificationKeyData.extractKeysOnly(keys)
                                                         .toArray(new String[keys.size()]));
@@ -351,7 +351,7 @@ public class NotificationListener extends NotificationListenerService {
      * @see #shouldBeFilteredOut(StatusBarNotification)
      */
     private List<StatusBarNotification> filterNotifications(
-        StatusBarNotification[] notifications) {
+        final StatusBarNotification[] notifications) {
         if (notifications == null) return null;
         Set<Integer> removedNotifications = new ArraySet<>();
         for (int i = 0; i < notifications.length; i++) {
@@ -369,7 +369,7 @@ public class NotificationListener extends NotificationListenerService {
         return filteredNotifications;
     }
 
-    private boolean shouldBeFilteredOut(StatusBarNotification sbn) {
+    private boolean shouldBeFilteredOut(final StatusBarNotification sbn) {
         Notification notification = sbn.getNotification();
 
         updateGroupKeyIfNecessary(sbn);

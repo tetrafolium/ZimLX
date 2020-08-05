@@ -41,15 +41,15 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     private final Point mFastScrollerOffset = new Point();
     private boolean mTouchDownOnScroller;
 
-    public WidgetsRecyclerView(Context context) {
+    public WidgetsRecyclerView(final Context context) {
         this(context, null);
     }
 
-    public WidgetsRecyclerView(Context context, AttributeSet attrs) {
+    public WidgetsRecyclerView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public WidgetsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WidgetsRecyclerView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         // API 21 and below only support 3 parameter ctor.
         super(context, attrs, defStyleAttr);
         mScrollbarTop = getResources().getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
@@ -65,7 +65,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     }
 
     @Override
-    public void setAdapter(Adapter adapter) {
+    public void setAdapter(final Adapter adapter) {
         super.setAdapter(adapter);
         mAdapter = (WidgetsListAdapter) adapter;
     }
@@ -74,7 +74,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      */
     @Override
-    public String scrollToPositionAtProgress(float touchFraction) {
+    public String scrollToPositionAtProgress(final float touchFraction) {
         // Skip early if widgets are not bound.
         if (isModelNotReady()) {
             return "";
@@ -97,7 +97,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
      * Updates the bounds for the scrollbar.
      */
     @Override
-    public void onUpdateScrollbar(int dy) {
+    public void onUpdateScrollbar(final int dy) {
         // Skip early if widgets are not bound.
         if (isModelNotReady()) {
             return;
@@ -149,7 +149,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     }
 
     @Override
-    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+    public boolean onInterceptTouchEvent(final RecyclerView rv, final MotionEvent e) {
         if (e.getAction() == MotionEvent.ACTION_DOWN) {
             mTouchDownOnScroller =
                 mScrollbar.isHitInParent(e.getX(), e.getY(), mFastScrollerOffset);
@@ -161,13 +161,13 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     }
 
     @Override
-    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+    public void onTouchEvent(final RecyclerView rv, final MotionEvent e) {
         if (mTouchDownOnScroller) {
             mScrollbar.handleTouchEvent(e, mFastScrollerOffset);
         }
     }
 
     @Override
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+    public void onRequestDisallowInterceptTouchEvent(final boolean disallowIntercept) {
     }
 }

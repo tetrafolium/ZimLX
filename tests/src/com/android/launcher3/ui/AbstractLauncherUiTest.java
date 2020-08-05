@@ -82,7 +82,7 @@ public abstract class AbstractLauncherUiTest {
         mTargetPackage = mTargetContext.getPackageName();
     }
 
-    protected void lockRotation(boolean naturalOrientation) throws RemoteException {
+    protected void lockRotation(final boolean naturalOrientation) throws RemoteException {
         Utilities.getPrefs(mTargetContext)
         .edit()
         .putBoolean(Utilities.ALLOW_ROTATION_PREFERENCE_KEY, !naturalOrientation)
@@ -135,7 +135,7 @@ public abstract class AbstractLauncherUiTest {
      *
      * @return the matching object.
      */
-    protected UiObject2 scrollAndFind(UiObject2 container, BySelector condition) {
+    protected UiObject2 scrollAndFind(final UiObject2 container, final BySelector condition) {
         do {
             UiObject2 widget = container.findObject(condition);
             if (widget != null) {
@@ -148,7 +148,7 @@ public abstract class AbstractLauncherUiTest {
     /**
      * Drags an icon to the center of homescreen.
      */
-    protected void dragToWorkspace(UiObject2 icon, boolean expectedToShowShortcuts) {
+    protected void dragToWorkspace(final UiObject2 icon, final boolean expectedToShowShortcuts) {
         Point center = icon.getVisibleCenter();
 
         // Action Down
@@ -186,7 +186,7 @@ public abstract class AbstractLauncherUiTest {
         mDevice.wait(Until.gone(getSelectorForId(R.id.delete_target_text)), DEFAULT_UI_TIMEOUT);
     }
 
-    private void movePointer(Point from, Point to) {
+    private void movePointer(final Point from, final Point to) {
         while (!from.equals(to)) {
             from.x = getNextMoveValue(to.x, from.x);
             from.y = getNextMoveValue(to.y, from.y);
@@ -194,7 +194,7 @@ public abstract class AbstractLauncherUiTest {
         }
     }
 
-    private int getNextMoveValue(int targetValue, int oldValue) {
+    private int getNextMoveValue(final int targetValue, final int oldValue) {
         if (targetValue - oldValue > 10) {
             return oldValue + 10;
         } else if (targetValue - oldValue < -10) {
@@ -204,7 +204,7 @@ public abstract class AbstractLauncherUiTest {
         }
     }
 
-    protected void sendPointer(int action, Point point) {
+    protected void sendPointer(final int action, final Point point) {
         MotionEvent event = MotionEvent.obtain(SystemClock.uptimeMillis(),
                                                SystemClock.uptimeMillis(), action, point.x, point.y, 0);
         getInstrumentation().sendPointerSync(event);
@@ -269,11 +269,11 @@ public abstract class AbstractLauncherUiTest {
         return info;
     }
 
-    protected UiObject2 findViewById(int id) {
+    protected UiObject2 findViewById(final int id) {
         return mDevice.wait(Until.findObject(getSelectorForId(id)), DEFAULT_UI_TIMEOUT);
     }
 
-    protected BySelector getSelectorForId(int id) {
+    protected BySelector getSelectorForId(final int id) {
         String name = mTargetContext.getResources().getResourceEntryName(id);
         return By.res(mTargetPackage, name);
     }
@@ -291,12 +291,12 @@ public abstract class AbstractLauncherUiTest {
         private final CountDownLatch latch = new CountDownLatch(1);
         private Intent mIntent;
 
-        public BlockingBroadcastReceiver(String action) {
+        public BlockingBroadcastReceiver(final String action) {
             mTargetContext.registerReceiver(this, new IntentFilter(action));
         }
 
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             mIntent = intent;
             latch.countDown();
         }

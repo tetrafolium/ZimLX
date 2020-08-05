@@ -66,7 +66,7 @@ public class ExtractionUtils {
     /**
      * Starts the {@link ColorExtractionService} without checking the wallpaper id
      */
-    public static void startColorExtractionService(Context context) {
+    public static void startColorExtractionService(final Context context) {
         if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
             return;
         }
@@ -77,7 +77,7 @@ public class ExtractionUtils {
                               .setMinimumLatency(0).build());
     }
 
-    private static boolean hasWallpaperIdChanged(Context context) {
+    private static boolean hasWallpaperIdChanged(final Context context) {
         if (!Utilities.ATLEAST_NOUGAT) {
             // TODO: update an id in sharedprefs in onWallpaperChanged broadcast, and read it here.
             return false;
@@ -89,16 +89,16 @@ public class ExtractionUtils {
     }
 
     @TargetApi(Build.VERSION_CODES.N)
-    public static int getWallpaperId(WallpaperManager wallpaperManager) {
-        return Utilities.ATLEAST_NOUGAT ?
-               wallpaperManager.getWallpaperId(WallpaperManager.FLAG_SYSTEM) : -1;
+    public static int getWallpaperId(final WallpaperManager wallpaperManager) {
+        return Utilities.ATLEAST_NOUGAT
+               ? wallpaperManager.getWallpaperId(WallpaperManager.FLAG_SYSTEM) : -1;
     }
 
-    public static boolean isSuperLight(Palette p) {
+    public static boolean isSuperLight(final Palette p) {
         return !isLegibleOnWallpaper(Color.WHITE, p.getSwatches());
     }
 
-    public static boolean isSuperDark(Palette p) {
+    public static boolean isSuperDark(final Palette p) {
         return !isLegibleOnWallpaper(Color.BLACK, p.getSwatches());
     }
 
@@ -106,7 +106,7 @@ public class ExtractionUtils {
      * Given a color, returns true if that color is legible on
      * the given wallpaper color swatches, else returns false.
      */
-    private static boolean isLegibleOnWallpaper(int color, List<Palette.Swatch> wallpaperSwatches) {
+    private static boolean isLegibleOnWallpaper(final int color, final List<Palette.Swatch> wallpaperSwatches) {
         int legiblePopulation = 0;
         int illegiblePopulation = 0;
         for (Palette.Swatch swatch : wallpaperSwatches) {
@@ -122,7 +122,7 @@ public class ExtractionUtils {
     /**
      * @return Whether the foreground color is legible on the background color.
      */
-    private static boolean isLegible(int foreground, int background) {
+    private static boolean isLegible(final int foreground, final int background) {
         background = ColorUtils.setAlphaComponent(background, 255);
         return ColorUtils.calculateContrast(foreground, background) >= MIN_CONTRAST_RATIO;
     }

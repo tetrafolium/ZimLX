@@ -72,30 +72,30 @@ public class LanguagePreferenceCompat extends ListPreference {
     public String _systemLanguageName = "System";
     public String _defaultLanguageCode = "en";
 
-    public LanguagePreferenceCompat(Context context) {
+    public LanguagePreferenceCompat(final Context context) {
         super(context);
         loadLangs(context, null);
     }
 
-    public LanguagePreferenceCompat(Context context, AttributeSet attrs) {
+    public LanguagePreferenceCompat(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         loadLangs(context, attrs);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public LanguagePreferenceCompat(Context context, AttributeSet attrs, int defStyleAttr) {
+    public LanguagePreferenceCompat(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         loadLangs(context, attrs);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public LanguagePreferenceCompat(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public LanguagePreferenceCompat(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         loadLangs(context, attrs);
     }
 
     @Override
-    public boolean callChangeListener(Object newValue) {
+    public boolean callChangeListener(final Object newValue) {
         if (newValue instanceof String) {
             // Does not apply to existing UI, use recreate()
             new ContextUtils(getContext()).setAppLanguage((String) newValue);
@@ -104,11 +104,11 @@ public class LanguagePreferenceCompat extends ListPreference {
     }
 
 
-    private void loadLangs(Context context) {
+    private void loadLangs(final Context context) {
         loadLangs(context, null);
     }
 
-    private void loadLangs(Context context, @Nullable AttributeSet attrs) {
+    private void loadLangs(final Context context, final @Nullable AttributeSet attrs) {
         setDefaultValue(SYSTEM_LANGUAGE_CODE);
 
         // Fetch readable details
@@ -174,7 +174,7 @@ public class LanguagePreferenceCompat extends ListPreference {
         return _systemLanguageName;
     }
 
-    public void setSystemLanguageName(String systemLanguageName) {
+    public void setSystemLanguageName(final String systemLanguageName) {
         _systemLanguageName = systemLanguageName;
         loadLangs(getContext());
     }
@@ -183,7 +183,7 @@ public class LanguagePreferenceCompat extends ListPreference {
         return _defaultLanguageCode;
     }
 
-    public void setDefaultLanguageCode(String defaultLanguageCode) {
+    public void setDefaultLanguageCode(final String defaultLanguageCode) {
         _defaultLanguageCode = defaultLanguageCode;
         loadLangs(getContext());
     }

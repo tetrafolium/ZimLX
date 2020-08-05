@@ -29,12 +29,12 @@ import java.util.List;
 
 class AppWidgetManagerCompatVO extends AppWidgetManagerCompatVL {
 
-    AppWidgetManagerCompatVO(Context context) {
+    AppWidgetManagerCompatVO(final Context context) {
         super(context);
     }
 
     @Override
-    public List<AppWidgetProviderInfo> getAllProviders(@Nullable PackageUserKey packageUser) {
+    public List<AppWidgetProviderInfo> getAllProviders(final @Nullable PackageUserKey packageUser) {
         if (FeatureFlags.GO_DISABLE_WIDGETS) {
             return Collections.emptyList();
         }

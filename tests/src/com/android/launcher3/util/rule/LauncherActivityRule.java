@@ -47,7 +47,7 @@ public class LauncherActivityRule implements TestRule {
     }
 
     @Override
-    public Statement apply(Statement base, Description description) {
+    public Statement apply(final Statement base, final Description description) {
         return new MyStatement(base);
     }
 
@@ -85,7 +85,7 @@ public class LauncherActivityRule implements TestRule {
 
         private final Statement mBase;
 
-        public MyStatement(Statement base) {
+        public MyStatement(final Statement base) {
             mBase = base;
         }
 
@@ -104,34 +104,34 @@ public class LauncherActivityRule implements TestRule {
         }
 
         @Override
-        public void onActivityCreated(Activity activity, Bundle bundle) {
+        public void onActivityCreated(final Activity activity, final Bundle bundle) {
             if (activity instanceof Launcher) {
                 mActivity = (Launcher) activity;
             }
         }
 
         @Override
-        public void onActivityStarted(Activity activity) {
+        public void onActivityStarted(final Activity activity) {
         }
 
         @Override
-        public void onActivityResumed(Activity activity) {
+        public void onActivityResumed(final Activity activity) {
         }
 
         @Override
-        public void onActivityPaused(Activity activity) {
+        public void onActivityPaused(final Activity activity) {
         }
 
         @Override
-        public void onActivityStopped(Activity activity) {
+        public void onActivityStopped(final Activity activity) {
         }
 
         @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+        public void onActivitySaveInstanceState(final Activity activity, final Bundle bundle) {
         }
 
         @Override
-        public void onActivityDestroyed(Activity activity) {
+        public void onActivityDestroyed(final Activity activity) {
             if (activity == mActivity) {
                 mActivity = null;
             }

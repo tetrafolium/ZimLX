@@ -62,15 +62,15 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
 
     public float dockRadius;
 
-    public Hotseat(Context context) {
+    public Hotseat(final Context context) {
         this(context, null);
     }
 
-    public Hotseat(Context context, AttributeSet attrs) {
+    public Hotseat(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public Hotseat(Context context, AttributeSet attrs, int defStyle) {
+    public Hotseat(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
         dockRadius = Utilities.getZimPrefs(context).getDockRadius();
@@ -79,8 +79,8 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
         } else {
             mBackgroundColor = ColorUtils.setAlphaComponent(
                                    Utilities.resolveAttributeData(context, R.attr.allAppsContainerColor), 0);
-            mBackground = BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) ?
-                          mLauncher.getBlurWallpaperProvider().createDrawable() : new ColorDrawable(mBackgroundColor);
+            mBackground = BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS)
+                          ? mLauncher.getBlurWallpaperProvider().createDrawable() : new ColorDrawable(mBackgroundColor);
             setBackground(mBackground);
         }
     }
@@ -90,19 +90,19 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     }
 
     /* Get the orientation invariant order of the item in the hotseat for persistence. */
-    int getOrderInHotseat(int x, int y) {
+    int getOrderInHotseat(final int x, final int y) {
         int xOrder = mHasVerticalHotseat ? (mContent.getCountY() - y - 1) : x;
         int yOrder = mHasVerticalHotseat ? x * mContent.getCountY() : y * mContent.getCountX();
         return xOrder + yOrder;
     }
 
     /* Get the orientation specific coordinates given an invariant order in the hotseat. */
-    int getCellXFromOrder(int rank) {
+    int getCellXFromOrder(final int rank) {
         int size = mHasVerticalHotseat ? mContent.getCountY() : mContent.getCountX();
         return mHasVerticalHotseat ? rank / size : rank % size;
     }
 
-    int getCellYFromOrder(int rank) {
+    int getCellYFromOrder(final int rank) {
         int size = mHasVerticalHotseat ? mContent.getCountY() : mContent.getCountX();
         return mHasVerticalHotseat ? (mContent.getCountY() - ((rank % size) + 1)) : rank / size;
     }
@@ -119,7 +119,7 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
         mContent = findViewById(R.id.layout);
     }
 
-    void resetLayout(boolean hasVerticalHotseat) {
+    void resetLayout(final boolean hasVerticalHotseat) {
         mContent.removeAllViewsInLayout();
         mHasVerticalHotseat = hasVerticalHotseat;
         InvariantDeviceProfile idp = mLauncher.getDeviceProfile().inv;
@@ -171,22 +171,22 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onInterceptTouchEvent(final MotionEvent ev) {
         // We don't want any clicks to go through to the hotseat unless the workspace is in
         // the normal state or an accessible drag is in progress.
-        return !mLauncher.getWorkspace().workspaceIconsCanBeDragged() &&
-               !mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
+        return !mLauncher.getWorkspace().workspaceIconsCanBeDragged()
+               && !mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
+    public void fillInLogContainerData(final View v, final ItemInfo info, final Target target, final Target targetParent) {
         target.gridX = info.cellX;
         target.gridY = info.cellY;
         targetParent.containerType = ContainerType.HOTSEAT;
     }
 
     @Override
-    public void setInsets(Rect insets) {
+    public void setInsets(final Rect insets) {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
         DeviceProfile grid = mLauncher.getDeviceProfile();
 

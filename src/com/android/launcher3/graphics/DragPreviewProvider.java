@@ -55,11 +55,11 @@ public class DragPreviewProvider {
     private OutlineGeneratorCallback mOutlineGeneratorCallback;
     public Bitmap generatedDragOutline;
 
-    public DragPreviewProvider(View view) {
+    public DragPreviewProvider(final View view) {
         this(view, view.getContext());
     }
 
-    public DragPreviewProvider(View view, Context context) {
+    public DragPreviewProvider(final View view, final Context context) {
         mView = view;
         blurSizeOutline =
             context.getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
@@ -76,7 +76,7 @@ public class DragPreviewProvider {
     /**
      * Draws the {@link #mView} into the given {@param destCanvas}.
      */
-    protected void drawDragView(Canvas destCanvas, float scale) {
+    protected void drawDragView(final Canvas destCanvas, final float scale) {
         destCanvas.save();
         destCanvas.scale(scale, scale);
 
@@ -139,7 +139,7 @@ public class DragPreviewProvider {
                 height + blurSizeOutline, (c) -> drawDragView(c, 1));
     }
 
-    public final void generateDragOutline(Bitmap preview) {
+    public final void generateDragOutline(final Bitmap preview) {
         if (FeatureFlags.IS_DOGFOOD_BUILD && mOutlineGeneratorCallback != null) {
             throw new RuntimeException("Drag outline generated twice");
         }
@@ -148,7 +148,7 @@ public class DragPreviewProvider {
         new Handler(UiThreadHelper.getBackgroundLooper()).post(mOutlineGeneratorCallback);
     }
 
-    protected static Rect getDrawableBounds(Drawable d) {
+    protected static Rect getDrawableBounds(final Drawable d) {
         Rect bounds = new Rect();
         d.copyBounds(bounds);
         if (bounds.width() == 0 || bounds.height() == 0) {
@@ -159,7 +159,7 @@ public class DragPreviewProvider {
         return bounds;
     }
 
-    public float getScaleAndPosition(Bitmap preview, int[] outPos) {
+    public float getScaleAndPosition(final Bitmap preview, final int[] outPos) {
         float scale = Launcher.getLauncher(mView.getContext())
                       .getDragLayer().getLocationInDragLayer(mView, outPos);
         if (mView instanceof LauncherAppWidgetHostView) {
@@ -168,14 +168,14 @@ public class DragPreviewProvider {
             scale /= ((LauncherAppWidgetHostView) mView).getScaleToFit();
         }
 
-        outPos[0] = Math.round(outPos[0] -
-                               (preview.getWidth() - scale * mView.getWidth() * mView.getScaleX()) / 2);
+        outPos[0] = Math.round(outPos[0]
+                               - (preview.getWidth() - scale * mView.getWidth() * mView.getScaleX()) / 2);
         outPos[1] = Math.round(outPos[1] - (1 - scale) * preview.getHeight() / 2
                                - previewPadding / 2);
         return scale;
     }
 
-    protected Bitmap convertPreviewToAlphaBitmap(Bitmap preview) {
+    protected Bitmap convertPreviewToAlphaBitmap(final Bitmap preview) {
         return preview.copy(Bitmap.Config.ALPHA_8, true);
     }
 
@@ -184,7 +184,7 @@ public class DragPreviewProvider {
         private final Bitmap mPreviewSnapshot;
         private final Context mContext;
 
-        OutlineGeneratorCallback(Bitmap preview) {
+        OutlineGeneratorCallback(final Bitmap preview) {
             mPreviewSnapshot = preview;
             mContext = mView.getContext();
         }

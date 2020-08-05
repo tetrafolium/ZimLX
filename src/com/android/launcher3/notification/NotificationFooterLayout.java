@@ -64,15 +64,15 @@ public class NotificationFooterLayout extends FrameLayout {
     private LinearLayout mIconRow;
     private NotificationItemView mContainer;
 
-    public NotificationFooterLayout(Context context) {
+    public NotificationFooterLayout(final Context context) {
         this(context, null, 0);
     }
 
-    public NotificationFooterLayout(Context context, AttributeSet attrs) {
+    public NotificationFooterLayout(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public NotificationFooterLayout(Context context, AttributeSet attrs, int defStyle) {
+    public NotificationFooterLayout(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
         Resources res = getResources();
@@ -101,7 +101,7 @@ public class NotificationFooterLayout extends FrameLayout {
         mIconRow = findViewById(R.id.icon_row);
     }
 
-    void setContainer(NotificationItemView container) {
+    void setContainer(final NotificationItemView container) {
         mContainer = container;
     }
 
@@ -139,7 +139,7 @@ public class NotificationFooterLayout extends FrameLayout {
      * Creates an icon for the given NotificationInfo, and adds it to the icon row.
      * @return the icon view that was added
      */
-    private View addNotificationIconForInfo(NotificationInfo info) {
+    private View addNotificationIconForInfo(final NotificationInfo info) {
         View icon = new View(getContext());
         icon.setBackground(info.getIconForBackground(getContext(), mBackgroundColor));
         icon.setOnClickListener(info);
@@ -149,7 +149,7 @@ public class NotificationFooterLayout extends FrameLayout {
         return icon;
     }
 
-    public void animateFirstNotificationTo(Rect toBounds,
+    public void animateFirstNotificationTo(final Rect toBounds,
                                            final IconAnimationEndListener callback) {
         AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
         final View firstNotification = mIconRow.getChildAt(mIconRow.getChildCount() - 1);
@@ -162,7 +162,7 @@ public class NotificationFooterLayout extends FrameLayout {
                                             + (fromBounds.height() * scale - fromBounds.height()) / 2).build());
         moveAndScaleIcon.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 callback.onIconAnimationEnd((NotificationInfo) firstNotification.getTag());
                 removeViewFromIconRow(firstNotification);
             }
@@ -194,7 +194,7 @@ public class NotificationFooterLayout extends FrameLayout {
         animation.start();
     }
 
-    private void removeViewFromIconRow(View child) {
+    private void removeViewFromIconRow(final View child) {
         mIconRow.removeView(child);
         mNotifications.remove(child.getTag());
         updateOverflowEllipsisVisibility();
@@ -206,7 +206,7 @@ public class NotificationFooterLayout extends FrameLayout {
         }
     }
 
-    public void trimNotifications(List<String> notifications) {
+    public void trimNotifications(final List<String> notifications) {
         if (!isAttachedToWindow() || mIconRow.getChildCount() == 0) {
             return;
         }

@@ -44,23 +44,23 @@ public class LauncherAnimUtils {
 
     static WeakHashMap<Animator, Object> sAnimators = new WeakHashMap<Animator, Object>();
     static Animator.AnimatorListener sEndAnimListener = new Animator.AnimatorListener() {
-        public void onAnimationStart(Animator animation) {
+        public void onAnimationStart(final Animator animation) {
             sAnimators.put(animation, null);
         }
 
-        public void onAnimationRepeat(Animator animation) {
+        public void onAnimationRepeat(final Animator animation) {
         }
 
-        public void onAnimationEnd(Animator animation) {
+        public void onAnimationEnd(final Animator animation) {
             sAnimators.remove(animation);
         }
 
-        public void onAnimationCancel(Animator animation) {
+        public void onAnimationCancel(final Animator animation) {
             sAnimators.remove(animation);
         }
     };
 
-    public static void cancelOnDestroyActivity(Animator a) {
+    public static void cancelOnDestroyActivity(final Animator a) {
         a.addListener(sEndAnimListener);
     }
 
@@ -105,36 +105,36 @@ public class LauncherAnimUtils {
         return anim;
     }
 
-    public static ValueAnimator ofFloat(float... values) {
+    public static ValueAnimator ofFloat(final float... values) {
         ValueAnimator anim = new ValueAnimator();
         anim.setFloatValues(values);
         cancelOnDestroyActivity(anim);
         return anim;
     }
 
-    public static ObjectAnimator ofFloat(View target, Property<View, Float> property,
-                                         float... values) {
+    public static ObjectAnimator ofFloat(final View target, final Property<View, Float> property,
+                                         final float... values) {
         ObjectAnimator anim = ObjectAnimator.ofFloat(target, property, values);
         cancelOnDestroyActivity(anim);
         new FirstFrameAnimatorHelper(anim, target);
         return anim;
     }
 
-    public static ObjectAnimator ofViewAlphaAndScale(View target,
-            float alpha, float scaleX, float scaleY) {
+    public static ObjectAnimator ofViewAlphaAndScale(final View target,
+            final float alpha, final float scaleX, final float scaleY) {
         return ofPropertyValuesHolder(target,
                                       PropertyValuesHolder.ofFloat(View.ALPHA, alpha),
                                       PropertyValuesHolder.ofFloat(View.SCALE_X, scaleX),
                                       PropertyValuesHolder.ofFloat(View.SCALE_Y, scaleY));
     }
 
-    public static ObjectAnimator ofPropertyValuesHolder(View target,
-            PropertyValuesHolder... values) {
+    public static ObjectAnimator ofPropertyValuesHolder(final View target,
+            final PropertyValuesHolder... values) {
         return ofPropertyValuesHolder(target, target, values);
     }
 
-    public static ObjectAnimator ofPropertyValuesHolder(Object target,
-            View view, PropertyValuesHolder... values) {
+    public static ObjectAnimator ofPropertyValuesHolder(final Object target,
+            final View view, final PropertyValuesHolder... values) {
         ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(target, values);
         cancelOnDestroyActivity(anim);
         new FirstFrameAnimatorHelper(anim, view);
@@ -144,12 +144,12 @@ public class LauncherAnimUtils {
     public static final Property<Drawable, Integer> DRAWABLE_ALPHA =
     new Property<Drawable, Integer>(Integer.TYPE, "drawableAlpha") {
         @Override
-        public Integer get(Drawable drawable) {
+        public Integer get(final Drawable drawable) {
             return drawable.getAlpha();
         }
 
         @Override
-        public void set(Drawable drawable, Integer alpha) {
+        public void set(final Drawable drawable, final Integer alpha) {
             drawable.setAlpha(alpha);
         }
     };
@@ -157,12 +157,12 @@ public class LauncherAnimUtils {
     public static final Property<View, Float> SCALE_PROPERTY =
     new Property<View, Float>(Float.class, "scale") {
         @Override
-        public Float get(View view) {
+        public Float get(final View view) {
             return view.getScaleX();
         }
 
         @Override
-        public void set(View view, Float scale) {
+        public void set(final View view, final Float scale) {
             view.setScaleX(scale);
             view.setScaleY(scale);
         }
@@ -171,7 +171,7 @@ public class LauncherAnimUtils {
     /**
      * Increase the duration if we prevented the fling, as we are going against a high velocity.
      */
-    public static int blockedFlingDurationFactor(float velocity) {
+    public static int blockedFlingDurationFactor(final float velocity) {
         return (int) Utilities.boundToRange(Math.abs(velocity) / 2, 2f, 6f);
     }
 }

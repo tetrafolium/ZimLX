@@ -91,7 +91,7 @@ public class DefaultAppSearchAlgorithmTest {
         assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("abc"), "åç", MATCHER));
     }
 
-    private AppInfo getInfo(String title) {
+    private AppInfo getInfo(final String title) {
         AppInfo info = new AppInfo();
         info.title = title;
         info.componentName = new ComponentName("Test", title);

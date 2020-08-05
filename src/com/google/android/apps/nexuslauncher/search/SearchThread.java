@@ -18,7 +18,7 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
     private final Handler mUiHandler;
     private boolean mInterruptActiveRequests;
 
-    public SearchThread(Context context) {
+    public SearchThread(final Context context) {
         mContext = context;
         mUiHandler = new Handler(this);
         if (handlerThread == null) {
@@ -28,7 +28,7 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
         mHandler = new Handler(SearchThread.handlerThread.getLooper(), this);
     }
 
-    private void dj(SearchResult componentList) {
+    private void dj(final SearchResult componentList) {
         Uri uri = new Uri.Builder()
         .scheme("content")
         .authority(BuildConfig.APPLICATION_ID + ".appssearch")
@@ -53,7 +53,7 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
         Message.obtain(mUiHandler, 200, componentList).sendToTarget();
     }
 
-    public void cancel(boolean interruptActiveRequests) {
+    public void cancel(final boolean interruptActiveRequests) {
         mInterruptActiveRequests = interruptActiveRequests;
         mHandler.removeMessages(100);
         if (interruptActiveRequests) {
@@ -61,7 +61,7 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
         }
     }
 
-    public void doSearch(String query, AllAppsSearchBarController.Callbacks callback) {
+    public void doSearch(final String query, final AllAppsSearchBarController.Callbacks callback) {
         mHandler.removeMessages(100);
         Message.obtain(mHandler, 100, new SearchResult(query, callback)).sendToTarget();
     }

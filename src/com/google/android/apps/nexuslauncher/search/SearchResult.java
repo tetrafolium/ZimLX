@@ -12,7 +12,7 @@ class SearchResult {
     final ArrayList<ComponentKey> mApps;
     final List<String> mSuggestions;
 
-    SearchResult(String query, AllAppsSearchBarController.Callbacks callbacks) {
+    SearchResult(final String query, final AllAppsSearchBarController.Callbacks callbacks) {
         mApps = new ArrayList<>();
         mQuery = query;
         mCallbacks = callbacks;

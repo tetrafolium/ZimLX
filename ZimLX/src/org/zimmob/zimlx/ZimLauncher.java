@@ -57,7 +57,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     private View dummyView;
 
 
-    public static ZimLauncher getLauncher(Context context) {
+    public static ZimLauncher getLauncher(final Context context) {
 
         if (context instanceof ZimLauncher) {
             return (ZimLauncher) context;
@@ -67,7 +67,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {
             Utilities.requestStoragePermission(this);
 
@@ -85,7 +85,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     }
 
     @Override
-    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
+    public boolean startActivitySafely(final View v, final Intent intent, final ItemInfo item) {
         return super.startActivitySafely(v, intent, item);
     }
 
@@ -103,7 +103,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(final int requestCode, final String[] permissions, final int[] grantResults) {
         if (requestCode == REQUEST_PERMISSION_STORAGE_ACCESS) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 new androidx.appcompat.app.AlertDialog.Builder(this)
@@ -169,18 +169,18 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         Utilities.onLauncherStart();
     }
 
-    public void prepareDummyView(int left, int top, @NotNull Function0<Unit> callback) {
+    public void prepareDummyView(final int left, final int top, final @NotNull Function0<Unit> callback) {
         int size = getResources().getDimensionPixelSize(R.dimen.options_menu_thumb_size);
         int halfSize = size / 2;
         prepareDummyView(left - halfSize, top - halfSize, left + halfSize, top + halfSize, callback);
     }
 
-    public void prepareDummyView(int left, int top, int right, int bottom, @NotNull Function0<Unit> callback) {
+    public void prepareDummyView(final int left, final int top, final int right, final int bottom, final @NotNull Function0<Unit> callback) {
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) dummyView.getLayoutParams();
         lp.leftMargin = left;
         lp.topMargin = top;
-        lp.height = bottom-top;
-        lp.width = right-left;
+        lp.height = bottom - top;
+        lp.width = right - left;
         dummyView.setLayoutParams(lp);
         dummyView.requestLayout();
         dummyView.post(callback::invoke);
@@ -191,7 +191,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     }
 
     @Override
-    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs, boolean force) {
+    public void onValueChanged(final @NotNull String key, final @NotNull ZimPreferences prefs, final boolean force) {
 
     }
 
@@ -223,7 +223,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         mWorkspace.refreshChildren();
     }
 
-    public void startEditIcon(ItemInfo itemInfo, CustomInfoProvider<ItemInfo> infoProvider) {
+    public void startEditIcon(final ItemInfo itemInfo, final CustomInfoProvider<ItemInfo> infoProvider) {
         ComponentKey component;
 
         if (itemInfo instanceof AppInfo) {
@@ -254,7 +254,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
 
     }
 
-    private void handleEditIconResult(int resultCode, @NotNull Bundle data) {
+    private void handleEditIconResult(final int resultCode, final @NotNull Bundle data) {
         if (resultCode == Activity.RESULT_OK) {
             if (currentEditInfo == null) {
                 return;

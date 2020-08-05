@@ -24,15 +24,15 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
     AlphabeticalAppsList mApps;
     AllAppsContainerView mAppsView;
 
-    public FallbackAppsSearchView(Context context) {
+    public FallbackAppsSearchView(final Context context) {
         this(context, null);
     }
 
-    public FallbackAppsSearchView(Context context, AttributeSet attributeSet) {
+    public FallbackAppsSearchView(final Context context, final AttributeSet attributeSet) {
         this(context, attributeSet, 0);
     }
 
-    public FallbackAppsSearchView(Context context, AttributeSet attributeSet, int i) {
+    public FallbackAppsSearchView(final Context context, final AttributeSet attributeSet, final int i) {
         super(context, attributeSet, i);
         this.DI = new AllAppsSearchBarController();
     }
@@ -48,7 +48,7 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
     }
 
     @Override
-    public void onSearchResult(String query, ArrayList<ComponentKey> apps, List<String> suggestions) {
+    public void onSearchResult(final String query, final ArrayList<ComponentKey> apps, final List<String> suggestions) {
         if (getParent() != null) {
             if (apps != null) {
                 mApps.setOrderedFilter(apps);
@@ -91,7 +91,7 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
         this.DI.refreshSearchResult();
     }
 
-    private void x(boolean z) {
+    private void x(final boolean z) {
         PredictionsFloatingHeader predictionsFloatingHeader = mAppsView.getFloatingHeaderView();
         predictionsFloatingHeader.setCollapsed(z);
     }

@@ -61,16 +61,16 @@ public class AllAppsStore {
     /**
      * Sets the current set of apps.
      */
-    public void setApps(List<AppInfo> apps) {
+    public void setApps(final List<AppInfo> apps) {
         mComponentToAppMap.clear();
         addOrUpdateApps(apps);
     }
 
-    public AppInfo getApp(ComponentKey key) {
+    public AppInfo getApp(final ComponentKey key) {
         return mComponentToAppMap.get(key);
     }
 
-    public void setDeferUpdates(boolean deferUpdates) {
+    public void setDeferUpdates(final boolean deferUpdates) {
         if (mDeferUpdates != deferUpdates) {
             mDeferUpdates = deferUpdates;
 
@@ -84,7 +84,7 @@ public class AllAppsStore {
     /**
      * Adds or updates existing apps in the list
      */
-    public void addOrUpdateApps(List<AppInfo> apps) {
+    public void addOrUpdateApps(final List<AppInfo> apps) {
         for (AppInfo app : apps) {
             mComponentToAppMap.put(app.toComponentKey(), app);
         }
@@ -94,7 +94,7 @@ public class AllAppsStore {
     /**
      * Sets the adapter to notify when this dataset changes.
      */
-    public void setAdapter(AllAppsGridAdapter adapter) {
+    public void setAdapter(final AllAppsGridAdapter adapter) {
         mAdapter = adapter;
     }
 
@@ -102,7 +102,7 @@ public class AllAppsStore {
     /**
      * Removes some apps from the list.
      */
-    public void removeApps(List<AppInfo> apps) {
+    public void removeApps(final List<AppInfo> apps) {
         DbHelper db = new DbHelper(Launcher.mContext);
         for (AppInfo app : apps) {
             mComponentToAppMap.remove(app.toComponentKey());
@@ -123,29 +123,29 @@ public class AllAppsStore {
         }
     }
 
-    public void addUpdateListener(OnUpdateListener listener) {
+    public void addUpdateListener(final OnUpdateListener listener) {
         mUpdateListeners.add(listener);
     }
 
-    public void removeUpdateListener(OnUpdateListener listener) {
+    public void removeUpdateListener(final OnUpdateListener listener) {
         mUpdateListeners.remove(listener);
     }
 
-    public void registerIconContainer(ViewGroup container) {
+    public void registerIconContainer(final ViewGroup container) {
         if (container != null) {
             mIconContainers.add(container);
         }
     }
 
-    public void unregisterIconContainer(ViewGroup container) {
+    public void unregisterIconContainer(final ViewGroup container) {
         mIconContainers.remove(container);
     }
 
-    public void registerFolderIcon(FolderIcon folderIcon) {
+    public void registerFolderIcon(final FolderIcon folderIcon) {
         mFolderIcons.add(folderIcon);
     }
 
-    public void updateIconBadges(Set<PackageUserKey> updatedBadges) {
+    public void updateIconBadges(final Set<PackageUserKey> updatedBadges) {
         updateAllIcons((child) -> {
             if (child.getTag() instanceof ItemInfo) {
                 ItemInfo info = (ItemInfo) child.getTag();
@@ -173,7 +173,7 @@ public class AllAppsStore {
         }
     }
 
-    public void updatePromiseAppProgress(PromiseAppInfo app) {
+    public void updatePromiseAppProgress(final PromiseAppInfo app) {
         updateAllIcons((child) -> {
             if (child.getTag() == app) {
                 child.applyProgressLevel(app.level);
@@ -181,7 +181,7 @@ public class AllAppsStore {
         });
     }
 
-    private void updateAllIcons(IconAction action) {
+    private void updateAllIcons(final IconAction action) {
         for (int i = mIconContainers.size() - 1; i >= 0; i--) {
             ViewGroup parent = mIconContainers.get(i);
             int childCount = parent.getChildCount();

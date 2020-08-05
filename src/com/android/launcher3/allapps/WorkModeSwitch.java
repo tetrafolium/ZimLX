@@ -28,20 +28,20 @@ import java.util.List;
 
 public class WorkModeSwitch extends Switch {
 
-    public WorkModeSwitch(Context context) {
+    public WorkModeSwitch(final Context context) {
         super(context);
     }
 
-    public WorkModeSwitch(Context context, AttributeSet attrs) {
+    public WorkModeSwitch(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public WorkModeSwitch(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WorkModeSwitch(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
-    public void setChecked(boolean checked) {
+    public void setChecked(final boolean checked) {
         // No-op, do not change the checked state until broadcast is received.
     }
 
@@ -50,7 +50,7 @@ public class WorkModeSwitch extends Switch {
         trySetQuietModeEnabledToAllProfilesAsync(isChecked());
     }
 
-    private void setCheckedInternal(boolean checked) {
+    private void setCheckedInternal(final boolean checked) {
         super.setChecked(checked);
     }
 
@@ -60,7 +60,7 @@ public class WorkModeSwitch extends Switch {
         setEnabled(true);
     }
 
-    private void trySetQuietModeEnabledToAllProfilesAsync(boolean enabled) {
+    private void trySetQuietModeEnabledToAllProfilesAsync(final boolean enabled) {
         new AsyncTask<Void, Void, Boolean>() {
 
             @Override
@@ -70,7 +70,7 @@ public class WorkModeSwitch extends Switch {
             }
 
             @Override
-            protected Boolean doInBackground(Void... voids) {
+            protected Boolean doInBackground(final Void... voids) {
                 UserManagerCompat userManager = UserManagerCompat.getInstance(getContext());
                 List<UserHandle> userProfiles = userManager.getUserProfiles();
                 boolean showConfirm = false;
@@ -84,7 +84,7 @@ public class WorkModeSwitch extends Switch {
             }
 
             @Override
-            protected void onPostExecute(Boolean showConfirm) {
+            protected void onPostExecute(final Boolean showConfirm) {
                 if (showConfirm) {
                     setEnabled(true);
                 }

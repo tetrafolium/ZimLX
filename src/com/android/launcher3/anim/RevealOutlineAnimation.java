@@ -31,7 +31,7 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
     /** Sets the progress, from 0 to 1, of the reveal animation. */
     abstract void setProgress(float progress);
 
-    public ValueAnimator createRevealAnimator(final View revealView, boolean isReversed) {
+    public ValueAnimator createRevealAnimator(final View revealView, final boolean isReversed) {
         ValueAnimator va =
             isReversed ? ValueAnimator.ofFloat(1f, 0f) : ValueAnimator.ofFloat(0f, 1f);
         final float elevation = revealView.getElevation();
@@ -40,7 +40,7 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
             private boolean mIsClippedToOutline;
             private ViewOutlineProvider mOldOutlineProvider;
 
-            public void onAnimationStart(Animator animation) {
+            public void onAnimationStart(final Animator animation) {
                 mIsClippedToOutline = revealView.getClipToOutline();
                 mOldOutlineProvider = revealView.getOutlineProvider();
 
@@ -51,7 +51,7 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
                 }
             }
 
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 revealView.setOutlineProvider(mOldOutlineProvider);
                 revealView.setClipToOutline(mIsClippedToOutline);
                 if (shouldRemoveElevationDuringAnimation()) {
@@ -63,7 +63,7 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
 
         va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
-            public void onAnimationUpdate(ValueAnimator arg0) {
+            public void onAnimationUpdate(final ValueAnimator arg0) {
                 float progress = (Float) arg0.getAnimatedValue();
                 setProgress(progress);
                 revealView.invalidateOutline();
@@ -76,7 +76,7 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
     }
 
     @Override
-    public void getOutline(View v, Outline outline) {
+    public void getOutline(final View v, final Outline outline) {
         outline.setRoundRect(mOutline, mOutlineRadius);
     }
 
@@ -84,7 +84,7 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
         return mOutlineRadius;
     }
 
-    public void getOutline(Rect out) {
+    public void getOutline(final Rect out) {
         out.set(mOutline);
     }
 }

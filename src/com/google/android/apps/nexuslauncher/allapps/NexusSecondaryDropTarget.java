@@ -15,16 +15,16 @@ public class NexusSecondaryDropTarget extends SecondaryDropTarget {
 
     public static final int DISMISS = R.id.action_dismiss_suggestion;
 
-    public NexusSecondaryDropTarget(Context context, AttributeSet attrs) {
+    public NexusSecondaryDropTarget(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public NexusSecondaryDropTarget(Context context, AttributeSet attrs, int defStyle) {
+    public NexusSecondaryDropTarget(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
     }
 
     @Override
-    protected void setupUi(int action) {
+    protected void setupUi(final int action) {
         if (action == mCurrentAccessibilityAction) {
             super.setupUi(action);
             return;
@@ -48,13 +48,13 @@ public class NexusSecondaryDropTarget extends SecondaryDropTarget {
     }
 
     @Override
-    public boolean supportsAccessibilityDrop(ItemInfo info, View view) {
+    public boolean supportsAccessibilityDrop(final ItemInfo info, final View view) {
         setupUi(R.id.action_dismiss_suggestion);
         return true;
     }
 
     @Override
-    protected ComponentName performDropAction(View view, ItemInfo info) {
+    protected ComponentName performDropAction(final View view, final ItemInfo info) {
         if (this.mCurrentAccessibilityAction != DISMISS) {
             return super.performDropAction(view, info);
         }

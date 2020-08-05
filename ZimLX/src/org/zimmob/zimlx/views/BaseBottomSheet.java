@@ -44,11 +44,11 @@ public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
 
     protected final ColorScrim mColorScrim;
 
-    public BaseBottomSheet(Context context, AttributeSet attrs) {
+    public BaseBottomSheet(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public BaseBottomSheet(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BaseBottomSheet(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mColorScrim = ColorScrim.createExtractedColorScrim(this);
         setWillNotDraw(false);
@@ -57,12 +57,12 @@ public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(final boolean changed, final int l, final int t, final int r, final int b) {
         super.onLayout(changed, l, t, r, b);
         setTranslationShift(mTranslationShift);
     }
 
-    public void show(View view, boolean animate) {
+    public void show(final View view, final boolean animate) {
         ((ViewGroup) findViewById(R.id.sheet_contents)).addView(view);
 
         mLauncher.getDragLayer().addView(this);
@@ -70,7 +70,7 @@ public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
         animateOpen(animate);
     }
 
-    protected void setTranslationShift(float translationShift) {
+    protected void setTranslationShift(final float translationShift) {
         super.setTranslationShift(translationShift);
         mColorScrim.setProgress(1 - mTranslationShift);
     }
@@ -93,7 +93,7 @@ public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
             isSheetDark ? SystemUiController.FLAG_DARK_NAV : SystemUiController.FLAG_LIGHT_NAV);
     }
 
-    private void animateOpen(boolean animate) {
+    private void animateOpen(final boolean animate) {
         if (mIsOpen || mOpenCloseAnimator.isRunning()) {
             return;
         }
@@ -109,17 +109,17 @@ public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
     }
 
     @Override
-    protected void handleClose(boolean animate) {
+    protected void handleClose(final boolean animate) {
         handleClose(animate, DEFAULT_CLOSE_DURATION);
     }
 
     @Override
-    protected boolean isOfType(@FloatingViewType int type) {
+    protected boolean isOfType(final @FloatingViewType int type) {
         return (type & TYPE_SETTINGS_SHEET) != 0;
     }
 
     @Override
-    public void setInsets(Rect insets) {
+    public void setInsets(final Rect insets) {
         // Extend behind left, right, and bottom insets.
         int leftInset = insets.left - mInsets.left;
         int rightInset = insets.right - mInsets.right;
@@ -139,11 +139,11 @@ public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
     }
 
     @Override
-    public final void logActionCommand(int command) {
+    public final void logActionCommand(final int command) {
 
     }
 
-    public static BaseBottomSheet inflate(Launcher launcher) {
+    public static BaseBottomSheet inflate(final Launcher launcher) {
         return (BaseBottomSheet) launcher.getLayoutInflater()
                .inflate(R.layout.base_bottom_sheet, launcher.getDragLayer(), false);
     }

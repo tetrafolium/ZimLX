@@ -68,7 +68,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     private int mHeight;
     private float mProgress;
 
-    public GradientView(Context context, AttributeSet attrs) {
+    public GradientView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         DisplayMetrics dm = getResources().getDisplayMetrics();
         this.mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_HEIGHT_DP, dm);
@@ -96,7 +96,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     }
 
     @Override
-    public void onExtractedColorsChanged(WallpaperColorInfo info) {
+    public void onExtractedColorsChanged(final WallpaperColorInfo info) {
         updateColors();
         invalidate();
     }
@@ -112,7 +112,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         this.mWidth = getMeasuredWidth();
         this.mHeight = getMeasuredHeight();
@@ -148,18 +148,18 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
         mPaintWithScrim.setShader(shaderWithScrim);
     }
 
-    public void setProgress(float progress, float shiftRange) {
+    public void setProgress(final float progress, final float shiftRange) {
         setProgress(progress, true);
     }
 
-    public void setProgress(float progress, boolean showScrim) {
+    public void setProgress(final float progress, final boolean showScrim) {
         this.mProgress = progress;
         this.mShowScrim = showScrim;
         invalidate();
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         Paint paint = mShowScrim ? mPaintWithScrim : mPaintNoScrim;
 
         float head = 0.29f;

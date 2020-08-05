@@ -29,12 +29,12 @@ import com.android.launcher3.Utilities;
 public abstract class DragDriver {
     protected final EventListener mEventListener;
 
-    public DragDriver(EventListener eventListener) {
+    public DragDriver(final EventListener eventListener) {
         mEventListener = eventListener;
     }
 
-    public static DragDriver create(Context context, DragController dragController,
-                                    DragObject dragObject, DragOptions options) {
+    public static DragDriver create(final Context context, final DragController dragController,
+                                    final DragObject dragObject, final DragOptions options) {
         if (Utilities.ATLEAST_NOUGAT && options.systemDndStartPoint != null) {
             return new SystemDragDriver(dragController, context, dragObject);
         } else {
@@ -48,7 +48,7 @@ public abstract class DragDriver {
     public void onDragViewAnimationEnd() {
     }
 
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(final MotionEvent ev) {
         final int action = ev.getAction();
 
         switch (action) {
@@ -70,7 +70,7 @@ public abstract class DragDriver {
     public abstract boolean onDragEvent(DragEvent event);
 
 
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onInterceptTouchEvent(final MotionEvent ev) {
         final int action = ev.getAction();
 
         switch (action) {
@@ -104,22 +104,22 @@ class SystemDragDriver extends DragDriver {
     float mLastX = 0;
     float mLastY = 0;
 
-    SystemDragDriver(DragController dragController, Context context, DragObject dragObject) {
+    SystemDragDriver(final DragController dragController, final Context context, final DragObject dragObject) {
         super(dragController);
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(final MotionEvent ev) {
         return false;
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onInterceptTouchEvent(final MotionEvent ev) {
         return false;
     }
 
     @Override
-    public boolean onDragEvent(DragEvent event) {
+    public boolean onDragEvent(final DragEvent event) {
         final int action = event.getAction();
 
         switch (action) {
@@ -161,12 +161,12 @@ class SystemDragDriver extends DragDriver {
  * Class for driving an internal (i.e. not using framework) drag/drop operation.
  */
 class InternalDragDriver extends DragDriver {
-    InternalDragDriver(DragController dragController) {
+    InternalDragDriver(final DragController dragController) {
         super(dragController);
     }
 
     @Override
-    public boolean onDragEvent(DragEvent event) {
+    public boolean onDragEvent(final DragEvent event) {
         return false;
     }
 }

@@ -30,27 +30,27 @@ public class AlphaUpdateListener extends AnimationSuccessListener
 
     private View mView;
 
-    public AlphaUpdateListener(View v) {
+    public AlphaUpdateListener(final View v) {
         mView = v;
     }
 
     @Override
-    public void onAnimationUpdate(ValueAnimator arg0) {
+    public void onAnimationUpdate(final ValueAnimator arg0) {
         updateVisibility(mView);
     }
 
     @Override
-    public void onAnimationSuccess(Animator animator) {
+    public void onAnimationSuccess(final Animator animator) {
         updateVisibility(mView);
     }
 
     @Override
-    public void onAnimationStart(Animator arg0) {
+    public void onAnimationStart(final Animator arg0) {
         // We want the views to be visible for animation, so fade-in/out is visible
         mView.setVisibility(View.VISIBLE);
     }
 
-    public static void updateVisibility(View view) {
+    public static void updateVisibility(final View view) {
         if (view.getAlpha() < ALPHA_CUTOFF_THRESHOLD && view.getVisibility() != View.INVISIBLE) {
             view.setVisibility(View.INVISIBLE);
         } else if (view.getAlpha() > ALPHA_CUTOFF_THRESHOLD

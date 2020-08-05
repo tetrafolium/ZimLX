@@ -40,57 +40,57 @@ public class ContentWriter {
     private Bitmap mIcon;
     private UserHandle mUser;
 
-    public ContentWriter(Context context, CommitParams commitParams) {
+    public ContentWriter(final Context context, final CommitParams commitParams) {
         this(context);
         mCommitParams = commitParams;
     }
 
-    public ContentWriter(Context context) {
+    public ContentWriter(final Context context) {
         this(new ContentValues(), context);
     }
 
-    public ContentWriter(ContentValues values, Context context) {
+    public ContentWriter(final ContentValues values, final Context context) {
         mValues = values;
         mContext = context;
     }
 
-    public ContentWriter put(String key, Integer value) {
+    public ContentWriter put(final String key, final Integer value) {
         mValues.put(key, value);
         return this;
     }
 
-    public ContentWriter put(String key, Long value) {
+    public ContentWriter put(final String key, final Long value) {
         mValues.put(key, value);
         return this;
     }
 
-    public ContentWriter put(String key, String value) {
+    public ContentWriter put(final String key, final String value) {
         mValues.put(key, value);
         return this;
     }
 
-    public ContentWriter put(String key, CharSequence value) {
+    public ContentWriter put(final String key, final CharSequence value) {
         mValues.put(key, value == null ? null : value.toString());
         return this;
     }
 
-    public ContentWriter put(String key, Intent value) {
+    public ContentWriter put(final String key, final Intent value) {
         mValues.put(key, value == null ? null : value.toUri(0));
         return this;
     }
 
-    public ContentWriter put(String key, byte[] value) {
+    public ContentWriter put(final String key, final byte[] value) {
         mValues.put(key, value);
         return this;
     }
 
-    public ContentWriter putIcon(Bitmap value, UserHandle user) {
+    public ContentWriter putIcon(final Bitmap value, final UserHandle user) {
         mIcon = value;
         mUser = user;
         return this;
     }
 
-    public ContentWriter put(String key, UserHandle user) {
+    public ContentWriter put(final String key, final UserHandle user) {
         return put(key, UserManagerCompat.getInstance(mContext).getSerialNumberForUser(user));
     }
 
@@ -98,7 +98,7 @@ public class ContentWriter {
      * Commits any pending validation and returns the final values.
      * Must not be called on UI thread.
      */
-    public ContentValues getValues(Context context) {
+    public ContentValues getValues(final Context context) {
         Preconditions.assertNonUiThread();
         if (mIcon != null && !LauncherAppState.getInstance(context).getIconCache()
                 .isDefaultIcon(mIcon, mUser)) {
@@ -122,7 +122,7 @@ public class ContentWriter {
         String mWhere;
         String[] mSelectionArgs;
 
-        public CommitParams(String where, String[] selectionArgs) {
+        public CommitParams(final String where, final String[] selectionArgs) {
             mWhere = where;
             mSelectionArgs = selectionArgs;
         }

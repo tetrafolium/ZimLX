@@ -82,12 +82,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private static final Property<BubbleTextView, Float> BADGE_SCALE_PROPERTY
     = new Property<BubbleTextView, Float>(Float.TYPE, "badgeScale") {
         @Override
-        public Float get(BubbleTextView bubbleTextView) {
+        public Float get(final BubbleTextView bubbleTextView) {
             return bubbleTextView.mBadgeScale;
         }
 
         @Override
-        public void set(BubbleTextView bubbleTextView, Float value) {
+        public void set(final BubbleTextView bubbleTextView, final Float value) {
             bubbleTextView.mBadgeScale = value;
             bubbleTextView.invalidate();
         }
@@ -96,12 +96,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     public static final Property<BubbleTextView, Float> TEXT_ALPHA_PROPERTY
     = new Property<BubbleTextView, Float>(Float.class, "textAlpha") {
         @Override
-        public Float get(BubbleTextView bubbleTextView) {
+        public Float get(final BubbleTextView bubbleTextView) {
             return bubbleTextView.mTextAlpha;
         }
 
         @Override
-        public void set(BubbleTextView bubbleTextView, Float alpha) {
+        public void set(final BubbleTextView bubbleTextView, final Float alpha) {
             bubbleTextView.setTextAlpha(alpha);
         }
     };
@@ -144,15 +144,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private GestureHandler mSwipeUpHandler;
 
     private boolean mHideText;
-    public BubbleTextView(Context context) {
+    public BubbleTextView(final Context context) {
         this(context, null, 0);
     }
 
-    public BubbleTextView(Context context, AttributeSet attrs) {
+    public BubbleTextView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
+    public BubbleTextView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
         mActivity = ZimUtilsKt.getBaseDraggingActivityOrNull(context);
 
@@ -220,7 +220,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         setTextAlpha(1f);
     }
 
-    public void setLineCount(int lines) {
+    public void setLineCount(final int lines) {
         setMaxLines(lines);
         setSingleLine(lines == 1);
         setEllipsize(TextUtils.TruncateAt.END);
@@ -229,7 +229,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @Override
-    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+    protected void onFocusChanged(final boolean focused, final int direction, final Rect previouslyFocusedRect) {
         // Disable marques when not focused to that, so that updating text does not cause relayout.
         setEllipsize(focused ? TruncateAt.MARQUEE : TruncateAt.END);
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
@@ -245,11 +245,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mForceHideBadge = false;
     }
 
-    public void applyFromShortcutInfo(ShortcutInfo info) {
+    public void applyFromShortcutInfo(final ShortcutInfo info) {
         applyFromShortcutInfo(info, false);
     }
 
-    public void applyFromShortcutInfo(ShortcutInfo info, boolean promiseStateChanged) {
+    public void applyFromShortcutInfo(final ShortcutInfo info, final boolean promiseStateChanged) {
         applyIconAndLabel(info);
         applySwipeUpAction(info);
         setTag(info);
@@ -260,7 +260,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         applyBadgeState(info, false /* animate */);
     }
 
-    public void applyFromApplicationInfo(AppInfo info) {
+    public void applyFromApplicationInfo(final AppInfo info) {
         applyIconAndLabel(info);
 
         // We don't need to check the info since it's not a ShortcutInfo
@@ -276,7 +276,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         applyBadgeState(info, false /* animate */);
     }
 
-    public void applyFromPackageItemInfo(PackageItemInfo info) {
+    public void applyFromPackageItemInfo(final PackageItemInfo info) {
         applyIconAndLabel(info);
         // We don't need to check the info since it's not a ShortcutInfo
         super.setTag(info);
@@ -285,7 +285,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         verifyHighRes();
     }
 
-    private void applyIconAndLabel(ItemInfoWithIcon info) {
+    private void applyIconAndLabel(final ItemInfoWithIcon info) {
         FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(info);
         mBadgeColor = IconPalette.getMutedColor(info.iconColor, 0.54f);
 
@@ -299,20 +299,20 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
     }
 
-    public void applyIcon(ItemInfoWithIcon info) {
+    public void applyIcon(final ItemInfoWithIcon info) {
         FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(info);
         mBadgeColor = IconPalette.getMutedColor(getContext(), info.iconColor, 0.54f);
 
         setIcon(iconDrawable);
     }
 
-    public void applyIcon(BitmapInfo info) {
+    public void applyIcon(final BitmapInfo info) {
         FastBitmapDrawable iconDrawable = new FastBitmapDrawable(info);
         mBadgeColor = IconPalette.getMutedColor(getContext(), info.color, 0.54f);
 
         setIcon(iconDrawable);
     }
-    private void applySwipeUpAction(ShortcutInfo info) {
+    private void applySwipeUpAction(final ShortcutInfo info) {
         GestureHandler handler = GestureController.Companion.createGestureHandler(
                                      getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), null));
         if (handler instanceof BlankGestureHandler) {
@@ -322,7 +322,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
     }
 
-    private CharSequence getTitle(ItemInfo info) {
+    private CharSequence getTitle(final ItemInfo info) {
         CustomInfoProvider<ItemInfo> customInfoProvider = CustomInfoProvider.Companion.forItem(getContext(), info);
         if (customInfoProvider != null) {
             return customInfoProvider.getTitle(info);
@@ -334,12 +334,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     /**
      * Overrides the default long press timeout.
      */
-    public void setLongPressTimeout(int longPressTimeout) {
+    public void setLongPressTimeout(final int longPressTimeout) {
         mLongPressHelper.setLongPressTimeout(longPressTimeout);
     }
 
     @Override
-    public void setTag(Object tag) {
+    public void setTag(final Object tag) {
         if (tag != null) {
             LauncherModel.checkItemInfo((ItemInfo) tag);
         }
@@ -354,7 +354,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @Override
-    protected int[] onCreateDrawableState(int extraSpace) {
+    protected int[] onCreateDrawableState(final int extraSpace) {
         final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
         if (mStayPressed) {
             mergeDrawableStates(drawableState, STATE_PRESSED);
@@ -370,7 +370,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(final MotionEvent event) {
         // Call the superclass onTouchEvent first, because sometimes it changes the state to
         // isPressed() on an ACTION_UP
         boolean result = super.onTouchEvent(event);
@@ -408,7 +408,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         return result;
     }
 
-    public void setStayPressed(boolean stayPressed) {
+    public void setStayPressed(final boolean stayPressed) {
         mStayPressed = stayPressed;
         refreshDrawableState();
     }
@@ -426,7 +426,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
+    public boolean onKeyUp(final int keyCode, final KeyEvent event) {
         // Unlike touch events, keypress event propagate pressed state change immediately,
         // without waiting for onClickHandler to execute. Disable pressed state changes here
         // to avoid flickering.
@@ -438,12 +438,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @SuppressWarnings("wrongcall")
-    protected void drawWithoutBadge(Canvas canvas) {
+    protected void drawWithoutBadge(final Canvas canvas) {
         super.onDraw(canvas);
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
         drawBadgeIfNecessary(canvas);
     }
@@ -452,7 +452,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
      * Draws the icon badge in the top right corner of the icon bounds.
      * @param canvas The canvas to draw to.
      */
-    protected void drawBadgeIfNecessary(Canvas canvas) {
+    protected void drawBadgeIfNecessary(final Canvas canvas) {
         if (!mForceHideBadge && (hasBadge() || mBadgeScale > 0)) {
             getIconBounds(mTempIconBounds);
             mTempSpaceForBadgeOffset.set((getWidth() - mIconSize) / 2, getPaddingTop());
@@ -465,7 +465,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
     }
 
-    public void forceHideBadge(boolean forceHideBadge) {
+    public void forceHideBadge(final boolean forceHideBadge) {
         if (mForceHideBadge == forceHideBadge) {
             return;
         }
@@ -482,7 +482,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         return mBadgeInfo != null;
     }
 
-    public void getIconBounds(Rect outBounds) {
+    public void getIconBounds(final Rect outBounds) {
         int top = getPaddingTop();
         int left = (getWidth() - mIconSize) / 2;
         int right = left + mIconSize;
@@ -491,11 +491,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         if (mCenterVertically) {
             Paint.FontMetrics fm = getPaint().getFontMetrics();
-            int cellHeightPx = mIconSize + getCompoundDrawablePadding() +
-                               (int) Math.ceil(fm.bottom - fm.top);
+            int cellHeightPx = mIconSize + getCompoundDrawablePadding()
+                               + (int) Math.ceil(fm.bottom - fm.top);
             int height = MeasureSpec.getSize(heightMeasureSpec);
             setPadding(getPaddingLeft(), (height - cellHeightPx) / 2, getPaddingRight(),
                        getPaddingBottom());
@@ -504,13 +504,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @Override
-    public void setTextColor(int color) {
+    public void setTextColor(final int color) {
         mTextColor = color;
         super.setTextColor(getModifiedColor());
     }
 
     @Override
-    public void setTextColor(ColorStateList colors) {
+    public void setTextColor(final ColorStateList colors) {
         mTextColor = colors.getDefaultColor();
         if (Float.compare(mTextAlpha, 1) == 0) {
             super.setTextColor(colors);
@@ -526,11 +526,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         return info == null || info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT;
     }
 
-    public void setTextVisibility(boolean visible) {
+    public void setTextVisibility(final boolean visible) {
         setTextAlpha(visible ? 1 : 0);
     }
 
-    private void setTextAlpha(float alpha) {
+    private void setTextAlpha(final float alpha) {
         mTextAlpha = alpha;
         super.setTextColor(getModifiedColor());
     }
@@ -548,7 +548,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
      * Creates an animator to fade the text in or out.
      * @param fadeIn Whether the text should fade in or fade out.
      */
-    public ObjectAnimator createTextAlphaAnimator(boolean fadeIn) {
+    public ObjectAnimator createTextAlphaAnimator(final boolean fadeIn) {
         float toAlpha = shouldTextBeVisible() && fadeIn ? 1 : 0;
         return ObjectAnimator.ofFloat(this, TEXT_ALPHA_PROPERTY, toAlpha);
     }
@@ -560,13 +560,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mLongPressHelper.cancelLongPress();
     }
 
-    public void applyPromiseState(boolean promiseStateChanged) {
+    public void applyPromiseState(final boolean promiseStateChanged) {
         if (getTag() instanceof ShortcutInfo) {
             ShortcutInfo info = (ShortcutInfo) getTag();
             final boolean isPromise = info.hasPromiseIconUi();
-            final int progressLevel = isPromise ?
-                                      ((info.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE) ?
-                                        info.getInstallProgress() : 0)) : 100;
+            final int progressLevel = isPromise
+                                      ? ((info.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE)
+                                        ? info.getInstallProgress() : 0)) : 100;
 
             PreloadIconDrawable preloadDrawable = applyProgressLevel(progressLevel);
             if (preloadDrawable != null && promiseStateChanged) {
@@ -575,7 +575,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
     }
 
-    public PreloadIconDrawable applyProgressLevel(int progressLevel) {
+    public PreloadIconDrawable applyProgressLevel(final int progressLevel) {
         if (getTag() instanceof ItemInfoWithIcon) {
             ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
             if (progressLevel >= 100) {
@@ -606,7 +606,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         return null;
     }
 
-    public void applyBadgeState(ItemInfo itemInfo, boolean animate) {
+    public void applyBadgeState(final ItemInfo itemInfo, final boolean animate) {
         if (mIcon instanceof FastBitmapDrawable) {
             boolean wasBadged = mBadgeInfo != null;
             mBadgeInfo = mActivity.getBadgeInfoForItem(itemInfo);
@@ -637,7 +637,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     /**
      * Sets the icon for this view based on the layout direction.
      */
-    private void setIcon(Drawable icon) {
+    private void setIcon(final Drawable icon) {
         if (mIsIconVisible) {
             applyCompoundDrawables(icon);
         }
@@ -649,13 +649,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         setCompoundDrawables(null, null, null, null);
     }
 
-    public void setIconVisible(boolean visible) {
+    public void setIconVisible(final boolean visible) {
         mIsIconVisible = visible;
         Drawable icon = visible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
         applyCompoundDrawables(icon);
     }
 
-    protected void applyCompoundDrawables(Drawable icon) {
+    protected void applyCompoundDrawables(final Drawable icon) {
         // If we had already set an icon before, disable relayout as the icon size is the
         // same as before.
         mDisableRelayout = mIcon != null;
@@ -680,7 +680,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
      * Applies the item info if it is same as what the view is pointing to currently.
      */
     @Override
-    public void reapplyItemInfo(ItemInfoWithIcon info) {
+    public void reapplyItemInfo(final ItemInfoWithIcon info) {
         if (getTag() == info) {
             mIconLoadRequest = null;
             mDisableRelayout = true;
@@ -708,7 +708,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         verifyHighRes(BubbleTextView.this);
     }
 
-    public void verifyHighRes(ItemInfoUpdateReceiver callback) {
+    public void verifyHighRes(final ItemInfoUpdateReceiver callback) {
         if (mIconLoadRequest != null) {
             mIconLoadRequest.cancel();
             mIconLoadRequest = null;
@@ -727,7 +727,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         return mIconSize;
     }
 
-    public void setIconSize(int iconSize) {
+    public void setIconSize(final int iconSize) {
         mIconSize = iconSize;
         setIcon(mIcon);
     }

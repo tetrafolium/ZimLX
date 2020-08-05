@@ -100,15 +100,15 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     public abstract void l(String str);
 
-    public AbstractQsbLayout(Context context) {
+    public AbstractQsbLayout(final Context context) {
         this(context, null);
     }
 
-    public AbstractQsbLayout(Context context, AttributeSet attributeSet) {
+    public AbstractQsbLayout(final Context context, final AttributeSet attributeSet) {
         this(context, attributeSet, 0);
     }
 
-    public AbstractQsbLayout(Context context, AttributeSet attributeSet, int i) {
+    public AbstractQsbLayout(final Context context, final AttributeSet attributeSet, final int i) {
         super(context, attributeSet, i);
         this.CT = new TextPaint();
         this.mMicStrokePaint = new Paint(1);
@@ -140,7 +140,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         SearchProviderController.Companion.getInstance(getContext()).addOnProviderChangeListener(this);
     }
 
-    public boolean onTouchEvent(MotionEvent motionEvent) {
+    public boolean onTouchEvent(final MotionEvent motionEvent) {
         if (motionEvent.getActionMasked() == 0) {
             View findViewById = findViewById(R.id.g_icon);
             int i = 0;
@@ -176,7 +176,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         mLogoIconView.setOnClickListener(this);
     }
 
-    protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
+    protected void onLayout(final boolean z, final int i, final int i2, final int i3, final int i4) {
         super.onLayout(z, i, i2, i3, i4);
         this.mMicIconView.getHitRect(CS);
         if (this.mIsRtl) {
@@ -193,7 +193,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         super.onDetachedFromWindow();
     }
 
-    public final void ay(int i) {
+    public final void ay(final int i) {
         if (this.Dc != i) {
             this.Dc = i;
             this.mShadowBitmap = null;
@@ -201,7 +201,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         }
     }
 
-    public final void az(int i) {
+    public final void az(final int i) {
         Dd = i;
         if (Dd != Dc || Db != mShadowBitmap) {
             Db = null;
@@ -209,18 +209,18 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         }
     }
 
-    public final void h(float f) {
+    public final void h(final float f) {
         this.micStrokeWidth = TypedValue.applyDimension(1, f, getResources().getDisplayMetrics());
         this.mMicStrokePaint.setStrokeWidth(this.micStrokeWidth);
         this.mMicStrokePaint.setStyle(Style.STROKE);
         this.mMicStrokePaint.setColor(0xFFBDC1C6);
     }
 
-    public void setInsets(Rect rect) {
+    public void setInsets(final Rect rect) {
         requestLayout();
     }
 
-    protected void onMeasure(int i, int i2) {
+    protected void onMeasure(final int i, final int i2) {
         DeviceProfile deviceProfile = this.mActivity.getDeviceProfile();
         int aA = aA(MeasureSpec.getSize(i));
         int i3 = aA / deviceProfile.inv.numHotseatIcons;
@@ -253,15 +253,15 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         }
     }
 
-    protected void clearMainPillBg(Canvas canvas) {
+    protected void clearMainPillBg(final Canvas canvas) {
 
     }
 
-    protected void clearPillBg(Canvas canvas, int left, int top, int right) {
+    protected void clearPillBg(final Canvas canvas, final int left, final int top, final int right) {
 
     }
 
-    public void draw(Canvas canvas) {
+    public void draw(final Canvas canvas) {
         int i;
         dB();
         clearMainPillBg(canvas);
@@ -316,7 +316,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         super.draw(canvas);
     }
 
-    protected final void a(Bitmap bitmap, Canvas canvas) {
+    protected final void a(final Bitmap bitmap, final Canvas canvas) {
         int a = a(bitmap);
         int paddingTop = getPaddingTop() - ((bitmap.getHeight() - getHeightWithoutPadding()) / 2);
         int paddingLeft = getPaddingLeft() - a;
@@ -329,7 +329,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         this.mShadowHelper.draw(bitmap, canvas, (float) paddingLeft, (float) paddingTop, (float) width);
     }
 
-    protected final void drawPill(NinePatchDrawHelper helper, Bitmap bitmap, Canvas canvas) {
+    protected final void drawPill(final NinePatchDrawHelper helper, final Bitmap bitmap, final Canvas canvas) {
         int a = a(bitmap);
         int left = getPaddingLeft() - a;
         int top = getPaddingTop() - ((bitmap.getHeight() - getHeightWithoutPadding()) / 2);
@@ -342,12 +342,12 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         helper.draw(bitmap, canvas, (float) left, (float) top, (float) right);
     }
 
-    private Bitmap aB(int i, boolean withShadow) {
+    private Bitmap aB(final int i, final boolean withShadow) {
         float f = (float) LauncherAppState.getInstance(getContext()).getInvariantDeviceProfile().iconBitmapSize;
         return c(0.010416667f * f, f * 0.020833334f, i, withShadow);
     }
 
-    protected final Bitmap c(float f, float f2, int i, boolean withShadow) {
+    protected final Bitmap c(final float f, final float f2, final int i, final boolean withShadow) {
         int dC = getHeightWithoutPadding();
         int i2 = dC + 20;
         Builder builder = new Builder(i);
@@ -378,7 +378,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         return pill;
     }
 
-    protected final int a(Bitmap bitmap) {
+    protected final int a(final Bitmap bitmap) {
         return (bitmap.getWidth() - (getHeightWithoutPadding() + 20)) / 2;
     }
 
@@ -390,7 +390,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         return this.mUseTwoBubbles ? this.Da : this.Da + this.CY;
     }
 
-    protected final void setHintText(String str, TextView textView) {
+    protected final void setHintText(final String str, final TextView textView) {
         String str2;
         if (TextUtils.isEmpty(str) || !dE()) {
             str2 = str;
@@ -484,7 +484,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
                                Utilities.pxFromDp(100, getResources().getDisplayMetrics()));
     }
 
-    public static float getCornerRadius(Context context, float defaultRadius) {
+    public static float getCornerRadius(final Context context, final float defaultRadius) {
         float radius = round(Utilities.getZimPrefs(context).getSearchBarRadius());
         if (radius > 0f) {
             return radius;
@@ -501,7 +501,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         return false;
     }
 
-    public void onClick(View view) {
+    public void onClick(final View view) {
         SearchProviderController controller = SearchProviderController.Companion
                                               .getInstance(mActivity);
         SearchProvider provider = controller.getSearchProvider();
@@ -535,7 +535,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         return true;
     }
 
-    protected final void k(String str) {
+    protected final void k(final String str) {
         try {
             getContext().startActivity(new Intent(str).addFlags(268468224).setPackage("com.google.android.googlequicksearchbox"));
         } catch (ActivityNotFoundException e) {
@@ -543,7 +543,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         }
     }
 
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String str) {
         switch (str) {
         case "opa_enabled":
         case "opa_assistant":
@@ -557,7 +557,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         loadPreferences(Utilities.getPrefs(getContext()));
     }
 
-    protected void loadPreferences(SharedPreferences sharedPreferences) {
+    protected void loadPreferences(final SharedPreferences sharedPreferences) {
         post(() -> {
             mShowAssistant = sharedPreferences.getBoolean("opa_assistant", true);
             mLogoIconView.setImageDrawable(getIcon());
@@ -573,7 +573,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         return getIcon(true);
     }
 
-    protected Drawable getIcon(boolean colored) {
+    protected Drawable getIcon(final boolean colored) {
         SearchProvider provider = SearchProviderController.Companion.getInstance(getContext()).getSearchProvider();
         return provider.getIcon(colored);
     }
@@ -582,7 +582,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         return getMicIcon(true);
     }
 
-    protected Drawable getMicIcon(boolean colored) {
+    protected Drawable getMicIcon(final boolean colored) {
         SearchProvider provider = SearchProviderController.Companion.getInstance(getContext()).getSearchProvider();
         if (mShowAssistant && provider.getSupportsAssistant()) {
             return provider.getAssistantIcon(colored);
@@ -594,7 +594,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         }
     }
 
-    public boolean onLongClick(View view) {
+    public boolean onLongClick(final View view) {
         if (view != this) {
             return false;
         }
@@ -642,7 +642,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         return 0;
     }
 
-    protected void fallbackSearch(String action) {
+    protected void fallbackSearch(final String action) {
         try {
             getContext().startActivity(new Intent(action)
                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)

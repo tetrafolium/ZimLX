@@ -28,11 +28,11 @@ public class ComponentKeyMapper {
     private Context mContext;
     protected final ComponentKey mComponentKey;
 
-    public ComponentKeyMapper(ComponentKey key) {
+    public ComponentKeyMapper(final ComponentKey key) {
         this.mComponentKey = key;
     }
 
-    public ComponentKeyMapper(Context context, ComponentKey componentKey) {
+    public ComponentKeyMapper(final Context context, final ComponentKey componentKey) {
         mContext = context;
         mComponentKey = componentKey;
     }
@@ -59,7 +59,7 @@ public class ComponentKeyMapper {
         return mComponentKey;
     }
 
-    public ItemInfoWithIcon getApp(AllAppsStore allAppsStore) {
+    public ItemInfoWithIcon getApp(final AllAppsStore allAppsStore) {
         AppInfo app = allAppsStore.getApp(mComponentKey);
         if (app != null) {
             return app;

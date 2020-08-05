@@ -93,14 +93,14 @@ public class FolderInfo extends ItemInfo {
      *
      * @param item
      */
-    public void add(ShortcutInfo item, boolean animate) {
+    public void add(final ShortcutInfo item, final boolean animate) {
         add(item, contents.size(), animate);
     }
 
     /**
      * Add an app or shortcut for a specified rank.
      */
-    public void add(ShortcutInfo item, int rank, boolean animate) {
+    public void add(final ShortcutInfo item, final int rank, final boolean animate) {
         rank = Utilities.boundToRange(rank, 0, contents.size());
         contents.add(rank, item);
         for (int i = 0; i < listeners.size(); i++) {
@@ -114,7 +114,7 @@ public class FolderInfo extends ItemInfo {
      *
      * @param item
      */
-    public void remove(ShortcutInfo item, boolean animate) {
+    public void remove(final ShortcutInfo item, final boolean animate) {
         contents.remove(item);
         for (int i = 0; i < listeners.size(); i++) {
             listeners.get(i).onRemove(item);
@@ -122,7 +122,7 @@ public class FolderInfo extends ItemInfo {
         itemsChanged(animate);
     }
 
-    public void setTitle(CharSequence title) {
+    public void setTitle(final CharSequence title) {
         this.title = title;
         for (int i = 0; i < listeners.size(); i++) {
             listeners.get(i).onTitleChanged(title);
@@ -130,22 +130,22 @@ public class FolderInfo extends ItemInfo {
     }
 
     @Override
-    public void onAddToDatabase(ContentWriter writer) {
+    public void onAddToDatabase(final ContentWriter writer) {
         super.onAddToDatabase(writer);
         writer.put(LauncherSettings.Favorites.TITLE, title)
         .put(LauncherSettings.Favorites.OPTIONS, options);
 
     }
 
-    public void addListener(FolderListener listener) {
+    public void addListener(final FolderListener listener) {
         listeners.add(listener);
     }
 
-    public void removeListener(FolderListener listener) {
+    public void removeListener(final FolderListener listener) {
         listeners.remove(listener);
     }
 
-    public void itemsChanged(boolean animate) {
+    public void itemsChanged(final boolean animate) {
         for (int i = 0; i < listeners.size(); i++) {
             listeners.get(i).onItemsChanged(animate);
         }
@@ -157,7 +157,7 @@ public class FolderInfo extends ItemInfo {
         }
     }
 
-    public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
+    public void setSwipeUpAction(final @NonNull Context context, final @Nullable String action) {
         swipeUpAction = action;
         ModelWriter.modifyItemInDatabase(context, this, null, swipeUpAction, null, null, false, true);
     }
@@ -166,7 +166,7 @@ public class FolderInfo extends ItemInfo {
         return new ComponentKey(new ComponentName("org.zimmob.zimlx.folder", String.valueOf(id)), Process.myUserHandle());
     }
 
-    public Drawable getIcon(Context context) {
+    public Drawable getIcon(final Context context) {
         Launcher launcher = ZimLauncher.getLauncher(context);
         Drawable icn = getIconInternal(launcher);
         if (icn != null) {
@@ -178,7 +178,7 @@ public class FolderInfo extends ItemInfo {
         return getFolderIcon(launcher);
     }
 
-    public Drawable getDefaultIcon(Launcher launcher) {
+    public Drawable getDefaultIcon(final Launcher launcher) {
         if (isCoverMode()) {
             return new FastBitmapDrawable(getCoverInfo().iconBitmap);
         } else {
@@ -187,7 +187,7 @@ public class FolderInfo extends ItemInfo {
     }
 
 
-    public Drawable getFolderIcon(Launcher launcher) {
+    public Drawable getFolderIcon(final Launcher launcher) {
         int iconSize = launcher.mDeviceProfile.iconSizePx;
         FrameLayout dummy = new FrameLayout(launcher, null);
         FolderIcon icon = FolderIcon.fromXml(R.layout.folder_icon, launcher, dummy, this);
@@ -203,22 +203,22 @@ public class FolderInfo extends ItemInfo {
         return new BitmapDrawable(launcher.getResources(), b);
     }
 
-    public boolean useIconMode(Context context) {
+    public boolean useIconMode(final Context context) {
         return isCoverMode() || hasCustomIcon(context);
     }
 
-    public boolean usingCustomIcon(Context context) {
+    public boolean usingCustomIcon(final Context context) {
         if (isCoverMode()) return false;
         Launcher launcher = ZimLauncher.getLauncher(context);
         return getIconInternal(launcher) != null;
     }
 
-    public boolean hasCustomIcon(Context context) {
+    public boolean hasCustomIcon(final Context context) {
         Launcher launcher = ZimLauncher.getLauncher(context);
         return getIconInternal(launcher) != null;
     }
 
-    public void clearCustomIcon(Context context) {
+    public void clearCustomIcon(final Context context) {
         Launcher launcher = ZimLauncher.getLauncher(context);
         CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
         if (infoProvider != null) {
@@ -230,7 +230,7 @@ public class FolderInfo extends ItemInfo {
         return hasOption(FLAG_COVER_MODE);
     }
 
-    public void setCoverMode(boolean enable, ModelWriter modelWriter) {
+    public void setCoverMode(final boolean enable, final ModelWriter modelWriter) {
         setOption(FLAG_COVER_MODE, enable, modelWriter);
     }
 
@@ -262,7 +262,7 @@ public class FolderInfo extends ItemInfo {
     }
 
 
-    public boolean hasOption(int optionFlag) {
+    public boolean hasOption(final int optionFlag) {
         return (options & optionFlag) != 0;
     }
 
@@ -271,7 +271,7 @@ public class FolderInfo extends ItemInfo {
      * @param isEnabled whether to set or clear the flag
      * @param writer    if not null, save changes to the db.
      */
-    public void setOption(int option, boolean isEnabled, ModelWriter writer) {
+    public void setOption(final int option, final boolean isEnabled, final ModelWriter writer) {
         int oldOptions = options;
         if (isEnabled) {
             options |= option;
@@ -302,7 +302,7 @@ public class FolderInfo extends ItemInfo {
     private Drawable cached;
     private String cachedIcon;
 
-    private Drawable getIconInternal(Launcher launcher) {
+    private Drawable getIconInternal(final Launcher launcher) {
         CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
         CustomIconEntry entry = infoProvider == null ? null : infoProvider.getIcon(this);
         if (entry != null && entry.getIcon() != null) {

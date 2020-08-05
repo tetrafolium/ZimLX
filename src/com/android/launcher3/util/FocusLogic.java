@@ -70,15 +70,15 @@ public class FocusLogic {
     /**
      * Returns true only if this utility class handles the key code.
      */
-    public static boolean shouldConsume(int keyCode) {
-        return (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ||
-                keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN ||
-                keyCode == KeyEvent.KEYCODE_MOVE_HOME || keyCode == KeyEvent.KEYCODE_MOVE_END ||
-                keyCode == KeyEvent.KEYCODE_PAGE_UP || keyCode == KeyEvent.KEYCODE_PAGE_DOWN);
+    public static boolean shouldConsume(final int keyCode) {
+        return (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
+                || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
+                || keyCode == KeyEvent.KEYCODE_MOVE_HOME || keyCode == KeyEvent.KEYCODE_MOVE_END
+                || keyCode == KeyEvent.KEYCODE_PAGE_UP || keyCode == KeyEvent.KEYCODE_PAGE_DOWN);
     }
 
-    public static int handleKeyEvent(int keyCode, int[][] map, int iconIdx, int pageIndex,
-                                     int pageCount, boolean isRtl) {
+    public static int handleKeyEvent(final int keyCode, final int[][] map, final int iconIdx, final int pageIndex,
+                                     final int pageCount, final boolean isRtl) {
 
         int cntX = map == null ? -1 : map.length;
         int cntY = map == null ? -1 : map[0].length;
@@ -143,7 +143,7 @@ public class FocusLogic {
      * @param n number of rows in the matrix
      */
     // TODO: get rid of dynamic matrix creation.
-    private static int[][] createFullMatrix(int m, int n) {
+    private static int[][] createFullMatrix(final int m, final int n) {
         int[][] matrix = new int[m][n];
 
         for (int i = 0; i < m; i++) {
@@ -157,7 +157,7 @@ public class FocusLogic {
      * index of the child view.
      */
     // TODO: get rid of the dynamic matrix creation
-    public static int[][] createSparseMatrix(CellLayout layout) {
+    public static int[][] createSparseMatrix(final CellLayout layout) {
         ShortcutAndWidgetContainer parent = layout.getShortcutsAndWidgets();
         final int m = layout.getCountX();
         final int n = layout.getCountY();
@@ -188,14 +188,14 @@ public class FocusLogic {
      */
     // TODO: get rid of the dynamic matrix creation
     public static int[][] createSparseMatrixWithHotseat(
-        CellLayout iconLayout, CellLayout hotseatLayout, DeviceProfile dp) {
+        final CellLayout iconLayout, final CellLayout hotseatLayout, final DeviceProfile dp) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
         ViewGroup hotseatParent = hotseatLayout.getShortcutsAndWidgets();
 
         boolean isHotseatHorizontal = !dp.isVerticalBarLayout();
-        boolean moreIconsInHotseatThanWorkspace = !FeatureFlags.NO_ALL_APPS_ICON &&
-                (isHotseatHorizontal
+        boolean moreIconsInHotseatThanWorkspace = !FeatureFlags.NO_ALL_APPS_ICON
+                && (isHotseatHorizontal
                  ? hotseatLayout.getCountX() > iconLayout.getCountX()
                  : hotseatLayout.getCountY() > iconLayout.getCountY());
 
@@ -271,8 +271,8 @@ public class FocusLogic {
      * @param pivotY y coordinate of the focused item in the current page
      */
     // TODO: get rid of the dynamic matrix creation
-    public static int[][] createSparseMatrixWithPivotColumn(CellLayout iconLayout,
-            int pivotX, int pivotY) {
+    public static int[][] createSparseMatrixWithPivotColumn(final CellLayout iconLayout,
+            final int pivotX, final int pivotY) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
 
@@ -318,8 +318,8 @@ public class FocusLogic {
      * [  ][ 5][ 7][ 9][11]
      */
     // TODO: add unit tests to verify all permutation.
-    private static int handleDpadHorizontal(int iconIdx, int cntX, int cntY,
-                                            int[][] matrix, int increment, boolean isRtl) {
+    private static int handleDpadHorizontal(final int iconIdx, final int cntX, final int cntY,
+                                            final int[][] matrix, final int increment, final boolean isRtl) {
         if (matrix == null) {
             throw new IllegalStateException("Dpad navigation requires a matrix.");
         }
@@ -401,8 +401,8 @@ public class FocusLogic {
      * [14][12][ 9][ 3][ 8][11][13]
      */
     // TODO: add unit tests to verify all permutation.
-    private static int handleDpadVertical(int iconIndex, int cntX, int cntY,
-                                          int[][] matrix, int increment) {
+    private static int handleDpadVertical(final int iconIndex, final int cntX, final int cntY,
+                                          final int[][] matrix, final int increment) {
         int newIconIndex = NOOP;
         if (matrix == null) {
             throw new IllegalStateException("Dpad navigation requires a matrix.");
@@ -474,14 +474,14 @@ public class FocusLogic {
         return CURRENT_PAGE_LAST_ITEM;
     }
 
-    private static int handlePageDown(int pageIndex, int pageCount) {
+    private static int handlePageDown(final int pageIndex, final int pageCount) {
         if (pageIndex < pageCount - 1) {
             return NEXT_PAGE_FIRST_ITEM;
         }
         return CURRENT_PAGE_LAST_ITEM;
     }
 
-    private static int handlePageUp(int pageIndex) {
+    private static int handlePageUp(final int pageIndex) {
         if (pageIndex > 0) {
             return PREVIOUS_PAGE_FIRST_ITEM;
         } else {
@@ -493,11 +493,11 @@ public class FocusLogic {
     // Helper methods.
     //
 
-    private static boolean isValid(int xPos, int yPos, int countX, int countY) {
+    private static boolean isValid(final int xPos, final int yPos, final int countX, final int countY) {
         return (0 <= xPos && xPos < countX && 0 <= yPos && yPos < countY);
     }
 
-    private static int inspectMatrix(int x, int y, int cntX, int cntY, int[][] matrix) {
+    private static int inspectMatrix(final int x, final int y, final int cntX, final int cntY, final int[][] matrix) {
         int newIconIndex = NOOP;
         if (isValid(x, y, cntX, cntY)) {
             if (matrix[x][y] != -1) {
@@ -515,7 +515,7 @@ public class FocusLogic {
     /**
      * Only used for debugging.
      */
-    private static String getStringIndex(int index) {
+    private static String getStringIndex(final int index) {
         switch (index) {
         case NOOP:
             return "NOOP";
@@ -543,7 +543,7 @@ public class FocusLogic {
     /**
      * Only used for debugging.
      */
-    private static void printMatrix(int[][] matrix) {
+    private static void printMatrix(final int[][] matrix) {
         Log.v(TAG, "\tprintMap:");
         int m = matrix.length;
         int n = matrix[0].length;
@@ -563,7 +563,7 @@ public class FocusLogic {
      * @return the view adjacent to {@param oldView} in the {@param nextPage} of the folder.
      */
     public static View getAdjacentChildInNextFolderPage(
-        ShortcutAndWidgetContainer nextPage, View oldView, int edgeColumn) {
+        final ShortcutAndWidgetContainer nextPage, final View oldView, final int edgeColumn) {
         final int newRow = ((CellLayout.LayoutParams) oldView.getLayoutParams()).cellY;
 
         int column = (edgeColumn == NEXT_PAGE_LEFT_COLUMN) ^ nextPage.invertLayoutHorizontally()

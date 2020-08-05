@@ -13,14 +13,14 @@ public class k {
     Bitmap DX;
     private final ArrayList<o> mListeners = new ArrayList<>(2);
 
-    public static k getInstance(Context context) {
+    public static k getInstance(final Context context) {
         if (INSTANCE == null) {
             INSTANCE = new k(context.getApplicationContext());
         }
         return INSTANCE;
     }
 
-    private k(Context context) {
+    private k(final Context context) {
 
     }
 
@@ -65,11 +65,11 @@ public class k {
         return false;
     }
 
-    public final void a(o oVar) {
+    public final void a(final o oVar) {
         this.mListeners.add(oVar);
     }
 
-    public final void b(o oVar) {
+    public final void b(final o oVar) {
         this.mListeners.remove(oVar);
     }
 }

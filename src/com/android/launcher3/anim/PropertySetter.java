@@ -29,20 +29,20 @@ public class PropertySetter {
 
     public static final PropertySetter NO_ANIM_PROPERTY_SETTER = new PropertySetter();
 
-    public void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
+    public void setViewAlpha(final View view, final float alpha, final TimeInterpolator interpolator) {
         if (view != null) {
             view.setAlpha(alpha);
             AlphaUpdateListener.updateVisibility(view);
         }
     }
 
-    public <T> void setFloat(T target, Property<T, Float> property, float value,
-                             TimeInterpolator interpolator) {
+    public <T> void setFloat(final T target, final Property<T, Float> property, final float value,
+                             final TimeInterpolator interpolator) {
         property.set(target, value);
     }
 
-    public <T> void setInt(T target, Property<T, Integer> property, int value,
-                           TimeInterpolator interpolator) {
+    public <T> void setInt(final T target, final Property<T, Integer> property, final int value,
+                           final TimeInterpolator interpolator) {
         property.set(target, value);
     }
 
@@ -51,13 +51,13 @@ public class PropertySetter {
         private final long mDuration;
         private final AnimatorSetBuilder mStateAnimator;
 
-        public AnimatedPropertySetter(long duration, AnimatorSetBuilder builder) {
+        public AnimatedPropertySetter(final long duration, final AnimatorSetBuilder builder) {
             mDuration = duration;
             mStateAnimator = builder;
         }
 
         @Override
-        public void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
+        public void setViewAlpha(final View view, final float alpha, final TimeInterpolator interpolator) {
             if (view == null || view.getAlpha() == alpha) {
                 return;
             }
@@ -68,8 +68,8 @@ public class PropertySetter {
         }
 
         @Override
-        public <T> void setFloat(T target, Property<T, Float> property, float value,
-                                 TimeInterpolator interpolator) {
+        public <T> void setFloat(final T target, final Property<T, Float> property, final float value,
+                                 final TimeInterpolator interpolator) {
             if (property.get(target) == value) {
                 return;
             }
@@ -79,8 +79,8 @@ public class PropertySetter {
         }
 
         @Override
-        public <T> void setInt(T target, Property<T, Integer> property, int value,
-                               TimeInterpolator interpolator) {
+        public <T> void setInt(final T target, final Property<T, Integer> property, final int value,
+                               final TimeInterpolator interpolator) {
             if (property.get(target) == value) {
                 return;
             }

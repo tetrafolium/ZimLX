@@ -253,7 +253,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
      * @param desc        the content description of the view or null.
      */
     private void setupAndVerifyContents(
-        LauncherAppWidgetInfo item, Class<?> widgetClass, String desc) {
+        final LauncherAppWidgetInfo item, final Class<?> widgetClass, final String desc) {
         long screenId = Workspace.FIRST_SCREEN_ID;
         // Update the screen id counter for the provider.
         LauncherSettings.Settings.call(mResolver, LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
@@ -295,7 +295,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
      *                   the LauncherAppWidgetInfo
      */
     private LauncherAppWidgetInfo createWidgetInfo(
-        LauncherAppWidgetProviderInfo info, boolean bindWidget) {
+        final LauncherAppWidgetProviderInfo info, final boolean bindWidget) {
         LauncherAppWidgetInfo item = new LauncherAppWidgetInfo(
             LauncherAppWidgetInfo.NO_ID, info.provider);
         item.spanX = info.minSpanX;

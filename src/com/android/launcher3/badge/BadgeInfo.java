@@ -67,7 +67,7 @@ public class BadgeInfo {
      */
     private Shader mNotificationIcon;
 
-    public BadgeInfo(PackageUserKey packageUserKey) {
+    public BadgeInfo(final PackageUserKey packageUserKey) {
         mPackageUserKey = packageUserKey;
         mNotificationKeys = new ArrayList<>();
     }
@@ -75,7 +75,7 @@ public class BadgeInfo {
     /**
      * Returns whether the notification was added or its count changed.
      */
-    public boolean addOrUpdateNotificationKey(NotificationKeyData notificationKey) {
+    public boolean addOrUpdateNotificationKey(final NotificationKeyData notificationKey) {
         int indexOfPrevKey = mNotificationKeys.indexOf(notificationKey);
         NotificationKeyData prevKey = indexOfPrevKey == -1 ? null
                                       : mNotificationKeys.get(indexOfPrevKey);
@@ -99,7 +99,7 @@ public class BadgeInfo {
     /**
      * Returns whether the notification was removed (false if it didn't exist).
      */
-    public boolean removeNotificationKey(NotificationKeyData notificationKey) {
+    public boolean removeNotificationKey(final NotificationKeyData notificationKey) {
         boolean removed = mNotificationKeys.remove(notificationKey);
         if (removed) {
             mTotalCount -= notificationKey.count;
@@ -115,7 +115,7 @@ public class BadgeInfo {
         return Math.min(mTotalCount, MAX_COUNT);
     }
 
-    public void setNotificationToShow(@Nullable NotificationInfo notificationInfo) {
+    public void setNotificationToShow(final @Nullable NotificationInfo notificationInfo) {
         mNotificationInfo = notificationInfo;
         mNotificationIcon = null;
     }
@@ -130,8 +130,8 @@ public class BadgeInfo {
      * The shader is cached until {@link #setNotificationToShow(NotificationInfo)} is called.
      */
     public @Nullable
-    Shader getNotificationIconForBadge(Context context, int badgeColor,
-                                       int badgeSize, int badgePadding) {
+    Shader getNotificationIconForBadge(final Context context, final int badgeColor,
+                                       final int badgeSize, final int badgePadding) {
         if (mNotificationInfo == null) {
             return null;
         }
@@ -162,7 +162,7 @@ public class BadgeInfo {
      * upon long-click. This method always returns true when adding or removing notifications,
      * or if the badge has a notification icon to show.
      */
-    public boolean shouldBeInvalidated(BadgeInfo newBadge) {
+    public boolean shouldBeInvalidated(final BadgeInfo newBadge) {
         return mPackageUserKey.equals(newBadge.mPackageUserKey)
                && (getNotificationCount() != newBadge.getNotificationCount()
                    || hasNotificationToShow());

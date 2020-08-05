@@ -108,7 +108,7 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
         return null;
     }
 
-    public void modifyUserEvent(LauncherLogProto.LauncherEvent event) {}
+    public void modifyUserEvent(final LauncherLogProto.LauncherEvent event) { }
 
     public final UserEventDispatcher getUserEventDispatcher() {
         if (mUserEventDispatcher == null) {
@@ -121,7 +121,7 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
         return Utilities.ATLEAST_NOUGAT && isInMultiWindowMode();
     }
 
-    public static BaseActivity fromContext(Context context) {
+    public static BaseActivity fromContext(final Context context) {
         if (context instanceof BaseActivity) {
             return (BaseActivity) context;
         }
@@ -136,7 +136,7 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -159,7 +159,7 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
     }
 
     @Override
-    public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
+    public void onMultiWindowModeChanged(final boolean isInMultiWindowMode, final Configuration newConfig) {
         super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
         for (int i = mMultiWindowModeChangedListeners.size() - 1; i >= 0; i--) {
             mMultiWindowModeChangedListeners.get(i).onMultiWindowModeChanged(isInMultiWindowMode);
@@ -200,11 +200,11 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
         return (mActivityFlags & ACTIVITY_STATE_USER_ACTIVE) != 0;
     }
 
-    public void addOnDeviceProfileChangeListener(OnDeviceProfileChangeListener listener) {
+    public void addOnDeviceProfileChangeListener(final OnDeviceProfileChangeListener listener) {
         mDPChangeListeners.add(listener);
     }
 
-    public void removeOnDeviceProfileChangeListener(OnDeviceProfileChangeListener listener) {
+    public void removeOnDeviceProfileChangeListener(final OnDeviceProfileChangeListener listener) {
         mDPChangeListeners.remove(listener);
     }
 
@@ -214,11 +214,11 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
         }
     }
 
-    public void addMultiWindowModeChangedListener(MultiWindowModeChangedListener listener) {
+    public void addMultiWindowModeChangedListener(final MultiWindowModeChangedListener listener) {
         mMultiWindowModeChangedListeners.add(listener);
     }
 
-    public void removeMultiWindowModeChangedListener(MultiWindowModeChangedListener listener) {
+    public void removeMultiWindowModeChangedListener(final MultiWindowModeChangedListener listener) {
         mMultiWindowModeChangedListeners.remove(listener);
     }
 
@@ -228,11 +228,11 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
      *
      * @see LauncherAppTransitionManagerImpl#getWallpaperOpenRunner()
      */
-    public void addForceInvisibleFlag(@InvisibilityFlags int flag) {
+    public void addForceInvisibleFlag(final @InvisibilityFlags int flag) {
         mForceInvisible |= flag;
     }
 
-    public void clearForceInvisibleFlag(@InvisibilityFlags int flag) {
+    public void clearForceInvisibleFlag(final @InvisibilityFlags int flag) {
         mForceInvisible &= ~flag;
     }
 
@@ -243,7 +243,7 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
         return hasSomeInvisibleFlag(INVISIBLE_FLAGS);
     }
 
-    public boolean hasSomeInvisibleFlag(int mask) {
+    public boolean hasSomeInvisibleFlag(final int mask) {
         return (mForceInvisible & mask) != 0;
     }
 
@@ -252,13 +252,13 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
     }
 
     @Override
-    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
+    public void dump(final String prefix, final FileDescriptor fd, final PrintWriter writer, final String[] args) {
         if (!UiFactory.dumpActivity(this, writer)) {
             super.dump(prefix, fd, writer, args);
         }
     }
 
-    protected void dumpMisc(PrintWriter writer) {
+    protected void dumpMisc(final PrintWriter writer) {
         writer.println(" deviceProfile isTransposed=" + getDeviceProfile().isVerticalBarLayout());
         writer.println(" orientation=" + getResources().getConfiguration().orientation);
         writer.println(" mSystemUiController: " + mSystemUiController);

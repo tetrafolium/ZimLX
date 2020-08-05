@@ -106,15 +106,15 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     private String mLastSearchQuery;
 
-    public AllAppsContainerView(Context context) {
+    public AllAppsContainerView(final Context context) {
         this(context, null);
     }
 
-    public AllAppsContainerView(Context context, AttributeSet attrs) {
+    public AllAppsContainerView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AllAppsContainerView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         mLauncher = Launcher.getLauncher(context);
@@ -148,14 +148,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     @Override
-    protected void setDampedScrollShift(float shift) {
+    protected void setDampedScrollShift(final float shift) {
         // Bound the shift amount to avoid content from drawing on top (Y-val) of the QSB.
         float maxShift = getSearchView().getHeight() / 2f;
         super.setDampedScrollShift(Utilities.boundToRange(shift, -maxShift, maxShift));
     }
 
     @Override
-    public void onDeviceProfileChanged(DeviceProfile dp) {
+    public void onDeviceProfileChanged(final DeviceProfile dp) {
         for (AdapterHolder holder : mAH) {
             if (holder.recyclerView != null) {
                 // Remove all views and clear the pool, while keeping the data same. After this
@@ -188,7 +188,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     /**
      * Returns whether the view itself will handle the touch event or not.
      */
-    public boolean shouldContainerScroll(MotionEvent ev) {
+    public boolean shouldContainerScroll(final MotionEvent ev) {
         // IF the MotionEvent is inside the search box, and the container keeps on receiving
         // touch input, container should move down.
         if (mLauncher.getDragLayer().isEventOverView(mSearchContainer, ev)) {
@@ -198,19 +198,19 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         if (rv == null) {
             return true;
         }
-        if (rv.getScrollbar().getThumbOffsetY() >= 0 &&
-                mLauncher.getDragLayer().isEventOverView(rv.getScrollbar(), ev)) {
+        if (rv.getScrollbar().getThumbOffsetY() >= 0
+                && mLauncher.getDragLayer().isEventOverView(rv.getScrollbar(), ev)) {
             return false;
         }
         return rv.shouldContainerScroll(ev, mLauncher.getDragLayer());
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onInterceptTouchEvent(final MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             AllAppsRecyclerView rv = getActiveRecyclerView();
-            if (rv != null &&
-                    rv.getScrollbar().isHitInParent(ev.getX(), ev.getY(), mFastScrollerOffset)) {
+            if (rv != null
+                    && rv.getScrollbar().isHitInParent(ev.getX(), ev.getY(), mFastScrollerOffset)) {
                 mTouchHandler = rv.getScrollbar();
             }
         }
@@ -221,7 +221,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(final MotionEvent ev) {
         if (mTouchHandler != null) {
             mTouchHandler.handleTouchEvent(ev, mFastScrollerOffset);
             return true;
@@ -253,11 +253,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     /**
      * Resets the state of AllApps.
      */
-    public void reset(boolean animate) {
+    public void reset(final boolean animate) {
         reset(animate, false);
     }
 
-    public void reset(boolean animate, boolean force) {
+    public void reset(final boolean animate, final boolean force) {
         if (force || !Utilities.getZimPrefs(getContext()).getSaveScrollPosition()) {
             for (int i = 0; i < mAH.length; i++) {
                 if (mAH[i].recyclerView != null) {
@@ -297,22 +297,22 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
+    public boolean dispatchKeyEvent(final KeyEvent event) {
         mSearchUiManager.preDispatchKeyEvent(event);
         return super.dispatchKeyEvent(event);
     }
 
     @Override
-    public void onDropCompleted(View target, DragObject d, boolean success) {
+    public void onDropCompleted(final View target, final DragObject d, final boolean success) {
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
+    public void fillInLogContainerData(final View v, final ItemInfo info, final Target target, final Target targetParent) {
         // This is filled in {@link AllAppsRecyclerView}
     }
 
     @Override
-    public void setInsets(Rect insets) {
+    public void setInsets(final Rect insets) {
         DeviceProfile grid = mLauncher.getDeviceProfile();
         int leftRightPadding = grid.desiredWorkspaceLeftRightMarginPx
                                + grid.cellLayoutPaddingLeftRightPx;
@@ -340,7 +340,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(final Canvas canvas) {
         super.dispatchDraw(canvas);
 
         if (mNavBarScrimHeight > 0) {
@@ -360,11 +360,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         rebindAdapters(mTabsController.getShouldShowTabs(), true);
     }
 
-    private void rebindAdapters(boolean showTabs) {
+    private void rebindAdapters(final boolean showTabs) {
         rebindAdapters(showTabs, false /* force */);
     }
 
-    private void rebindAdapters(boolean showTabs, boolean force) {
+    private void rebindAdapters(final boolean showTabs, final boolean force) {
         if (showTabs == mUsingTabs && !force) {
             return;
         }
@@ -399,7 +399,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
     }
 
-    private void replaceRVContainer(boolean showTabs) {
+    private void replaceRVContainer(final boolean showTabs) {
         for (int i = 0; i < mAH.length; i++) {
             if (mAH[i].recyclerView != null) {
                 mAH[i].recyclerView.setLayoutManager(null);
@@ -427,7 +427,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         return mViewPager != null ? mViewPager : findViewById(R.id.apps_list_view);
     }
 
-    public void onTabChanged(int pos) {
+    public void onTabChanged(final int pos) {
         pos = Utilities.boundToRange(pos, 0, mTabsController.getTabsCount() - 1);
         mHeader.setCurrentActive(pos);
         reset(true /* animate */, true);
@@ -482,7 +482,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
     }
 
-    public void setLastSearchQuery(String query) {
+    public void setLastSearchQuery(final String query) {
         mLastSearchQuery = query;
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].adapter.setLastSearchQuery(query);
@@ -508,13 +508,13 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
     }
 
-    public void setRecyclerViewVerticalFadingEdgeEnabled(boolean enabled) {
+    public void setRecyclerViewVerticalFadingEdgeEnabled(final boolean enabled) {
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].applyVerticalFadingEdgeEnabled(enabled);
         }
     }
 
-    public void addElevationController(OnScrollListener scrollListener) {
+    public void addElevationController(final OnScrollListener scrollListener) {
         if (!mUsingTabs) {
             mAH[AdapterHolder.MAIN].recyclerView.addOnScrollListener(scrollListener);
         }
@@ -533,12 +533,12 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     /**
      * Adds an update listener to {@param animator} that adds springs to the animation.
      */
-    public void addSpringFromFlingUpdateListener(ValueAnimator animator, float velocity) {
+    public void addSpringFromFlingUpdateListener(final ValueAnimator animator, final float velocity) {
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             boolean shouldSpring = true;
 
             @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+            public void onAnimationUpdate(final ValueAnimator valueAnimator) {
                 if (shouldSpring
                         && valueAnimator.getAnimatedFraction() >= FLING_ANIMATION_THRESHOLD) {
                     int searchViewId = getSearchView().getId();
@@ -554,12 +554,12 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     @Override
-    public void getDrawingRect(Rect outRect) {
+    public void getDrawingRect(final Rect outRect) {
         super.getDrawingRect(outRect);
         outRect.offset(0, (int) getTranslationY());
     }
 
-    public AdapterHolder createHolder(boolean isWork) {
+    public AdapterHolder createHolder(final boolean isWork) {
         return new AdapterHolder(isWork);
     }
 
@@ -576,14 +576,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         private boolean isWork;
 
-        AdapterHolder(boolean isWork) {
+        AdapterHolder(final boolean isWork) {
             appsList = new AlphabeticalAppsList(mLauncher, mAllAppsStore, isWork);
             adapter = new AllAppsGridAdapter(mLauncher, appsList);
             appsList.setAdapter(adapter);
             layoutManager = adapter.getLayoutManager();
         }
 
-        public void setup(@NonNull View rv, @Nullable ItemInfoMatcher matcher) {
+        public void setup(final @NonNull View rv, final @Nullable ItemInfoMatcher matcher) {
             appsList.updateItemFilter(matcher);
             recyclerView = (AllAppsRecyclerView) rv;
             recyclerView.setEdgeEffectFactory(createEdgeEffectFactory());
@@ -606,12 +606,12 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             }
         }
 
-        public void applyVerticalFadingEdgeEnabled(boolean enabled) {
+        public void applyVerticalFadingEdgeEnabled(final boolean enabled) {
             verticalFadingEdge = enabled;
             mAH[AdapterHolder.MAIN].recyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs && verticalFadingEdge);
         }
 
-        public void setIsWork(boolean isWork) {
+        public void setIsWork(final boolean isWork) {
             this.isWork = isWork;
             appsList.setIsWork(isWork);
         }

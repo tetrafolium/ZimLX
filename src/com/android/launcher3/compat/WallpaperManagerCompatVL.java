@@ -70,7 +70,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
     private final Context mContext;
     private WallpaperColorsCompat mColorsCompat;
 
-    WallpaperManagerCompatVL(Context context) {
+    WallpaperManagerCompatVL(final Context context) {
         mContext = context;
 
         String colors = getDevicePrefs(mContext).getString(KEY_COLORS, "");
@@ -86,7 +86,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
         }
         context.registerReceiver(new BroadcastReceiver() {
             @Override
-            public void onReceive(Context context, Intent intent) {
+            public void onReceive(final Context context, final Intent intent) {
                 reloadColors();
             }
         }, new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED));
@@ -108,13 +108,13 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
         }
         mContext.registerReceiver(new BroadcastReceiver() {
             @Override
-            public void onReceive(Context context, Intent intent) {
+            public void onReceive(final Context context, final Intent intent) {
                 handleResult(intent.getStringExtra(KEY_COLORS));
             }
         }, new IntentFilter(ACTION_EXTRACTION_COMPLETE), permission, new Handler());
     }
 
-    private static final int getWallpaperId(Context context) {
+    private static final int getWallpaperId(final Context context) {
         if (!Utilities.ATLEAST_NOUGAT) {
             Drawable wallpaper = WallpaperManager.getInstance(context).getDrawable();
             if (wallpaper != null) {
@@ -134,7 +134,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
     /**
      * Parses the stored value and returns the wallpaper id and wallpaper colors.
      */
-    private static Pair<Integer, WallpaperColorsCompat> parseValue(String value) {
+    private static Pair<Integer, WallpaperColorsCompat> parseValue(final String value) {
         String[] parts = value.split(",");
         Integer wallpaperId = Integer.parseInt(parts[1]);
         if (parts.length == 2) {
@@ -153,12 +153,12 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 
     @Nullable
     @Override
-    public WallpaperColorsCompat getWallpaperColors(int which) {
+    public WallpaperColorsCompat getWallpaperColors(final int which) {
         return which == FLAG_SYSTEM ? mColorsCompat : null;
     }
 
     @Override
-    public void addOnColorsChangedListener(OnColorsChangedListenerCompat listener) {
+    public void addOnColorsChangedListener(final OnColorsChangedListenerCompat listener) {
         mListeners.add(listener);
     }
 
@@ -169,7 +169,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
         ((JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE)).schedule(job);
     }
 
-    private void handleResult(String result) {
+    private void handleResult(final String result) {
         getDevicePrefs(mContext).edit().putString(KEY_COLORS, result).apply();
         mColorsCompat = parseValue(result).second;
         for (OnColorsChangedListenerCompat listener : mListeners) {
@@ -201,7 +201,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
          * @param source What to read.
          * @return Whether image supports dark text or not.
          */
-        private static int calculateDarkHints(Bitmap source) {
+        private static int calculateDarkHints(final Bitmap source) {
             if (source == null) {
                 return 0;
             }
@@ -257,7 +257,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
         }
 
         @Override
-        public boolean onStopJob(JobParameters jobParameters) {
+        public boolean onStopJob(final JobParameters jobParameters) {
             mWorkerHandler.removeCallbacksAndMessages(null);
             return true;
         }
@@ -308,8 +308,8 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
             if (drawable != null && drawable.getIntrinsicWidth() > 0 && drawable.getIntrinsicHeight() > 0) {
                 // Calculate how big the bitmap needs to be.
                 // This avoids unnecessary processing and allocation inside Palette.
-                final int requestedArea = drawable.getIntrinsicWidth() *
-                                          drawable.getIntrinsicHeight();
+                final int requestedArea = drawable.getIntrinsicWidth()
+                                          * drawable.getIntrinsicHeight();
                 double scale = 1;
                 if (requestedArea > MAX_WALLPAPER_EXTRACTION_AREA) {
                     scale = Math.sqrt(MAX_WALLPAPER_EXTRACTION_AREA / (double) requestedArea);
@@ -336,7 +336,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 
                 Collections.sort(colorsToOccurrences, new Comparator<Pair<Integer, Integer>>() {
                     @Override
-                    public int compare(Pair<Integer, Integer> a, Pair<Integer, Integer> b) {
+                    public int compare(final Pair<Integer, Integer> a, final Pair<Integer, Integer> b) {
                         return b.second - a.second;
                     }
                 });

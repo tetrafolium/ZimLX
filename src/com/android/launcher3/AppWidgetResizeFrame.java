@@ -84,15 +84,15 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
     private int mXDown, mYDown;
 
-    public AppWidgetResizeFrame(Context context) {
+    public AppWidgetResizeFrame(final Context context) {
         this(context, null);
     }
 
-    public AppWidgetResizeFrame(Context context, AttributeSet attrs) {
+    public AppWidgetResizeFrame(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AppWidgetResizeFrame(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AppWidgetResizeFrame(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         mLauncher = Launcher.getLauncher(context);
@@ -113,7 +113,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         }
     }
 
-    public static void showForWidget(LauncherAppWidgetHostView widget, CellLayout cellLayout) {
+    public static void showForWidget(final LauncherAppWidgetHostView widget, final CellLayout cellLayout) {
         Launcher launcher = Launcher.getLauncher(cellLayout.getContext());
         AbstractFloatingView.closeAllOpenViews(launcher);
 
@@ -128,8 +128,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         frame.snapToWidget(false);
     }
 
-    private void setupForWidget(LauncherAppWidgetHostView widgetView, CellLayout cellLayout,
-                                DragLayer dragLayer) {
+    private void setupForWidget(final LauncherAppWidgetHostView widgetView, final CellLayout cellLayout,
+                                final DragLayer dragLayer) {
         mCellLayout = cellLayout;
         mWidgetView = widgetView;
         LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo)
@@ -159,7 +159,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         setOnKeyListener(this);
     }
 
-    public boolean beginResizeIfPointInRegion(int x, int y) {
+    public boolean beginResizeIfPointInRegion(final int x, final int y) {
         boolean horizontalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0;
         boolean verticalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0;
 
@@ -203,7 +203,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     /**
      * Based on the deltas, we resize the frame.
      */
-    public void visualizeResizeForDelta(int deltaX, int deltaY) {
+    public void visualizeResizeForDelta(final int deltaX, final int deltaY) {
         mDeltaX = mDeltaXRange.clamp(deltaX);
         mDeltaY = mDeltaYRange.clamp(deltaY);
 
@@ -239,14 +239,14 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         requestLayout();
     }
 
-    private static int getSpanIncrement(float deltaFrac) {
+    private static int getSpanIncrement(final float deltaFrac) {
         return Math.abs(deltaFrac) > RESIZE_THRESHOLD ? Math.round(deltaFrac) : 0;
     }
 
     /**
      * Based on the current deltas, we determine if and how to resize the widget.
      */
-    private void resizeWidgetIfNeeded(boolean onDismiss) {
+    private void resizeWidgetIfNeeded(final boolean onDismiss) {
         float xThreshold = mCellLayout.getCellWidth();
         float yThreshold = mCellLayout.getCellHeight();
 
@@ -318,14 +318,14 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mWidgetView.requestLayout();
     }
 
-    static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
-                                       int spanX, int spanY) {
+    static void updateWidgetSizeRanges(final AppWidgetHostView widgetView, final Launcher launcher,
+                                       final int spanX, final int spanY) {
         getWidgetSizeRanges(launcher, spanX, spanY, sTmpRect);
         widgetView.updateAppWidgetSize(null, sTmpRect.left, sTmpRect.top,
                                        sTmpRect.right, sTmpRect.bottom);
     }
 
-    public static Rect getWidgetSizeRanges(Context context, int spanX, int spanY, Rect rect) {
+    public static Rect getWidgetSizeRanges(final Context context, final int spanX, final int spanY, final Rect rect) {
         if (sCellSize == null) {
             InvariantDeviceProfile inv = LauncherAppState.getIDP(context);
 
@@ -380,7 +380,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
      * Returns the rect of this view when the frame is snapped around the widget, with the bounds
      * relative to the {@link DragLayer}.
      */
-    private void getSnappedRectRelativeToDragLayer(Rect out) {
+    private void getSnappedRectRelativeToDragLayer(final Rect out) {
         float scale = mWidgetView.getScaleToFit();
 
         mDragLayer.getViewRectRelativeToSelf(mWidgetView, out);
@@ -399,7 +399,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         out.bottom = out.top + height;
     }
 
-    private void snapToWidget(boolean animate) {
+    private void snapToWidget(final boolean animate) {
         getSnappedRectRelativeToDragLayer(sTmpRect);
         int newWidth = sTmpRect.width();
         int newHeight = sTmpRect.height();
@@ -441,7 +441,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             ObjectAnimator oa =
                 LauncherAnimUtils.ofPropertyValuesHolder(lp, this, width, height, x, y);
             oa.addUpdateListener(new AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
+                public void onAnimationUpdate(final ValueAnimator animation) {
                     requestLayout();
                 }
             });
@@ -460,7 +460,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
+    public boolean onKey(final View v, final int keyCode, final KeyEvent event) {
         // Clear the frame and give focus to the widget host view when a directional key is pressed.
         if (FocusLogic.shouldConsume(keyCode)) {
             close(false);
@@ -470,7 +470,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         return false;
     }
 
-    private boolean handleTouchDown(MotionEvent ev) {
+    private boolean handleTouchDown(final MotionEvent ev) {
         Rect hitRect = new Rect();
         int x = (int) ev.getX();
         int y = (int) ev.getY();
@@ -487,7 +487,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     @Override
-    public boolean onControllerTouchEvent(MotionEvent ev) {
+    public boolean onControllerTouchEvent(final MotionEvent ev) {
         int action = ev.getAction();
         int x = (int) ev.getX();
         int y = (int) ev.getY();
@@ -509,7 +509,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     @Override
-    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+    public boolean onControllerInterceptTouchEvent(final MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN && handleTouchDown(ev)) {
             return true;
         }
@@ -518,17 +518,17 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     @Override
-    protected void handleClose(boolean animate) {
+    protected void handleClose(final boolean animate) {
         mDragLayer.removeView(this);
     }
 
     @Override
-    public void logActionCommand(int command) {
+    public void logActionCommand(final int command) {
         // TODO: Log this case.
     }
 
     @Override
-    protected boolean isOfType(int type) {
+    protected boolean isOfType(final int type) {
         return (type & TYPE_WIDGET_RESIZE_FRAME) != 0;
     }
 
@@ -539,11 +539,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         public int start, end;
 
-        public int clamp(int value) {
+        public int clamp(final int value) {
             return Utilities.boundToRange(value, start, end);
         }
 
-        public void set(int s, int e) {
+        public void set(final int s, final int e) {
             start = s;
             end = e;
         }
@@ -556,7 +556,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
          * Moves either the start or end edge (but never both) by {@param delta} and  sets the
          * result in {@param out}
          */
-        public void applyDelta(boolean moveStart, boolean moveEnd, int delta, IntRange out) {
+        public void applyDelta(final boolean moveStart, final boolean moveEnd, final int delta, final IntRange out) {
             out.start = moveStart ? start + delta : start;
             out.end = moveEnd ? end + delta : end;
         }
@@ -572,8 +572,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
          * @return the amount of increase when endEdge was moves and the amount of decrease when
          * the start edge was moved.
          */
-        public int applyDeltaAndBound(boolean moveStart, boolean moveEnd, int delta,
-                                      int minSize, int maxEnd, IntRange out) {
+        public int applyDeltaAndBound(final boolean moveStart, final boolean moveEnd, final int delta,
+                                      final int minSize, final int maxEnd, final IntRange out) {
             applyDelta(moveStart, moveEnd, delta, out);
             if (out.start < 0) {
                 out.start = 0;

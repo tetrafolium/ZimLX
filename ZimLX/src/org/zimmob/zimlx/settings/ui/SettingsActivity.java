@@ -151,7 +151,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     public static String defaultHome = "";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         savedInstanceState = getRelaunchInstanceState(savedInstanceState);
 
         String fragmentName = getIntent().getStringExtra(EXTRA_FRAGMENT);
@@ -191,7 +191,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
     }
 
-    protected Fragment createLaunchFragment(Intent intent) {
+    protected Fragment createLaunchFragment(final Intent intent) {
         CharSequence title = intent.getCharSequenceExtra(EXTRA_TITLE);
         if (title != null) {
             setTitle(title);
@@ -260,7 +260,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         /*if (v.getId() == R.id.search_action_bar) {
             //startActivity(new Intent(this, SettingsSearchActivity.class));
         }*/
@@ -277,7 +277,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     @Override
-    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference preference) {
+    public boolean onPreferenceStartFragment(final PreferenceFragmentCompat caller, final Preference preference) {
         Fragment fragment;
         if (preference instanceof SubPreference) {
             ((SubPreference) preference).start(this);
@@ -297,7 +297,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     @Override
-    public boolean onPreferenceDisplayDialog(@NonNull PreferenceFragmentCompat caller, Preference pref) {
+    public boolean onPreferenceDisplayDialog(final @NonNull PreferenceFragmentCompat caller, final Preference pref) {
         if (ENABLE_MINUS_ONE_PREF.equals(pref.getKey())) {
             InstallFragment fragment = new InstallFragment();
             fragment.show(getSupportFragmentManager(), BRIDGE_TAG);
@@ -310,7 +310,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         updateUpButton(isSubSettings || getSupportFragmentManager().getBackStackEntryCount() != 0);
     }
 
-    private void updateUpButton(boolean enabled) {
+    private void updateUpButton(final boolean enabled) {
         if (getSupportActionBar() == null) {
             return;
         }
@@ -318,7 +318,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
@@ -348,34 +348,34 @@ public class SettingsActivity extends SettingsBaseActivity implements
             }
 
             @Override
-            public void onItemRangeChanged(int positionStart, int itemCount) {
+            public void onItemRangeChanged(final int positionStart, final int itemCount) {
                 onDataSetChanged();
             }
 
             @Override
-            public void onItemRangeChanged(int positionStart, int itemCount,
-                                           Object payload) {
+            public void onItemRangeChanged(final int positionStart, final int itemCount,
+                                           final Object payload) {
                 onDataSetChanged();
             }
 
             @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
+            public void onItemRangeInserted(final int positionStart, final int itemCount) {
                 onDataSetChanged();
             }
 
             @Override
-            public void onItemRangeRemoved(int positionStart, int itemCount) {
+            public void onItemRangeRemoved(final int positionStart, final int itemCount) {
                 onDataSetChanged();
             }
 
             @Override
-            public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+            public void onItemRangeMoved(final int fromPosition, final int toPosition, final int itemCount) {
                 onDataSetChanged();
             }
         };
 
         @Override
-        public void onCreate(Bundle savedInstanceState) {
+        public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
             if (savedInstanceState != null) {
@@ -393,8 +393,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @SuppressLint("RestrictedApi")
-        public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent,
-                Bundle savedInstanceState) {
+        public RecyclerView onCreateRecyclerView(final LayoutInflater inflater, final ViewGroup parent,
+                final Bundle savedInstanceState) {
             RecyclerView recyclerView = (RecyclerView) inflater
                                         .inflate(getRecyclerViewLayoutRes(), parent, false);
             if (recyclerView instanceof SpringRecyclerView) {
@@ -411,17 +411,17 @@ public class SettingsActivity extends SettingsBaseActivity implements
         abstract protected int getRecyclerViewLayoutRes();
 
         @Override
-        public void setDivider(Drawable divider) {
+        public void setDivider(final Drawable divider) {
             super.setDivider(null);
         }
 
         @Override
-        public void setDividerHeight(int height) {
+        public void setDividerHeight(final int height) {
             super.setDividerHeight(0);
         }
 
         @Override
-        protected Adapter onCreateAdapter(PreferenceScreen preferenceScreen) {
+        protected Adapter onCreateAdapter(final PreferenceScreen preferenceScreen) {
             final Bundle arguments = getActivity().getIntent().getExtras();
             mAdapter = new HighlightablePreferenceGroupAdapter(preferenceScreen,
                     arguments == null
@@ -431,7 +431,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
-        public void onSaveInstanceState(Bundle outState) {
+        public void onSaveInstanceState(final Bundle outState) {
             super.onSaveInstanceState(outState);
 
             if (mAdapter != null) {
@@ -455,7 +455,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             dispatchOnResume(getPreferenceScreen());
         }
 
-        public void dispatchOnResume(PreferenceGroup group) {
+        public void dispatchOnResume(final PreferenceGroup group) {
             int count = group.getPreferenceCount();
             for (int i = 0; i < count; i++) {
                 Preference preference = group.getPreference(i);
@@ -502,7 +502,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             }
         }
 
-        void onPreferencesAdded(PreferenceGroup group) {
+        void onPreferencesAdded(final PreferenceGroup group) {
             for (int i = 0; i < group.getPreferenceCount(); i++) {
                 Preference preference = group.getPreference(i);
 
@@ -533,7 +533,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         private boolean mShowDevOptions;
 
         @Override
-        public void onCreate(Bundle savedInstanceState) {
+        public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             mShowDevOptions = Utilities.getZimPrefs(getActivity()).getDeveloperOptionsEnabled();
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
@@ -541,7 +541,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        public void onCreatePreferences(final Bundle savedInstanceState, final String rootKey) {
             addPreferencesFromResource(R.xml.zim_preferences);
             onPreferencesAdded(getPreferenceScreen());
         }
@@ -558,12 +558,12 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
-        public boolean onPreferenceTreeClick(Preference preference) {
+        public boolean onPreferenceTreeClick(final Preference preference) {
             return super.onPreferenceTreeClick(preference);
         }
 
         @Override
-        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
             inflater.inflate(R.menu.menu_settings, menu);
             if (!BuildConfig.APPLICATION_ID.equals(defaultHome)) {
                 inflater.inflate(R.menu.menu_change_default_home, menu);
@@ -571,7 +571,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
+        public boolean onOptionsItemSelected(final MenuItem item) {
             switch (item.getItemId()) {
             case R.id.action_change_default_home:
                 FakeLauncherKt.changeDefaultHome(getContext());
@@ -614,7 +614,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         private Context mContext;
 
         @Override
-        public void onCreate(Bundle savedInstanceState) {
+        public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
             mContext = getActivity();
@@ -687,7 +687,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             }
         }
 
-        public void updateProjectTeam(AboutUtils au) {
+        public void updateProjectTeam(final AboutUtils au) {
             Preference pref;
             if ((pref = findPreference("pref_key__about_project_team")) != null && ((PreferenceGroup) pref).getPreferenceCount() == 0) {
                 String[] data = (au.readTextfileFromRawRes(R.raw.team, "", "").trim() + "\n\n").split("\n");
@@ -709,7 +709,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             }
         }
 
-        protected boolean appendPreference(Preference pref, @Nullable PreferenceGroup target) {
+        protected boolean appendPreference(final Preference pref, final @Nullable PreferenceGroup target) {
             if (target == null) {
                 if ((target = getPreferenceScreen()) == null) {
                     return false;
@@ -722,7 +722,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        public void onCreatePreferences(final Bundle savedInstanceState, final String rootKey) {
             addPreferencesFromResource(getContent());
             onPreferencesAdded(getPreferenceScreen());
         }
@@ -758,7 +758,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
-        public void onDisplayPreferenceDialog(Preference preference) {
+        public void onDisplayPreferenceDialog(final Preference preference) {
             final DialogFragment f;
             if (preference instanceof GridSizePreference) {
                 f = GridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
@@ -796,7 +796,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             //f.show(getFragmentManager(), preference.getKey());
         }
 
-        public static SubSettingsFragment newInstance(SubPreference preference) {
+        public static SubSettingsFragment newInstance(final SubPreference preference) {
             SubSettingsFragment fragment = new SubSettingsFragment();
             Bundle b = new Bundle(2);
             b.putString(TITLE, (String) preference.getTitle());
@@ -805,7 +805,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             return fragment;
         }
 
-        public static SubSettingsFragment newInstance(Intent intent) {
+        public static SubSettingsFragment newInstance(final Intent intent) {
             SubSettingsFragment fragment = new SubSettingsFragment();
             Bundle b = new Bundle(2);
             b.putString(TITLE, intent.getStringExtra(TITLE));
@@ -814,7 +814,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             return fragment;
         }
 
-        public static SubSettingsFragment newInstance(String title, @XmlRes int content) {
+        public static SubSettingsFragment newInstance(final String title, final @XmlRes int content) {
             SubSettingsFragment fragment = new SubSettingsFragment();
             Bundle b = new Bundle(2);
             b.putString(TITLE, title);
@@ -824,7 +824,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
+        public boolean onPreferenceChange(final Preference preference, final Object newValue) {
             switch (preference.getKey()) {
             case SHOW_PREDICTIONS_PREF:
                 if ((boolean) newValue) {
@@ -850,7 +850,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
-        public boolean onPreferenceClick(Preference preference) {
+        public boolean onPreferenceClick(final Preference preference) {
             switch (preference.getKey()) {
             case "kill":
                 Utilities.killLauncher();
@@ -860,7 +860,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
-        public boolean onPreferenceTreeClick(Preference preference) {
+        public boolean onPreferenceTreeClick(final Preference preference) {
             AboutUtils au = new AboutUtils(getActivity(), getContext());
             if (preference.getKey() != null) {
                 switch (preference.getKey()) {
@@ -924,11 +924,11 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     if (preference instanceof ColorPreferenceCompat) {
                         ColorPickerDialog dialog = ((ColorPreferenceCompat) preference).getDialog();
                         dialog.setColorPickerDialogListener(new ColorPickerDialogListener() {
-                            public void onColorSelected(int dialogId, int color) {
+                            public void onColorSelected(final int dialogId, final int color) {
                                 ((ColorPreferenceCompat) preference).saveValue(color);
                             }
 
-                            public void onDialogDismissed(int dialogId) {
+                            public void onDialogDismissed(final int dialogId) {
                             }
                         });
                         dialog.show((getActivity()).getSupportFragmentManager(), "color-picker-dialog");
@@ -958,7 +958,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             return R.layout.preference_dialog_recyclerview;
         }
 
-        public static DialogSettingsFragment newInstance(String title, @XmlRes int content) {
+        public static DialogSettingsFragment newInstance(final String title, final @XmlRes int content) {
             DialogSettingsFragment fragment = new DialogSettingsFragment();
             Bundle b = new Bundle(2);
             b.putString(TITLE, title);
@@ -1005,13 +1005,13 @@ public class SettingsActivity extends SettingsBaseActivity implements
         private final Preference mRotationPref;
 
         public SystemDisplayRotationLockObserver(
-            Preference rotationPref, ContentResolver resolver) {
+            final Preference rotationPref, final ContentResolver resolver) {
             super(resolver);
             mRotationPref = rotationPref;
         }
 
         @Override
-        public void onSettingChanged(boolean enabled) {
+        public void onSettingChanged(final boolean enabled) {
             mRotationPref.setEnabled(enabled);
             mRotationPref.setSummary(enabled
                                      ? R.string.allow_rotation_desc : R.string.allow_rotation_blocked_desc);
@@ -1030,8 +1030,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
         private final FragmentManager mFragmentManager;
         private boolean serviceEnabled = true;
 
-        public IconBadgingObserver(ButtonPreference badgingPref, ContentResolver resolver,
-                                   FragmentManager fragmentManager) {
+        public IconBadgingObserver(final ButtonPreference badgingPref, final ContentResolver resolver,
+                                   final FragmentManager fragmentManager) {
             super(resolver);
             mBadgingPref = badgingPref;
             mResolver = resolver;
@@ -1039,7 +1039,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
-        public void onSettingChanged(boolean enabled) {
+        public void onSettingChanged(final boolean enabled) {
             int summary = enabled ? R.string.icon_badging_desc_on : R.string.icon_badging_desc_off;
 
             if (enabled) {
@@ -1048,9 +1048,9 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     Settings.Secure.getString(mResolver, NOTIFICATION_ENABLED_LISTENERS);
                 ComponentName myListener =
                     new ComponentName(mBadgingPref.getContext(), NotificationListener.class);
-                serviceEnabled = enabledListeners != null &&
-                                 (enabledListeners.contains(myListener.flattenToString()) ||
-                                  enabledListeners.contains(myListener.flattenToShortString()));
+                serviceEnabled = enabledListeners != null
+                                 && (enabledListeners.contains(myListener.flattenToString())
+                                  || enabledListeners.contains(myListener.flattenToShortString()));
                 if (!serviceEnabled) {
                     summary = R.string.title_missing_notification_access;
                 }
@@ -1063,7 +1063,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
-        public boolean onPreferenceClick(Preference preference) {
+        public boolean onPreferenceClick(final Preference preference) {
             if (!Utilities.ATLEAST_OREO && serviceEnabled) {
                 ComponentName cn = new ComponentName(preference.getContext(),
                                                      NotificationListener.class);
@@ -1083,7 +1083,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         extends DialogFragment implements DialogInterface.OnClickListener {
 
         @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
+        public Dialog onCreateDialog(final Bundle savedInstanceState) {
             final Context context = getActivity();
             String msg = context.getString(R.string.msg_missing_notification_access,
                                            context.getString(R.string.derived_app_name));
@@ -1102,7 +1102,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
+        public void onClick(final DialogInterface dialogInterface, final int i) {
             ComponentName cn = new ComponentName(getActivity(), NotificationListener.class);
             Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -1115,7 +1115,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         extends DialogFragment implements DialogInterface.OnClickListener {
 
         @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
+        public Dialog onCreateDialog(final Bundle savedInstanceState) {
             final Context context = getActivity();
             return new AlertDialog.Builder(context)
                    .setTitle(R.string.reset_custom_icons)
@@ -1132,7 +1132,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
+        public void onClick(final DialogInterface dialogInterface, final int i) {
             Context context = getContext();
 
             // Clear custom app icons
@@ -1175,22 +1175,22 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
     }
 
-    public static void startFragment(Context context, String fragment, int title) {
+    public static void startFragment(final Context context, final String fragment, final int title) {
         startFragment(context, fragment, null, context.getString(title));
     }
 
-    public static void startFragment(Context context, String fragment, @Nullable Bundle args) {
+    public static void startFragment(final Context context, final String fragment, final @Nullable Bundle args) {
         startFragment(context, fragment, args, null);
     }
 
-    public static void startFragment(Context context, String fragment, @Nullable Bundle args,
-                                     @Nullable CharSequence title) {
+    public static void startFragment(final Context context, final String fragment, final @Nullable Bundle args,
+                                     final @Nullable CharSequence title) {
         context.startActivity(createFragmentIntent(context, fragment, args, title));
     }
 
     @NotNull
-    private static Intent createFragmentIntent(Context context, String fragment,
-            @Nullable Bundle args, @Nullable CharSequence title) {
+    private static Intent createFragmentIntent(final Context context, final String fragment,
+            final @Nullable Bundle args, final @Nullable CharSequence title) {
         Intent intent = new Intent(context, SettingsActivity.class);
         intent.putExtra(EXTRA_FRAGMENT, fragment);
         intent.putExtra(EXTRA_FRAGMENT_ARGS, args);

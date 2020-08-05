@@ -52,7 +52,7 @@ public class DrawableFactory {
 
     private Path mPreloadProgressPath;
 
-    public static DrawableFactory get(Context context) {
+    public static DrawableFactory get(final Context context) {
         synchronized (LOCK) {
             if (sInstance == null) {
                 sInstance = Utilities.getOverrideObject(DrawableFactory.class,
@@ -68,33 +68,33 @@ public class DrawableFactory {
     /**
      * Returns a FastBitmapDrawable with the icon.
      */
-    public FastBitmapDrawable newIcon(ItemInfoWithIcon info) {
+    public FastBitmapDrawable newIcon(final ItemInfoWithIcon info) {
         FastBitmapDrawable drawable = new FastBitmapDrawable(info);
         drawable.setIsDisabled(info.isDisabled());
         return drawable;
     }
 
-    public FastBitmapDrawable newIcon(BitmapInfo info, ActivityInfo target) {
+    public FastBitmapDrawable newIcon(final BitmapInfo info, final ActivityInfo target) {
         return new FastBitmapDrawable(info);
     }
 
     /**
      * Returns a FastBitmapDrawable with the icon.
      */
-    public FastBitmapDrawable newIcon(Bitmap icon, ItemInfo info) {
+    public FastBitmapDrawable newIcon(final Bitmap icon, final ItemInfo info) {
         return new FastBitmapDrawable(icon);
     }
     /**
      * Returns a FastBitmapDrawable with the icon.
      */
-    public PreloadIconDrawable newPendingIcon(ItemInfoWithIcon info, Context context) {
+    public PreloadIconDrawable newPendingIcon(final ItemInfoWithIcon info, final Context context) {
         if (mPreloadProgressPath == null) {
             mPreloadProgressPath = getPreloadProgressPath(context);
         }
         return new PreloadIconDrawable(info, mPreloadProgressPath, context);
     }
 
-    protected Path getPreloadProgressPath(Context context) {
+    protected Path getPreloadProgressPath(final Context context) {
         if (Utilities.ATLEAST_OREO) {
             try {
                 // Try to load the path from Mask Icon
@@ -114,7 +114,7 @@ public class DrawableFactory {
         return p;
     }
 
-    public AllAppsBackgroundDrawable getAllAppsBackground(Context context) {
+    public AllAppsBackgroundDrawable getAllAppsBackground(final Context context) {
         return new AllAppsBackgroundDrawable(context);
     }
 
@@ -122,7 +122,7 @@ public class DrawableFactory {
      * Returns a drawable that can be used as a badge for the user or null.
      */
     @UiThread
-    public Drawable getBadgeForUser(UserHandle user, Context context) {
+    public Drawable getBadgeForUser(final UserHandle user, final Context context) {
         if (mMyUser.equals(user)) {
             return null;
         }
@@ -134,7 +134,7 @@ public class DrawableFactory {
         return d;
     }
 
-    protected synchronized Bitmap getUserBadge(UserHandle user, Context context) {
+    protected synchronized Bitmap getUserBadge(final UserHandle user, final Context context) {
         Bitmap badgeBitmap = mUserBadges.get(user);
         if (badgeBitmap != null) {
             return badgeBitmap;

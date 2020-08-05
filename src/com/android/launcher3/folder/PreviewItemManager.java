@@ -68,7 +68,7 @@ public class PreviewItemManager {
     private static final int SLIDE_IN_FIRST_PAGE_ANIMATION_DURATION = 300;
     private static final int ITEM_SLIDE_IN_OUT_DISTANCE_PX = 200;
 
-    public PreviewItemManager(FolderIcon icon) {
+    public PreviewItemManager(final FolderIcon icon) {
         mIcon = icon;
     }
 
@@ -100,9 +100,9 @@ public class PreviewItemManager {
         }
     }
 
-    private void computePreviewDrawingParams(int drawableSize, int totalSize) {
-        if (mIntrinsicIconSize != drawableSize || mTotalWidth != totalSize ||
-                mPrevTopPadding != mIcon.getPaddingTop()) {
+    private void computePreviewDrawingParams(final int drawableSize, final int totalSize) {
+        if (mIntrinsicIconSize != drawableSize || mTotalWidth != totalSize
+                || mPrevTopPadding != mIcon.getPaddingTop()) {
             mIntrinsicIconSize = drawableSize;
             mTotalWidth = totalSize;
             mPrevTopPadding = mIcon.getPaddingTop();
@@ -115,8 +115,8 @@ public class PreviewItemManager {
         }
     }
 
-    PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
-            PreviewItemDrawingParams params) {
+    PreviewItemDrawingParams computePreviewItemDrawingParams(final int index, final int curNumItems,
+            final PreviewItemDrawingParams params) {
         // We use an index of -1 to represent an icon on the workspace for the destroy and
         // create animations
         if (index == -1) {
@@ -125,7 +125,7 @@ public class PreviewItemManager {
         return mIcon.mPreviewLayoutRule.computePreviewItemDrawingParams(index, curNumItems, params);
     }
 
-    private PreviewItemDrawingParams getFinalIconParams(PreviewItemDrawingParams params) {
+    private PreviewItemDrawingParams getFinalIconParams(final PreviewItemDrawingParams params) {
         float iconSize = mIcon.mLauncher.getDeviceProfile().iconSizePx;
 
         final float scale = iconSize / mReferenceDrawable.getIntrinsicWidth();
@@ -135,8 +135,8 @@ public class PreviewItemManager {
         return params;
     }
 
-    public void drawParams(Canvas canvas, ArrayList<PreviewItemDrawingParams> params,
-                           float transX) {
+    public void drawParams(final Canvas canvas, final ArrayList<PreviewItemDrawingParams> params,
+                           final float transX) {
         canvas.translate(transX, 0);
         // The first item should be drawn last (ie. on top of later items)
         for (int i = params.size() - 1; i >= 0; i--) {
@@ -148,7 +148,7 @@ public class PreviewItemManager {
         canvas.translate(-transX, 0);
     }
 
-    public void draw(Canvas canvas) {
+    public void draw(final Canvas canvas) {
         // The items are drawn in coordinates relative to the preview offset
         PreviewBackground bg = mIcon.getFolderBackground();
         canvas.translate(bg.basePreviewOffsetX, bg.basePreviewOffsetY);
@@ -168,7 +168,7 @@ public class PreviewItemManager {
         mIcon.invalidate();
     }
 
-    private void drawPreviewItem(Canvas canvas, PreviewItemDrawingParams params) {
+    private void drawPreviewItem(final Canvas canvas, final PreviewItemDrawingParams params) {
         canvas.save();
         canvas.translate(params.transX, params.transY);
         canvas.scale(params.scale, params.scale);
@@ -185,20 +185,20 @@ public class PreviewItemManager {
         canvas.restore();
     }
 
-    public void hidePreviewItem(int index, boolean hidden) {
+    public void hidePreviewItem(final int index, final boolean hidden) {
         // If there are more params than visible in the preview, they are used for enter/exit
         // animation purposes and they were added to the front of the list.
         // To index the params properly, we need to skip these params.
         index = index + Math.max(mFirstPageParams.size() - MAX_NUM_ITEMS_IN_PREVIEW, 0);
 
-        PreviewItemDrawingParams params = index < mFirstPageParams.size() ?
-                                          mFirstPageParams.get(index) : null;
+        PreviewItemDrawingParams params = index < mFirstPageParams.size()
+                                          ? mFirstPageParams.get(index) : null;
         if (params != null) {
             params.hidden = hidden;
         }
     }
 
-    void buildParamsForPage(int page, ArrayList<PreviewItemDrawingParams> params, boolean animate) {
+    void buildParamsForPage(final int page, final ArrayList<PreviewItemDrawingParams> params, final boolean animate) {
         List<BubbleTextView> items = mIcon.getPreviewItemsOnPage(page);
         int prevNumItems = params.size();
 
@@ -243,7 +243,7 @@ public class PreviewItemManager {
         }
     }
 
-    void onFolderClose(int currentPage) {
+    void onFolderClose(final int currentPage) {
         // If we are not closing on the first page, we animate the current page preview items
         // out, and animate the first page preview items in.
         mShouldSlideInFirstPage = currentPage != 0;
@@ -255,14 +255,14 @@ public class PreviewItemManager {
             ValueAnimator slideAnimator = ValueAnimator.ofFloat(0, ITEM_SLIDE_IN_OUT_DISTANCE_PX);
             slideAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                public void onAnimationUpdate(final ValueAnimator valueAnimator) {
                     mCurrentPageItemsTransX = (float) valueAnimator.getAnimatedValue();
                     onParamsChanged();
                 }
             });
             slideAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEnd(final Animator animation) {
                     mCurrentPageParams.clear();
                 }
             });
@@ -272,11 +272,11 @@ public class PreviewItemManager {
         }
     }
 
-    void updatePreviewItems(boolean animate) {
+    void updatePreviewItems(final boolean animate) {
         buildParamsForPage(0, mFirstPageParams, animate);
     }
 
-    boolean verifyDrawable(@NonNull Drawable who) {
+    boolean verifyDrawable(final @NonNull Drawable who) {
         for (int i = 0; i < mFirstPageParams.size(); i++) {
             if (mFirstPageParams.get(i).drawable == who) {
                 return true;
@@ -299,8 +299,8 @@ public class PreviewItemManager {
      * @param newParams The list of items in the new preview.
      * @param dropped The item that was dropped onto the FolderIcon.
      */
-    public void onDrop(List<BubbleTextView> oldParams, List<BubbleTextView> newParams,
-                       ShortcutInfo dropped) {
+    public void onDrop(final List<BubbleTextView> oldParams, final List<BubbleTextView> newParams,
+                       final ShortcutInfo dropped) {
         int numItems = newParams.size();
         final ArrayList<PreviewItemDrawingParams> params = mFirstPageParams;
         buildParamsForPage(0, params, false);
@@ -347,8 +347,8 @@ public class PreviewItemManager {
         }
     }
 
-    private void updateTransitionParam(final PreviewItemDrawingParams p, BubbleTextView btv,
-                                       int prevIndex, int newIndex, int numItems) {
+    private void updateTransitionParam(final PreviewItemDrawingParams p, final BubbleTextView btv,
+                                       final int prevIndex, final int newIndex, final int numItems) {
         p.drawable = btv.getCompoundDrawables()[1];
         if (!mIcon.mFolder.isOpen()) {
             // Set the callback to FolderIcon as it is responsible to drawing the icon. The

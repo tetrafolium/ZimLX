@@ -73,7 +73,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
 
     private final UiManager mUiManager;
 
-    public CustomAppPredictor(Context context) {
+    public CustomAppPredictor(final Context context) {
         mContext = context;
         mAppFilter = AppFilter.newInstance(mContext);
         mPrefs = Utilities.getPrefs(context);
@@ -117,7 +117,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     }
 
     @Override
-    public void logAppLaunch(View v, Intent intent, UserHandle user) {
+    public void logAppLaunch(final View v, final Intent intent, final UserHandle user) {
         super.logAppLaunch(v, intent, user);
         if (isPredictorEnabled() && recursiveIsDrawer(v)) {
             ComponentName componentInfo = intent.getComponent();
@@ -142,7 +142,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         }
     }
 
-    private boolean decayHasSpotFree(Set<String> toDecay, SharedPreferences.Editor edit) {
+    private boolean decayHasSpotFree(final Set<String> toDecay, final SharedPreferences.Editor edit) {
         boolean spotFree = false;
         Set<String> toRemove = new HashSet<>();
         for (String prediction : toDecay) {
@@ -166,11 +166,11 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
      * @param component serialized component
      * @return the number of launches, at least zero
      */
-    private int getLaunchCount(String component) {
+    private int getLaunchCount(final String component) {
         return mPrefs.getInt(PREDICTION_PREFIX + component, 0);
     }
 
-    protected boolean recursiveIsDrawer(View v) {
+    protected boolean recursiveIsDrawer(final View v) {
         if (v != null) {
             ViewParent parent = v.getParent();
             while (parent != null) {
@@ -188,7 +188,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
         if (key.equals(SettingsActivity.SHOW_PREDICTIONS_PREF)) {
             if (!isPredictorEnabled()) {
                 Set<String> predictionSet = getStringSetCopy();
@@ -208,7 +208,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         }
     }
 
-    protected ComponentKeyMapper getComponentFromString(String str) {
+    protected ComponentKeyMapper getComponentFromString(final String str) {
         return new ComponentKeyMapper(mContext, new ComponentKey(mContext, str));
     }
 
@@ -243,7 +243,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         return new HashSet<>(mPrefs.getStringSet(PREDICTION_SET, EMPTY_SET));
     }
 
-    static void setComponentNameState(Context context, ComponentKey key, boolean hidden) {
+    static void setComponentNameState(final Context context, final ComponentKey key, final boolean hidden) {
         String comp = key.toString();
         Set<String> hiddenApps = getHiddenApps(context);
         while (hiddenApps.contains(comp)) {
@@ -255,16 +255,16 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         setHiddenApps(context, hiddenApps);
     }
 
-    protected static boolean isHiddenApp(Context context, ComponentKey key) {
+    protected static boolean isHiddenApp(final Context context, final ComponentKey key) {
         return getHiddenApps(context).contains(key.toString());
     }
 
     @SuppressWarnings("ConstantConditions") // This can't be null anyway
-    private static Set<String> getHiddenApps(Context context) {
+    private static Set<String> getHiddenApps(final Context context) {
         return new HashSet<>(Utilities.getZimPrefs(context).getHiddenPredictionAppSet());
     }
 
-    private static void setHiddenApps(Context context, Set<String> hiddenApps) {
+    private static void setHiddenApps(final Context context, final Set<String> hiddenApps) {
         Utilities.getZimPrefs(context).setHiddenPredictionAppSet(hiddenApps);
     }
 
@@ -277,16 +277,16 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         private final CustomAppPredictor mPredictor;
         private final List<Listener> mListeners = new ArrayList<>();
 
-        private UiManager(CustomAppPredictor predictor) {
+        private UiManager(final CustomAppPredictor predictor) {
             mPredictor = predictor;
         }
 
-        public void addListener(Listener listener) {
+        public void addListener(final Listener listener) {
             mListeners.add(listener);
             listener.onPredictionsUpdated();
         }
 
-        public void removeListener(Listener listener) {
+        public void removeListener(final Listener listener) {
             mListeners.remove(listener);
         }
 

@@ -27,12 +27,12 @@ import java.util.List;
 @TargetApi(Build.VERSION_CODES.N)
 public class UserManagerCompatVN extends UserManagerCompatVM {
 
-    UserManagerCompatVN(Context context) {
+    UserManagerCompatVN(final Context context) {
         super(context);
     }
 
     @Override
-    public boolean isQuietModeEnabled(UserHandle user) {
+    public boolean isQuietModeEnabled(final UserHandle user) {
         try {
             return mUserManager.isQuietModeEnabled(user);
         } catch (SecurityException ex) {
@@ -41,7 +41,7 @@ public class UserManagerCompatVN extends UserManagerCompatVM {
     }
 
     @Override
-    public boolean isUserUnlocked(UserHandle user) {
+    public boolean isUserUnlocked(final UserHandle user) {
         try {
             return mUserManager.isUserUnlocked(user);
         } catch (SecurityException ex) {

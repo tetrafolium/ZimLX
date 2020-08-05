@@ -65,7 +65,7 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
     private DragController mDragController;
     private long mDragStartTime;
 
-    public BaseItemDragListener(Rect previewRect, int previewBitmapWidth, int previewViewWidth) {
+    public BaseItemDragListener(final Rect previewRect, final int previewBitmapWidth, final int previewViewWidth) {
         mPreviewRect = previewRect;
         mPreviewBitmapWidth = previewBitmapWidth;
         mPreviewViewWidth = previewViewWidth;
@@ -77,7 +77,7 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
     }
 
     @Override
-    public boolean init(Launcher launcher, boolean alreadyOnHome) {
+    public boolean init(final Launcher launcher, final boolean alreadyOnHome) {
         AbstractFloatingView.closeAllOpenViews(launcher, alreadyOnHome);
         launcher.getStateManager().goToState(NORMAL, alreadyOnHome /* animated */);
         launcher.getDragLayer().setOnDragListener(this);
@@ -89,7 +89,7 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
     }
 
     @Override
-    public boolean onDrag(View view, DragEvent event) {
+    public boolean onDrag(final View view, final DragEvent event) {
         if (mLauncher == null || mDragController == null) {
             postCleanup();
             return false;
@@ -105,7 +105,7 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
         return mDragController.onDragEvent(mDragStartTime, event);
     }
 
-    protected boolean onDragStart(DragEvent event) {
+    protected boolean onDragStart(final DragEvent event) {
         ClipDescription desc = event.getClipDescription();
         if (desc == null || !desc.hasMimeType(getMimeType())) {
             Log.e(TAG, "Someone started a dragAndDrop before us.");
@@ -131,13 +131,13 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
     protected abstract PendingItemDragHelper createDragHelper();
 
     @Override
-    public boolean shouldStartDrag(double distanceDragged) {
+    public boolean shouldStartDrag(final double distanceDragged) {
         // Stay in pre-drag mode, if workspace is locked.
         return !mLauncher.isWorkspaceLocked();
     }
 
     @Override
-    public void onPreDragStart(DragObject dragObject) {
+    public void onPreDragStart(final DragObject dragObject) {
         // The predrag starts when the workspace is not yet loaded. In some cases we set
         // the dragLayer alpha to 0 to have a nice fade-in animation. But that will prevent the
         // dragView from being visible. Instead just skip the fade-in animation here.
@@ -148,14 +148,14 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
     }
 
     @Override
-    public void onPreDragEnd(DragObject dragObject, boolean dragStarted) {
+    public void onPreDragEnd(final DragObject dragObject, final boolean dragStarted) {
         if (dragStarted) {
             dragObject.dragView.setColor(0);
         }
     }
 
     @Override
-    public void onDropCompleted(View target, DragObject d, boolean success) {
+    public void onDropCompleted(final View target, final DragObject d, final boolean success) {
         postCleanup();
     }
 

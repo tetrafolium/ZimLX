@@ -11,7 +11,7 @@ import java.util.HashSet;
 public class NexusAppFilter extends AppFilter {
     private final HashSet<ComponentName> mHideList = new HashSet<>();
 
-    public NexusAppFilter(Context context) {
+    public NexusAppFilter(final Context context) {
         //Voice Search
         mHideList.add(ComponentName.unflattenFromString("com.google.android.googlequicksearchbox/.VoiceSearchActivity"));
 
@@ -26,7 +26,7 @@ public class NexusAppFilter extends AppFilter {
     }
 
     @Override
-    public boolean shouldShowApp(ComponentName componentName, UserHandle user) {
+    public boolean shouldShowApp(final ComponentName componentName, final UserHandle user) {
         return !mHideList.contains(componentName);
     }
 }

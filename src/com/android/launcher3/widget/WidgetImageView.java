@@ -42,22 +42,22 @@ public class WidgetImageView extends View {
     private Bitmap mBitmap;
     private Drawable mBadge;
 
-    public WidgetImageView(Context context) {
+    public WidgetImageView(final Context context) {
         this(context, null);
     }
 
-    public WidgetImageView(Context context, AttributeSet attrs) {
+    public WidgetImageView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public WidgetImageView(Context context, AttributeSet attrs, int defStyle) {
+    public WidgetImageView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
         mBadgeMargin = context.getResources()
                        .getDimensionPixelSize(R.dimen.profile_badge_margin);
     }
 
-    public void setBitmap(Bitmap bitmap, Drawable badge) {
+    public void setBitmap(final Bitmap bitmap, final Drawable badge) {
         mBitmap = bitmap;
         mBadge = badge;
         invalidate();
@@ -68,7 +68,7 @@ public class WidgetImageView extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         if (mBitmap != null) {
             updateDstRectF();
             canvas.drawBitmap(mBitmap, null, mDstRectF, mPaint);

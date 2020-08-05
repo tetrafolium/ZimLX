@@ -29,8 +29,8 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
     public final String label;
     public final int spanX, spanY;
 
-    public WidgetItem(LauncherAppWidgetProviderInfo info, PackageManager pm,
-                      InvariantDeviceProfile idp) {
+    public WidgetItem(final LauncherAppWidgetProviderInfo info, final PackageManager pm,
+                      final InvariantDeviceProfile idp) {
         super(info.provider, info.getProfile());
 
         label = Utilities.trim(info.getLabel(pm));
@@ -41,7 +41,7 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
         spanY = Math.min(info.spanY, idp.numRows);
     }
 
-    public WidgetItem(ShortcutConfigActivityInfo info) {
+    public WidgetItem(final ShortcutConfigActivityInfo info) {
         super(info.getComponent(), info.getUser());
         label = Utilities.trim(info.getLabel());
         widgetInfo = null;
@@ -50,7 +50,7 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
     }
 
     @Override
-    public int compareTo(WidgetItem another) {
+    public int compareTo(final WidgetItem another) {
         if (sMyUserHandle == null) {
             // Delay these object creation until required.
             sMyUserHandle = Process.myUserHandle();

@@ -81,7 +81,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
      */
     private ArrayList<WidgetListRowEntry> mAllWidgets = new ArrayList<>();
 
-    public PopupDataProvider(Launcher launcher) {
+    public PopupDataProvider(final Launcher launcher) {
         mLauncher = launcher;
         mSystemShortcuts = new SystemShortcut[] {
             new SystemShortcut.AppInfo(),
@@ -91,8 +91,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     }
 
     @Override
-    public void onNotificationPosted(PackageUserKey postedPackageUserKey,
-                                     NotificationKeyData notificationKey, boolean shouldBeFilteredOut) {
+    public void onNotificationPosted(final PackageUserKey postedPackageUserKey,
+                                     final NotificationKeyData notificationKey, final boolean shouldBeFilteredOut) {
         BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(postedPackageUserKey);
         boolean badgeShouldBeRefreshed;
         if (badgeInfo == null) {
@@ -118,8 +118,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     }
 
     @Override
-    public void onNotificationRemoved(PackageUserKey removedPackageUserKey,
-                                      NotificationKeyData notificationKey) {
+    public void onNotificationRemoved(final PackageUserKey removedPackageUserKey,
+                                      final NotificationKeyData notificationKey) {
         BadgeInfo oldBadgeInfo = mPackageUserToBadgeInfos.get(removedPackageUserKey);
         if (oldBadgeInfo != null && oldBadgeInfo.removeNotificationKey(notificationKey)) {
             if (oldBadgeInfo.getNotificationKeys().size() == 0) {
@@ -131,7 +131,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     }
 
     @Override
-    public void onNotificationFullRefresh(List<StatusBarNotification> activeNotifications) {
+    public void onNotificationFullRefresh(final List<StatusBarNotification> activeNotifications) {
         if (activeNotifications == null) return;
         // This will contain the PackageUserKeys which have updated badges.
         HashMap<PackageUserKey, BadgeInfo> updatedBadges = new HashMap<>(mPackageUserToBadgeInfos);
@@ -166,19 +166,19 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         trimNotifications(updatedBadges);
     }
 
-    private void trimNotifications(Map<PackageUserKey, BadgeInfo> updatedBadges) {
+    private void trimNotifications(final Map<PackageUserKey, BadgeInfo> updatedBadges) {
         PopupContainerWithArrow openContainer = PopupContainerWithArrow.getOpen(mLauncher);
         if (openContainer != null) {
             openContainer.trimNotifications(updatedBadges);
         }
     }
 
-    public void setDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
+    public void setDeepShortcutMap(final MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
         mDeepShortcutMap = deepShortcutMapCopy;
         if (LOGD) Log.d(TAG, "bindDeepShortcutMap: " + mDeepShortcutMap);
     }
 
-    public List<String> getShortcutIdsForItem(ItemInfo info) {
+    public List<String> getShortcutIdsForItem(final ItemInfo info) {
         if (!DeepShortcutManager.supportsShortcuts(info)) {
             return Collections.EMPTY_LIST;
         }
@@ -202,7 +202,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         return ids;
     }
 
-    public BadgeInfo getBadgeInfoForItem(ItemInfo info) {
+    public BadgeInfo getBadgeInfoForItem(final ItemInfo info) {
         if (!DeepShortcutManager.supportsShortcuts(info)) {
             return null;
         }
@@ -211,7 +211,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     }
 
     public @NonNull
-    List<NotificationKeyData> getNotificationKeysForItem(ItemInfo info) {
+    List<NotificationKeyData> getNotificationKeysForItem(final ItemInfo info) {
         BadgeInfo badgeInfo = getBadgeInfoForItem(info);
         return badgeInfo == null ? Collections.EMPTY_LIST : badgeInfo.getNotificationKeys();
     }
@@ -221,24 +221,24 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
      */
     public @NonNull
     List<StatusBarNotification> getStatusBarNotificationsForKeys(
-        List<NotificationKeyData> notificationKeys) {
+        final List<NotificationKeyData> notificationKeys) {
         NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
         return notificationListener == null ? Collections.EMPTY_LIST
                : notificationListener.getNotificationsForKeys(notificationKeys);
     }
 
     public @NonNull
-    List<SystemShortcut> getEnabledSystemShortcutsForItem(ItemInfo info) {
+    List<SystemShortcut> getEnabledSystemShortcutsForItem(final ItemInfo info) {
         List<SystemShortcut> systemShortcuts = new ArrayList<>();
-        for (SystemShortcut systemShortcut :
-                ZimShortcut.Companion.getInstance(mLauncher).getEnabledShortcuts()) {
+        for (SystemShortcut systemShortcut
+                : ZimShortcut.Companion.getInstance(mLauncher).getEnabledShortcuts()) {
             if (systemShortcut.getOnClickListener(mLauncher, info) != null) {
                 systemShortcuts.add(systemShortcut);
             }
         }
         return systemShortcuts;
     }
-    public void cancelNotification(String notificationKey) {
+    public void cancelNotification(final String notificationKey) {
         NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
         if (notificationListener == null) {
             return;
@@ -246,7 +246,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         notificationListener.cancelNotificationFromLauncher(notificationKey);
     }
 
-    public void setAllWidgets(ArrayList<WidgetListRowEntry> allWidgets) {
+    public void setAllWidgets(final ArrayList<WidgetListRowEntry> allWidgets) {
         mAllWidgets = allWidgets;
     }
 
@@ -254,7 +254,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         return mAllWidgets;
     }
 
-    public List<WidgetItem> getWidgetsForPackageUser(PackageUserKey packageUserKey) {
+    public List<WidgetItem> getWidgetsForPackageUser(final PackageUserKey packageUserKey) {
         for (WidgetListRowEntry entry : mAllWidgets) {
             if (entry.pkgItem.packageName.equals(packageUserKey.mPackageName)) {
                 ArrayList<WidgetItem> widgets = new ArrayList<>(entry.widgets);

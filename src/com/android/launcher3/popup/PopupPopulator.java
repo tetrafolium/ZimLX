@@ -58,7 +58,7 @@ public class PopupPopulator {
     private static final Comparator<ShortcutInfoCompat> SHORTCUT_RANK_COMPARATOR
     = new Comparator<ShortcutInfoCompat>() {
         @Override
-        public int compare(ShortcutInfoCompat a, ShortcutInfoCompat b) {
+        public int compare(final ShortcutInfoCompat a, final ShortcutInfoCompat b) {
             if (a.isDeclaredInManifest() && !b.isDeclaredInManifest()) {
                 return -1;
             }
@@ -78,7 +78,7 @@ public class PopupPopulator {
      * @return a subset of shortcuts, in sorted order, with size <= MAX_SHORTCUTS.
      */
     public static List<ShortcutInfoCompat> sortAndFilterShortcuts(
-        List<ShortcutInfoCompat> shortcuts, @Nullable String shortcutIdToRemoveFirst) {
+        final List<ShortcutInfoCompat> shortcuts, final @Nullable String shortcutIdToRemoveFirst) {
         // Remove up to one specific shortcut before sorting and doing somewhat fancy filtering.
         if (shortcutIdToRemoveFirst != null) {
             Iterator<ShortcutInfoCompat> shortcutIterator = shortcuts.iterator();

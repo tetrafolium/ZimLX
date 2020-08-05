@@ -15,12 +15,12 @@ import androidx.core.graphics.ColorUtils;
 public class QsbConnector extends View {
     private static final Property sAlphaProperty = new Property<QsbConnector, Integer>(Integer.class, "overlayAlpha") {
         @Override
-        public Integer get(QsbConnector qsbConnector) {
+        public Integer get(final QsbConnector qsbConnector) {
             return qsbConnector.mForegroundAlpha;
         }
 
         @Override
-        public void set(QsbConnector qsbConnector, Integer newAlpha) {
+        public void set(final QsbConnector qsbConnector, final Integer newAlpha) {
             qsbConnector.updateAlpha(newAlpha);
         }
     };
@@ -29,15 +29,15 @@ public class QsbConnector extends View {
     private ObjectAnimator mRevealAnimator;
     private final int mForegroundColor;
 
-    public QsbConnector(Context context) {
+    public QsbConnector(final Context context) {
         this(context, null);
     }
 
-    public QsbConnector(Context context, AttributeSet attrs) {
+    public QsbConnector(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public QsbConnector(Context context, AttributeSet attrs, int defStyleAttr) {
+    public QsbConnector(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         mForegroundAlpha = 0;
@@ -53,14 +53,14 @@ public class QsbConnector extends View {
         }
     }
 
-    private void updateAlpha(int alpha) {
+    private void updateAlpha(final int alpha) {
         if (mForegroundAlpha != alpha) {
             mForegroundAlpha = alpha;
             invalidate();
         }
     }
 
-    public void changeVisibility(boolean makeVisible) {
+    public void changeVisibility(final boolean makeVisible) {
         if (makeVisible) {
             stopRevealAnimation();
             updateAlpha(255);
@@ -73,7 +73,7 @@ public class QsbConnector extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         if (mForegroundAlpha > 0) {
             canvas.drawColor(ColorUtils.setAlphaComponent(mForegroundColor, mForegroundAlpha));
         }

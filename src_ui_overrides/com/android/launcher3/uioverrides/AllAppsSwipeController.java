@@ -20,12 +20,12 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
 
     private MotionEvent mTouchDownEvent;
 
-    public AllAppsSwipeController(Launcher l) {
+    public AllAppsSwipeController(final Launcher l) {
         super(l, SwipeDetector.VERTICAL);
     }
 
     @Override
-    protected boolean canInterceptTouch(MotionEvent ev) {
+    protected boolean canInterceptTouch(final MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mTouchDownEvent = ev;
         }
@@ -44,7 +44,7 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     }
 
     @Override
-    protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
+    protected LauncherState getTargetState(final LauncherState fromState, final boolean isDragTowardPositive) {
         if (fromState == NORMAL && isDragTowardPositive) {
             return ALL_APPS;
         } else if (fromState == ALL_APPS && !isDragTowardPositive) {
@@ -55,12 +55,12 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
 
     @Override
     protected int getLogContainerTypeForNormalState() {
-        return mLauncher.getDragLayer().isEventOverView(mLauncher.getHotseat(), mTouchDownEvent) ?
-               ContainerType.HOTSEAT : ContainerType.WORKSPACE;
+        return mLauncher.getDragLayer().isEventOverView(mLauncher.getHotseat(), mTouchDownEvent)
+               ? ContainerType.HOTSEAT : ContainerType.WORKSPACE;
     }
 
     @Override
-    protected float initCurrentAnimation(@AnimationComponents int animComponents) {
+    protected float initCurrentAnimation(final @AnimationComponents int animComponents) {
         float range = getShiftRange();
         long maxAccuracy = (long) (2 * range);
         mCurrentAnimation = mLauncher.getStateManager()

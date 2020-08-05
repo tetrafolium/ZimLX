@@ -82,15 +82,15 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     protected final BaseActivity mActivity;
 
-    public WidgetCell(Context context) {
+    public WidgetCell(final Context context) {
         this(context, null);
     }
 
-    public WidgetCell(Context context, AttributeSet attrs) {
+    public WidgetCell(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public WidgetCell(Context context, AttributeSet attrs, int defStyle) {
+    public WidgetCell(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
         mActivity = BaseActivity.fromContext(context);
@@ -135,7 +135,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         }
     }
 
-    public void applyFromCellItem(WidgetItem item, WidgetPreviewLoader loader) {
+    public void applyFromCellItem(final WidgetItem item, final WidgetPreviewLoader loader) {
         mItem = item;
         mWidgetName.setText(mItem.label);
         mWidgetDims.setText(getContext().getString(R.string.widget_dims_format,
@@ -161,7 +161,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
      * ready.
      * This prevents invalidates while the animation is running.
      */
-    public void setApplyBitmapDeferred(boolean isDeferred) {
+    public void setApplyBitmapDeferred(final boolean isDeferred) {
         if (mApplyBitmapDeferred != isDeferred) {
             mApplyBitmapDeferred = isDeferred;
             if (!mApplyBitmapDeferred && mDeferredBitmap != null) {
@@ -171,11 +171,11 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         }
     }
 
-    public void setAnimatePreview(boolean shouldAnimate) {
+    public void setAnimatePreview(final boolean shouldAnimate) {
         mAnimatePreview = shouldAnimate;
     }
 
-    public void applyPreview(Bitmap bitmap) {
+    public void applyPreview(final Bitmap bitmap) {
         if (mApplyBitmapDeferred) {
             mDeferredBitmap = bitmap;
             return;
@@ -202,14 +202,14 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     @Override
-    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
-                               int oldTop, int oldRight, int oldBottom) {
+    public void onLayoutChange(final View v, final int left, final int top, final int right, final int bottom, final int oldLeft,
+                               final int oldTop, final int oldRight, final int oldBottom) {
         removeOnLayoutChangeListener(this);
         ensurePreview();
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(final MotionEvent ev) {
         boolean handled = super.onTouchEvent(ev);
         if (mStylusEventHelper.onMotionEvent(ev)) {
             return true;
@@ -221,15 +221,15 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
      * Helper method to get the string info of the tag.
      */
     private String getTagToString() {
-        if (getTag() instanceof PendingAddWidgetInfo ||
-                getTag() instanceof PendingAddShortcutInfo) {
+        if (getTag() instanceof PendingAddWidgetInfo
+                || getTag() instanceof PendingAddShortcutInfo) {
             return getTag().toString();
         }
         return "";
     }
 
     @Override
-    public void setLayoutParams(ViewGroup.LayoutParams params) {
+    public void setLayoutParams(final ViewGroup.LayoutParams params) {
         params.width = params.height = mCellSize;
         super.setLayoutParams(params);
     }

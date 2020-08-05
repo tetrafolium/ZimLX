@@ -37,7 +37,7 @@ public class TopRoundedCornerView extends SpringRelativeLayout {
     private final Paint mNavBarScrimPaint;
     private int mNavBarScrimHeight = 0;
 
-    public TopRoundedCornerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TopRoundedCornerView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         int radius = getResources().getDimensionPixelSize(R.dimen.bg_round_rect_radius);
@@ -47,11 +47,11 @@ public class TopRoundedCornerView extends SpringRelativeLayout {
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
     }
 
-    public TopRoundedCornerView(Context context, AttributeSet attrs) {
+    public TopRoundedCornerView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public void setNavBarScrimHeight(int height) {
+    public void setNavBarScrimHeight(final int height) {
         if (mNavBarScrimHeight != height) {
             mNavBarScrimHeight = height;
             invalidate();
@@ -59,7 +59,7 @@ public class TopRoundedCornerView extends SpringRelativeLayout {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(final Canvas canvas) {
         canvas.save();
         canvas.clipPath(mClipPath);
         super.draw(canvas);
@@ -72,7 +72,7 @@ public class TopRoundedCornerView extends SpringRelativeLayout {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
         mClipPath.reset();

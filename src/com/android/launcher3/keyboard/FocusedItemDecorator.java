@@ -32,11 +32,11 @@ public class FocusedItemDecorator extends ItemDecoration {
 
     private FocusIndicatorHelper mHelper;
 
-    public FocusedItemDecorator(View container) {
+    public FocusedItemDecorator(final View container) {
         mHelper = new FocusIndicatorHelper(container) {
 
             @Override
-            public void viewToRect(View v, Rect outRect) {
+            public void viewToRect(final View v, final Rect outRect) {
                 outRect.set(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
             }
         };
@@ -47,7 +47,7 @@ public class FocusedItemDecorator extends ItemDecoration {
     }
 
     @Override
-    public void onDraw(Canvas c, RecyclerView parent, State state) {
+    public void onDraw(final Canvas c, final RecyclerView parent, final State state) {
         mHelper.draw(c);
     }
 }

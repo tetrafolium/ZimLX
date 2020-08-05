@@ -15,17 +15,17 @@ public class NexusLauncherOverlay implements Launcher.LauncherOverlay, ISerializ
     private int mFlags;
     boolean mAttached = false;
 
-    public NexusLauncherOverlay(Launcher launcher) {
+    public NexusLauncherOverlay(final Launcher launcher) {
         mLauncher = launcher;
         mFlags = Utilities.getDevicePrefs(launcher).getInt(PREF_PERSIST_FLAGS, 0);
     }
 
-    public void setClient(LauncherClient client) {
+    public void setClient(final LauncherClient client) {
         mClient = client;
     }
 
     @Override
-    public void setPersistentFlags(int flags) {
+    public void setPersistentFlags(final int flags) {
         flags &= (8 | 16);
         if (flags != mFlags) {
             mFlagsChanged = true;
@@ -35,7 +35,7 @@ public class NexusLauncherOverlay implements Launcher.LauncherOverlay, ISerializ
     }
 
     @Override
-    public void onServiceStateChanged(boolean overlayAttached) {
+    public void onServiceStateChanged(final boolean overlayAttached) {
         if (overlayAttached != mAttached) {
             mAttached = overlayAttached;
             mLauncher.setLauncherOverlay(overlayAttached ? this : null);
@@ -43,14 +43,14 @@ public class NexusLauncherOverlay implements Launcher.LauncherOverlay, ISerializ
     }
 
     @Override
-    public void onOverlayScrollChanged(float n) {
+    public void onOverlayScrollChanged(final float n) {
         if (mOverlayCallbacks != null) {
             mOverlayCallbacks.onScrollChanged(n);
         }
     }
 
     @Override
-    public void onScrollChange(float progress, boolean rtl) {
+    public void onScrollChange(final float progress, final boolean rtl) {
         mClient.setScroll(progress);
     }
 
@@ -65,7 +65,7 @@ public class NexusLauncherOverlay implements Launcher.LauncherOverlay, ISerializ
     }
 
     @Override
-    public void setOverlayCallbacks(Launcher.LauncherOverlayCallbacks cb) {
+    public void setOverlayCallbacks(final Launcher.LauncherOverlayCallbacks cb) {
         mOverlayCallbacks = cb;
     }
 }

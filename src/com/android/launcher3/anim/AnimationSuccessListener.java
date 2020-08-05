@@ -27,12 +27,12 @@ public abstract class AnimationSuccessListener extends AnimatorListenerAdapter {
     protected boolean mCancelled = false;
 
     @Override
-    public void onAnimationCancel(Animator animation) {
+    public void onAnimationCancel(final Animator animation) {
         mCancelled = true;
     }
 
     @Override
-    public void onAnimationEnd(Animator animation) {
+    public void onAnimationEnd(final Animator animation) {
         if (!mCancelled) {
             onAnimationSuccess(animation);
         }

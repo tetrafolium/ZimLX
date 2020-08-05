@@ -48,11 +48,11 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     private ItemInfo mOriginalItemInfo;
     private Rect mInsets;
 
-    public WidgetsBottomSheet(Context context, AttributeSet attrs) {
+    public WidgetsBottomSheet(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public WidgetsBottomSheet(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WidgetsBottomSheet(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
         mInsets = new Rect();
@@ -60,12 +60,12 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(final boolean changed, final int l, final int t, final int r, final int b) {
         super.onLayout(changed, l, t, r, b);
         setTranslationShift(mTranslationShift);
     }
 
-    public void populateAndShow(ItemInfo itemInfo) {
+    public void populateAndShow(final ItemInfo itemInfo) {
         mOriginalItemInfo = itemInfo;
         ((TextView) findViewById(R.id.title)).setText(getContext().getString(
                     R.string.widgets_bottom_sheet_title, mOriginalItemInfo.title));
@@ -115,11 +115,11 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         }
     }
 
-    private void addDivider(ViewGroup parent) {
+    private void addDivider(final ViewGroup parent) {
         LayoutInflater.from(getContext()).inflate(R.layout.widget_list_divider, parent, true);
     }
 
-    private WidgetCell addItemCell(ViewGroup parent) {
+    private WidgetCell addItemCell(final ViewGroup parent) {
         WidgetCell widget = (WidgetCell) LayoutInflater.from(getContext()).inflate(
                                 R.layout.widget_cell, parent, false);
 
@@ -144,17 +144,17 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     }
 
     @Override
-    protected void handleClose(boolean animate) {
+    protected void handleClose(final boolean animate) {
         handleClose(animate, DEFAULT_CLOSE_DURATION);
     }
 
     @Override
-    protected boolean isOfType(@AbstractFloatingView.FloatingViewType int type) {
+    protected boolean isOfType(final @AbstractFloatingView.FloatingViewType int type) {
         return (type & TYPE_WIDGETS_BOTTOM_SHEET) != 0;
     }
 
     @Override
-    public void setInsets(Rect insets) {
+    public void setInsets(final Rect insets) {
         // Extend behind left, right, and bottom insets.
         int leftInset = insets.left - mInsets.left;
         int rightInset = insets.right - mInsets.right;

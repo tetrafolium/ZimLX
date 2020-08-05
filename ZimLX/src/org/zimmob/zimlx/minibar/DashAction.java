@@ -7,7 +7,7 @@ public class DashAction {
     public Intent extraData;
     public Action action;
 
-    public DashAction(Action action, Intent extraData) {
+    public DashAction(final Action action, final Intent extraData) {
         this.action = action;
         this.extraData = extraData;
     }

@@ -40,7 +40,7 @@ public final class FileLog {
     private static Handler sHandler = null;
     private static File sLogsDirectory = null;
 
-    public static void setDir(File logsDir) {
+    public static void setDir(final File logsDir) {
         if (ENABLED) {
             synchronized (DATE_FORMAT) {
                 // If the target directory changes, stop any active thread.
@@ -53,31 +53,31 @@ public final class FileLog {
         sLogsDirectory = logsDir;
     }
 
-    public static void d(String tag, String msg, Exception e) {
+    public static void d(final String tag, final String msg, final Exception e) {
         Log.d(tag, msg, e);
         print(tag, msg, e);
     }
 
-    public static void d(String tag, String msg) {
+    public static void d(final String tag, final String msg) {
         Log.d(tag, msg);
         print(tag, msg);
     }
 
-    public static void e(String tag, String msg, Exception e) {
+    public static void e(final String tag, final String msg, final Exception e) {
         Log.e(tag, msg, e);
         print(tag, msg, e);
     }
 
-    public static void e(String tag, String msg) {
+    public static void e(final String tag, final String msg) {
         Log.e(tag, msg);
         print(tag, msg);
     }
 
-    public static void print(String tag, String msg) {
+    public static void print(final String tag, final String msg) {
         print(tag, msg, null);
     }
 
-    public static void print(String tag, String msg, Exception e) {
+    public static void print(final String tag, final String msg, final Exception e) {
         if (!ENABLED) {
             return;
         }
@@ -104,7 +104,7 @@ public final class FileLog {
      *
      * @param out if not null, all the persisted logs are copied to the writer.
      */
-    public static void flushAll(PrintWriter out) throws InterruptedException {
+    public static void flushAll(final PrintWriter out) throws InterruptedException {
         if (!ENABLED) {
             return;
         }
@@ -115,7 +115,7 @@ public final class FileLog {
         latch.await(2, TimeUnit.SECONDS);
     }
 
-    private static void dumpFile(PrintWriter out, String fileName) {
+    private static void dumpFile(final PrintWriter out, final String fileName) {
         File logFile = new File(sLogsDirectory, fileName);
         if (logFile.exists()) {
 
@@ -158,7 +158,7 @@ public final class FileLog {
         }
 
         @Override
-        public boolean handleMessage(Message msg) {
+        public boolean handleMessage(final Message msg) {
             if (sLogsDirectory == null || !ENABLED) {
                 return true;
             }

@@ -40,7 +40,7 @@ public class TransformingTouchDelegate extends TouchDelegate {
     private View mDelegateView;
     private boolean mDelegateTargeted;
 
-    public TransformingTouchDelegate(View delegateView) {
+    public TransformingTouchDelegate(final View delegateView) {
         super(sTempRect, delegateView);
 
         mDelegateView = delegateView;
@@ -48,12 +48,12 @@ public class TransformingTouchDelegate extends TouchDelegate {
         mTouchCheckBounds = new RectF();
     }
 
-    public void setBounds(int left, int top, int right, int bottom) {
+    public void setBounds(final int left, final int top, final int right, final int bottom) {
         mBounds.set(left, top, right, bottom);
         updateTouchBounds();
     }
 
-    public void extendTouchBounds(float extension) {
+    public void extendTouchBounds(final float extension) {
         mTouchExtension = extension;
         updateTouchBounds();
     }
@@ -63,7 +63,7 @@ public class TransformingTouchDelegate extends TouchDelegate {
         mTouchCheckBounds.inset(-mTouchExtension, -mTouchExtension);
     }
 
-    public void setDelegateView(View view) {
+    public void setDelegateView(final View view) {
         mDelegateView = view;
     }
 
@@ -74,7 +74,7 @@ public class TransformingTouchDelegate extends TouchDelegate {
      * @param event The touch event to forward
      * @return True if the event was forwarded to the delegate, false otherwise.
      */
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(final MotionEvent event) {
         boolean sendToDelegate = false;
         switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:

@@ -101,7 +101,7 @@ public class LoaderCursor extends CursorWrapper {
 
     private final ZimPreferences prefs;
 
-    public LoaderCursor(Cursor c, LauncherAppState app) {
+    public LoaderCursor(final Cursor c, final LauncherAppState app) {
         super(c);
         mContext = app.getContext();
         mIconCache = app.getIconCache();
@@ -147,8 +147,8 @@ public class LoaderCursor extends CursorWrapper {
     public Intent parseIntent() {
         String intentDescription = getString(intentIndex);
         try {
-            return TextUtils.isEmpty(intentDescription) ?
-                   null : Intent.parseUri(intentDescription, 0);
+            return TextUtils.isEmpty(intentDescription)
+                   ? null : Intent.parseUri(intentDescription, 0);
         } catch (URISyntaxException e) {
             Log.e(TAG, "Error parsing Intent");
             return null;
@@ -174,7 +174,7 @@ public class LoaderCursor extends CursorWrapper {
     /**
      * Loads the icon from the cursor and updates the {@param info} if the icon is an app resource.
      */
-    protected boolean loadIcon(ShortcutInfo info) {
+    protected boolean loadIcon(final ShortcutInfo info) {
         if (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
             String packageName = getString(iconPackageIndex);
             String resourceName = getString(iconResourceIndex);
@@ -203,7 +203,7 @@ public class LoaderCursor extends CursorWrapper {
         }
     }
 
-    public Bitmap loadCustomIcon(ShortcutInfo info) {
+    public Bitmap loadCustomIcon(final ShortcutInfo info) {
         byte[] data = getBlob(customIconIndex);
         try {
             if (data != null) {
@@ -230,7 +230,7 @@ public class LoaderCursor extends CursorWrapper {
      * Make an ShortcutInfo object for a restored application or shortcut item that points
      * to a package that is not yet installed on the system.
      */
-    public ShortcutInfo getRestoredItemInfo(Intent intent) {
+    public ShortcutInfo getRestoredItemInfo(final Intent intent) {
         final ShortcutInfo info = new ShortcutInfo();
         info.user = user;
         info.intent = intent;
@@ -263,7 +263,7 @@ public class LoaderCursor extends CursorWrapper {
      * Make an ShortcutInfo object for a shortcut that is an application.
      */
     public ShortcutInfo getAppShortcutInfo(
-        Intent intent, boolean allowMissingTarget, boolean useLowResIcon) {
+        final Intent intent, final boolean allowMissingTarget, final boolean useLowResIcon) {
         if (user == null) {
             Log.d(TAG, "Null user found in getShortcutInfo");
             return null;
@@ -324,7 +324,7 @@ public class LoaderCursor extends CursorWrapper {
     /**
      * Marks the current item for removal
      */
-    public void markDeleted(String reason) {
+    public void markDeleted(final String reason) {
         FileLog.e(TAG, reason);
         itemsToRemove.add(id);
     }
@@ -354,7 +354,7 @@ public class LoaderCursor extends CursorWrapper {
         }
     }
 
-    public boolean hasRestoreFlag(int flagMask) {
+    public boolean hasRestoreFlag(final int flagMask) {
         return (restoreFlag & flagMask) != 0;
     }
 
@@ -373,8 +373,8 @@ public class LoaderCursor extends CursorWrapper {
      * Returns true is the item is on workspace or hotseat
      */
     public boolean isOnWorkspaceOrHotseat() {
-        return container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
-               container == LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+        return container == LauncherSettings.Favorites.CONTAINER_DESKTOP
+               || container == LauncherSettings.Favorites.CONTAINER_HOTSEAT;
     }
 
     /**
@@ -385,7 +385,7 @@ public class LoaderCursor extends CursorWrapper {
      * {@link ItemInfo#cellX}
      * {@link ItemInfo#cellY}
      */
-    public void applyCommonProperties(ItemInfo info) {
+    public void applyCommonProperties(final ItemInfo info) {
         info.id = id;
         info.container = container;
         info.screenId = getInt(screenIndex);
@@ -397,7 +397,7 @@ public class LoaderCursor extends CursorWrapper {
      * Adds the {@param info} to {@param dataModel} if it does not overlap with any other item,
      * otherwise marks it for deletion.
      */
-    public void checkAndAddItem(ItemInfo info, BgDataModel dataModel) {
+    public void checkAndAddItem(final ItemInfo info, final BgDataModel dataModel) {
         if (checkItemPlacement(info, dataModel.workspaceScreens)) {
             dataModel.addItem(mContext, info, false);
         } else {
@@ -408,14 +408,14 @@ public class LoaderCursor extends CursorWrapper {
     /**
      * check & update map of what's occupied; used to discard overlapping/invalid items
      */
-    protected boolean checkItemPlacement(ItemInfo item, ArrayList<Long> workspaceScreens) {
+    protected boolean checkItemPlacement(final ItemInfo item, final ArrayList<Long> workspaceScreens) {
         long containerIndex = item.screenId;
         ZimPreferences prefs = Utilities.getZimPrefs(mContext);
 
         if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             // Return early if we detect that an item is under the hotseat button
-            if (!FeatureFlags.NO_ALL_APPS_ICON && !Utilities.getZimPrefs(mContext).getHideDockButton() && !prefs.getDockHide() &&
-                    mIDP.isAllAppsButtonRank((int) item.screenId)) {
+            if (!FeatureFlags.NO_ALL_APPS_ICON && !Utilities.getZimPrefs(mContext).getHideDockButton() && !prefs.getDockHide()
+                    && mIDP.isAllAppsButtonRank((int) item.screenId)) {
                 Log.e(TAG, "Error loading shortcut into hotseat " + item
                       + " into position (" + item.screenId + ":" + item.cellX + ","
                       + item.cellY + ") occupied by all apps");
@@ -465,9 +465,9 @@ public class LoaderCursor extends CursorWrapper {
 
         final int countX = mIDP.numColumns;
         final int countY = mIDP.numRows;
-        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                item.cellX < 0 || item.cellY < 0 ||
-                item.cellX + item.spanX > countX || item.cellY + item.spanY > countY) {
+        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP
+                && item.cellX < 0 || item.cellY < 0
+                || item.cellX + item.spanX > countX || item.cellY + item.spanY > countY) {
             Log.e(TAG, "Error loading shortcut " + item
                   + " into cell (" + containerIndex + "-" + item.screenId + ":"
                   + item.cellX + "," + item.cellY

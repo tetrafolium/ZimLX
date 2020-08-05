@@ -84,7 +84,7 @@ public class FolderAnimationManager {
     private final PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
 
 
-    public FolderAnimationManager(Folder folder, boolean isOpening) {
+    public FolderAnimationManager(final Folder folder, final boolean isOpening) {
         mFolder = folder;
         mContent = folder.mContent;
         mFolderBackground = (GradientDrawable) mFolder.getBackground();
@@ -215,7 +215,7 @@ public class FolderAnimationManager {
 
         a.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 super.onAnimationEnd(animation);
                 mFolder.setTranslationX(0.0f);
                 mFolder.setTranslationY(0.0f);
@@ -242,8 +242,8 @@ public class FolderAnimationManager {
     /**
      * Animate the items on the current page.
      */
-    private void addPreviewItemAnimators(AnimatorSet animatorSet, final float folderScale,
-                                         int previewItemOffsetX, int previewItemOffsetY) {
+    private void addPreviewItemAnimators(final AnimatorSet animatorSet, final float folderScale,
+                                         final int previewItemOffsetX, final int previewItemOffsetY) {
         ClippedFolderIconLayoutRule rule = mFolderIcon.getLayoutRule();
         boolean isOnFirstPage = mFolder.mContent.getCurrentPage() == 0;
         final List<BubbleTextView> itemsInPreview = isOnFirstPage
@@ -323,7 +323,7 @@ public class FolderAnimationManager {
 
             animatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationStart(Animator animation) {
+                public void onAnimationStart(final Animator animation) {
                     super.onAnimationStart(animation);
                     // Necessary to initialize values here because of the start delay.
                     if (mIsOpening) {
@@ -335,7 +335,7 @@ public class FolderAnimationManager {
                 }
 
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEnd(final Animator animation) {
                     super.onAnimationEnd(animation);
                     btv.setTranslationX(0.0f);
                     btv.setTranslationY(0.0f);
@@ -346,11 +346,11 @@ public class FolderAnimationManager {
         }
     }
 
-    private void play(AnimatorSet as, Animator a) {
+    private void play(final AnimatorSet as, final Animator a) {
         play(as, a, a.getStartDelay(), mDuration);
     }
 
-    private void play(AnimatorSet as, Animator a, long startDelay, int duration) {
+    private void play(final AnimatorSet as, final Animator a, final long startDelay, final int duration) {
         a.setStartDelay(startDelay);
         a.setDuration(duration);
         as.play(a);
@@ -368,13 +368,13 @@ public class FolderAnimationManager {
         return mFolderInterpolator;
     }
 
-    private Animator getAnimator(View view, Property property, float v1, float v2) {
+    private Animator getAnimator(final View view, final Property property, final float v1, final float v2) {
         return mIsOpening
                ? ObjectAnimator.ofFloat(view, property, v1, v2)
                : ObjectAnimator.ofFloat(view, property, v2, v1);
     }
 
-    private Animator getAnimator(GradientDrawable drawable, String property, int v1, int v2) {
+    private Animator getAnimator(final GradientDrawable drawable, final String property, final int v1, final int v2) {
         return mIsOpening
                ? ObjectAnimator.ofArgb(drawable, property, v1, v2)
                : ObjectAnimator.ofArgb(drawable, property, v2, v1);

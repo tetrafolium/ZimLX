@@ -59,12 +59,12 @@ public class WorkspaceAndHotseatScrim implements
     public static Property<WorkspaceAndHotseatScrim, Float> SCRIM_PROGRESS =
     new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "scrimProgress") {
         @Override
-        public Float get(WorkspaceAndHotseatScrim scrim) {
+        public Float get(final WorkspaceAndHotseatScrim scrim) {
             return scrim.mScrimProgress;
         }
 
         @Override
-        public void set(WorkspaceAndHotseatScrim scrim, Float value) {
+        public void set(final WorkspaceAndHotseatScrim scrim, final Float value) {
             scrim.setScrimProgress(value);
         }
     };
@@ -72,12 +72,12 @@ public class WorkspaceAndHotseatScrim implements
     public static Property<WorkspaceAndHotseatScrim, Float> SYSUI_PROGRESS =
     new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "sysUiProgress") {
         @Override
-        public Float get(WorkspaceAndHotseatScrim scrim) {
+        public Float get(final WorkspaceAndHotseatScrim scrim) {
             return scrim.mSysUiProgress;
         }
 
         @Override
-        public void set(WorkspaceAndHotseatScrim scrim, Float value) {
+        public void set(final WorkspaceAndHotseatScrim scrim, final Float value) {
             scrim.setSysUiProgress(value);
         }
     };
@@ -85,12 +85,12 @@ public class WorkspaceAndHotseatScrim implements
     private static Property<WorkspaceAndHotseatScrim, Float> SYSUI_ANIM_MULTIPLIER =
     new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "sysUiAnimMultiplier") {
         @Override
-        public Float get(WorkspaceAndHotseatScrim scrim) {
+        public Float get(final WorkspaceAndHotseatScrim scrim) {
             return scrim.mSysUiAnimMultiplier;
         }
 
         @Override
-        public void set(WorkspaceAndHotseatScrim scrim, Float value) {
+        public void set(final WorkspaceAndHotseatScrim scrim, final Float value) {
             scrim.mSysUiAnimMultiplier = value;
             scrim.reapplySysUiAlpha();
         }
@@ -98,7 +98,7 @@ public class WorkspaceAndHotseatScrim implements
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             final String action = intent.getAction();
             if (ACTION_SCREEN_OFF.equals(action)) {
                 mAnimateScrimOnNextDraw = true;
@@ -144,7 +144,7 @@ public class WorkspaceAndHotseatScrim implements
     private boolean mAnimateScrimOnNextDraw = false;
     private float mSysUiAnimMultiplier = 1;
 
-    public WorkspaceAndHotseatScrim(View view) {
+    public WorkspaceAndHotseatScrim(final View view) {
         mRoot = view;
         mLauncher = Launcher.getLauncher(view.getContext());
         mWallpaperColorInfo = WallpaperColorInfo.getInstance(mLauncher);
@@ -166,11 +166,11 @@ public class WorkspaceAndHotseatScrim implements
         onExtractedColorsChanged(mWallpaperColorInfo);
     }
 
-    public void setWorkspace(Workspace workspace) {
+    public void setWorkspace(final Workspace workspace) {
         mWorkspace = workspace;
     }
 
-    public void draw(Canvas canvas) {
+    public void draw(final Canvas canvas) {
         // Draw the background below children.
         if (mScrimAlpha > 0) {
             // Update the scroll position first to ensure scrim cutout is in the right place.
@@ -215,12 +215,12 @@ public class WorkspaceAndHotseatScrim implements
         }
     }
 
-    public void onInsetsChanged(Rect insets) {
+    public void onInsetsChanged(final Rect insets) {
         mDrawTopScrim = insets.top > 0;
         mDrawBottomScrim = !mLauncher.getDeviceProfile().isVerticalBarLayout();
     }
 
-    private void setScrimProgress(float progress) {
+    private void setScrimProgress(final float progress) {
         if (mScrimProgress != progress) {
             mScrimProgress = progress;
             mScrimAlpha = Math.round(255 * mScrimProgress);
@@ -229,7 +229,7 @@ public class WorkspaceAndHotseatScrim implements
     }
 
     @Override
-    public void onViewAttachedToWindow(View view) {
+    public void onViewAttachedToWindow(final View view) {
         mWallpaperColorInfo.addOnChangeListener(this);
         onExtractedColorsChanged(mWallpaperColorInfo);
 
@@ -241,7 +241,7 @@ public class WorkspaceAndHotseatScrim implements
     }
 
     @Override
-    public void onViewDetachedFromWindow(View view) {
+    public void onViewDetachedFromWindow(final View view) {
         mWallpaperColorInfo.removeOnChangeListener(this);
         if (mHasSysUiScrim) {
             mRoot.getContext().unregisterReceiver(mReceiver);
@@ -249,7 +249,7 @@ public class WorkspaceAndHotseatScrim implements
     }
 
     @Override
-    public void onExtractedColorsChanged(WallpaperColorInfo wallpaperColorInfo) {
+    public void onExtractedColorsChanged(final WallpaperColorInfo wallpaperColorInfo) {
         // for super light wallpaper it needs to be darken for contrast to workspace
         // for dark wallpapers the text is white so darkening works as well
         mBottomMaskPaint.setColor(ColorUtils.compositeColors(DARK_SCRIM_COLOR,
@@ -261,14 +261,14 @@ public class WorkspaceAndHotseatScrim implements
         }
     }
 
-    public void setSize(int w, int h) {
+    public void setSize(final int w, final int h) {
         if (mHasSysUiScrim) {
             mTopScrim.setBounds(0, 0, w, h);
             mFinalMaskRect.set(0, h - mMaskHeight, w, h);
         }
     }
 
-    public void hideSysUiScrim(boolean hideSysUiScrim) {
+    public void hideSysUiScrim(final boolean hideSysUiScrim) {
         mHideSysUiScrim = hideSysUiScrim;
         if (!hideSysUiScrim) {
             mAnimateScrimOnNextDraw = true;
@@ -276,7 +276,7 @@ public class WorkspaceAndHotseatScrim implements
         invalidate();
     }
 
-    private void setSysUiProgress(float progress) {
+    private void setSysUiProgress(final float progress) {
         if (progress != mSysUiProgress) {
             mSysUiProgress = progress;
             reapplySysUiAlpha();

@@ -94,11 +94,11 @@ public abstract class ButtonDropTarget extends TextView
     @Thunk
     ColorMatrix mSrcFilter, mDstFilter, mCurrentFilter;
 
-    public ButtonDropTarget(Context context, AttributeSet attrs) {
+    public ButtonDropTarget(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ButtonDropTarget(Context context, AttributeSet attrs, int defStyle) {
+    public ButtonDropTarget(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
 
@@ -115,13 +115,13 @@ public abstract class ButtonDropTarget extends TextView
         setContentDescription(mText);
     }
 
-    protected void updateText(int resId) {
+    protected void updateText(final int resId) {
         setText(resId);
         mText = getText();
         setContentDescription(mText);
     }
 
-    protected void setDrawable(int resId) {
+    protected void setDrawable(final int resId) {
         // We do not set the drawable in the xml as that inflates two drawables corresponding to
         // drawableLeft and drawableStart.
         if (mTextVisible) {
@@ -133,7 +133,7 @@ public abstract class ButtonDropTarget extends TextView
         }
     }
 
-    public void setDropTargetBar(DropTargetBar dropTargetBar) {
+    public void setDropTargetBar(final DropTargetBar dropTargetBar) {
         mDropTargetBar = dropTargetBar;
     }
 
@@ -145,7 +145,7 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     @Override
-    public final void onDragEnter(DragObject d) {
+    public final void onDragEnter(final DragObject d) {
         if (!d.accessibleDrag && !mTextVisible) {
             // Show tooltip
             hideTooltip();
@@ -177,7 +177,7 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     @Override
-    public void onDragOver(DragObject d) {
+    public void onDragOver(final DragObject d) {
         // Do nothing
     }
 
@@ -185,7 +185,7 @@ public abstract class ButtonDropTarget extends TextView
         animateTextColor(mOriginalTextColor.getDefaultColor());
     }
 
-    private void animateTextColor(int targetColor) {
+    private void animateTextColor(final int targetColor) {
         if (mCurrentColorAnim != null) {
             mCurrentColorAnim.cancel();
         }
@@ -217,7 +217,7 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     @Override
-    public final void onDragExit(DragObject d) {
+    public final void onDragExit(final DragObject d) {
         hideTooltip();
 
         if (!d.dragComplete) {
@@ -230,7 +230,7 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     @Override
-    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+    public void onDragStart(final DropTarget.DragObject dragObject, final DragOptions options) {
         mActive = supportsDrop(dragObject.dragInfo);
         mDrawable.setColorFilter(null);
         if (mCurrentColorAnim != null) {
@@ -245,7 +245,7 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     @Override
-    public final boolean acceptDrop(DragObject dragObject) {
+    public final boolean acceptDrop(final DragObject dragObject) {
         return supportsDrop(dragObject.dragInfo);
     }
 
@@ -255,8 +255,8 @@ public abstract class ButtonDropTarget extends TextView
 
     @Override
     public boolean isDropEnabled() {
-        return mActive && (mAccessibleDrag ||
-                           mLauncher.getDragController().getDistanceDragged() >= mDragDistanceThreshold);
+        return mActive && (mAccessibleDrag
+                           || mLauncher.getDragController().getDistanceDragged() >= mDragDistanceThreshold);
     }
 
     @Override
@@ -301,7 +301,7 @@ public abstract class ButtonDropTarget extends TextView
     public abstract void completeDrop(DragObject d);
 
     @Override
-    public void getHitRectRelativeToDragLayer(android.graphics.Rect outRect) {
+    public void getHitRectRelativeToDragLayer(final android.graphics.Rect outRect) {
         super.getHitRect(outRect);
         outRect.bottom += mBottomDragPadding;
 
@@ -310,7 +310,7 @@ public abstract class ButtonDropTarget extends TextView
         outRect.offsetTo(sTempCords[0], sTempCords[1]);
     }
 
-    public Rect getIconRect(DragObject dragObject) {
+    public Rect getIconRect(final DragObject dragObject) {
         int viewWidth = dragObject.dragView.getMeasuredWidth();
         int viewHeight = dragObject.dragView.getMeasuredHeight();
         int drawableWidth = mDrawable.getIntrinsicWidth();
@@ -349,7 +349,7 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         mLauncher.getAccessibilityDelegate().handleAccessibleDrop(this, null, null);
     }
 
@@ -357,7 +357,7 @@ public abstract class ButtonDropTarget extends TextView
         return getTextColors().getDefaultColor();
     }
 
-    public void setTextVisible(boolean isVisible) {
+    public void setTextVisible(final boolean isVisible) {
         CharSequence newText = isVisible ? mText : "";
         if (mTextVisible != isVisible || !TextUtils.equals(newText, getText())) {
             mTextVisible = isVisible;
@@ -370,12 +370,12 @@ public abstract class ButtonDropTarget extends TextView
         }
     }
 
-    public void setToolTipLocation(int location) {
+    public void setToolTipLocation(final int location) {
         mToolTipLocation = location;
         hideTooltip();
     }
 
-    public boolean isTextTruncated(int availableWidth) {
+    public boolean isTextTruncated(final int availableWidth) {
         availableWidth -= (getPaddingLeft() + getPaddingRight() + mDrawable.getIntrinsicWidth()
                            + getCompoundDrawablePadding());
         CharSequence displayedText = TextUtils.ellipsize(mText, getPaint(), availableWidth,

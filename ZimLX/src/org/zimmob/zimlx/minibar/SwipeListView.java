@@ -19,15 +19,15 @@ public class SwipeListView extends ListView {
     private Context mContext;
     private ArrayList<DashItem> dashItems = new ArrayList<>();
     private ZimPreferences prefs;
-    public SwipeListView(Context context) {
+    public SwipeListView(final Context context) {
         this(context, null, 0);
     }
 
-    public SwipeListView(Context context, AttributeSet attrs) {
+    public SwipeListView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SwipeListView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SwipeListView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
         prefs = Utilities.getZimPrefs(mContext);

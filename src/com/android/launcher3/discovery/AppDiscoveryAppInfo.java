@@ -42,7 +42,7 @@ public class AppDiscoveryAppInfo extends AppInfo {
     public final @Nullable
     String priceFormatted;
 
-    public AppDiscoveryAppInfo(AppDiscoveryItem item) {
+    public AppDiscoveryAppInfo(final AppDiscoveryItem item) {
         this.intent = item.isInstantApp ? item.launchIntent : item.installIntent;
         this.title = item.title;
         this.iconBitmap = item.bitmap;

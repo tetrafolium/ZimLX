@@ -45,14 +45,14 @@ public class AnimatorSetBuilder {
     /**
      * Associates a tag with all the animations added after this call.
      */
-    public void startTag(Object obj) {
+    public void startTag(final Object obj) {
     }
 
-    public void play(Animator anim) {
+    public void play(final Animator anim) {
         mAnims.add(anim);
     }
 
-    public void addOnFinishRunnable(Runnable onFinishRunnable) {
+    public void addOnFinishRunnable(final Runnable onFinishRunnable) {
         mOnFinishRunnables.add(onFinishRunnable);
     }
 
@@ -62,7 +62,7 @@ public class AnimatorSetBuilder {
         if (!mOnFinishRunnables.isEmpty()) {
             anim.addListener(new AnimationSuccessListener() {
                 @Override
-                public void onAnimationSuccess(Animator animation) {
+                public void onAnimationSuccess(final Animator animation) {
                     for (Runnable onFinishRunnable : mOnFinishRunnables) {
                         onFinishRunnable.run();
                     }
@@ -73,11 +73,11 @@ public class AnimatorSetBuilder {
         return anim;
     }
 
-    public Interpolator getInterpolator(int animId, Interpolator fallback) {
+    public Interpolator getInterpolator(final int animId, final Interpolator fallback) {
         return mInterpolators.get(animId, fallback);
     }
 
-    public void setInterpolator(int animId, Interpolator interpolator) {
+    public void setInterpolator(final int animId, final Interpolator interpolator) {
         mInterpolators.put(animId, interpolator);
     }
 }

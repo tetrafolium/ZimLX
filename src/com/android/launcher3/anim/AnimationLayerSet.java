@@ -35,17 +35,17 @@ public class AnimationLayerSet extends AnimatorListenerAdapter {
         mViewsToLayerTypeMap = new ArrayMap<>();
     }
 
-    public AnimationLayerSet(View v) {
+    public AnimationLayerSet(final View v) {
         mViewsToLayerTypeMap = new ArrayMap<>(1);
         addView(v);
     }
 
-    public void addView(View v) {
+    public void addView(final View v) {
         mViewsToLayerTypeMap.put(v, v.getLayerType());
     }
 
     @Override
-    public void onAnimationStart(Animator animation) {
+    public void onAnimationStart(final Animator animation) {
         // Enable all necessary layers
         Iterator<Map.Entry<View, Integer>> itr = mViewsToLayerTypeMap.entrySet().iterator();
         while (itr.hasNext()) {
@@ -60,7 +60,7 @@ public class AnimationLayerSet extends AnimatorListenerAdapter {
     }
 
     @Override
-    public void onAnimationEnd(Animator animation) {
+    public void onAnimationEnd(final Animator animation) {
         Iterator<Map.Entry<View, Integer>> itr = mViewsToLayerTypeMap.entrySet().iterator();
         while (itr.hasNext()) {
             Map.Entry<View, Integer> entry = itr.next();

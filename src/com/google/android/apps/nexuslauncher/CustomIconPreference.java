@@ -12,19 +12,19 @@ import androidx.preference.ListPreference;
 
 public class CustomIconPreference extends ListPreference {
 
-    public CustomIconPreference(Context context) {
+    public CustomIconPreference(final Context context) {
         super(context);
     }
 
-    public CustomIconPreference(Context context, AttributeSet attrs) {
+    public CustomIconPreference(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public CustomIconPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomIconPreference(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public CustomIconPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public CustomIconPreference(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 

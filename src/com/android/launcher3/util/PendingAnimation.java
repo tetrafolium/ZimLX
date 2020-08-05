@@ -36,18 +36,18 @@ public class PendingAnimation {
 
     public final AnimatorSet anim;
 
-    public PendingAnimation(AnimatorSet anim) {
+    public PendingAnimation(final AnimatorSet anim) {
         this.anim = anim;
     }
 
-    public void finish(boolean isSuccess, int logAction) {
+    public void finish(final boolean isSuccess, final int logAction) {
         for (Consumer<OnEndListener> listeners : mEndListeners) {
             listeners.accept(new OnEndListener(isSuccess, logAction));
         }
         mEndListeners.clear();
     }
 
-    public void addEndListener(Consumer<OnEndListener> listener) {
+    public void addEndListener(final Consumer<OnEndListener> listener) {
         mEndListeners.add(listener);
     }
 
@@ -55,7 +55,7 @@ public class PendingAnimation {
         public boolean isSuccess;
         public int logAction;
 
-        public OnEndListener(boolean isSuccess, int logAction) {
+        public OnEndListener(final boolean isSuccess, final int logAction) {
             this.isSuccess = isSuccess;
             this.logAction = logAction;
         }

@@ -41,32 +41,32 @@ public class RatingView extends View {
 
     private float rating;
 
-    public RatingView(Context context) {
+    public RatingView(final Context context) {
         this(context, null);
     }
 
-    public RatingView(Context context, AttributeSet attrs) {
+    public RatingView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public RatingView(Context context, AttributeSet attrs, int defStyle) {
+    public RatingView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
         mStarDrawable = getResources().getDrawable(R.drawable.ic_star_rating, null);
         mColorGray = 0x1E000000;
         mColorHighlight = 0x8A000000;
     }
 
-    public void setRating(float rating) {
+    public void setRating(final float rating) {
         this.rating = Math.min(Math.max(rating, 0), MAX_STARS);
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         drawStars(canvas, MAX_STARS, mColorGray);
         drawStars(canvas, rating, mColorHighlight);
     }
 
-    private void drawStars(Canvas canvas, float stars, int color) {
+    private void drawStars(final Canvas canvas, final float stars, final int color) {
         int fullWidth = getLayoutParams().width;
         int cellWidth = fullWidth / MAX_STARS;
         int starWidth = (int) (cellWidth * WIDTH_FACTOR);

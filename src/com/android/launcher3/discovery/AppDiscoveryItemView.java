@@ -42,15 +42,15 @@ public class AppDiscoveryItemView extends RelativeLayout {
     private TextView mPrice;
     private OnLongClickListener mOnLongClickListener;
 
-    public AppDiscoveryItemView(Context context) {
+    public AppDiscoveryItemView(final Context context) {
         this(context, null);
     }
 
-    public AppDiscoveryItemView(Context context, AttributeSet attrs) {
+    public AppDiscoveryItemView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AppDiscoveryItemView(Context context, AttributeSet attrs, int defStyle) {
+    public AppDiscoveryItemView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -65,16 +65,16 @@ public class AppDiscoveryItemView extends RelativeLayout {
         this.mReviewCount = findViewById(R.id.review_count);
     }
 
-    public void init(OnClickListener clickListener,
-                     AccessibilityDelegate accessibilityDelegate,
-                     OnLongClickListener onLongClickListener) {
+    public void init(final OnClickListener clickListener,
+                     final AccessibilityDelegate accessibilityDelegate,
+                     final OnLongClickListener onLongClickListener) {
         setOnClickListener(clickListener);
         mImage.setOnClickListener(clickListener);
         setAccessibilityDelegate(accessibilityDelegate);
         mOnLongClickListener = onLongClickListener;
     }
 
-    public void apply(@NonNull AppDiscoveryAppInfo info) {
+    public void apply(final @NonNull AppDiscoveryAppInfo info) {
         setTag(info);
         mImage.setTag(info);
         mImage.setImageBitmap(info.iconBitmap);

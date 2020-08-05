@@ -51,13 +51,13 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     protected final ColorScrim mColorScrim;
 
-    public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BaseWidgetSheet(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mColorScrim = ColorScrim.createExtractedColorScrim(this);
     }
 
     @Override
-    public final void onClick(View v) {
+    public final void onClick(final View v) {
         // Let the user know that they have to long press to add a widget
         if (mWidgetInstructionToast != null) {
             mWidgetInstructionToast.cancel();
@@ -71,7 +71,7 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
     }
 
     @Override
-    public final boolean onLongClick(View v) {
+    public final boolean onLongClick(final View v) {
         if (!ItemLongClickListener.canStartDrag(mLauncher)) return false;
 
         if (v instanceof WidgetCell) {
@@ -80,12 +80,12 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
         return true;
     }
 
-    protected void setTranslationShift(float translationShift) {
+    protected void setTranslationShift(final float translationShift) {
         super.setTranslationShift(translationShift);
         mColorScrim.setProgress(1 - mTranslationShift);
     }
 
-    private boolean beginDraggingWidget(WidgetCell v) {
+    private boolean beginDraggingWidget(final WidgetCell v) {
         // Get the widget preview as the drag representation
         WidgetImageView image = v.getWidgetView();
 
@@ -110,7 +110,7 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
     //
 
     @Override
-    public void onDropCompleted(View target, DragObject d, boolean success) {
+    public void onDropCompleted(final View target, final DragObject d, final boolean success) {
     }
 
 
@@ -132,13 +132,13 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
+    public void fillInLogContainerData(final View v, final ItemInfo info, final Target target, final Target targetParent) {
         targetParent.containerType = ContainerType.WIDGETS;
         targetParent.cardinality = getElementsRowCount();
     }
 
     @Override
-    public final void logActionCommand(int command) {
+    public final void logActionCommand(final int command) {
         Target target = newContainerTarget(ContainerType.WIDGETS);
         target.cardinality = getElementsRowCount();
         mLauncher.getUserEventDispatcher().logActionCommand(command, target);

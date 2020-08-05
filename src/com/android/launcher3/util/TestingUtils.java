@@ -26,7 +26,7 @@ public class TestingUtils {
     public static final boolean ENABLE_CUSTOM_WIDGET_TEST = false;
     public static final String DUMMY_WIDGET = "com.android.launcher3.testing.DummyWidget";
 
-    public static void startTrackingMemory(Context context) {
+    public static void startTrackingMemory(final Context context) {
         if (MEMORY_DUMP_ENABLED) {
             context.startService(new Intent()
                                  .setComponent(new ComponentName(context.getPackageName(), MEMORY_TRACKER))
@@ -36,7 +36,7 @@ public class TestingUtils {
         }
     }
 
-    public static void addWeightWatcher(Launcher launcher) {
+    public static void addWeightWatcher(final Launcher launcher) {
         if (MEMORY_DUMP_ENABLED) {
             boolean show = Utilities.getPrefs(launcher).getBoolean(SHOW_WEIGHT_WATCHER, true);
 
@@ -56,7 +56,7 @@ public class TestingUtils {
         }
     }
 
-    public static void addDummyWidget(HashMap<String, CustomAppWidget> set) {
+    public static void addDummyWidget(final HashMap<String, CustomAppWidget> set) {
         if (ENABLE_CUSTOM_WIDGET_TEST) {
             try {
                 Class<?> clazz = Class.forName(DUMMY_WIDGET);

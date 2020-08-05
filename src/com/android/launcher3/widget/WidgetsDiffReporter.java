@@ -38,13 +38,13 @@ public class WidgetsDiffReporter {
     private final IconCache mIconCache;
     private final RecyclerView.Adapter mListener;
 
-    public WidgetsDiffReporter(IconCache iconCache, RecyclerView.Adapter listener) {
+    public WidgetsDiffReporter(final IconCache iconCache, final RecyclerView.Adapter listener) {
         mIconCache = iconCache;
         mListener = listener;
     }
 
-    public void process(ArrayList<WidgetListRowEntry> currentEntries,
-                        ArrayList<WidgetListRowEntry> newEntries, WidgetListRowEntryComparator comparator) {
+    public void process(final ArrayList<WidgetListRowEntry> currentEntries,
+                        final ArrayList<WidgetListRowEntry> newEntries, final WidgetListRowEntryComparator comparator) {
         if (DEBUG) {
             Log.d(TAG, "process oldEntries#=" + currentEntries.size()
                   + " newEntries#=" + newEntries.size());
@@ -88,8 +88,8 @@ public class WidgetsDiffReporter {
                 currentEntries.remove(index);
                 orgRowEntry = orgIter.hasNext() ? orgIter.next() : null;
             } else if (diff > 0) {
-                index = orgRowEntry != null ? currentEntries.indexOf(orgRowEntry) :
-                        currentEntries.size();
+                index = orgRowEntry != null ? currentEntries.indexOf(orgRowEntry)
+                        : currentEntries.size();
                 currentEntries.add(index, newRowEntry);
                 if (DEBUG) {
                     Log.d(TAG, String.format("notifyItemInserted called (%d)%s", index,
@@ -102,8 +102,8 @@ public class WidgetsDiffReporter {
                 // same package name but,
                 // did the icon, title, etc, change?
                 // or did the widget size and desc, span, etc change?
-                if (!isSamePackageItemInfo(orgRowEntry.pkgItem, newRowEntry.pkgItem) ||
-                        !orgRowEntry.widgets.equals(newRowEntry.widgets)) {
+                if (!isSamePackageItemInfo(orgRowEntry.pkgItem, newRowEntry.pkgItem)
+                        || !orgRowEntry.widgets.equals(newRowEntry.widgets)) {
                     index = currentEntries.indexOf(orgRowEntry);
                     currentEntries.set(index, newRowEntry);
                     mListener.notifyItemChanged(index);
@@ -122,8 +122,8 @@ public class WidgetsDiffReporter {
      * Compare package name using the same comparator as in {@link WidgetsListAdapter}.
      * Also handle null row pointers.
      */
-    private int comparePackageName(WidgetListRowEntry curRow, WidgetListRowEntry newRow,
-                                   WidgetListRowEntryComparator comparator) {
+    private int comparePackageName(final WidgetListRowEntry curRow, final WidgetListRowEntry newRow,
+                                   final WidgetListRowEntryComparator comparator) {
         if (curRow == null && newRow == null) {
             throw new IllegalStateException("Cannot compare PackageItemInfo if both rows are null.");
         }
@@ -136,8 +136,8 @@ public class WidgetsDiffReporter {
         return comparator.compare(curRow, newRow);
     }
 
-    private boolean isSamePackageItemInfo(PackageItemInfo curInfo, PackageItemInfo newInfo) {
-        return curInfo.iconBitmap.equals(newInfo.iconBitmap) &&
-               !mIconCache.isDefaultIcon(curInfo.iconBitmap, curInfo.user);
+    private boolean isSamePackageItemInfo(final PackageItemInfo curInfo, final PackageItemInfo newInfo) {
+        return curInfo.iconBitmap.equals(newInfo.iconBitmap)
+               && !mIconCache.isDefaultIcon(curInfo.iconBitmap, curInfo.user);
     }
 }

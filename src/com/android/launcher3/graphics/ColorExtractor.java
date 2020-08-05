@@ -32,7 +32,7 @@ import kotlin.collections.ArraysKt;
  */
 public class ColorExtractor {
 
-    public static int findDominantColorByHue(Bitmap bitmap) {
+    public static int findDominantColorByHue(final Bitmap bitmap) {
         return findDominantColorByHue(bitmap, 20);
     }
 
@@ -42,7 +42,7 @@ public class ColorExtractor {
      * @param bitmap  The bitmap to scan
      * @param samples The approximate max number of samples to use.
      */
-    public static int findDominantColorByHue(Bitmap bitmap, int samples) {
+    public static int findDominantColorByHue(final Bitmap bitmap, final int samples) {
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
         int sampleStride = (int) Math.sqrt((height * width) / samples);
@@ -120,7 +120,7 @@ public class ColorExtractor {
         return bestColor;
     }
 
-    public static boolean isSingleColor(Drawable drawable, int color) {
+    public static boolean isSingleColor(final Drawable drawable, final int color) {
         if (drawable == null) return true;
         final int testColor = posterize(color);
         if (drawable instanceof ColorDrawable) {
@@ -155,7 +155,7 @@ public class ColorExtractor {
      * https://www.cs.umb.edu/~jreyes/csit114-fall-2007/project4/filters.html#posterize
      * https://github.com/gitgraghu/image-processing/blob/master/src/Effects/Posterize.java
      */
-    public static int posterize(int rgb) {
+    public static int posterize(final int rgb) {
         int red = (0xff & (rgb >> 16));
         int green = (0xff & (rgb >> 8));
         int blue = (0xff & rgb);

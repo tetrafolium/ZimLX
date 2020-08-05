@@ -33,7 +33,7 @@ public class ConfigMonitor extends BroadcastReceiver {
     private final float mFontScale;
     private final int mDensity;
 
-    public ConfigMonitor(Context context) {
+    public ConfigMonitor(final Context context) {
         mContext = context;
 
         Configuration config = context.getResources().getConfiguration();
@@ -42,7 +42,7 @@ public class ConfigMonitor extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
         Configuration config = context.getResources().getConfiguration();
         if (mFontScale != config.fontScale || mDensity != config.densityDpi) {
             Log.d("ConfigMonitor", "Configuration changed, restarting launcher");

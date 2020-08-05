@@ -12,7 +12,7 @@ import java.util.TimeZone;
 public class AutoUpdateClock extends FastBitmapDrawable implements Runnable {
     private ClockLayers mLayers;
 
-    AutoUpdateClock(Bitmap bitmap, ClockLayers layers) {
+    AutoUpdateClock(final Bitmap bitmap, final ClockLayers layers) {
         super(bitmap);
         mLayers = layers;
     }
@@ -24,7 +24,7 @@ public class AutoUpdateClock extends FastBitmapDrawable implements Runnable {
         scheduleSelf(this, uptimeMillis - uptimeMillis % millisInSecond + millisInSecond);
     }
 
-    void updateLayers(ClockLayers layers) {
+    void updateLayers(final ClockLayers layers) {
         mLayers = layers;
         if (mLayers != null) {
             mLayers.mDrawable.setBounds(getBounds());
@@ -32,7 +32,7 @@ public class AutoUpdateClock extends FastBitmapDrawable implements Runnable {
         invalidateSelf();
     }
 
-    void setTimeZone(TimeZone timeZone) {
+    void setTimeZone(final TimeZone timeZone) {
         if (mLayers != null) {
             mLayers.setTimeZone(timeZone);
             invalidateSelf();
@@ -40,7 +40,7 @@ public class AutoUpdateClock extends FastBitmapDrawable implements Runnable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(final Canvas canvas) {
         super.draw(canvas);
         if (mLayers == null) {
             return;

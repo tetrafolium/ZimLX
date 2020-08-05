@@ -34,20 +34,20 @@ public class FastScrollThumbDrawable extends Drawable {
     private final Paint mPaint;
     private final boolean mIsRtl;
 
-    public FastScrollThumbDrawable(Paint paint, boolean isRtl) {
+    public FastScrollThumbDrawable(final Paint paint, final boolean isRtl) {
         mPaint = paint;
         mIsRtl = isRtl;
     }
 
     @Override
-    public void getOutline(Outline outline) {
+    public void getOutline(final Outline outline) {
         if (mPath.isConvex()) {
             outline.setConvexPath(mPath);
         }
     }
 
     @Override
-    protected void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(final Rect bounds) {
         mPath.reset();
 
         float r = bounds.height() * 0.5f;
@@ -68,17 +68,17 @@ public class FastScrollThumbDrawable extends Drawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(final Canvas canvas) {
         canvas.drawPath(mPath, mPaint);
     }
 
     @Override
-    public void setAlpha(int i) {
+    public void setAlpha(final int i) {
         // Not supported
     }
 
     @Override
-    public void setColorFilter(ColorFilter colorFilter) {
+    public void setColorFilter(final ColorFilter colorFilter) {
         // Not supported
     }
 

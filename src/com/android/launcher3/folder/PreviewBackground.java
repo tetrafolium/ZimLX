@@ -99,19 +99,19 @@ public class PreviewBackground {
         this(false);
     }
 
-    public PreviewBackground(boolean inDrawer) {
+    public PreviewBackground(final boolean inDrawer) {
         isInDrawer = inDrawer;
     }
 
     private static final Property<PreviewBackground, Integer> STROKE_ALPHA =
     new Property<PreviewBackground, Integer>(Integer.class, "strokeAlpha") {
         @Override
-        public Integer get(PreviewBackground previewBackground) {
+        public Integer get(final PreviewBackground previewBackground) {
             return previewBackground.mStrokeAlpha;
         }
 
         @Override
-        public void set(PreviewBackground previewBackground, Integer alpha) {
+        public void set(final PreviewBackground previewBackground, final Integer alpha) {
             previewBackground.mStrokeAlpha = alpha;
             previewBackground.invalidate();
         }
@@ -120,19 +120,19 @@ public class PreviewBackground {
     private static final Property<PreviewBackground, Integer> SHADOW_ALPHA =
     new Property<PreviewBackground, Integer>(Integer.class, "shadowAlpha") {
         @Override
-        public Integer get(PreviewBackground previewBackground) {
+        public Integer get(final PreviewBackground previewBackground) {
             return previewBackground.mShadowAlpha;
         }
 
         @Override
-        public void set(PreviewBackground previewBackground, Integer alpha) {
+        public void set(final PreviewBackground previewBackground, final Integer alpha) {
             previewBackground.mShadowAlpha = alpha;
             previewBackground.invalidate();
         }
     };
 
-    public void setup(Launcher launcher, View invalidateDelegate,
-                      int availableSpaceX, int topPadding) {
+    public void setup(final Launcher launcher, final View invalidateDelegate,
+                      final int availableSpaceX, final int topPadding) {
         mInvalidateDelegate = invalidateDelegate;
         //mBgColor = Themes.getAttrColor(launcher, android.R.attr.colorPrimary);
         mBgColor = Utilities.getZimPrefs(launcher).getFolderBackground();
@@ -141,8 +141,8 @@ public class PreviewBackground {
         previewSize = isInDrawer ? grid.allAppsFolderIconSizePx : grid.folderIconSizePx;
 
         basePreviewOffsetX = (availableSpaceX - previewSize) / 2;
-        basePreviewOffsetY = topPadding +
-                             (isInDrawer ? grid.allAppsFolderIconOffsetYPx : grid.folderIconOffsetYPx);
+        basePreviewOffsetY = topPadding
+                             + (isInDrawer ? grid.allAppsFolderIconOffsetYPx : grid.folderIconOffsetYPx);
 
         // Stroke width is 1dp
         mStrokeWidth = launcher.getResources().getDisplayMetrics().density;
@@ -192,7 +192,7 @@ public class PreviewBackground {
         }
     }
 
-    void setInvalidateDelegate(View invalidateDelegate) {
+    void setInvalidateDelegate(final View invalidateDelegate) {
         mInvalidateDelegate = invalidateDelegate;
         invalidate();
     }
@@ -202,11 +202,11 @@ public class PreviewBackground {
         return ColorUtils.setAlphaComponent(mBgColor, alpha);
     }
 
-    public void setStartOpacity(float opacity) {
+    public void setStartOpacity(final float opacity) {
         mColorMultiplier = opacity;
     }
 
-    public void drawBackground(Canvas canvas) {
+    public void drawBackground(final Canvas canvas) {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(getBgColor());
 
@@ -215,7 +215,7 @@ public class PreviewBackground {
         drawShadow(canvas);
     }
 
-    public void drawShadow(Canvas canvas) {
+    public void drawShadow(final Canvas canvas) {
         if (mShadowShader == null) {
             return;
         }
@@ -262,7 +262,7 @@ public class PreviewBackground {
                           .setDuration(100);
         mShadowAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 mShadowAnimator = null;
             }
         });
@@ -278,14 +278,14 @@ public class PreviewBackground {
                                .setDuration(100);
         mStrokeAlphaAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 mStrokeAlphaAnimator = null;
             }
         });
         mStrokeAlphaAnimator.start();
     }
 
-    public void drawBackgroundStroke(Canvas canvas) {
+    public void drawBackgroundStroke(final Canvas canvas) {
         mPaint.setColor(ColorUtils.setAlphaComponent(mBgColor, mStrokeAlpha));
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(mStrokeWidth);
@@ -293,7 +293,7 @@ public class PreviewBackground {
 
     }
 
-    public void drawLeaveBehind(Canvas canvas) {
+    public void drawLeaveBehind(final Canvas canvas) {
         float originalScale = mScale;
         mScale = 0.5f;
 
@@ -310,7 +310,7 @@ public class PreviewBackground {
         return mPath;
     }
 
-    private void delegateDrawing(CellLayout delegate, int cellX, int cellY) {
+    private void delegateDrawing(final CellLayout delegate, final int cellX, final int cellY) {
         if (mDrawingDelegate != delegate) {
             delegate.addFolderBackground(this);
         }
@@ -336,7 +336,7 @@ public class PreviewBackground {
         return mDrawingDelegate != null;
     }
 
-    private void animateScale(float finalScale, float finalMultiplier,
+    private void animateScale(final float finalScale, final float finalMultiplier,
                               final Runnable onStart, final Runnable onEnd) {
         final float scale0 = mScale;
         final float scale1 = finalScale;
@@ -358,14 +358,14 @@ public class PreviewBackground {
         });
         mScaleAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationStart(Animator animation) {
+            public void onAnimationStart(final Animator animation) {
                 if (onStart != null) {
                     onStart.run();
                 }
             }
 
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 if (onEnd != null) {
                     onEnd.run();
                 }

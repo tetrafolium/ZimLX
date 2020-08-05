@@ -47,7 +47,7 @@ public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHel
 
     private final Rect mTempRect = new Rect();
 
-    public DragAndDropAccessibilityDelegate(CellLayout forView) {
+    public DragAndDropAccessibilityDelegate(final CellLayout forView) {
         super(forView);
         mView = forView;
         mContext = mView.getContext();
@@ -55,7 +55,7 @@ public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHel
     }
 
     @Override
-    protected int getVirtualViewAt(float x, float y) {
+    protected int getVirtualViewAt(final float x, final float y) {
         if (x < 0 || y < 0 || x > mView.getMeasuredWidth() || y > mView.getMeasuredHeight()) {
             return INVALID_ID;
         }
@@ -73,7 +73,7 @@ public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHel
     protected abstract int intersectsValidDropTarget(int id);
 
     @Override
-    protected void getVisibleVirtualViews(List<Integer> virtualViews) {
+    protected void getVisibleVirtualViews(final List<Integer> virtualViews) {
         // We create a virtual view for each cell of the grid
         // The cell ids correspond to cells in reading order.
         int nCells = mView.getCountX() * mView.getCountY();
@@ -86,7 +86,7 @@ public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHel
     }
 
     @Override
-    protected boolean onPerformActionForVirtualView(int viewId, int action, Bundle args) {
+    protected boolean onPerformActionForVirtualView(final int viewId, final int action, final Bundle args) {
         if (action == AccessibilityNodeInfoCompat.ACTION_CLICK && viewId != INVALID_ID) {
             String confirmation = getConfirmationForIconDrop(viewId);
             mDelegate.handleAccessibleDrop(mView, getItemBounds(viewId), confirmation);
@@ -96,13 +96,13 @@ public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHel
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         onPerformActionForVirtualView(getFocusedVirtualView(),
                                       AccessibilityNodeInfoCompat.ACTION_CLICK, null);
     }
 
     @Override
-    protected void onPopulateEventForVirtualView(int id, AccessibilityEvent event) {
+    protected void onPopulateEventForVirtualView(final int id, final AccessibilityEvent event) {
         if (id == INVALID_ID) {
             throw new IllegalArgumentException("Invalid virtual view id");
         }
@@ -110,7 +110,7 @@ public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHel
     }
 
     @Override
-    protected void onPopulateNodeForVirtualView(int id, AccessibilityNodeInfoCompat node) {
+    protected void onPopulateNodeForVirtualView(final int id, final AccessibilityNodeInfoCompat node) {
         if (id == INVALID_ID) {
             throw new IllegalArgumentException("Invalid virtual view id");
         }
@@ -127,7 +127,7 @@ public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHel
 
     protected abstract String getConfirmationForIconDrop(int id);
 
-    private Rect getItemBounds(int id) {
+    private Rect getItemBounds(final int id) {
         int cellX = id % mView.getCountX();
         int cellY = id / mView.getCountX();
         LauncherAccessibilityDelegate.DragInfo dragInfo = mDelegate.getDragInfo();

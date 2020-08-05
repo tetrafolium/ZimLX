@@ -26,7 +26,7 @@ public class CustomIconUtils {
 
     };
 
-    static HashMap<String, CharSequence> getPackProviders(Context context) {
+    static HashMap<String, CharSequence> getPackProviders(final Context context) {
         PackageManager pm = context.getPackageManager();
         HashMap<String, CharSequence> packs = new HashMap<>();
         for (String intent : ICON_INTENTS) {
@@ -37,7 +37,7 @@ public class CustomIconUtils {
         return packs;
     }
 
-    public static void reloadIcon(DeepShortcutManager shortcutManager, LauncherModel model, UserHandle user, String pkg) {
+    public static void reloadIcon(final DeepShortcutManager shortcutManager, final LauncherModel model, final UserHandle user, final String pkg) {
         model.onPackageChanged(pkg, user);
         if (shortcutManager.wasLastCallSuccess()) {
             List<ShortcutInfoCompat> shortcuts = shortcutManager.queryForPinnedShortcuts(pkg, user);

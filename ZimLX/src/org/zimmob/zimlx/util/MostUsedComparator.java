@@ -11,12 +11,12 @@ public class MostUsedComparator implements Comparator<AppInfo> {
     private String TAG = "MostUsedComparator";
     private List<AppCountInfo> mApps;
 
-    public MostUsedComparator(List<AppCountInfo> apps) {
+    public MostUsedComparator(final List<AppCountInfo> apps) {
         mApps = apps;
     }
 
     @Override
-    public int compare(AppInfo app1, AppInfo app2) {
+    public int compare(final AppInfo app1, final AppInfo app2) {
         int item1 = 0;
         int item2 = 0;
 

@@ -44,26 +44,26 @@ public class ExtendedEditText extends EditText {
 
     private OnBackKeyListener mBackKeyListener;
 
-    public ExtendedEditText(Context context) {
+    public ExtendedEditText(final Context context) {
         // ctor chaining breaks the touch handling
         super(context);
     }
 
-    public ExtendedEditText(Context context, AttributeSet attrs) {
+    public ExtendedEditText(final Context context, final AttributeSet attrs) {
         // ctor chaining breaks the touch handling
         super(context, attrs);
     }
 
-    public ExtendedEditText(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ExtendedEditText(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setOnBackKeyListener(OnBackKeyListener listener) {
+    public void setOnBackKeyListener(final OnBackKeyListener listener) {
         mBackKeyListener = listener;
     }
 
     @Override
-    public boolean onKeyPreIme(int keyCode, KeyEvent event) {
+    public boolean onKeyPreIme(final int keyCode, final KeyEvent event) {
         // If this is a back key, propagate the key back to the listener
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
             if (mBackKeyListener != null) {
@@ -75,13 +75,13 @@ public class ExtendedEditText extends EditText {
     }
 
     @Override
-    public boolean onDragEvent(DragEvent event) {
+    public boolean onDragEvent(final DragEvent event) {
         // We don't want this view to interfere with Launcher own drag and drop.
         return false;
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (mShowImeAfterFirstLayout) {
             // soft input only shows one frame after the layout of the EditText happens,
@@ -101,8 +101,8 @@ public class ExtendedEditText extends EditText {
     }
 
     private boolean showSoftInput() {
-        return requestFocus() &&
-               ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
+        return requestFocus()
+               && ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
                .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
     }
 
@@ -117,7 +117,7 @@ public class ExtendedEditText extends EditText {
      * Set to true when you want isSuggestionsEnabled to return false.
      * Use this to disable the red underlines that appear under typos when suggestions is enabled.
      */
-    public void forceDisableSuggestions(boolean forceDisableSuggestions) {
+    public void forceDisableSuggestions(final boolean forceDisableSuggestions) {
         mForceDisableSuggestions = forceDisableSuggestions;
     }
 

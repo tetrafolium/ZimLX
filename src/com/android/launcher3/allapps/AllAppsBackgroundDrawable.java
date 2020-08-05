@@ -43,7 +43,7 @@ public class AllAppsBackgroundDrawable extends Drawable {
     private final int mHeight;
     private ObjectAnimator mBackgroundAnim;
 
-    public AllAppsBackgroundDrawable(Context context) {
+    public AllAppsBackgroundDrawable(final Context context) {
         Resources res = context.getResources();
         mWidth = res.getDimensionPixelSize(R.dimen.all_apps_background_canvas_width);
         mHeight = res.getDimensionPixelSize(R.dimen.all_apps_background_canvas_height);
@@ -68,7 +68,7 @@ public class AllAppsBackgroundDrawable extends Drawable {
     /**
      * Animates the background alpha.
      */
-    public void animateBgAlpha(float finalAlpha, int duration) {
+    public void animateBgAlpha(final float finalAlpha, final int duration) {
         int finalAlphaI = (int) (finalAlpha * 255f);
         if (getAlpha() != finalAlphaI) {
             mBackgroundAnim = cancelAnimator(mBackgroundAnim);
@@ -82,7 +82,7 @@ public class AllAppsBackgroundDrawable extends Drawable {
     /**
      * Sets the background alpha immediately.
      */
-    public void setBgAlpha(float finalAlpha) {
+    public void setBgAlpha(final float finalAlpha) {
         int finalAlphaI = (int) (finalAlpha * 255f);
         if (getAlpha() != finalAlphaI) {
             mBackgroundAnim = cancelAnimator(mBackgroundAnim);
@@ -101,7 +101,7 @@ public class AllAppsBackgroundDrawable extends Drawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(final Canvas canvas) {
         mHand.draw(canvas);
         for (int i = 0; i < mIcons.length; i++) {
             mIcons[i].draw(canvas);
@@ -109,7 +109,7 @@ public class AllAppsBackgroundDrawable extends Drawable {
     }
 
     @Override
-    protected void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(final Rect bounds) {
         super.onBoundsChange(bounds);
         mHand.updateBounds(bounds);
         for (int i = 0; i < mIcons.length; i++) {
@@ -124,7 +124,7 @@ public class AllAppsBackgroundDrawable extends Drawable {
     }
 
     @Override
-    public void setAlpha(int alpha) {
+    public void setAlpha(final int alpha) {
         mHand.setAlpha(alpha);
         for (int i = 0; i < mIcons.length; i++) {
             mIcons[i].setAlpha(alpha);
@@ -133,7 +133,7 @@ public class AllAppsBackgroundDrawable extends Drawable {
     }
 
     @Override
-    public void setColorFilter(ColorFilter colorFilter) {
+    public void setColorFilter(final ColorFilter colorFilter) {
         // Do nothing
     }
 
@@ -142,7 +142,7 @@ public class AllAppsBackgroundDrawable extends Drawable {
         return PixelFormat.TRANSLUCENT;
     }
 
-    private ObjectAnimator cancelAnimator(ObjectAnimator animator) {
+    private ObjectAnimator cancelAnimator(final ObjectAnimator animator) {
         if (animator != null) {
             animator.cancel();
         }
@@ -163,8 +163,8 @@ public class AllAppsBackgroundDrawable extends Drawable {
          * @param gravity If one of the Gravity center values, the x and y offset will take the width
          *                and height of the image into account to center the image to the offset.
          */
-        public TransformedImageDrawable(Context context, int resourceId, float xPct, float yPct,
-                                        int gravity) {
+        public TransformedImageDrawable(final Context context, final int resourceId, final float xPct, final float yPct,
+                                        final int gravity) {
             mImage = context.getDrawable(resourceId);
             mXPercent = xPct;
             mYPercent = yPct;
@@ -175,12 +175,12 @@ public class AllAppsBackgroundDrawable extends Drawable {
             return mAlpha;
         }
 
-        public void setAlpha(int alpha) {
+        public void setAlpha(final int alpha) {
             mImage.setAlpha(alpha);
             mAlpha = alpha;
         }
 
-        public void updateBounds(Rect bounds) {
+        public void updateBounds(final Rect bounds) {
             int width = mImage.getIntrinsicWidth();
             int height = mImage.getIntrinsicHeight();
             int left = bounds.left + (int) (mXPercent * bounds.width());
@@ -194,7 +194,7 @@ public class AllAppsBackgroundDrawable extends Drawable {
             mImage.setBounds(left, top, left + width, top + height);
         }
 
-        public void draw(Canvas canvas) {
+        public void draw(final Canvas canvas) {
             mImage.draw(canvas);
         }
 

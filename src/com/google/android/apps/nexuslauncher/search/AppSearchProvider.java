@@ -156,7 +156,7 @@ public class AppSearchProvider extends ContentProvider {
         }
     }
 
-    public Cursor query(@NonNull Uri uri, final String[] array, final String s, final String[] array2, final String s2) {
+    public Cursor query(final @NonNull Uri uri, final String[] array, final String s, final String[] array2, final String s2) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             Log.e("AppSearchProvider", "Content provider accessed on main thread");
             return new MatrixCursor(AppSearchProvider.eK, 0);

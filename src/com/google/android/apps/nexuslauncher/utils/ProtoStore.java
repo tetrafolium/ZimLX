@@ -13,11 +13,11 @@ import java.io.FileOutputStream;
 public class ProtoStore {
     private final Context mContext;
 
-    public ProtoStore(Context context) {
+    public ProtoStore(final Context context) {
         mContext = context.getApplicationContext();
     }
 
-    public void dw(MessageNano p1, String name) {
+    public void dw(final MessageNano p1, final String name) {
         try {
             FileOutputStream fos = mContext.openFileOutput(name, 0);
             if (p1 != null) {
@@ -33,7 +33,7 @@ public class ProtoStore {
         }
     }
 
-    public boolean dv(String name, MessageNano a) {
+    public boolean dv(final String name, final MessageNano a) {
         File fileStreamPath = mContext.getFileStreamPath(name);
         try {
             MessageNano.mergeFrom(a, IOUtils.toByteArray(fileStreamPath));

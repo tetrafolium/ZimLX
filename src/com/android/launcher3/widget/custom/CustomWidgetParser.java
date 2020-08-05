@@ -47,7 +47,7 @@ public class CustomWidgetParser {
     private static List<LauncherAppWidgetProviderInfo> sCustomWidgets;
     private static SparseArray<ComponentName> sWidgetsIdMap;
 
-    public static List<LauncherAppWidgetProviderInfo> getCustomWidgets(Context context) {
+    public static List<LauncherAppWidgetProviderInfo> getCustomWidgets(final Context context) {
         if (sCustomWidgets == null) {
             // Synchronization not needed as it it safe to load multiple times
             parseCustomWidgets(context);
@@ -56,7 +56,7 @@ public class CustomWidgetParser {
         return sCustomWidgets;
     }
 
-    public static int getWidgetIdForCustomProvider(Context context, ComponentName provider) {
+    public static int getWidgetIdForCustomProvider(final Context context, final ComponentName provider) {
         if (sWidgetsIdMap == null) {
             parseCustomWidgets(context);
         }
@@ -68,7 +68,7 @@ public class CustomWidgetParser {
         }
     }
 
-    public static LauncherAppWidgetProviderInfo getWidgetProvider(Context context, int widgetId) {
+    public static LauncherAppWidgetProviderInfo getWidgetProvider(final Context context, final int widgetId) {
         if (sWidgetsIdMap == null || sCustomWidgets == null) {
             parseCustomWidgets(context);
         }
@@ -81,7 +81,7 @@ public class CustomWidgetParser {
         return null;
     }
 
-    private static void parseCustomWidgets(Context context) {
+    private static void parseCustomWidgets(final Context context) {
         ArrayList<LauncherAppWidgetProviderInfo> widgets = new ArrayList<>();
         SparseArray<ComponentName> idMap = new SparseArray<>();
 
@@ -100,8 +100,8 @@ public class CustomWidgetParser {
             final int depth = parser.getDepth();
             int type;
 
-            while (((type = parser.next()) != XmlPullParser.END_TAG ||
-                    parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
+            while (((type = parser.next()) != XmlPullParser.END_TAG
+                    || parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
                 if ((type == XmlPullParser.START_TAG) && "widget".equals(parser.getName())) {
                     TypedArray a = context.obtainStyledAttributes(
                                        Xml.asAttributeSet(parser), R.styleable.CustomAppWidgetProviderInfo);
@@ -122,7 +122,7 @@ public class CustomWidgetParser {
         sWidgetsIdMap = idMap;
     }
 
-    private static CustomAppWidgetProviderInfo newInfo(TypedArray a, Parcel parcel, Context context) {
+    private static CustomAppWidgetProviderInfo newInfo(final TypedArray a, final Parcel parcel, final Context context) {
         int providerId = a.getInt(R.styleable.CustomAppWidgetProviderInfo_providerId, 0);
         boolean noPadding = a.getBoolean(R.styleable.CustomAppWidgetProviderInfo_noPadding, false);
         CustomAppWidgetProviderInfo info = new CustomAppWidgetProviderInfo(parcel, false, providerId, noPadding);

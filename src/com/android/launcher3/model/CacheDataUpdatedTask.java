@@ -43,14 +43,14 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
     private final UserHandle mUser;
     private final HashSet<String> mPackages;
 
-    public CacheDataUpdatedTask(int op, UserHandle user, HashSet<String> packages) {
+    public CacheDataUpdatedTask(final int op, final UserHandle user, final HashSet<String> packages) {
         mOp = op;
         mUser = user;
         mPackages = packages;
     }
 
     @Override
-    public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+    public void execute(final LauncherAppState app, final BgDataModel dataModel, final AllAppsList apps) {
         IconCache iconCache = app.getIconCache();
 
         final ArrayList<AppInfo> updatedApps = new ArrayList<>();
@@ -76,14 +76,14 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
         if (!updatedApps.isEmpty()) {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
-                public void execute(Callbacks callbacks) {
+                public void execute(final Callbacks callbacks) {
                     callbacks.bindAppsAddedOrUpdated(updatedApps);
                 }
             });
         }
     }
 
-    public boolean isValidShortcut(ShortcutInfo si) {
+    public boolean isValidShortcut(final ShortcutInfo si) {
         switch (mOp) {
         case OP_CACHE_UPDATE:
             return true;

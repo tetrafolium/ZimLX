@@ -40,35 +40,35 @@ public class PinWidgetFlowHandler extends WidgetAddFlowHandler implements Parcel
 
     public static final Parcelable.Creator<PinWidgetFlowHandler> CREATOR =
     new Parcelable.Creator<PinWidgetFlowHandler>() {
-        public PinWidgetFlowHandler createFromParcel(Parcel source) {
+        public PinWidgetFlowHandler createFromParcel(final Parcel source) {
             return new PinWidgetFlowHandler(source);
         }
 
-        public PinWidgetFlowHandler[] newArray(int size) {
+        public PinWidgetFlowHandler[] newArray(final int size) {
             return new PinWidgetFlowHandler[size];
         }
     };
     private final PinItemRequest mRequest;
 
-    public PinWidgetFlowHandler(AppWidgetProviderInfo providerInfo, PinItemRequest request) {
+    public PinWidgetFlowHandler(final AppWidgetProviderInfo providerInfo, final PinItemRequest request) {
         super(providerInfo);
         mRequest = request;
     }
 
-    protected PinWidgetFlowHandler(Parcel parcel) {
+    protected PinWidgetFlowHandler(final Parcel parcel) {
         super(parcel);
         mRequest = PinItemRequest.CREATOR.createFromParcel(parcel);
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
+    public void writeToParcel(final Parcel parcel, final int i) {
         super.writeToParcel(parcel, i);
         mRequest.writeToParcel(parcel, i);
     }
 
     @Override
-    public boolean startConfigActivity(Launcher launcher, int appWidgetId, ItemInfo info,
-                                       int requestCode) {
+    public boolean startConfigActivity(final Launcher launcher, final int appWidgetId, final ItemInfo info,
+                                       final int requestCode) {
         Bundle extras = new Bundle();
         extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         mRequest.accept(extras);

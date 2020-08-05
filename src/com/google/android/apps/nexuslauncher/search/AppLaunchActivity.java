@@ -16,7 +16,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 
 public class AppLaunchActivity extends BaseActivity {
-    private void startUri(Uri uri) {
+    private void startUri(final Uri uri) {
         try {
             ComponentKey dl = AppSearchProvider.uriToComponent(uri, this);
             ItemInfo dVar = new AppItemInfoWithIcon(dl);

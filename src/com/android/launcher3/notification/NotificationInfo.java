@@ -58,7 +58,7 @@ public class NotificationInfo implements View.OnClickListener {
     /**
      * Extracts the data that we need from the StatusBarNotification.
      */
-    public NotificationInfo(Context context, StatusBarNotification statusBarNotification) {
+    public NotificationInfo(final Context context, final StatusBarNotification statusBarNotification) {
         packageUserKey = PackageUserKey.fromNotification(statusBarNotification);
         notificationKey = statusBarNotification.getKey();
         Notification notification = statusBarNotification.getNotification();
@@ -92,7 +92,7 @@ public class NotificationInfo implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(final View view) {
         if (intent == null) {
             return;
         }
@@ -112,7 +112,7 @@ public class NotificationInfo implements View.OnClickListener {
                                                 .TYPE_ACTION_POPUP);
     }
 
-    public Drawable getIconForBackground(Context context, int background) {
+    public Drawable getIconForBackground(final Context context, final int background) {
         if (mIsIconLarge) {
             // Only small icons should be tinted.
             return mIconDrawable;

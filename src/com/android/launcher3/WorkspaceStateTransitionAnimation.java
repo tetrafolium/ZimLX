@@ -51,18 +51,18 @@ public class WorkspaceStateTransitionAnimation {
 
     private float mNewScale;
 
-    public WorkspaceStateTransitionAnimation(Launcher launcher, Workspace workspace) {
+    public WorkspaceStateTransitionAnimation(final Launcher launcher, final Workspace workspace) {
         mLauncher = launcher;
         mWorkspace = workspace;
     }
 
-    public void setState(LauncherState toState) {
+    public void setState(final LauncherState toState) {
         setWorkspaceProperty(toState, NO_ANIM_PROPERTY_SETTER, new AnimatorSetBuilder(),
                              new AnimationConfig());
     }
 
-    public void setStateWithAnimation(LauncherState toState, AnimatorSetBuilder builder,
-                                      AnimationConfig config) {
+    public void setStateWithAnimation(final LauncherState toState, final AnimatorSetBuilder builder,
+                                      final AnimationConfig config) {
         setWorkspaceProperty(toState, config.getPropertySetter(builder), builder, config);
     }
 
@@ -73,8 +73,8 @@ public class WorkspaceStateTransitionAnimation {
     /**
      * Starts a transition animation for the workspace.
      */
-    private void setWorkspaceProperty(LauncherState state, PropertySetter propertySetter,
-                                      AnimatorSetBuilder builder, AnimationConfig config) {
+    private void setWorkspaceProperty(final LauncherState state, final PropertySetter propertySetter,
+                                      final AnimatorSetBuilder builder, final AnimationConfig config) {
         float[] scaleAndTranslation = state.getWorkspaceScaleAndTranslation(mLauncher);
         mNewScale = scaleAndTranslation[0];
         PageAlphaProvider pageAlphaProvider = state.getWorkspacePageAlphaProvider(mLauncher);
@@ -123,14 +123,14 @@ public class WorkspaceStateTransitionAnimation {
         propertySetter.setFloat(scrim, SYSUI_PROGRESS, state.hasSysUiScrim ? 1 : 0, LINEAR);
     }
 
-    public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {
+    public void applyChildState(final LauncherState state, final CellLayout cl, final int childIndex) {
         applyChildState(state, cl, childIndex, state.getWorkspacePageAlphaProvider(mLauncher),
                         NO_ANIM_PROPERTY_SETTER, new AnimatorSetBuilder(), new AnimationConfig());
     }
 
-    private void applyChildState(LauncherState state, CellLayout cl, int childIndex,
-                                 PageAlphaProvider pageAlphaProvider, PropertySetter propertySetter,
-                                 AnimatorSetBuilder builder, AnimationConfig config) {
+    private void applyChildState(final LauncherState state, final CellLayout cl, final int childIndex,
+                                 final PageAlphaProvider pageAlphaProvider, final PropertySetter propertySetter,
+                                 final AnimatorSetBuilder builder, final AnimationConfig config) {
         float pageAlpha = pageAlphaProvider.getPageAlpha(childIndex);
         int drawableAlpha = Math.round(pageAlpha * (state.hasWorkspacePageBackground ? 255 : 0));
 

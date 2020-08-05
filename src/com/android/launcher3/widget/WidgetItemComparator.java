@@ -32,7 +32,7 @@ public class WidgetItemComparator implements Comparator<WidgetItem> {
     private final Collator mCollator = Collator.getInstance();
 
     @Override
-    public int compare(WidgetItem a, WidgetItem b) {
+    public int compare(final WidgetItem a, final WidgetItem b) {
         // Independent of how the labels compare, if only one of the two widget info belongs to
         // work profile, put that one in the back.
         boolean thisWorkProfile = !mMyUserHandle.equals(a.user);

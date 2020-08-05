@@ -50,7 +50,7 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
     private final Drawable mBadge;
     private final Path mMask;
 
-    private FolderAdaptiveIcon(Drawable bg, Drawable fg, Drawable badge, Path mask) {
+    private FolderAdaptiveIcon(final Drawable bg, final Drawable fg, final Drawable badge, final Path mask) {
         super(bg, fg);
         mBadge = badge;
         mMask = mask;
@@ -66,7 +66,7 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
     }
 
     public static FolderAdaptiveIcon createFolderAdaptiveIcon(
-        Launcher launcher, long folderId, Point dragViewSize) {
+        final Launcher launcher, final long folderId, final Point dragViewSize) {
         Preconditions.assertNonUiThread();
         int margin = launcher.getResources()
                      .getDimensionPixelSize(R.dimen.blur_size_medium_outline);
@@ -91,8 +91,8 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
     /**
      * Initializes various bitmaps on the UI thread and returns the final drawable.
      */
-    private static FolderAdaptiveIcon createDrawableOnUiThread(FolderIcon icon,
-            Bitmap badgeBitmap, Point dragViewSize) {
+    private static FolderAdaptiveIcon createDrawableOnUiThread(final FolderIcon icon,
+            final Bitmap badgeBitmap, final Point dragViewSize) {
         Preconditions.assertUIThread();
         float margin = icon.getResources().getDimension(R.dimen.blur_size_medium_outline) / 2;
 
@@ -145,23 +145,23 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
         private final float mShiftX;
         private final float mShiftY;
 
-        ShiftedBitmapDrawable(Bitmap bitmap, float shiftX, float shiftY) {
+        ShiftedBitmapDrawable(final Bitmap bitmap, final float shiftX, final float shiftY) {
             mBitmap = bitmap;
             mShiftX = shiftX;
             mShiftY = shiftY;
         }
 
         @Override
-        public void draw(Canvas canvas) {
+        public void draw(final Canvas canvas) {
             canvas.drawBitmap(mBitmap, mShiftX, mShiftY, mPaint);
         }
 
         @Override
-        public void setAlpha(int i) {
+        public void setAlpha(final int i) {
         }
 
         @Override
-        public void setColorFilter(ColorFilter colorFilter) {
+        public void setColorFilter(final ColorFilter colorFilter) {
             mPaint.setColorFilter(colorFilter);
         }
 

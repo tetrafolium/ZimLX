@@ -39,7 +39,7 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
 
     protected float mAX, mAY;
 
-    public FlingAnimation(DragObject d, PointF vel, ButtonDropTarget dropTarget, Launcher launcher) {
+    public FlingAnimation(final DragObject d, final PointF vel, final ButtonDropTarget dropTarget, final Launcher launcher) {
         mDropTarget = dropTarget;
         mLauncher = launcher;
         mDragObject = d;
@@ -82,12 +82,12 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
             private float mOffset = 0f;
 
             @Override
-            public float getInterpolation(float t) {
+            public float getInterpolation(final float t) {
                 if (mCount < 0) {
                     mCount++;
                 } else if (mCount == 0) {
-                    mOffset = Math.min(0.5f, (float) (AnimationUtils.currentAnimationTimeMillis() -
-                                                      startTime) / duration);
+                    mOffset = Math.min(0.5f, (float) (AnimationUtils.currentAnimationTimeMillis()
+                                                      - startTime) / duration);
                     mCount++;
                 }
                 return Math.min(1f, mOffset + t);
@@ -160,7 +160,7 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
     }
 
     @Override
-    public void onAnimationUpdate(ValueAnimator animation) {
+    public void onAnimationUpdate(final ValueAnimator animation) {
         float t = animation.getAnimatedFraction();
         if (t > mAnimationTimeFraction) {
             t = 1;

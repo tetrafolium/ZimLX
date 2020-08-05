@@ -92,7 +92,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(View v) {
+        public ViewHolder(final View v) {
             super(v);
         }
     }
@@ -102,12 +102,12 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
      */
     public class AppsGridLayoutManager extends GridLayoutManager {
 
-        public AppsGridLayoutManager(Context context) {
+        public AppsGridLayoutManager(final Context context) {
             super(context, 1, GridLayoutManager.VERTICAL, false);
         }
 
         @Override
-        public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        public void onInitializeAccessibilityEvent(final AccessibilityEvent event) {
             super.onInitializeAccessibilityEvent(event);
 
             // Ensure that we only report the number apps for accessibility not including other
@@ -122,15 +122,15 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         }
 
         @Override
-        public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
-                                               RecyclerView.State state) {
-            return super.getRowCountForAccessibility(recycler, state) -
-                   getRowsNotForAccessibility(mApps.getAdapterItems().size() - 1);
+        public int getRowCountForAccessibility(final RecyclerView.Recycler recycler,
+                                               final RecyclerView.State state) {
+            return super.getRowCountForAccessibility(recycler, state)
+                   - getRowsNotForAccessibility(mApps.getAdapterItems().size() - 1);
         }
 
         @Override
-        public void onInitializeAccessibilityNodeInfoForItem(RecyclerView.Recycler recycler,
-                RecyclerView.State state, View host, AccessibilityNodeInfoCompat info) {
+        public void onInitializeAccessibilityNodeInfoForItem(final RecyclerView.Recycler recycler,
+                final RecyclerView.State state, final View host, final AccessibilityNodeInfoCompat info) {
             super.onInitializeAccessibilityNodeInfoForItem(recycler, state, host, info);
 
             ViewGroup.LayoutParams lp = host.getLayoutParams();
@@ -152,7 +152,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
          * Returns the number of rows before {@param adapterPosition}, including this position
          * which should not be counted towards the collection info.
          */
-        private int getRowsNotForAccessibility(int adapterPosition) {
+        private int getRowsNotForAccessibility(final int adapterPosition) {
             List<AdapterItem> items = mApps.getAdapterItems();
             adapterPosition = Math.max(adapterPosition, mApps.getAdapterItems().size() - 1);
             int extraRows = 0;
@@ -176,7 +176,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         }
 
         @Override
-        public int getSpanSize(int position) {
+        public int getSpanSize(final int position) {
             if (isIconViewType(mApps.getAdapterItems().get(position).viewType)) {
                 return 1;
             } else {
@@ -202,7 +202,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     // The intent to send off to the market app, updated each time the search query changes.
     private Intent mMarketSearchIntent;
 
-    public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps) {
+    public AllAppsGridAdapter(final Launcher launcher, final AlphabeticalAppsList apps) {
         Resources res = launcher.getResources();
         mLauncher = launcher;
         mApps = apps;
@@ -216,19 +216,19 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mGridLayoutMgr.setSpanCount(mAppsPerRow);
     }
 
-    public static boolean isDividerViewType(int viewType) {
+    public static boolean isDividerViewType(final int viewType) {
         return isViewType(viewType, VIEW_TYPE_MASK_DIVIDER);
     }
 
-    public static boolean isIconViewType(int viewType) {
+    public static boolean isIconViewType(final int viewType) {
         return isViewType(viewType, VIEW_TYPE_MASK_ICON);
     }
 
-    public static boolean isViewType(int viewType, int viewTypeMask) {
+    public static boolean isViewType(final int viewType, final int viewTypeMask) {
         return (viewType & viewTypeMask) != 0;
     }
 
-    public void setIconFocusListener(OnFocusChangeListener focusListener) {
+    public void setIconFocusListener(final OnFocusChangeListener focusListener) {
         mIconFocusListener = focusListener;
     }
 
@@ -236,7 +236,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
      * Sets the last search query that was made, used to show when there are no results and to also
      * seed the intent for searching the market.
      */
-    public void setLastSearchQuery(String query) {
+    public void setLastSearchQuery(final String query) {
         Resources res = mLauncher.getResources();
         mEmptySearchMessage = res.getString(R.string.all_apps_no_search_results, query);
         mMarketSearchIntent = PackageManagerHelper.getMarketSearchIntent(mLauncher, query);
@@ -245,7 +245,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     /**
      * Sets the callback for when views are bound.
      */
-    public void setBindViewCallback(BindViewCallback cb) {
+    public void setBindViewCallback(final BindViewCallback cb) {
         mBindViewCallback = cb;
     }
 
@@ -257,7 +257,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         switch (viewType) {
         case VIEW_TYPE_ICON:
             BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
@@ -305,7 +305,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         switch (holder.getItemViewType()) {
         case VIEW_TYPE_ICON:
             AppInfo info = mApps.getAdapterItems().get(position).appInfo;
@@ -317,8 +317,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         case VIEW_TYPE_EMPTY_SEARCH:
             TextView emptyViewText = (TextView) holder.itemView;
             emptyViewText.setText(mEmptySearchMessage);
-            emptyViewText.setGravity(mApps.hasNoFilteredResults() ? Gravity.CENTER :
-                                     Gravity.START | Gravity.CENTER_VERTICAL);
+            emptyViewText.setGravity(mApps.hasNoFilteredResults() ? Gravity.CENTER
+                                     : Gravity.START | Gravity.CENTER_VERTICAL);
             break;
         case VIEW_TYPE_SEARCH_MARKET:
             TextView searchView = (TextView) holder.itemView;
@@ -373,7 +373,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     }
 
     @Override
-    public boolean onFailedToRecycleView(ViewHolder holder) {
+    public boolean onFailedToRecycleView(final ViewHolder holder) {
         // Always recycle and we will reset the view when it is bound
         return true;
     }
@@ -384,7 +384,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     }
 
     @Override
-    public int getItemViewType(int position) {
+    public int getItemViewType(final int position) {
         AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(position);
         return item.viewType;
     }

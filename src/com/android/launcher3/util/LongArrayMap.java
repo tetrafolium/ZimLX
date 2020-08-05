@@ -25,7 +25,7 @@ import java.util.Iterator;
  */
 public class LongArrayMap<E> extends LongSparseArray<E> implements Iterable<E> {
 
-    public boolean containsKey(long key) {
+    public boolean containsKey(final long key) {
         return indexOfKey(key) >= 0;
     }
 

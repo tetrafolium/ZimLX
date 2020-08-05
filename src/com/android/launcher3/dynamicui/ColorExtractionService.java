@@ -121,7 +121,7 @@ public class ColorExtractionService extends JobService {
     }
 
     @Override
-    public boolean onStopJob(JobParameters jobParameters) {
+    public boolean onStopJob(final JobParameters jobParameters) {
         if (DEBUG) Log.d(TAG, "onStopJob");
         mWorkerHandler.removeCallbacksAndMessages(null);
         return true;

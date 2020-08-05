@@ -26,7 +26,7 @@ public class WidgetConfigActivity extends BaseTestingActivity {
     public static final String EXTRA_CODE = "code";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addButton("Cancel", "clickCancel");
         addButton("OK", "clickOK");

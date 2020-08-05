@@ -147,16 +147,16 @@ public final class Utilities {
         CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
         TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
-    public static boolean isPropertyEnabled(String propertyName) {
+    public static boolean isPropertyEnabled(final String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
     }
 
-    public static boolean isAllowRotationPrefEnabled(Context context) {
+    public static boolean isAllowRotationPrefEnabled(final Context context) {
         return getPrefs(context).getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
                                             getAllowRotationDefaultValue(context));
     }
 
-    public static boolean getAllowRotationDefaultValue(Context context) {
+    public static boolean getAllowRotationDefaultValue(final Context context) {
         if (ATLEAST_NOUGAT) {
             // If the device was scaled, used the original dimensions to determine if rotation
             // is allowed of not.
@@ -182,7 +182,7 @@ public final class Utilities {
      * assumption fails, we will need to return a pair of scale factors.
      */
     public static float getDescendantCoordRelativeToAncestor(
-        View descendant, View ancestor, int[] coord, boolean includeRootScroll) {
+        final View descendant, final View ancestor, final int[] coord, final boolean includeRootScroll) {
         sPoint[0] = coord[0];
         sPoint[1] = coord[1];
 
@@ -212,7 +212,7 @@ public final class Utilities {
     /**
      * Inverse of {@link #getDescendantCoordRelativeToAncestor(View, View, int[], boolean)}.
      */
-    public static void mapCoordInSelfToDescendant(View descendant, View root, int[] coord) {
+    public static void mapCoordInSelfToDescendant(final View descendant, final View root, final int[] coord) {
         sMatrix.reset();
         View v = descendant;
         while (v != root) {
@@ -237,12 +237,12 @@ public final class Utilities {
      * This method is called while processing touch-move events to determine if the event
      * is still within the view.
      */
-    public static boolean pointInView(View v, float localX, float localY, float slop) {
-        return localX >= -slop && localY >= -slop && localX < (v.getWidth() + slop) &&
-               localY < (v.getHeight() + slop);
+    public static boolean pointInView(final View v, final float localX, final float localY, final float slop) {
+        return localX >= -slop && localY >= -slop && localX < (v.getWidth() + slop)
+               && localY < (v.getHeight() + slop);
     }
 
-    public static int[] getCenterDeltaInScreenSpace(View v0, View v1) {
+    public static int[] getCenterDeltaInScreenSpace(final View v0, final View v1) {
         v0.getLocationInWindow(sLoc0);
         v1.getLocationInWindow(sLoc1);
 
@@ -253,7 +253,7 @@ public final class Utilities {
         return new int[] {sLoc1[0] - sLoc0[0], sLoc1[1] - sLoc0[1]};
     }
 
-    public static void scaleRectFAboutCenter(RectF r, float scale) {
+    public static void scaleRectFAboutCenter(final RectF r, final float scale) {
         if (scale != 1.0f) {
             float cx = r.centerX();
             float cy = r.centerY();
@@ -266,7 +266,7 @@ public final class Utilities {
         }
     }
 
-    public static void scaleRectAboutCenter(Rect r, float scale) {
+    public static void scaleRectAboutCenter(final Rect r, final float scale) {
         if (scale != 1.0f) {
             int cx = r.centerX();
             int cy = r.centerY();
@@ -281,7 +281,7 @@ public final class Utilities {
         }
     }
 
-    public static float shrinkRect(Rect r, float scaleX, float scaleY) {
+    public static float shrinkRect(final Rect r, final float scaleX, final float scaleY) {
         float scale = Math.min(Math.min(scaleX, scaleY), 1.0f);
         if (scale < 1.0f) {
             int deltaX = (int) (r.width() * (scaleX - scale) * 0.5f);
@@ -296,7 +296,7 @@ public final class Utilities {
     }
 
 
-    public static boolean isSystemApp(Context context, Intent intent) {
+    public static boolean isSystemApp(final Context context, final Intent intent) {
         PackageManager pm = context.getPackageManager();
         ComponentName cn = intent.getComponent();
         String packageName = null;
@@ -311,8 +311,8 @@ public final class Utilities {
         if (packageName != null) {
             try {
                 PackageInfo info = pm.getPackageInfo(packageName, 0);
-                return (info != null) && (info.applicationInfo != null) &&
-                       ((info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
+                return (info != null) && (info.applicationInfo != null)
+                       && ((info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
             } catch (NameNotFoundException e) {
                 return false;
             }
@@ -326,11 +326,11 @@ public final class Utilities {
      * @param action intent action used to find the apk
      * @return a pair of apk package name and the resources.
      */
-    static Pair<String, Resources> findSystemApk(String action, PackageManager pm) {
+    static Pair<String, Resources> findSystemApk(final String action, final PackageManager pm) {
         final Intent intent = new Intent(action);
         for (ResolveInfo info : pm.queryBroadcastReceivers(intent, 0)) {
-            if (info.activityInfo != null &&
-                    (info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+            if (info.activityInfo != null
+                    && (info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
                 final String packageName = info.activityInfo.packageName;
                 try {
                     final Resources res = pm.getResourcesForApplication(packageName);
@@ -346,7 +346,7 @@ public final class Utilities {
     /**
      * Compresses the bitmap to a byte array for serialization.
      */
-    public static byte[] flattenBitmap(Bitmap bitmap) {
+    public static byte[] flattenBitmap(final Bitmap bitmap) {
         // Try go guesstimate how much space the icon will take when serialized
         // to avoid unnecessary allocations/copies during the write.
         int size = bitmap.getWidth() * bitmap.getHeight() * 4;
@@ -366,7 +366,7 @@ public final class Utilities {
      * Trims the string, removing all whitespace at the beginning and end of the string.
      * Non-breaking whitespaces are also removed.
      */
-    public static String trim(CharSequence s) {
+    public static String trim(final CharSequence s) {
         if (s == null) {
             return null;
         }
@@ -379,14 +379,14 @@ public final class Utilities {
     /**
      * Calculates the height of a given string at a specific text size.
      */
-    public static int calculateTextHeight(float textSizePx) {
+    public static int calculateTextHeight(final float textSizePx) {
         Paint p = new Paint();
         p.setTextSize(textSizePx);
         Paint.FontMetrics fm = p.getFontMetrics();
         return (int) Math.ceil(fm.bottom - fm.top);
     }
 
-    public static int calculateTextHeight(float textSizePx, boolean twoLines) {
+    public static int calculateTextHeight(final float textSizePx, final boolean twoLines) {
         Paint p = new Paint();
         p.setTextSize(textSizePx);
         Paint.FontMetrics fm = p.getFontMetrics();
@@ -394,7 +394,7 @@ public final class Utilities {
         return twoLines ? result * 2 : result;
     }
 
-    public static boolean isRtl(Resources res) {
+    public static boolean isRtl(final Resources res) {
         return res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
     }
 
@@ -405,7 +405,7 @@ public final class Utilities {
      *
      * @param launchIntent The intent that will be launched when the shortcut is clicked.
      */
-    public static boolean isLauncherAppTarget(Intent launchIntent) {
+    public static boolean isLauncherAppTarget(final Intent launchIntent) {
         if (launchIntent != null
                 && Intent.ACTION_MAIN.equals(launchIntent.getAction())
                 && launchIntent.getComponent() != null
@@ -420,22 +420,22 @@ public final class Utilities {
         return false;
     }
 
-    public static float dpiFromPx(int size, DisplayMetrics metrics) {
+    public static float dpiFromPx(final int size, final DisplayMetrics metrics) {
         float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
         return (size / densityRatio);
     }
 
-    public static int pxFromDp(float size, DisplayMetrics metrics) {
+    public static int pxFromDp(final float size, final DisplayMetrics metrics) {
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                           size, metrics));
     }
 
-    public static int pxFromSp(float size, DisplayMetrics metrics) {
+    public static int pxFromSp(final float size, final DisplayMetrics metrics) {
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                           size, metrics));
     }
 
-    public static String createDbSelectionQuery(String columnName, Iterable<?> values) {
+    public static String createDbSelectionQuery(final String columnName, final Iterable<?> values) {
         return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, TextUtils.join(", ", values));
     }
 
@@ -443,7 +443,7 @@ public final class Utilities {
         return "1".equals(getSystemProperty("sys.boot_completed", "1"));
     }
 
-    public static String getSystemProperty(String property, String defaultValue) {
+    public static String getSystemProperty(final String property, final String defaultValue) {
         try {
             Class clazz = Class.forName("android.os.SystemProperties");
             Method getter = clazz.getDeclaredMethod("get", String.class);
@@ -462,21 +462,21 @@ public final class Utilities {
      * If value is less than lowerBound, return lowerBound; else if value is greater than upperBound,
      * return upperBound; else return value unchanged.
      */
-    public static int boundToRange(int value, int lowerBound, int upperBound) {
+    public static int boundToRange(final int value, final int lowerBound, final int upperBound) {
         return Math.max(lowerBound, Math.min(value, upperBound));
     }
 
     /**
      * @see #boundToRange(int, int, int).
      */
-    public static float boundToRange(float value, float lowerBound, float upperBound) {
+    public static float boundToRange(final float value, final float lowerBound, final float upperBound) {
         return Math.max(lowerBound, Math.min(value, upperBound));
     }
 
     /**
      * @see #boundToRange(int, int, int).
      */
-    public static long boundToRange(long value, long lowerBound, long upperBound) {
+    public static long boundToRange(final long value, final long lowerBound, final long upperBound) {
         return Math.max(lowerBound, Math.min(value, upperBound));
     }
     /**
@@ -486,7 +486,7 @@ public final class Utilities {
      * @param msg    original message
      * @param ttsMsg message to be spoken
      */
-    public static CharSequence wrapForTts(CharSequence msg, String ttsMsg) {
+    public static CharSequence wrapForTts(final CharSequence msg, final String ttsMsg) {
         SpannableString spanned = new SpannableString(msg);
         spanned.setSpan(new TtsSpan.TextBuilder(ttsMsg).build(),
                         0, spanned.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
@@ -496,25 +496,25 @@ public final class Utilities {
     /**
      * Replacement for Long.compare() which was added in API level 19.
      */
-    public static int longCompare(long lhs, long rhs) {
+    public static int longCompare(final long lhs, final long rhs) {
         return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
     }
 
-    public static SharedPreferences getPrefs(Context context) {
+    public static SharedPreferences getPrefs(final Context context) {
         return getZimPrefs(context).getSharedPrefs();
     }
 
-    public static SharedPreferences getDevicePrefs(Context context) {
+    public static SharedPreferences getDevicePrefs(final Context context) {
         return context.getSharedPreferences(
                    LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
-    public static SharedPreferences getReflectionPrefs(Context context) {
+    public static SharedPreferences getReflectionPrefs(final Context context) {
         return context.getSharedPreferences(
                    LauncherFiles.REFLECTION_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
-    public static boolean isPowerSaverPreventingAnimation(Context context) {
+    public static boolean isPowerSaverPreventingAnimation(final Context context) {
         if (ATLEAST_P) {
             // Battery saver mode no longer prevents animations.
             return false;
@@ -523,7 +523,7 @@ public final class Utilities {
         return powerManager.isPowerSaveMode();
     }
 
-    public static boolean isWallpaperAllowed(Context context) {
+    public static boolean isWallpaperAllowed(final Context context) {
         if (ATLEAST_NOUGAT) {
             try {
                 WallpaperManager wm = context.getSystemService(WallpaperManager.class);
@@ -535,7 +535,7 @@ public final class Utilities {
         return true;
     }
 
-    public static void closeSilently(Closeable c) {
+    public static void closeSilently(final Closeable c) {
         if (c != null) {
             try {
                 c.close();
@@ -550,16 +550,16 @@ public final class Utilities {
     /**
      * Returns whether the collection is null or empty.
      */
-    public static boolean isEmpty(Collection c) {
+    public static boolean isEmpty(final Collection c) {
         return c == null || c.isEmpty();
     }
 
-    public static boolean isBinderSizeError(Exception e) {
+    public static boolean isBinderSizeError(final Exception e) {
         return e.getCause() instanceof TransactionTooLargeException
                || e.getCause() instanceof DeadObjectException;
     }
 
-    public static <T> T getOverrideObject(Class<T> clazz, Context context, int resId) {
+    public static <T> T getOverrideObject(final Class<T> clazz, final Context context, final int resId) {
         String className = context.getString(resId);
         if (!TextUtils.isEmpty(className)) {
             try {
@@ -582,13 +582,13 @@ public final class Utilities {
      * Returns a HashSet with a single element. We use this instead of Collections.singleton()
      * because HashSet ensures all operations, such as remove, are supported.
      */
-    public static <T> HashSet<T> singletonHashSet(T elem) {
+    public static <T> HashSet<T> singletonHashSet(final T elem) {
         HashSet<T> hashSet = new HashSet<>(1);
         hashSet.add(elem);
         return hashSet;
     }
 
-    public static ZimPreferences getZimPrefs(Context context) {
+    public static ZimPreferences getZimPrefs(final Context context) {
         return ZimPreferences.Companion.getInstance(context);
     }
 
@@ -608,17 +608,17 @@ public final class Utilities {
     /**
      * Cues a runnable to be executed after binding all launcher elements the next time
      */
-    public static void cueAfterNextStart(Runnable runnable) {
+    public static void cueAfterNextStart(final Runnable runnable) {
         Log.d(TAG, "cueAfterNextStart: " + runnable);
         onStart.add(runnable);
     }
 
-    public static void goToHome(Context context, Runnable onStart) {
+    public static void goToHome(final Context context, final Runnable onStart) {
         cueAfterNextStart(onStart);
         goToHome(context);
     }
 
-    public static void goToHome(Context context) {
+    public static void goToHome(final Context context) {
         PackageManager pm = context.getPackageManager();
 
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -630,7 +630,7 @@ public final class Utilities {
         context.startActivity(intent);
     }
 
-    public static void restartLauncher(Context context) {
+    public static void restartLauncher(final Context context) {
         PackageManager pm = context.getPackageManager();
 
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -645,7 +645,7 @@ public final class Utilities {
         restartLauncher(context, intent);
     }
 
-    public static void restartLauncher(Context context, Intent intent) {
+    public static void restartLauncher(final Context context, final Intent intent) {
         context.startActivity(intent);
 
         // Create a pending intent so the application is restarted after System.exit(0) was called.
@@ -662,7 +662,7 @@ public final class Utilities {
         System.exit(0);
     }
 
-    public static void checkRestoreSuccess(Context context) {
+    public static void checkRestoreSuccess(final Context context) {
         ZimPreferences prefs = Utilities.getZimPrefs(context);
         if (prefs.getRestoreSuccess()) {
             prefs.setRestoreSuccess(false);
@@ -671,7 +671,7 @@ public final class Utilities {
         }
     }
 
-    public static Bitmap drawableToBitmap(Drawable drawable) {
+    public static Bitmap drawableToBitmap(final Drawable drawable) {
         if (drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable) drawable).getBitmap();
         }
@@ -691,7 +691,7 @@ public final class Utilities {
         return bitmap;
     }
 
-    public static Bitmap drawableToBitmap(Drawable drawable, boolean forceCreate) {
+    public static Bitmap drawableToBitmap(final Drawable drawable, final boolean forceCreate) {
         if (!forceCreate && drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable) drawable).getBitmap();
         }
@@ -711,7 +711,7 @@ public final class Utilities {
         return bitmap;
     }
 
-    public static void setLightUi(Window window) {
+    public static void setLightUi(final Window window) {
         int flags = window.getDecorView().getSystemUiVisibility();
         if (ATLEAST_MARSHMALLOW)
             flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
@@ -723,20 +723,20 @@ public final class Utilities {
         window.getDecorView().setSystemUiVisibility(flags);
     }
 
-    public static boolean hasStoragePermission(Context context) {
+    public static boolean hasStoragePermission(final Context context) {
         return hasPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    public static boolean hasPermission(Context context, String permission) {
+    public static boolean hasPermission(final Context context, final String permission) {
         return ContextCompat.checkSelfPermission(context, permission)
                == PackageManager.PERMISSION_GRANTED;
     }
 
-    public static void requestStoragePermission(Activity activity) {
+    public static void requestStoragePermission(final Activity activity) {
         ActivityCompat.requestPermissions(activity, new String[] {android.Manifest.permission.READ_EXTERNAL_STORAGE}, ZimLauncher.REQUEST_PERMISSION_STORAGE_ACCESS);
     }
 
-    public static void setupPirateLocale(Activity activity) {
+    public static void setupPirateLocale(final Activity activity) {
         Locale locale = new Locale("pir");
         Locale.setDefault(locale);
         Configuration config = new Configuration();
@@ -745,7 +745,7 @@ public final class Utilities {
         baseResources.updateConfiguration(config, baseResources.getDisplayMetrics());
     }
 
-    public static int setFlag(int flags, int flag, boolean value) {
+    public static int setFlag(final int flags, final int flag, final boolean value) {
         if (value) {
             return flags | flag;
         } else {
@@ -753,7 +753,7 @@ public final class Utilities {
         }
     }
 
-    public static String upperCaseFirstLetter(String str) {
+    public static String upperCaseFirstLetter(final String str) {
         if (TextUtils.isEmpty(str)) {
             return str;
         }
@@ -767,7 +767,7 @@ public final class Utilities {
     /**
      * Utility method to post a runnable on the handler, skipping the synchronization barriers.
      */
-    public static void postAsyncCallback(Handler handler, Runnable callback) {
+    public static void postAsyncCallback(final Handler handler, final Runnable callback) {
         Message msg = Message.obtain(handler, callback);
         msg.setAsynchronous(true);
         handler.sendMessage(msg);
@@ -789,7 +789,7 @@ public final class Utilities {
      *                              <p>
      *                              Credit: https://gist.github.com/vxhviet/873d142b41217739a1302d337b7285ba
      */
-    public static Bitmap getScaledDownBitmap(Bitmap bitmap, int threshold, boolean isNecessaryToKeepOrig) {
+    public static Bitmap getScaledDownBitmap(final Bitmap bitmap, final int threshold, final boolean isNecessaryToKeepOrig) {
         if (bitmap == null) return null;
 
         int width = bitmap.getWidth();
@@ -830,7 +830,7 @@ public final class Utilities {
         return getResizedBitmap(bitmap, newWidth, newHeight, isNecessaryToKeepOrig);
     }
 
-    private static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight, boolean isNecessaryToKeepOrig) {
+    private static Bitmap getResizedBitmap(final Bitmap bm, final int newWidth, final int newHeight, final boolean isNecessaryToKeepOrig) {
         int width = bm.getWidth();
         int height = bm.getHeight();
         float scaleWidth = ((float) newWidth) / width;
@@ -886,11 +886,11 @@ public final class Utilities {
         return targetProgress;
     }*/
 
-    public static void openURLinBrowser(Context context, String url) {
+    public static void openURLinBrowser(final Context context, final String url) {
         openURLinBrowser(context, url, null, null);
     }
 
-    public static void openURLinBrowser(Context context, String url, Rect sourceBounds, Bundle options) {
+    public static void openURLinBrowser(final Context context, final String url, final Rect sourceBounds, final Bundle options) {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             intent.setSourceBounds(sourceBounds);
@@ -915,8 +915,8 @@ public final class Utilities {
      * @param toMax   The upper bound of the range that t is being mapped to.
      * @return The mapped value of t.
      */
-    public static float mapToRange(float t, float fromMin, float fromMax,
-                                   float toMin, float toMax, Interpolator interpolator) {
+    public static float mapToRange(final float t, final float fromMin, final float fromMax,
+                                   final float toMin, final float toMax, final Interpolator interpolator) {
         if (fromMin == fromMax || toMin == toMax) {
             Log.e(TAG, "mapToRange: range has 0 length");
             return toMin;
@@ -925,11 +925,11 @@ public final class Utilities {
         return mapRange(interpolator.getInterpolation(progress), toMin, toMax);
     }
 
-    public static float mapRange(float value, float min, float max) {
+    public static float mapRange(final float value, final float min, final float max) {
         return min + (value * (max - min));
     }
 
-    public static int parseResourceIdentifier(Resources res, String identifier, String packageName) {
+    public static int parseResourceIdentifier(final Resources res, final String identifier, final String packageName) {
         try {
             return Integer.parseInt(identifier.substring(1));
         } catch (NumberFormatException e) {
@@ -937,13 +937,13 @@ public final class Utilities {
         }
     }
 
-    public static int resolveAttributeData(Context context, int attr) {
+    public static int resolveAttributeData(final Context context, final int attr) {
         TypedValue typedValue = new TypedValue();
         context.getTheme().resolveAttribute(attr, typedValue, true);
         return typedValue.data;
     }
 
-    public static boolean hasHeadset(Context context) {
+    public static boolean hasHeadset(final Context context) {
         if (ATLEAST_NOUGAT) {
             AudioManager manager = context.getSystemService(AudioManager.class);
             if (manager == null) {
@@ -966,8 +966,8 @@ public final class Utilities {
     }
 
     public static Boolean isMiui() {
-        return !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.code", "")) ||
-               !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.name", ""));
+        return !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.code", ""))
+               || !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.name", ""));
     }
 
     private static final int SUGGESTIONS_DAY_START = 5;

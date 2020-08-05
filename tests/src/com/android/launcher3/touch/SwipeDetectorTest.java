@@ -47,7 +47,7 @@ public class SwipeDetectorTest {
     @Mock
     private SwipeDetector.Listener mMockListener;
 
-    public static void L(String s, Object... parts) {
+    public static void L(final String s, final Object... parts) {
         Log.d(TAG, (parts.length == 0) ? s : String.format(s, parts));
     }
 
@@ -56,7 +56,7 @@ public class SwipeDetectorTest {
         MockitoAnnotations.initMocks(this);
         mGenerator = new TouchEventGenerator(new TouchEventGenerator.Listener() {
             @Override
-            public void onTouchEvent(MotionEvent event) {
+            public void onTouchEvent(final MotionEvent event) {
                 mDetector.onTouchEvent(event);
             }
         });

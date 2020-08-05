@@ -17,31 +17,31 @@ public class SuperGContainerView extends BaseGContainerView {
 
     private int mQsbColor = Color.WHITE;
 
-    public SuperGContainerView(Context paramContext) {
+    public SuperGContainerView(final Context paramContext) {
         this(paramContext, null);
     }
 
-    public SuperGContainerView(Context paramContext, AttributeSet paramAttributeSet) {
+    public SuperGContainerView(final Context paramContext, final AttributeSet paramAttributeSet) {
         this(paramContext, paramAttributeSet, 0);
     }
 
-    public SuperGContainerView(Context paramContext, AttributeSet paramAttributeSet, int paramInt) {
+    public SuperGContainerView(final Context paramContext, final AttributeSet paramAttributeSet, final int paramInt) {
         super(paramContext, paramAttributeSet, paramInt);
         View.inflate(paramContext, R.layout.qsb_blocker_view, this);
     }
 
     @Override
-    protected int getQsbView(boolean withMic) {
+    protected int getQsbView(final boolean withMic) {
         return R.layout.qsb_without_mic;
     }
 
     @Override
-    public void setPadding(int left, int top, int right, int bottom) {
+    public void setPadding(final int left, final int top, final int right, final int bottom) {
         super.setPadding(0, 0, 0, 0);
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         int qsbOverlapMargin = -getResources().getDimensionPixelSize(R.dimen.qsb_overlap_margin);
         DeviceProfile deviceProfile = LauncherAppState.getIDP(getContext()).getDeviceProfile(getContext());
         int size = MeasureSpec.getSize(widthMeasureSpec) - qsbOverlapMargin;
@@ -79,7 +79,7 @@ public class SuperGContainerView extends BaseGContainerView {
     }
 
     @Override
-    protected void setGoogleAnimationStart(Rect rect, Intent intent) {
+    protected void setGoogleAnimationStart(final Rect rect, final Intent intent) {
 
     }
 

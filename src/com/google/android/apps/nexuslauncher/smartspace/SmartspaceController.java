@@ -37,14 +37,14 @@ public class SmartspaceController implements Handler.Callback {
         this.dT = new ProtoStore(mAppContext);
         (this.dR = new Alarm()).setOnAlarmListener(new OnAlarmListener() {
             @Override
-            public void onAlarm(Alarm alarm) {
+            public void onAlarm(final Alarm alarm) {
                 dc();
             }
         });
         this.dd();
         mAppContext.registerReceiver(new BroadcastReceiver() {
             @Override
-            public void onReceive(Context context, Intent intent) {
+            public void onReceive(final Context context, final Intent intent) {
                 dd();
             }
         }, ActionIntentFilter.googleInstance(
@@ -150,14 +150,14 @@ public class SmartspaceController implements Handler.Callback {
         switch (message.what) {
         case 1:
             i data = new i();
-            SmartspaceCard weatherCard = this.dT.dv(SmartspaceController.Store.WEATHER.filename, data) ?
-                                         SmartspaceCard.cD(this.mAppContext, data, true) :
-                                         null;
+            SmartspaceCard weatherCard = this.dT.dv(SmartspaceController.Store.WEATHER.filename, data)
+                                         ? SmartspaceCard.cD(this.mAppContext, data, true)
+                                         : null;
 
             data = new i();
-            SmartspaceCard eventCard = this.dT.dv(SmartspaceController.Store.CURRENT.filename, data) ?
-                                       SmartspaceCard.cD(this.mAppContext, data, false) :
-                                       null;
+            SmartspaceCard eventCard = this.dT.dv(SmartspaceController.Store.CURRENT.filename, data)
+                                       ? SmartspaceCard.cD(this.mAppContext, data, false)
+                                       : null;
 
             Message.obtain(this.mUiHandler, 101, new SmartspaceCard[] {weatherCard, eventCard}).sendToTarget();
             break;
@@ -168,9 +168,9 @@ public class SmartspaceController implements Handler.Callback {
         case 101:
             SmartspaceCard[] dVarArr = (SmartspaceCard[]) message.obj;
             if (dVarArr != null) {
-                this.dQ.dO = dVarArr.length > 0 ?
-                             dVarArr[0] :
-                             null;
+                this.dQ.dO = dVarArr.length > 0
+                             ? dVarArr[0]
+                             : null;
 
                 SmartspaceDataContainer eVar = this.dQ;
                 if (dVarArr.length > 1) {

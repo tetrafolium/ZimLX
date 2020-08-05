@@ -33,21 +33,21 @@ public class AllAppsSearchContainerView extends AllAppsContainerView {
 
     private boolean mClearQsb;
 
-    public AllAppsSearchContainerView(Context context) {
+    public AllAppsSearchContainerView(final Context context) {
         this(context, null);
     }
 
-    public AllAppsSearchContainerView(Context context, AttributeSet attrs) {
+    public AllAppsSearchContainerView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AllAppsSearchContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AllAppsSearchContainerView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @SuppressLint("WrongConstant")
     @Override
-    protected void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(final Canvas canvas) {
         View searchView = getSearchView();
         if (mClearQsb && searchView instanceof AllAppsQsbLayout) {
             AllAppsQsbLayout qsb = (AllAppsQsbLayout) searchView;

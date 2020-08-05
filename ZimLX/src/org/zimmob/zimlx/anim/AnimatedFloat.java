@@ -27,12 +27,12 @@ public class AnimatedFloat {
 
     public static FloatProperty<AnimatedFloat> VALUE = new FloatProperty<AnimatedFloat>("value") {
         @Override
-        public void setValue(AnimatedFloat obj, float v) {
+        public void setValue(final AnimatedFloat obj, final float v) {
             obj.updateValue(v);
         }
 
         @Override
-        public Float get(AnimatedFloat obj) {
+        public Float get(final AnimatedFloat obj) {
             return obj.value;
         }
     };
@@ -42,16 +42,16 @@ public class AnimatedFloat {
 
     public float value;
 
-    public AnimatedFloat(Runnable updateCallback) {
+    public AnimatedFloat(final Runnable updateCallback) {
         mUpdateCallback = updateCallback;
     }
 
-    public ObjectAnimator animateToValue(float start, float end) {
+    public ObjectAnimator animateToValue(final float start, final float end) {
         cancelAnimation();
         mValueAnimator = ObjectAnimator.ofFloat(this, VALUE, start, end);
         mValueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animator) {
+            public void onAnimationEnd(final Animator animator) {
                 if (mValueAnimator == animator) {
                     mValueAnimator = null;
                 }
@@ -64,7 +64,7 @@ public class AnimatedFloat {
      * Changes the value and calls the callback.
      * Note that the value can be directly accessed as well to avoid notifying the callback.
      */
-    public void updateValue(float v) {
+    public void updateValue(final float v) {
         if (Float.compare(v, value) != 0) {
             value = v;
             mUpdateCallback.run();

@@ -35,7 +35,7 @@ public class ColorScrim extends ViewScrim {
     private final Interpolator mInterpolator;
     private int mCurrentColor;
 
-    public ColorScrim(View view, int color, Interpolator interpolator) {
+    public ColorScrim(final View view, final int color, final Interpolator interpolator) {
         super(view);
         mColor = color;
         mInterpolator = interpolator;
@@ -48,13 +48,13 @@ public class ColorScrim extends ViewScrim {
     }
 
     @Override
-    public void draw(Canvas canvas, int width, int height) {
+    public void draw(final Canvas canvas, final int width, final int height) {
         if (mProgress > 0) {
             canvas.drawColor(mCurrentColor);
         }
     }
 
-    public static ColorScrim createExtractedColorScrim(View view) {
+    public static ColorScrim createExtractedColorScrim(final View view) {
         WallpaperColorInfo colors = WallpaperColorInfo.getInstance(view.getContext());
         int alpha = view.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
         ColorScrim scrim = new ColorScrim(view, ColorUtils.setAlphaComponent(

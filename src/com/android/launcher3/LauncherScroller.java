@@ -115,7 +115,7 @@ public class LauncherScroller {
     /**
      * Create a Scroller with the default duration and interpolator.
      */
-    public LauncherScroller(Context context) {
+    public LauncherScroller(final Context context) {
         this(context, null);
     }
 
@@ -124,7 +124,7 @@ public class LauncherScroller {
      * null, the default (viscous) interpolator will be used. "Flywheel" behavior will
      * be in effect for apps targeting Honeycomb or newer.
      */
-    public LauncherScroller(Context context, Interpolator interpolator) {
+    public LauncherScroller(final Context context, final Interpolator interpolator) {
         this(context, interpolator,
              context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.HONEYCOMB);
     }
@@ -134,7 +134,7 @@ public class LauncherScroller {
      * null, the default (viscous) interpolator will be used. Specify whether or
      * not to support progressive "flywheel" behavior in flinging.
      */
-    public LauncherScroller(Context context, Interpolator interpolator, boolean flywheel) {
+    public LauncherScroller(final Context context, final Interpolator interpolator, final boolean flywheel) {
         mFinished = true;
         mInterpolator = interpolator;
         mPpi = context.getResources().getDisplayMetrics().density * 160.0f;
@@ -144,7 +144,7 @@ public class LauncherScroller {
         mPhysicalCoeff = computeDeceleration(0.84f); // look and feel tuning
     }
 
-    static float viscousFluid(float x) {
+    static float viscousFluid(final float x) {
         x *= sViscousFluidScale;
         if (x < 1.0f) {
             x -= (1.0f - (float) Math.exp(-x));
@@ -157,7 +157,7 @@ public class LauncherScroller {
         return x;
     }
 
-    public void setInterpolator(TimeInterpolator interpolator) {
+    public void setInterpolator(final TimeInterpolator interpolator) {
         mInterpolator = interpolator;
     }
 
@@ -168,12 +168,12 @@ public class LauncherScroller {
      * @param friction A scalar dimension-less value representing the coefficient of
      *                 friction.
      */
-    public final void setFriction(float friction) {
+    public final void setFriction(final float friction) {
         mDeceleration = computeDeceleration(friction);
         mFlingFriction = friction;
     }
 
-    private float computeDeceleration(float friction) {
+    private float computeDeceleration(final float friction) {
         return SensorManager.GRAVITY_EARTH   // g (m/s^2)
                * 39.37f               // inch/meter
                * mPpi                 // pixels per inch
@@ -194,7 +194,7 @@ public class LauncherScroller {
      *
      * @param finished The new finished value.
      */
-    public final void forceFinished(boolean finished) {
+    public final void forceFinished(final boolean finished) {
         mFinished = finished;
     }
 
@@ -232,8 +232,8 @@ public class LauncherScroller {
      * negative.
      */
     public float getCurrVelocity() {
-        return mMode == FLING_MODE ?
-               mCurrVelocity : mVelocity - mDeceleration * timePassed() / 2000.0f;
+        return mMode == FLING_MODE
+               ? mCurrVelocity : mVelocity - mDeceleration * timePassed() / 2000.0f;
     }
 
     /**
@@ -270,7 +270,7 @@ public class LauncherScroller {
      * @see #extendDuration(int)
      * @see #setFinalY(int)
      */
-    public void setFinalX(int newX) {
+    public void setFinalX(final int newX) {
         mFinalX = newX;
         mDeltaX = mFinalX - mStartX;
         mFinished = false;
@@ -292,7 +292,7 @@ public class LauncherScroller {
      * @see #extendDuration(int)
      * @see #setFinalX(int)
      */
-    public void setFinalY(int newY) {
+    public void setFinalY(final int newY) {
         mFinalY = newY;
         mDeltaY = mFinalY - mStartY;
         mFinished = false;
@@ -376,7 +376,7 @@ public class LauncherScroller {
      * @param dy     Vertical distance to travel. Positive numbers will scroll the
      *               content up.
      */
-    public void startScroll(int startX, int startY, int dx, int dy) {
+    public void startScroll(final int startX, final int startY, final int dx, final int dy) {
         startScroll(startX, startY, dx, dy, DEFAULT_DURATION);
     }
 
@@ -394,7 +394,7 @@ public class LauncherScroller {
      *                 content up.
      * @param duration Duration of the scroll in milliseconds.
      */
-    public void startScroll(int startX, int startY, int dx, int dy, int duration) {
+    public void startScroll(final int startX, final int startY, final int dx, final int dy, final int duration) {
         mMode = SCROLL_MODE;
         mFinished = false;
         mDuration = duration;
@@ -427,8 +427,8 @@ public class LauncherScroller {
      * @param maxY      Maximum Y value. The scroller will not scroll past this
      *                  point.
      */
-    public void fling(int startX, int startY, int velocityX, int velocityY,
-                      int minX, int maxX, int minY, int maxY) {
+    public void fling(final int startX, final int startY, final int velocityX, final int velocityY,
+                      final int minX, final int maxX, final int minY, final int maxY) {
         // Continue a scroll or fling in progress
         if (mFlywheel && !mFinished) {
             float oldVel = getCurrVelocity();
@@ -442,8 +442,8 @@ public class LauncherScroller {
 
             float oldVelocityX = ndx * oldVel;
             float oldVelocityY = ndy * oldVel;
-            if (Math.signum(velocityX) == Math.signum(oldVelocityX) &&
-                    Math.signum(velocityY) == Math.signum(oldVelocityY)) {
+            if (Math.signum(velocityX) == Math.signum(oldVelocityX)
+                    && Math.signum(velocityY) == Math.signum(oldVelocityY)) {
                 velocityX += oldVelocityX;
                 velocityY += oldVelocityY;
             }
@@ -482,17 +482,17 @@ public class LauncherScroller {
         mFinalY = Math.max(mFinalY, mMinY);
     }
 
-    private double getSplineDeceleration(float velocity) {
+    private double getSplineDeceleration(final float velocity) {
         return Math.log(INFLEXION * Math.abs(velocity) / (mFlingFriction * mPhysicalCoeff));
     }
 
-    private int getSplineFlingDuration(float velocity) {
+    private int getSplineFlingDuration(final float velocity) {
         final double l = getSplineDeceleration(velocity);
         final double decelMinusOne = DECELERATION_RATE - 1.0;
         return (int) (1000.0 * Math.exp(l / decelMinusOne));
     }
 
-    private double getSplineFlingDistance(float velocity) {
+    private double getSplineFlingDistance(final float velocity) {
         final double l = getSplineDeceleration(velocity);
         final double decelMinusOne = DECELERATION_RATE - 1.0;
         return mFlingFriction * mPhysicalCoeff * Math.exp(DECELERATION_RATE / decelMinusOne * l);
@@ -519,7 +519,7 @@ public class LauncherScroller {
      * @see #setFinalX(int)
      * @see #setFinalY(int)
      */
-    public void extendDuration(int extend) {
+    public void extendDuration(final int extend) {
         int passed = timePassed();
         mDuration = passed + extend;
         mDurationReciprocal = 1.0f / mDuration;
@@ -538,8 +538,8 @@ public class LauncherScroller {
     /**
      * @hide
      */
-    public boolean isScrollingInDirection(float xvel, float yvel) {
-        return !mFinished && Math.signum(xvel) == Math.signum(mFinalX - mStartX) &&
-               Math.signum(yvel) == Math.signum(mFinalY - mStartY);
+    public boolean isScrollingInDirection(final float xvel, final float yvel) {
+        return !mFinished && Math.signum(xvel) == Math.signum(mFinalX - mStartX)
+               && Math.signum(yvel) == Math.signum(mFinalY - mStartY);
     }
 }

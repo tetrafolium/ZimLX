@@ -89,7 +89,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
 
     private Folder mFolder;
 
-    public FolderPagedView(Context context, AttributeSet attrs) {
+    public FolderPagedView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         InvariantDeviceProfile profile = LauncherAppState.getIDP(context);
         mMaxCountX = profile.numFolderColumns;
@@ -105,7 +105,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
     }
 
-    public void setFolder(Folder folder) {
+    public void setFolder(final Folder folder) {
         mFolder = folder;
         mPageIndicator = folder.findViewById(R.id.folder_page_indicator);
         initParentViews(folder);
@@ -116,8 +116,8 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
      * The grid size is calculated such that countY <= countX and countX = ceil(sqrt(count)) while
      * maintaining the restrictions of {@link #mMaxCountX} &amp; {@link #mMaxCountY}.
      */
-    public static void calculateGridSize(int count, int countX, int countY, int maxCountX,
-                                         int maxCountY, int maxItemsPerPage, int[] out) {
+    public static void calculateGridSize(final int count, final int countX, final int countY, final int maxCountX,
+                                         final int maxCountY, final int maxItemsPerPage, final int[] out) {
         boolean done;
         int gridCountX = countX;
         int gridCountY = countY;
@@ -157,7 +157,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     /**
      * Sets up the grid size such that {@param count} items can fit in the grid.
      */
-    public void setupContentDimensions(int count) {
+    public void setupContentDimensions(final int count) {
         mAllocatedContentSize = count;
         calculateGridSize(count, mGridCountX, mGridCountY, mMaxCountX, mMaxCountY, mMaxItemsPerPage,
                           sTmpArray);
@@ -171,7 +171,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     }
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(final Canvas canvas) {
         mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
     }
@@ -179,7 +179,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     /**
      * Binds items to the layout.
      */
-    public void bindItems(ArrayList<ShortcutInfo> items) {
+    public void bindItems(final ArrayList<ShortcutInfo> items) {
         ArrayList<View> icons = new ArrayList<>();
         for (ShortcutInfo item : items) {
             icons.add(createNewView(item));
@@ -187,7 +187,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         arrangeChildren(icons, icons.size(), false);
     }
 
-    public void allocateSpaceForRank(int rank) {
+    public void allocateSpaceForRank(final int rank) {
         ArrayList<View> views = new ArrayList<>(mFolder.getItemsInReadingOrder());
         views.add(rank, null);
         arrangeChildren(views, views.size(), false);
@@ -204,7 +204,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         return rank;
     }
 
-    public View createAndAddViewForRank(ShortcutInfo item, int rank) {
+    public View createAndAddViewForRank(final ShortcutInfo item, final int rank) {
         View icon = createNewView(item);
         allocateSpaceForRank(rank);
         addViewForRank(icon, item, rank);
@@ -215,7 +215,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
      * Adds the {@param view} to the layout based on {@param rank} and updated the position
      * related attributes. It assumes that {@param item} is already attached to the view.
      */
-    public void addViewForRank(View view, ShortcutInfo item, int rank) {
+    public void addViewForRank(final View view, final ShortcutInfo item, final int rank) {
         int pagePos = rank % mMaxItemsPerPage;
         int pageNo = rank / mMaxItemsPerPage;
 
@@ -231,7 +231,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     }
 
     @SuppressLint("InflateParams")
-    public View createNewView(ShortcutInfo item) {
+    public View createNewView(final ShortcutInfo item) {
         int layout = mFolder.isInAppDrawer() ? R.layout.all_apps_folder_application
                      : R.layout.folder_application;
         final BubbleTextView textView = (BubbleTextView) mInflater.inflate(layout, null, false);
@@ -247,7 +247,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     }
 
     @Override
-    public CellLayout getPageAt(int index) {
+    public CellLayout getPageAt(final int index) {
         return (CellLayout) getChildAt(index);
     }
 
@@ -276,7 +276,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         return getPaddingLeft() + getPaddingRight();
     }
 
-    public void setFixedSize(int width, int height) {
+    public void setFixedSize(final int width, final int height) {
         width -= (getPaddingLeft() + getPaddingRight());
         height -= (getPaddingTop() + getPaddingBottom());
         for (int i = getChildCount() - 1; i >= 0; i--) {
@@ -284,14 +284,14 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         }
     }
 
-    public void removeItem(View v) {
+    public void removeItem(final View v) {
         for (int i = getChildCount() - 1; i >= 0; i--) {
             getPageAt(i).removeView(v);
         }
     }
 
     @Override
-    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+    protected void onScrollChanged(final int l, final int t, final int oldl, final int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
         mPageIndicator.setScroll(l, mMaxScrollX);
     }
@@ -306,12 +306,12 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
      * at the end, otherwise it is ignored.
      *
      */
-    public void arrangeChildren(ArrayList<View> list, int itemCount) {
+    public void arrangeChildren(final ArrayList<View> list, final int itemCount) {
         arrangeChildren(list, itemCount, true);
     }
 
     @SuppressLint("RtlHardcoded")
-    private void arrangeChildren(ArrayList<View> list, int itemCount, boolean saveChanges) {
+    private void arrangeChildren(final ArrayList<View> list, final int itemCount, final boolean saveChanges) {
         ArrayList<CellLayout> pages = new ArrayList<>();
         for (int i = 0; i < getChildCount(); i++) {
             CellLayout page = (CellLayout) getChildAt(i);
@@ -384,18 +384,18 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         // Update footer
         mPageIndicator.setVisibility(getPageCount() > 1 ? View.VISIBLE : View.GONE);
         // Set the gravity as LEFT or RIGHT instead of START, as START depends on the actual text.
-        mFolder.mFolderName.setGravity(getPageCount() > 1 ?
-                                       (mIsRtl ? Gravity.RIGHT : Gravity.LEFT) : Gravity.CENTER_HORIZONTAL);
+        mFolder.mFolderName.setGravity(getPageCount() > 1
+                                       ? (mIsRtl ? Gravity.RIGHT : Gravity.LEFT) : Gravity.CENTER_HORIZONTAL);
     }
 
     public int getDesiredWidth() {
-        return getPageCount() > 0 ?
-               (getPageAt(0).getDesiredWidth() + getPaddingLeft() + getPaddingRight()) : 0;
+        return getPageCount() > 0
+               ? (getPageAt(0).getDesiredWidth() + getPaddingLeft() + getPaddingRight()) : 0;
     }
 
     public int getDesiredHeight() {
-        return getPageCount() > 0 ?
-               (getPageAt(0).getDesiredHeight() + getPaddingTop() + getPaddingBottom()) : 0;
+        return getPageCount() > 0
+               ? (getPageAt(0).getDesiredHeight() + getPaddingTop() + getPaddingBottom()) : 0;
     }
 
     public int getItemCount() {
@@ -411,7 +411,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     /**
      * @return the rank of the cell nearest to the provided pixel position.
      */
-    public int findNearestArea(int pixelX, int pixelY) {
+    public int findNearestArea(final int pixelX, final int pixelY) {
         int pageIndex = getNextPage();
         CellLayout page = getPageAt(pageIndex);
         page.findNearestArea(pixelX, pixelY, 1, 1, sTmpArray);
@@ -451,7 +451,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
      * Iterates over all its items in a reading order.
      * @return the view for which the operator returned true.
      */
-    public View iterateOverItems(ItemOperator op) {
+    public View iterateOverItems(final ItemOperator op) {
         for (int k = 0; k < getChildCount(); k++) {
             CellLayout page = getPageAt(k);
             for (int j = 0; j < page.getCountY(); j++) {
@@ -481,7 +481,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     }
 
     @Override
-    protected void notifyPageSwitchListener(int prevPage) {
+    protected void notifyPageSwitchListener(final int prevPage) {
         super.notifyPageSwitchListener(prevPage);
         if (mFolder != null) {
             mFolder.updateTextViewFocus();
@@ -491,7 +491,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     /**
      * Scrolls the current view by a fraction
      */
-    public void showScrollHint(int direction) {
+    public void showScrollHint(final int direction) {
         float fraction = (direction == Folder.SCROLL_LEFT) ^ mIsRtl
                          ? -SCROLL_HINT_FRACTION : SCROLL_HINT_FRACTION;
         int hint = (int) (fraction * getWidth());
@@ -523,7 +523,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         }
     }
 
-    public boolean rankOnCurrentPage(int rank) {
+    public boolean rankOnCurrentPage(final int rank) {
         int p = rank / mMaxItemsPerPage;
         return p == getNextPage();
     }
@@ -539,7 +539,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     /**
      * Ensures that all the icons on the given page are of high-res
      */
-    public void verifyVisibleHighResIcons(int pageNo) {
+    public void verifyVisibleHighResIcons(final int pageNo) {
         CellLayout page = getPageAt(pageNo);
         if (page != null) {
             ShortcutAndWidgetContainer parent = page.getShortcutsAndWidgets();
@@ -563,7 +563,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     /**
      * Reorders the items such that the {@param empty} spot moves to {@param target}
      */
-    public void realTimeReorder(int empty, int target) {
+    public void realTimeReorder(final int empty, final int target) {
         completePendingPageChanges();
         int delay = 0;
         float delayAmount = START_VIEW_REORDER_DELAY;

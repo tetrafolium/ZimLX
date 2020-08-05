@@ -18,7 +18,7 @@ public class QsbAnimationController implements LauncherRootView.WindowStateListe
     private boolean mSearchRequested;
     private final Launcher mLauncher;
 
-    public QsbAnimationController(Launcher launcher) {
+    public QsbAnimationController(final Launcher launcher) {
         mLauncher = launcher;
         mLauncher.getStateManager().addStateListener(this);
         mLauncher.getRootView().setWindowStateListener(this);
@@ -38,7 +38,7 @@ public class QsbAnimationController implements LauncherRootView.WindowStateListe
         return mAnimatorSet;
     }
 
-    public final void z(boolean z) {
+    public final void z(final boolean z) {
         mSearchRequested = false;
         if (mGoogleHasFocus) {
             mGoogleHasFocus = false;
@@ -47,7 +47,7 @@ public class QsbAnimationController implements LauncherRootView.WindowStateListe
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
+    public void onWindowFocusChanged(final boolean hasFocus) {
         if (hasFocus || !mSearchRequested) {
             if (hasFocus) {
                 z(true);
@@ -58,11 +58,11 @@ public class QsbAnimationController implements LauncherRootView.WindowStateListe
     }
 
     @Override
-    public void onWindowVisibilityChanged(int visibility) {
+    public void onWindowVisibilityChanged(final int visibility) {
         z(false);
     }
 
-    private void playAnimation(boolean z, boolean z2) {
+    private void playAnimation(final boolean z, final boolean z2) {
         if (mAnimatorSet != null) {
             mAnimatorSet.cancel();
             mAnimatorSet = null;
@@ -76,7 +76,7 @@ public class QsbAnimationController implements LauncherRootView.WindowStateListe
         mAnimatorSet = new AnimatorSet();
         mAnimatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 if (animation == mAnimatorSet) {
                     mAnimatorSet = null;
                 }
@@ -101,18 +101,18 @@ public class QsbAnimationController implements LauncherRootView.WindowStateListe
         }
     }
 
-    public void onStateTransitionStart(LauncherState launcherState) {
+    public void onStateTransitionStart(final LauncherState launcherState) {
     }
 
-    public void onStateTransitionComplete(LauncherState launcherState) {
+    public void onStateTransitionComplete(final LauncherState launcherState) {
         a(launcherState);
     }
 
-    public void onStateSetImmediately(LauncherState launcherState) {
+    public void onStateSetImmediately(final LauncherState launcherState) {
         a(launcherState);
     }
 
-    private void a(LauncherState launcherState) {
+    private void a(final LauncherState launcherState) {
         if (mGoogleHasFocus && launcherState != LauncherState.ALL_APPS && !mLauncher.hasWindowFocus()) {
             playAnimation(true, false);
         }

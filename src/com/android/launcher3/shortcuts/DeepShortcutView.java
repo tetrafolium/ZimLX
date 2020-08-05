@@ -49,15 +49,15 @@ public class DeepShortcutView extends FrameLayout {
     private ShortcutInfo mInfo;
     private ShortcutInfoCompat mDetail;
 
-    public DeepShortcutView(Context context) {
+    public DeepShortcutView(final Context context) {
         this(context, null, 0);
     }
 
-    public DeepShortcutView(Context context, AttributeSet attrs) {
+    public DeepShortcutView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public DeepShortcutView(Context context, AttributeSet attrs, int defStyle) {
+    public DeepShortcutView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
         mPillRect = new Rect();
@@ -71,7 +71,7 @@ public class DeepShortcutView extends FrameLayout {
         mDivider = findViewById(R.id.divider);
     }
 
-    public void setDividerVisibility(int visibility) {
+    public void setDividerVisibility(final int visibility) {
         mDivider.setVisibility(visibility);
     }
 
@@ -79,7 +79,7 @@ public class DeepShortcutView extends FrameLayout {
         return mBubbleText;
     }
 
-    public void setWillDrawIcon(boolean willDraw) {
+    public void setWillDrawIcon(final boolean willDraw) {
         mIconView.setVisibility(willDraw ? View.VISIBLE : View.INVISIBLE);
     }
 
@@ -99,7 +99,7 @@ public class DeepShortcutView extends FrameLayout {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mPillRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
     }
@@ -107,8 +107,8 @@ public class DeepShortcutView extends FrameLayout {
     /**
      * package private
      **/
-    public void applyShortcutInfo(ShortcutInfo info, ShortcutInfoCompat detail,
-                                  PopupContainerWithArrow container) {
+    public void applyShortcutInfo(final ShortcutInfo info, final ShortcutInfoCompat detail,
+                                  final PopupContainerWithArrow container) {
         mInfo = info;
         mDetail = detail;
         mBubbleText.applyFromShortcutInfo(info);

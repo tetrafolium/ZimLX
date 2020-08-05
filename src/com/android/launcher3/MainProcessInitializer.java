@@ -28,13 +28,13 @@ import org.zimmob.zimlx.folder.FolderShape;
  */
 public class MainProcessInitializer {
 
-    public static void initialize(Context context) {
+    public static void initialize(final Context context) {
         Utilities.getOverrideObject(
             MainProcessInitializer.class, context, R.string.main_process_initializer_class)
         .init(context);
     }
 
-    protected void init(Context context) {
+    protected void init(final Context context) {
         FileLog.setDir(context.getApplicationContext().getFilesDir());
         IconShapeManager.Companion.getInstance(context);
         SessionCommitReceiver.applyDefaultUserPrefs(context);

@@ -93,7 +93,7 @@ public class IconNormalizer {
     /**
      * package private
      **/
-    IconNormalizer(Context context) {
+    IconNormalizer(final Context context) {
         // Use twice the icon size as maximum size to avoid scaling down twice.
         mMaxSize = LauncherAppState.getIDP(context).iconBitmapSize * 2;
         mBitmap = Bitmap.createBitmap(mMaxSize, mMaxSize, Bitmap.Config.ALPHA_8);
@@ -120,7 +120,7 @@ public class IconNormalizer {
         mAdaptiveIconScale = SCALE_NOT_INITIALIZED;
     }
 
-    public static IconNormalizer getInstance(Context context) {
+    public static IconNormalizer getInstance(final Context context) {
         synchronized (LOCK) {
             if (sIconNormalizer == null) {
                 sIconNormalizer = new IconNormalizer(context);
@@ -133,7 +133,7 @@ public class IconNormalizer {
      * Returns if the shape of the icon is same as the path.
      * For this method to work, the shape path bounds should be in [0,1]x[0,1] bounds.
      */
-    private boolean isShape(Path maskPath) {
+    private boolean isShape(final Path maskPath) {
         // Condition1:
         // If width and height of the path not close to a square, then the icon shape is
         // not same as the mask shape.
@@ -169,7 +169,7 @@ public class IconNormalizer {
      * Returns if the shape of the icon is same as the path.
      * For this method to work, the shape path bounds should be in [0,1]x[0,1] bounds.
      */
-    private boolean isShape(Path maskPath, int minVisibleAlpha) {
+    private boolean isShape(final Path maskPath, final int minVisibleAlpha) {
         // Condition1:
         // If width and height of the path not close to a square, then the icon shape is
         // not same as the mask shape.
@@ -234,7 +234,7 @@ public class IconNormalizer {
     /**
      * Used to determine if certain the bitmap is transparent.
      */
-    private boolean isTransparentBitmap(int minVisibleAlpha) {
+    private boolean isTransparentBitmap(final int minVisibleAlpha) {
         ByteBuffer buffer = ByteBuffer.wrap(mPixels);
         buffer.rewind();
         mBitmap.copyPixelsToBuffer(buffer);
@@ -275,8 +275,8 @@ public class IconNormalizer {
      *
      * @param outBounds optional rect to receive the fraction distance from each edge.
      */
-    public synchronized float getScale(@NonNull Drawable d, @Nullable RectF outBounds,
-                                       @Nullable Path path, @Nullable boolean[] outMaskShape) {
+    public synchronized float getScale(final @NonNull Drawable d, final @Nullable RectF outBounds,
+                                       final @Nullable Path path, final @Nullable boolean[] outMaskShape) {
         if (Utilities.ATLEAST_OREO && d instanceof AdaptiveIconDrawable) {
             if (mAdaptiveIconScale != SCALE_NOT_INITIALIZED) {
                 if (outBounds != null) {
@@ -398,8 +398,8 @@ public class IconNormalizer {
         float areaScale = area / (width * height);
         // Use sqrt of the final ratio as the images is scaled across both width and height.
         float scale = areaScale > scaleRequired ? (float) Math.sqrt(scaleRequired / areaScale) : 1;
-        if (Utilities.ATLEAST_OREO && d instanceof AdaptiveIconDrawable &&
-                mAdaptiveIconScale == SCALE_NOT_INITIALIZED) {
+        if (Utilities.ATLEAST_OREO && d instanceof AdaptiveIconDrawable
+                && mAdaptiveIconScale == SCALE_NOT_INITIALIZED) {
             mAdaptiveIconScale = scale;
             mAdaptiveIconBounds.set(mBounds);
         }
@@ -422,8 +422,8 @@ public class IconNormalizer {
      * @param outBounds optional rect to receive the fraction distance from each edge.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public synchronized float getScale(@NonNull Drawable d, @Nullable RectF outBounds,
-                                       @Nullable Path path, @Nullable boolean[] outMaskShape, int minVisibleAlpha) {
+    public synchronized float getScale(final @NonNull Drawable d, final @Nullable RectF outBounds,
+                                       final @Nullable Path path, final @Nullable boolean[] outMaskShape, final int minVisibleAlpha) {
         if (d instanceof AdaptiveIconCompat) {
             if (mAdaptiveIconScale != SCALE_NOT_INITIALIZED) {
                 if (outBounds != null) {
@@ -545,8 +545,8 @@ public class IconNormalizer {
         float areaScale = area / (width * height);
         // Use sqrt of the final ratio as the images is scaled across both width and height.
         float scale = areaScale > scaleRequired ? (float) Math.sqrt(scaleRequired / areaScale) : 1;
-        if (d instanceof AdaptiveIconCompat &&
-                mAdaptiveIconScale == SCALE_NOT_INITIALIZED) {
+        if (d instanceof AdaptiveIconCompat
+                && mAdaptiveIconScale == SCALE_NOT_INITIALIZED) {
             mAdaptiveIconScale = scale;
             mAdaptiveIconBounds.set(mBounds);
         }
@@ -564,7 +564,7 @@ public class IconNormalizer {
      * @param bottomY      the last Y position (inclusive) with a valid value.
      */
     private static void convertToConvexArray(
-        float[] xCoordinates, int direction, int topY, int bottomY) {
+        final float[] xCoordinates, final int direction, final int topY, final int bottomY) {
         int total = xCoordinates.length;
         // The tangent at each pixel.
         float[] angles = new float[total - 1];
@@ -612,7 +612,7 @@ public class IconNormalizer {
     /**
      * @return The diameter of the normalized circle that fits inside of the square (size x size).
      */
-    public static int getNormalizedCircleSize(int size) {
+    public static int getNormalizedCircleSize(final int size) {
         float area = size * size * MAX_CIRCLE_AREA_FACTOR;
         return (int) Math.round(Math.sqrt((4 * area) / Math.PI));
     }

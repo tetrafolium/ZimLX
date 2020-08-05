@@ -43,12 +43,12 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
 
     private final PackageInstallInfo mInstallInfo;
 
-    public PackageInstallStateChangedTask(PackageInstallInfo installInfo) {
+    public PackageInstallStateChangedTask(final PackageInstallInfo installInfo) {
         mInstallInfo = installInfo;
     }
 
     @Override
-    public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+    public void execute(final LauncherAppState app, final BgDataModel dataModel, final AllAppsList apps) {
         if (mInstallInfo.state == PackageInstallerCompat.STATUS_INSTALLED) {
             try {
                 // For instant apps we do not get package-add. Use setting events to update
@@ -88,7 +88,7 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
                 final PromiseAppInfo updatedPromiseApp = updated;
                 scheduleCallbackTask(new CallbackTask() {
                     @Override
-                    public void execute(Callbacks callbacks) {
+                    public void execute(final Callbacks callbacks) {
                         callbacks.bindPromiseAppProgressUpdated(updatedPromiseApp);
                     }
                 });
@@ -96,7 +96,7 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
             if (!removed.isEmpty()) {
                 scheduleCallbackTask(new CallbackTask() {
                     @Override
-                    public void execute(Callbacks callbacks) {
+                    public void execute(final Callbacks callbacks) {
                         callbacks.bindAppInfosRemoved(removed);
                     }
                 });
@@ -131,7 +131,7 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
             if (!updates.isEmpty()) {
                 scheduleCallbackTask(new CallbackTask() {
                     @Override
-                    public void execute(Callbacks callbacks) {
+                    public void execute(final Callbacks callbacks) {
                         callbacks.bindRestoreItemsChange(updates);
                     }
                 });

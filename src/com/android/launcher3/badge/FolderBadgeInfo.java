@@ -33,7 +33,7 @@ public class FolderBadgeInfo extends BadgeInfo {
         super(null);
     }
 
-    public void addBadgeInfo(BadgeInfo badgeToAdd) {
+    public void addBadgeInfo(final BadgeInfo badgeToAdd) {
         if (badgeToAdd == null) {
             return;
         }
@@ -42,7 +42,7 @@ public class FolderBadgeInfo extends BadgeInfo {
                                 mNumNotifications, MIN_COUNT, BadgeInfo.MAX_COUNT);
     }
 
-    public void subtractBadgeInfo(BadgeInfo badgeToSubtract) {
+    public void subtractBadgeInfo(final BadgeInfo badgeToSubtract) {
         if (badgeToSubtract == null) {
             return;
         }

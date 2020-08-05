@@ -47,12 +47,12 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
 
     private final UserHandle mUser;
 
-    public UserLockStateChangedTask(UserHandle user) {
+    public UserLockStateChangedTask(final UserHandle user) {
         mUser = user;
     }
 
     @Override
-    public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+    public void execute(final LauncherAppState app, final BgDataModel dataModel, final AllAppsList apps) {
         Context context = app.getContext();
         boolean isUserUnlocked = UserManagerCompat.getInstance(context).isUserUnlocked(mUser);
         DeepShortcutManager deepShortcutManager = DeepShortcutManager.getInstance(context);

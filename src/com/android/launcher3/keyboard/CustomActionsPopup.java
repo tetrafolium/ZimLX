@@ -43,7 +43,7 @@ public class CustomActionsPopup implements OnMenuItemClickListener {
     private final LauncherAccessibilityDelegate mDelegate;
     private final View mIcon;
 
-    public CustomActionsPopup(Launcher launcher, View icon) {
+    public CustomActionsPopup(final Launcher launcher, final View icon) {
         mLauncher = launcher;
         mIcon = icon;
         PopupContainerWithArrow container = PopupContainerWithArrow.getOpen(launcher);
@@ -87,7 +87,7 @@ public class CustomActionsPopup implements OnMenuItemClickListener {
     }
 
     @Override
-    public boolean onMenuItemClick(MenuItem menuItem) {
+    public boolean onMenuItemClick(final MenuItem menuItem) {
         return mDelegate.performAction(mIcon, (ItemInfo) mIcon.getTag(), menuItem.getItemId());
     }
 }

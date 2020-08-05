@@ -36,17 +36,17 @@ public class AllAppsState extends LauncherState {
 
     private static final PageAlphaProvider PAGE_ALPHA_PROVIDER = new PageAlphaProvider(DEACCEL_2) {
         @Override
-        public float getPageAlpha(int pageIndex) {
+        public float getPageAlpha(final int pageIndex) {
             return 0;
         }
     };
 
-    public AllAppsState(int id) {
+    public AllAppsState(final int id) {
         super(id, ContainerType.ALLAPPS, ALL_APPS_TRANSITION_MS, STATE_FLAGS);
     }
 
     @Override
-    public void onStateEnabled(Launcher launcher) {
+    public void onStateEnabled(final Launcher launcher) {
         if (!launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)) {
             launcher.getSharedPrefs().edit().putBoolean(HOME_BOUNCE_SEEN, true).apply();
         }
@@ -56,29 +56,29 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public String getDescription(Launcher launcher) {
+    public String getDescription(final Launcher launcher) {
         return launcher.getString(R.string.all_apps_button_label);
     }
 
     @Override
-    public int getVisibleElements(Launcher launcher) {
+    public int getVisibleElements(final Launcher launcher) {
         return ALL_APPS_HEADER | ALL_APPS_CONTENT;
     }
 
     @Override
-    public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
+    public float[] getWorkspaceScaleAndTranslation(final Launcher launcher) {
         return new float[] {1f, 0,
                             -launcher.getAllAppsController().getShiftRange() * PARALLAX_COEFFICIENT
                            };
     }
 
     @Override
-    public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
+    public PageAlphaProvider getWorkspacePageAlphaProvider(final Launcher launcher) {
         return PAGE_ALPHA_PROVIDER;
     }
 
     @Override
-    public float getVerticalProgress(Launcher launcher) {
+    public float getVerticalProgress(final Launcher launcher) {
         return 0f;
     }
 }

@@ -4,7 +4,7 @@ public class AppCountInfo {
     private String packageName;
     private int count;
 
-    public AppCountInfo(String name, int count) {
+    public AppCountInfo(final String name, final int count) {
         this.packageName = name;
         this.count = count;
     }
@@ -13,7 +13,7 @@ public class AppCountInfo {
         return packageName;
     }
 
-    public void setPackageName(String packageName) {
+    public void setPackageName(final String packageName) {
         this.packageName = packageName;
     }
 
@@ -21,7 +21,7 @@ public class AppCountInfo {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(final int count) {
         this.count = count;
     }
 }

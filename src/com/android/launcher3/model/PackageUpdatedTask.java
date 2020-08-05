@@ -82,14 +82,14 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
     private final UserHandle mUser;
     private final String[] mPackages;
 
-    public PackageUpdatedTask(int op, UserHandle user, String... packages) {
+    public PackageUpdatedTask(final int op, final UserHandle user, final String... packages) {
         mOp = op;
         mUser = user;
         mPackages = packages;
     }
 
     @Override
-    public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList appsList) {
+    public void execute(final LauncherAppState app, final BgDataModel dataModel, final AllAppsList appsList) {
         final Context context = app.getContext();
         final IconCache iconCache = app.getIconCache();
 
@@ -110,8 +110,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 }
                 appsList.addPackage(context, packages[i], mUser);
 
-                if (Utilities.ATLEAST_OREO && prefs.getAutoAddInstalled() &&
-                        !ZimUtilsKt.workspaceContains(dataModel, packages[i])) {
+                if (Utilities.ATLEAST_OREO && prefs.getAutoAddInstalled()
+                        && !ZimUtilsKt.workspaceContains(dataModel, packages[i])) {
                     SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
                 } else if (!Utilities.ATLEAST_OREO && !Process.myUserHandle().equals(mUser)) {
                     // Automatically add homescreen icon for work profile apps for below O device.
@@ -147,9 +147,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             break;
         case OP_SUSPEND:
         case OP_UNSUSPEND:
-            flagOp = mOp == OP_SUSPEND ?
-                     FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED) :
-                     FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED);
+            flagOp = mOp == OP_SUSPEND
+                     ? FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED)
+                     : FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED);
             if (DEBUG) Log.d(TAG, "mAllAppsList.(un)suspend " + N);
             appsList.updateDisabledFlags(matcher, flagOp);
             break;
@@ -272,8 +272,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                 }
                             }
 
-                            if (isNewApkAvailable &&
-                                    si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
+                            if (isNewApkAvailable
+                                    && si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
                                 iconCache.getTitleAndIcon(si, si.usingLowResIcon);
                                 infoUpdated = true;
                             }
@@ -297,8 +297,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                 && widgetInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
                                 && packageSet.contains(widgetInfo.providerName.getPackageName())) {
                             widgetInfo.restoreStatus &=
-                                ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY &
-                                ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
+                                ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY
+                                & ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
 
                             // adding this flag ensures that launcher shows 'click to setup'
                             // if the widget has a config activity. In case there is no config
@@ -320,7 +320,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             if (!widgets.isEmpty()) {
                 scheduleCallbackTask(new CallbackTask() {
                     @Override
-                    public void execute(Callbacks callbacks) {
+                    public void execute(final Callbacks callbacks) {
                         callbacks.bindWidgetsRestored(widgets);
                     }
                 });
@@ -364,7 +364,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             // Remove corresponding apps from All-Apps
             scheduleCallbackTask(new CallbackTask() {
                 @Override
-                public void execute(Callbacks callbacks) {
+                public void execute(final Callbacks callbacks) {
                     callbacks.bindAppInfosRemoved(removedApps);
                 }
             });

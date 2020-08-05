@@ -53,7 +53,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
 
     private ZimPreferences mPrefs;
 
-    public ShortcutAndWidgetContainer(Context context, @ContainerType int containerType) {
+    public ShortcutAndWidgetContainer(final Context context, final @ContainerType int containerType) {
         super(context);
         mLauncher = Launcher.getLauncher(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
@@ -68,7 +68,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
     }
 
     @Override
-    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs, boolean force) {
+    public void onValueChanged(final @NotNull String key, final @NotNull ZimPreferences prefs, final boolean force) {
         setClipChildren(!prefs.getAllowOverlap());
         setClipToPadding(!prefs.getAllowOverlap());
         setClipToOutline(!prefs.getAllowOverlap());
@@ -79,20 +79,20 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
         super.onDetachedFromWindow();
         mPrefs.removeOnPreferenceChangeListener(ZimFlags.DESKTOP_OVERLAP_WIDGET, this);
     }
-    public void setCellDimensions(int cellWidth, int cellHeight, int countX, int countY) {
+    public void setCellDimensions(final int cellWidth, final int cellHeight, final int countX, final int countY) {
         mCellWidth = cellWidth;
         mCellHeight = cellHeight;
         mCountX = countX;
     }
 
-    public View getChildAt(int x, int y) {
+    public View getChildAt(final int x, final int y) {
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
 
-            if ((lp.cellX <= x) && (x < lp.cellX + lp.cellHSpan) &&
-                    (lp.cellY <= y) && (y < lp.cellY + lp.cellVSpan)) {
+            if ((lp.cellX <= x) && (x < lp.cellX + lp.cellHSpan)
+                    && (lp.cellY <= y) && (y < lp.cellY + lp.cellVSpan)) {
                 return child;
             }
         }
@@ -100,7 +100,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         int count = getChildCount();
 
         int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -115,7 +115,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
         }
     }
 
-    public void setupLp(View child) {
+    public void setupLp(final View child) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         if (child instanceof LauncherAppWidgetHostView) {
             DeviceProfile profile = mLauncher.getDeviceProfile();
@@ -127,7 +127,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
     }
 
     // Set whether or not to invert the layout horizontally if the layout is in RTL mode.
-    public void setInvertIfRtl(boolean invert) {
+    public void setInvertIfRtl(final boolean invert) {
         mInvertIfRtl = invert;
     }
 
@@ -136,7 +136,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
                         mLauncher.getDeviceProfile().getCellHeight(mContainerType));
     }
 
-    public void measureChild(View child) {
+    public void measureChild(final View child) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         final DeviceProfile profile = mLauncher.getDeviceProfile();
 
@@ -164,7 +164,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(final boolean changed, final int l, final int t, final int r, final int b) {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
@@ -203,7 +203,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onInterceptTouchEvent(final MotionEvent ev) {
         if (ev.getAction() == ACTION_DOWN && getAlpha() == 0) {
             // Dont let children handle touch, if we are not visible.
             return true;
@@ -217,7 +217,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
     }
 
     @Override
-    public void requestChildFocus(View child, View focused) {
+    public void requestChildFocus(final View child, final View focused) {
         super.requestChildFocus(child, focused);
         if (child != null) {
             Rect r = new Rect();

@@ -75,7 +75,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
     private final Rect mStartRect = new Rect();
     private final Rect mEndRect = new Rect();
 
-    public ArrowPopup(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ArrowPopup(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mInflater = LayoutInflater.from(context);
         mOutlineRadius = getResources().getDimension(R.dimen.bg_round_rect_radius);
@@ -85,7 +85,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         setClipToOutline(true);
         setOutlineProvider(new ViewOutlineProvider() {
             @Override
-            public void getOutline(View view, Outline outline) {
+            public void getOutline(final View view, final Outline outline) {
                 outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), mOutlineRadius);
             }
         });
@@ -99,16 +99,16 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         mArrayOffset = resources.getDimensionPixelSize(R.dimen.popup_arrow_vertical_offset);
     }
 
-    public ArrowPopup(Context context, AttributeSet attrs) {
+    public ArrowPopup(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ArrowPopup(Context context) {
+    public ArrowPopup(final Context context) {
         this(context, null, 0);
     }
 
     @Override
-    protected void handleClose(boolean animate) {
+    protected void handleClose(final boolean animate) {
         if (animate) {
             animateClose();
         } else {
@@ -116,7 +116,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         }
     }
 
-    public <T extends View> T inflateAndAdd(int resId, ViewGroup container) {
+    public <T extends View> T inflateAndAdd(final int resId, final ViewGroup container) {
         View view = mInflater.inflate(resId, container, false);
         container.addView(view);
         return (T) view;
@@ -125,7 +125,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
     /**
      * Called when all view inflation and reordering in complete.
      */
-    protected void onInflationComplete(boolean isReversed) {
+    protected void onInflationComplete(final boolean isReversed) {
     }
 
     /**
@@ -133,7 +133,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
      *
      * @param viewsToFlip number of views from the top to to flip in case of reverse order
      */
-    protected void reorderAndShow(int viewsToFlip) {
+    protected void reorderAndShow(final int viewsToFlip) {
         setVisibility(View.INVISIBLE);
         mIsOpen = true;
         mLauncher.getDragLayer().addView(this);
@@ -318,7 +318,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(final boolean changed, final int l, final int t, final int r, final int b) {
         super.onLayout(changed, l, t, r, b);
 
         // enforce contained is within screen
@@ -364,7 +364,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
 
         openAnim.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 announceAccessibilityChanges();
                 mOpenCloseAnimator = null;
             }
@@ -410,7 +410,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         closeAnim.setDuration((long) res.getInteger(R.integer.config_popupOpenCloseDuration));
         closeAnim.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 mOpenCloseAnimator = null;
                 if (mDeferContainerRemoval) {
                     setVisibility(INVISIBLE);
@@ -426,13 +426,13 @@ public abstract class ArrowPopup extends AbstractFloatingView {
     /**
      * Called when creating the close transition allowing subclass can add additional animations.
      */
-    protected void onCreateCloseAnimation(AnimatorSet anim) {
+    protected void onCreateCloseAnimation(final AnimatorSet anim) {
     }
 
     private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {
-        int arrowCenterX = getResources().getDimensionPixelSize(mIsLeftAligned ^ mIsRtl ?
-                           R.dimen.popup_arrow_horizontal_center_start :
-                           R.dimen.popup_arrow_horizontal_center_end);
+        int arrowCenterX = getResources().getDimensionPixelSize(mIsLeftAligned ^ mIsRtl
+                           ? R.dimen.popup_arrow_horizontal_center_start
+                           : R.dimen.popup_arrow_horizontal_center_end);
         if (!mIsLeftAligned) {
             arrowCenterX = getMeasuredWidth() - arrowCenterX;
         }

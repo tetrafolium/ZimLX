@@ -73,17 +73,17 @@ public class PopupPopulatorTest {
         filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(2, 2), 2, 2, generateId(true, 4));
     }
 
-    private String generateId(boolean isStatic, int rank) {
+    private String generateId(final boolean isStatic, final int rank) {
         return (isStatic ? "static" : "dynamic") + rank;
     }
 
     private void filterShortcutsAndAssertNumStaticAndDynamic(
-        List<ShortcutInfoCompat> shortcuts, int expectedStatic, int expectedDynamic) {
+        final List<ShortcutInfoCompat> shortcuts, final int expectedStatic, final int expectedDynamic) {
         filterShortcutsAndAssertNumStaticAndDynamic(shortcuts, expectedStatic, expectedDynamic, null);
     }
 
-    private void filterShortcutsAndAssertNumStaticAndDynamic(List<ShortcutInfoCompat> shortcuts,
-            int expectedStatic, int expectedDynamic, String shortcutIdToRemove) {
+    private void filterShortcutsAndAssertNumStaticAndDynamic(final List<ShortcutInfoCompat> shortcuts,
+            final int expectedStatic, final int expectedDynamic, final String shortcutIdToRemove) {
         Collections.shuffle(shortcuts);
         List<ShortcutInfoCompat> filteredShortcuts = PopupPopulator.sortAndFilterShortcuts(
                     shortcuts, shortcutIdToRemove);
@@ -103,7 +103,7 @@ public class PopupPopulatorTest {
         assertEquals(expectedDynamic, numDynamic);
     }
 
-    private void assertIsSorted(List<ShortcutInfoCompat> shortcuts) {
+    private void assertIsSorted(final List<ShortcutInfoCompat> shortcuts) {
         int lastStaticRank = -1;
         int lastDynamicRank = -1;
         boolean hasSeenDynamic = false;
@@ -123,7 +123,7 @@ public class PopupPopulatorTest {
         }
     }
 
-    private List<ShortcutInfoCompat> createShortcutsList(int numStatic, int numDynamic) {
+    private List<ShortcutInfoCompat> createShortcutsList(final int numStatic, final int numDynamic) {
         List<ShortcutInfoCompat> shortcuts = new ArrayList<>();
         for (int i = 0; i < numStatic; i++) {
             shortcuts.add(new Shortcut(true, i));
@@ -139,11 +139,11 @@ public class PopupPopulatorTest {
         private int mRank;
         private String mId;
 
-        public Shortcut(ShortcutInfo shortcutInfo) {
+        public Shortcut(final ShortcutInfo shortcutInfo) {
             super(shortcutInfo);
         }
 
-        public Shortcut(boolean isStatic, int rank) {
+        public Shortcut(final boolean isStatic, final int rank) {
             this(null);
             mIsStatic = isStatic;
             mRank = rank;

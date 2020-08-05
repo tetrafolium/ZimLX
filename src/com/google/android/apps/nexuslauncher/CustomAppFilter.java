@@ -15,12 +15,12 @@ import java.util.Set;
 public class CustomAppFilter extends ZimAppFilter {
     private final Context mContext;
 
-    public CustomAppFilter(Context context) {
+    public CustomAppFilter(final Context context) {
         super(context);
         mContext = context;
     }
 
-    static void setComponentNameState(Context context, ComponentKey key, boolean hidden) {
+    static void setComponentNameState(final Context context, final ComponentKey key, final boolean hidden) {
         String comp = key.toString();
         Set<String> hiddenApps = new HashSet<>(getHiddenApps(context));
         while (hiddenApps.contains(comp)) {
@@ -32,21 +32,21 @@ public class CustomAppFilter extends ZimAppFilter {
         setHiddenApps(context, hiddenApps);
     }
 
-    static boolean isHiddenApp(Context context, ComponentKey key) {
+    static boolean isHiddenApp(final Context context, final ComponentKey key) {
         return getHiddenApps(context).contains(key.toString());
     }
 
     // This can't be null anyway
-    public static Set<String> getHiddenApps(Context context) {
+    public static Set<String> getHiddenApps(final Context context) {
         return new HashSet<>(Utilities.getZimPrefs(context).getHiddenAppSet());
     }
 
-    public static void setHiddenApps(Context context, Set<String> hiddenApps) {
+    public static void setHiddenApps(final Context context, final Set<String> hiddenApps) {
         Utilities.getZimPrefs(context).setHiddenAppSet(hiddenApps);
     }
 
     @Override
-    public boolean shouldShowApp(ComponentName componentName, UserHandle user) {
+    public boolean shouldShowApp(final ComponentName componentName, final UserHandle user) {
         return super.shouldShowApp(componentName, user)
                && (user == null || !isHiddenApp(mContext, new ComponentKey(componentName, user)));
     }

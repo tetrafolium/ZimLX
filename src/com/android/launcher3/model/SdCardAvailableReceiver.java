@@ -44,15 +44,15 @@ public class SdCardAvailableReceiver extends BroadcastReceiver {
     private final Context mContext;
     private final MultiHashMap<UserHandle, String> mPackages;
 
-    public SdCardAvailableReceiver(LauncherAppState app,
-                                   MultiHashMap<UserHandle, String> packages) {
+    public SdCardAvailableReceiver(final LauncherAppState app,
+                                   final MultiHashMap<UserHandle, String> packages) {
         mModel = app.getModel();
         mContext = app.getContext();
         mPackages = packages;
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
         for (Entry<UserHandle, ArrayList<String>> entry : mPackages.entrySet()) {

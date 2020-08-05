@@ -69,15 +69,15 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     private final float mFixedTranslationY;
     private final float mMarginTopAdjusting;
 
-    public AppsSearchContainerLayout(Context context) {
+    public AppsSearchContainerLayout(final Context context) {
         this(context, null);
     }
 
-    public AppsSearchContainerLayout(Context context, AttributeSet attrs) {
+    public AppsSearchContainerLayout(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AppsSearchContainerLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AppsSearchContainerLayout(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         mLauncher = Launcher.getLauncher(context);
@@ -112,7 +112,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         // Update the width to match the grid padding
         DeviceProfile dp = mLauncher.getDeviceProfile();
         int myRequestedWidth = getSize(widthMeasureSpec);
@@ -128,7 +128,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
         // Shift the widget horizontally so that its centered in the parent (b/63428078)
@@ -141,7 +141,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void initialize(AllAppsContainerView appsView) {
+    public void initialize(final AllAppsContainerView appsView) {
         mApps = appsView.getApps();
         mAppsView = appsView;
         mSearchBarController.initialize(
@@ -160,14 +160,14 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void preDispatchKeyEvent(KeyEvent event) {
+    public void preDispatchKeyEvent(final KeyEvent event) {
         // Determine if the key event was actual text, if so, focus the search bar and then dispatch
         // the key normally so that it can process this key event
-        if (!mSearchBarController.isSearchFieldFocused() &&
-                event.getAction() == KeyEvent.ACTION_DOWN) {
+        if (!mSearchBarController.isSearchFieldFocused()
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
             final int unicodeChar = event.getUnicodeChar();
-            final boolean isKeyNotWhitespace = unicodeChar > 0 &&
-                                               !Character.isWhitespace(unicodeChar) && !Character.isSpaceChar(unicodeChar);
+            final boolean isKeyNotWhitespace = unicodeChar > 0
+                                               && !Character.isWhitespace(unicodeChar) && !Character.isSpaceChar(unicodeChar);
             if (isKeyNotWhitespace) {
                 boolean gotKey = TextKeyListener.getInstance().onKeyDown(this, mSearchQueryBuilder,
                                  event.getKeyCode(), event);
@@ -179,7 +179,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void onSearchResult(String query, ArrayList<ComponentKey> apps, List<String> suggestions) {
+    public void onSearchResult(final String query, final ArrayList<ComponentKey> apps, final List<String> suggestions) {
         if (apps != null) {
             mApps.setOrderedFilter(apps);
         }
@@ -220,7 +220,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void setInsets(Rect insets) {
+    public void setInsets(final Rect insets) {
         MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
         mlp.topMargin = Math.round(Math.max(-mFixedTranslationY, insets.top - mMarginTopAdjusting));
         requestLayout();

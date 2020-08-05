@@ -29,13 +29,13 @@ public class ViewGroupFocusHelper extends FocusIndicatorHelper {
 
     private final View mContainer;
 
-    public ViewGroupFocusHelper(View container) {
+    public ViewGroupFocusHelper(final View container) {
         super(container);
         mContainer = container;
     }
 
     @Override
-    public void viewToRect(View v, Rect outRect) {
+    public void viewToRect(final View v, final Rect outRect) {
         outRect.left = 0;
         outRect.top = 0;
 
@@ -50,7 +50,7 @@ public class ViewGroupFocusHelper extends FocusIndicatorHelper {
         outRect.bottom = outRect.top + (int) (v.getScaleY() * v.getHeight());
     }
 
-    private void computeLocationRelativeToContainer(View child, Rect outRect) {
+    private void computeLocationRelativeToContainer(final View child, final Rect outRect) {
         View parent = (View) child.getParent();
         outRect.left += child.getLeft();
         outRect.top += child.getTop();
@@ -72,7 +72,7 @@ public class ViewGroupFocusHelper extends FocusIndicatorHelper {
     public View.OnFocusChangeListener getHideIndicatorOnFocusListener() {
         return new OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
+            public void onFocusChange(final View v, final boolean hasFocus) {
                 if (hasFocus) {
                     endCurrentAnimation();
                     setCurrentView(null);

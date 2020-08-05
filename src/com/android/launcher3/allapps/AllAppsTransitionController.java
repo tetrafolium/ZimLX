@@ -61,12 +61,12 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
 
         @Override
-        public Float get(AllAppsTransitionController controller) {
+        public Float get(final AllAppsTransitionController controller) {
             return controller.mProgress;
         }
 
         @Override
-        public void set(AllAppsTransitionController controller, Float progress) {
+        public void set(final AllAppsTransitionController controller, final Float progress) {
             controller.setProgress(progress);
         }
     };
@@ -75,12 +75,12 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
 
         @Override
-        public Float get(AllAppsTransitionController controller) {
+        public Float get(final AllAppsTransitionController controller) {
             return controller.mScrimProgress;
         }
 
         @Override
-        public void set(AllAppsTransitionController controller, Float progress) {
+        public void set(final AllAppsTransitionController controller, final Float progress) {
             controller.setScrimProgress(progress);
         }
     };
@@ -107,7 +107,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     private Hotseat mHotseat;
     public Drawable hotseatBackground;
 
-    public AllAppsTransitionController(Launcher l) {
+    public AllAppsTransitionController(final Launcher l) {
         mLauncher = l;
         mShiftRange = mLauncher.getDeviceProfile().heightPx;
         mProgress = mScrimProgress = 1f;
@@ -127,7 +127,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     }
 
     @Override
-    public void onDeviceProfileChanged(DeviceProfile dp) {
+    public void onDeviceProfileChanged(final DeviceProfile dp) {
         mIsVerticalLayout = dp.isVerticalBarLayout();
         setScrollRangeDelta(mScrollRangeDelta);
 
@@ -146,7 +146,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      * @see #setState(LauncherState)
      * @see #setStateWithAnimation(LauncherState, AnimatorSetBuilder, AnimationConfig)
      */
-    public void setProgress(float progress) {
+    public void setProgress(final float progress) {
         mProgress = progress;
         float shiftCurrent = getShiftApps(progress, true);
 
@@ -169,7 +169,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         }
     }
 
-    private float getShiftApps(float progress, boolean inverted) {
+    private float getShiftApps(final float progress, final boolean inverted) {
         float normalShift = progress * mShiftRange;
         ZimPreferences prefs = ZimPreferences.Companion.getInstanceNoCreate();
         if (mAppsView.getFloatingHeaderView().hasVisibleContent()
@@ -203,7 +203,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         return mProgress;
     }
 
-    public void setScrimProgress(float progress) {
+    public void setScrimProgress(final float progress) {
         mScrimProgress = progress;
         mScrimView.setProgress(progress);
     }
@@ -217,7 +217,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      * accordingly.
      */
     @Override
-    public void setState(LauncherState state) {
+    public void setState(final LauncherState state) {
         float targetProgress = state.getVerticalProgress(mLauncher);
         setProgress(targetProgress);
         setScrimProgress(state.getScrimProgress(mLauncher));
@@ -230,8 +230,8 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      * dependent UI using various animation events
      */
     @Override
-    public void setStateWithAnimation(LauncherState toState,
-                                      AnimatorSetBuilder builder, AnimationConfig config) {
+    public void setStateWithAnimation(final LauncherState toState,
+                                      final AnimatorSetBuilder builder, final AnimationConfig config) {
         float targetProgress = toState.getVerticalProgress(mLauncher);
         float targetScrimProgress = toState.getScrimProgress(mLauncher);
         if (Float.compare(mProgress, targetProgress) == 0 && Float.compare(mScrimProgress, targetScrimProgress) == 0) {
@@ -268,8 +268,8 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         setAlphas(toState, config, builder);
     }
 
-    private void setAlphas(LauncherState toState, AnimationConfig config,
-                           AnimatorSetBuilder builder) {
+    private void setAlphas(final LauncherState toState, final AnimationConfig config,
+                           final AnimatorSetBuilder builder) {
         PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
                                 : config.getPropertySetter(builder);
         int visibleElements = toState.getVisibleElements(mLauncher);
@@ -291,18 +291,18 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     public AnimatorListenerAdapter getProgressAnimatorListener() {
         return new AnimationSuccessListener() {
             @Override
-            public void onAnimationSuccess(Animator animator) {
+            public void onAnimationSuccess(final Animator animator) {
                 onProgressAnimationEnd();
             }
 
             @Override
-            public void onAnimationStart(Animator animation) {
+            public void onAnimationStart(final Animator animation) {
                 onProgressAnimationStart();
             }
         };
     }
 
-    public void setupViews(AllAppsContainerView appsView, Hotseat hotseat) {
+    public void setupViews(final AllAppsContainerView appsView, final Hotseat hotseat) {
         mAppsView = appsView;
         mScrimView = mLauncher.findViewById(R.id.scrim_view);
         mHotseat = hotseat;
@@ -312,7 +312,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     /**
      * Updates the total scroll range but does not update the UI.
      */
-    public void setScrollRangeDelta(float delta) {
+    public void setScrollRangeDelta(final float delta) {
         mScrollRangeDelta = delta;
         mShiftRange = mLauncher.getDeviceProfile().heightPx - mScrollRangeDelta;
 
@@ -349,12 +349,12 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     }
 
     @Override
-    public void onColorChange(@NotNull ColorEngine.ResolveInfo resolveInfo) {
+    public void onColorChange(final @NotNull ColorEngine.ResolveInfo resolveInfo) {
         mIsDarkTheme = ZimUtilsKt.isDark(resolveInfo.getColor());
     }
 
 
-    public void setOverlayScroll(float scroll) {
+    public void setOverlayScroll(final float scroll) {
         if (mScrimView instanceof BlurScrimView) {
             ((BlurScrimView) mScrimView).setOverlayScroll(scroll);
         }

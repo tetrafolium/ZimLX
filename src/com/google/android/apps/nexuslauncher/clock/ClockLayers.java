@@ -67,7 +67,7 @@ public class ClockLayers {
         return hasChanged;
     }
 
-    void setTimeZone(TimeZone timeZone) {
+    void setTimeZone(final TimeZone timeZone) {
         mCurrentTime.setTimeZone(timeZone);
     }
 

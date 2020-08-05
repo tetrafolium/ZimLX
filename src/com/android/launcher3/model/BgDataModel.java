@@ -123,8 +123,8 @@ public class BgDataModel {
         deepShortcutMap.clear();
     }
 
-    public synchronized void dump(String prefix, FileDescriptor fd, PrintWriter writer,
-                                  String[] args) {
+    public synchronized void dump(final String prefix, final FileDescriptor fd, final PrintWriter writer,
+                                  final String[] args) {
         if (Arrays.asList(args).contains("--proto")) {
             dumpProto(prefix, fd, writer, args);
             return;
@@ -164,8 +164,8 @@ public class BgDataModel {
         }
     }
 
-    private synchronized void dumpProto(String prefix, FileDescriptor fd, PrintWriter writer,
-                                        String[] args) {
+    private synchronized void dumpProto(final String prefix, final FileDescriptor fd, final PrintWriter writer,
+                                        final String[] args) {
 
         // Add top parent nodes. (L1)
         DumpTargetWrapper hotseat = new DumpTargetWrapper(ContainerType.HOTSEAT, 0);
@@ -246,11 +246,11 @@ public class BgDataModel {
         }
     }
 
-    public synchronized void removeItem(Context context, ItemInfo... items) {
+    public synchronized void removeItem(final Context context, final ItemInfo... items) {
         removeItem(context, Arrays.asList(items));
     }
 
-    public synchronized void removeItem(Context context, Iterable<? extends ItemInfo> items) {
+    public synchronized void removeItem(final Context context, final Iterable<? extends ItemInfo> items) {
         for (ItemInfo item : items) {
             switch (item.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
@@ -260,8 +260,8 @@ public class BgDataModel {
                         if (info.container == item.id) {
                             // We are deleting a folder which still contains items that
                             // think they are contained by that folder.
-                            String msg = "deleting a folder (" + item + ") which still " +
-                                         "contains items (" + info + ")";
+                            String msg = "deleting a folder (" + item + ") which still "
+                                         + "contains items (" + info + ")";
                             Log.e(TAG, msg);
                         }
                     }
@@ -292,7 +292,7 @@ public class BgDataModel {
         }
     }
 
-    public synchronized void addItem(Context context, ItemInfo item, boolean newItem) {
+    public synchronized void addItem(final Context context, final ItemInfo item, final boolean newItem) {
         itemsIdMap.put(item.id, item);
         switch (item.itemType) {
         case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
@@ -318,15 +318,15 @@ public class BgDataModel {
         }
         case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
         case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
-                    item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP
+                    || item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                 workspaceItems.add(item);
             } else {
                 if (newItem) {
                     if (!folders.containsKey(item.container)) {
                         // Adding an item to a folder that doesn't exist.
-                        String msg = "adding item: " + item + " to a folder that " +
-                                     " doesn't exist";
+                        String msg = "adding item: " + item + " to a folder that "
+                                     + " doesn't exist";
                         Log.e(TAG, msg);
                     }
                 } else {
@@ -346,7 +346,7 @@ public class BgDataModel {
      * Return an existing FolderInfo object if we have encountered this ID previously,
      * or make a new one.
      */
-    public synchronized FolderInfo findOrMakeFolder(long id) {
+    public synchronized FolderInfo findOrMakeFolder(final long id) {
         // See if a placeholder was created for us already
         FolderInfo folderInfo = folders.get(id);
         if (folderInfo == null) {
@@ -361,7 +361,7 @@ public class BgDataModel {
      * Clear all the deep shortcuts for the given package, and re-add the new shortcuts.
      */
     public synchronized void updateDeepShortcutMap(
-        String packageName, UserHandle user, List<ShortcutInfoCompat> shortcuts) {
+        final String packageName, final UserHandle user, final List<ShortcutInfoCompat> shortcuts) {
         if (packageName != null) {
             Iterator<ComponentKey> keysIter = deepShortcutMap.keySet().iterator();
             while (keysIter.hasNext()) {

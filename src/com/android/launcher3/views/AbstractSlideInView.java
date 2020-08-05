@@ -45,12 +45,12 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     new Property<AbstractSlideInView, Float>(Float.class, "translationShift") {
 
         @Override
-        public Float get(AbstractSlideInView view) {
+        public Float get(final AbstractSlideInView view) {
             return view.mTranslationShift;
         }
 
         @Override
-        public void set(AbstractSlideInView view, Float value) {
+        public void set(final AbstractSlideInView view, final Float value) {
             view.setTranslationShift(value);
         }
     };
@@ -69,7 +69,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
 
     protected boolean mNoIntercept;
 
-    public AbstractSlideInView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AbstractSlideInView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mLauncher = Launcher.getLauncher(context);
 
@@ -79,26 +79,26 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
         mOpenCloseAnimator = LauncherAnimUtils.ofPropertyValuesHolder(this);
         mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 mSwipeDetector.finishedScrolling();
                 announceAccessibilityChanges();
             }
         });
     }
 
-    protected void setTranslationShift(float translationShift) {
+    protected void setTranslationShift(final float translationShift) {
         mTranslationShift = translationShift;
         mContent.setTranslationY(mTranslationShift * mContent.getHeight());
     }
 
     @Override
-    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+    public boolean onControllerInterceptTouchEvent(final MotionEvent ev) {
         if (mNoIntercept) {
             return false;
         }
 
-        int directionsToDetectScroll = mSwipeDetector.isIdleState() ?
-                                       SwipeDetector.DIRECTION_NEGATIVE : 0;
+        int directionsToDetectScroll = mSwipeDetector.isIdleState()
+                                       ? SwipeDetector.DIRECTION_NEGATIVE : 0;
         mSwipeDetector.setDetectableScrollConditions(
             directionsToDetectScroll, false);
         mSwipeDetector.onTouchEvent(ev);
@@ -107,7 +107,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     }
 
     @Override
-    public boolean onControllerTouchEvent(MotionEvent ev) {
+    public boolean onControllerTouchEvent(final MotionEvent ev) {
         mSwipeDetector.onTouchEvent(ev);
         if (ev.getAction() == MotionEvent.ACTION_UP && mSwipeDetector.isIdleState()) {
             // If we got ACTION_UP without ever starting swipe, close the panel.
@@ -121,11 +121,11 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     /* SwipeDetector.Listener */
 
     @Override
-    public void onDragStart(boolean start) {
+    public void onDragStart(final boolean start) {
     }
 
     @Override
-    public boolean onDrag(float displacement, float velocity) {
+    public boolean onDrag(final float displacement, final float velocity) {
         float range = mContent.getHeight();
         displacement = Utilities.boundToRange(displacement, 0, range);
         setTranslationShift(displacement / range);
@@ -133,7 +133,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     }
 
     @Override
-    public void onDragEnd(float velocity, boolean fling) {
+    public void onDragEnd(final float velocity, final boolean fling) {
         if ((fling && velocity > 0) || mTranslationShift > 0.5f) {
             mScrollInterpolator = scrollInterpolatorForVelocity(velocity);
             mOpenCloseAnimator.setDuration(SwipeDetector.calculateDuration(
@@ -149,7 +149,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
         }
     }
 
-    protected void handleClose(boolean animate, long defaultDuration) {
+    protected void handleClose(final boolean animate, final long defaultDuration) {
         if (mIsOpen && !animate) {
             mOpenCloseAnimator.cancel();
             setTranslationShift(TRANSLATION_SHIFT_CLOSED);
@@ -163,7 +163,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
             PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_CLOSED));
         mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 onCloseComplete();
             }
         });

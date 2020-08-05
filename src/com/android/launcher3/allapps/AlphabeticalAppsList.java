@@ -87,7 +87,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         // The color of this fast scroll section
         public int color;
 
-        public FastScrollSectionInfo(String sectionName, int color) {
+        public FastScrollSectionInfo(final String sectionName, final int color) {
             this.sectionName = sectionName;
             this.color = color;
         }
@@ -131,8 +131,8 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
          */
         public String suggestion;
 
-        public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
-                                        int appIndex) {
+        public static AdapterItem asApp(final int pos, final String sectionName, final AppInfo appInfo,
+                                        final int appIndex) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_ICON;
             item.position = pos;
@@ -142,36 +142,36 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             return item;
         }
 
-        public static AdapterItem asEmptySearch(int pos) {
+        public static AdapterItem asEmptySearch(final int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH;
             item.position = pos;
             return item;
         }
 
-        public static AdapterItem asAllAppsDivider(int pos) {
+        public static AdapterItem asAllAppsDivider(final int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER;
             item.position = pos;
             return item;
         }
 
-        public static AdapterItem asMarketSearch(int pos) {
+        public static AdapterItem asMarketSearch(final int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET;
             item.position = pos;
             return item;
         }
 
-        public static AdapterItem asWorkTabFooter(int pos) {
+        public static AdapterItem asWorkTabFooter(final int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_WORK_TAB_FOOTER;
             item.position = pos;
             return item;
         }
 
-        public static AdapterItem asFolder(int pos, String sectionName,
-                                           DrawerFolderInfo folderInfo, int folderIndex) {
+        public static AdapterItem asFolder(final int pos, final String sectionName,
+                                           final DrawerFolderInfo folderInfo, final int folderIndex) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_FOLDER;
             item.position = pos;
@@ -180,7 +180,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             return item;
         }
 
-        public static AdapterItem asSearchSuggestion(int pos, String suggestion) {
+        public static AdapterItem asSearchSuggestion(final int pos, final String suggestion) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_SUGGESTION;
             item.position = pos;
@@ -218,7 +218,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     private List<String> mSearchSuggestions;
 
-    public AlphabeticalAppsList(Context context, AllAppsStore appsStore, boolean isWork) {
+    public AlphabeticalAppsList(final Context context, final AllAppsStore appsStore, final boolean isWork) {
         mAllAppsStore = appsStore;
         mLauncher = Launcher.getLauncher(context);
         mIndexer = new AlphabeticIndexCompat(context);
@@ -230,7 +230,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         prefs = Utilities.getZimPrefs(context);
     }
 
-    public void updateItemFilter(ItemInfoMatcher itemFilter) {
+    public void updateItemFilter(final ItemInfoMatcher itemFilter) {
         this.mItemFilter = itemFilter;
         onAppsUpdated();
     }
@@ -238,7 +238,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     /**
      * Sets the adapter to notify when this dataset changes.
      */
-    public void setAdapter(AllAppsGridAdapter adapter) {
+    public void setAdapter(final AllAppsGridAdapter adapter) {
         mAdapter = adapter;
     }
 
@@ -249,7 +249,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         return mApps;
     }
 
-    private void sortApps(int sortType) {
+    private void sortApps(final int sortType) {
         switch (sortType) {
         //SORT BY NAME AZ
         case SORT_AZ:
@@ -345,7 +345,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     /**
      * Sets the sorted list of filtered components.
      */
-    public boolean setOrderedFilter(ArrayList<ComponentKey> f) {
+    public boolean setOrderedFilter(final ArrayList<ComponentKey> f) {
         if (mSearchResults != f) {
             boolean same = mSearchResults != null && mSearchResults.equals(f);
             mSearchResults = f;
@@ -355,7 +355,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         return false;
     }
 
-    public boolean setSearchSuggestions(List<String> suggestions) {
+    public boolean setSearchSuggestions(final List<String> suggestions) {
         if (mSearchSuggestions != suggestions) {
             boolean same = mSearchSuggestions != null && mSearchSuggestions.equals(suggestions);
             mSearchSuggestions = suggestions;
@@ -391,8 +391,8 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         // coalesce sections
         Locale curLocale = mLauncher.getResources().getConfiguration().locale;
         boolean localeRequiresSectionSorting =
-            curLocale.getLanguage().equals(Locale.SIMPLIFIED_CHINESE.getLanguage()) &&
-            curLocale.getCountry().equals(Locale.SIMPLIFIED_CHINESE.getCountry());
+            curLocale.getLanguage().equals(Locale.SIMPLIFIED_CHINESE.getLanguage())
+            && curLocale.getCountry().equals(Locale.SIMPLIFIED_CHINESE.getCountry());
         if (localeRequiresSectionSorting) {
             // Compute the section headers. We use a TreeMap with the section name comparator to
             // ensure that the sections are ordered when we iterate over it later
@@ -499,7 +499,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             if (!sectionName.equals(lastSectionName)) {
                 lastSectionName = sectionName;
                 int color = Color.WHITE;
-                if (prefs.getSortMode()==SORT_BY_COLOR) {
+                if (prefs.getSortMode() == SORT_BY_COLOR) {
                     color = info.iconColor;
                 }
                 lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName, color);
@@ -586,8 +586,8 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     }
 
     private boolean shouldShowWorkFooter() {
-        return mIsWork && Utilities.ATLEAST_P &&
-               (DeepShortcutManager.getInstance(mLauncher).hasHostPermission()
+        return mIsWork && Utilities.ATLEAST_P
+               && (DeepShortcutManager.getInstance(mLauncher).hasHostPermission()
                 || Utilities
                 .hasPermission(mLauncher, "android.permission.MODIFY_QUIET_MODE"));
     }
@@ -625,13 +625,13 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
      * Returns the cached section name for the given title, recomputing and updating the cache if
      * the title has no cached section name.
      */
-    private String getAndUpdateCachedSectionName(AppInfo info) {
+    private String getAndUpdateCachedSectionName(final AppInfo info) {
         String sectionName = mCachedSectionNames.get(info);
         if (sectionName == null) {
-            if (prefs.getSortMode()==SORT_BY_COLOR) {
+            if (prefs.getSortMode() == SORT_BY_COLOR) {
                 float[] hsl = new float[3];
                 ColorUtils.colorToHSL(info.iconColor, hsl);
-                sectionName = "";//String.format("%d:%d:%d", AppColorComparator.remapHue(hsl[0]), AppColorComparator.remap(hsl[2]), AppColorComparator.remap(hsl[1]));
+                sectionName = ""; //String.format("%d:%d:%d", AppColorComparator.remapHue(hsl[0]), AppColorComparator.remap(hsl[2]), AppColorComparator.remap(hsl[1]));
             } else {
                 sectionName = mIndexer.computeSectionName(info.title);
             }
@@ -640,7 +640,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         return sectionName;
     }
 
-    public void setIsWork(boolean isWork) {
+    public void setIsWork(final boolean isWork) {
         mIsWork = isWork;
     }
 

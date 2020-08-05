@@ -33,7 +33,7 @@ public class SpringLoadedDragController implements OnAlarmListener {
     private CellLayout mScreen;
     private Launcher mLauncher;
 
-    public SpringLoadedDragController(Launcher launcher) {
+    public SpringLoadedDragController(final Launcher launcher) {
         mLauncher = launcher;
         mAlarm = new Alarm();
         mAlarm.setOnAlarmListener(this);
@@ -44,15 +44,15 @@ public class SpringLoadedDragController implements OnAlarmListener {
     }
 
     // Set a new alarm to expire for the screen that we are hovering over now
-    public void setAlarm(CellLayout cl) {
+    public void setAlarm(final CellLayout cl) {
         mAlarm.cancelAlarm();
-        mAlarm.setAlarm((cl == null) ? ENTER_SPRING_LOAD_CANCEL_HOVER_TIME :
-                        ENTER_SPRING_LOAD_HOVER_TIME);
+        mAlarm.setAlarm((cl == null) ? ENTER_SPRING_LOAD_CANCEL_HOVER_TIME
+                        : ENTER_SPRING_LOAD_HOVER_TIME);
         mScreen = cl;
     }
 
     // this is called when our timer runs out
-    public void onAlarm(Alarm alarm) {
+    public void onAlarm(final Alarm alarm) {
         if (mScreen != null) {
             // Snap to the screen that we are hovering over now
             Workspace w = mLauncher.getWorkspace();

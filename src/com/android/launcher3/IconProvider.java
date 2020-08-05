@@ -13,7 +13,7 @@ public class IconProvider {
 
     protected String mSystemState;
 
-    public static IconProvider newInstance(Context context) {
+    public static IconProvider newInstance(final Context context) {
         IconProvider provider = Utilities.getOverrideObject(
                                     IconProvider.class, context, R.string.icon_provider_class);
         provider.updateSystemStateString(context);
@@ -28,7 +28,7 @@ public class IconProvider {
         mSystemState = Locale.getDefault().toString() + "," + Build.VERSION.SDK_INT;
     }
 
-    public void updateSystemStateString(Context context) {
+    public void updateSystemStateString(final Context context) {
         final String locale;
         if (Utilities.ATLEAST_NOUGAT) {
             locale = context.getResources().getConfiguration().getLocales().toLanguageTags();
@@ -39,7 +39,7 @@ public class IconProvider {
         mSystemState = locale + "," + Build.VERSION.SDK_INT;
     }
 
-    public String getIconSystemState(String packageName) {
+    public String getIconSystemState(final String packageName) {
         return mSystemState;
     }
 
@@ -47,7 +47,7 @@ public class IconProvider {
      * @param flattenDrawable true if the caller does not care about the specification of the
      *                        original icon as long as the flattened version looks the same.
      */
-    public Drawable getIcon(LauncherActivityInfo info, int iconDpi, boolean flattenDrawable) {
+    public Drawable getIcon(final LauncherActivityInfo info, final int iconDpi, final boolean flattenDrawable) {
         return AdaptiveIconCompat.wrap(info.getIcon(iconDpi));
     }
 }

@@ -46,22 +46,22 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     private boolean mIsGoogleColored;
     private final k Ds;
 
-    static /* synthetic */ void a(HotseatQsbWidget hotseatQsbWidget) {
+    static /* synthetic */ void a(final HotseatQsbWidget hotseatQsbWidget) {
         if (hotseatQsbWidget.mIsGoogleColored != hotseatQsbWidget.isGoogleColored()) {
             hotseatQsbWidget.mIsGoogleColored = !hotseatQsbWidget.mIsGoogleColored;
             hotseatQsbWidget.dM();
         }
     }
 
-    public HotseatQsbWidget(Context context) {
+    public HotseatQsbWidget(final Context context) {
         this(context, null);
     }
 
-    public HotseatQsbWidget(Context context, AttributeSet attributeSet) {
+    public HotseatQsbWidget(final Context context, final AttributeSet attributeSet) {
         this(context, attributeSet, 0);
     }
 
-    public HotseatQsbWidget(Context context, AttributeSet attributeSet, int i) {
+    public HotseatQsbWidget(final Context context, final AttributeSet attributeSet, final int i) {
         super(context, attributeSet, i);
         this.Ds = k.getInstance(context);
         setOnClickListener(this);
@@ -88,8 +88,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
 
 
     @Override
-    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs,
-                               boolean force) {
+    public void onValueChanged(final @NotNull String key, final @NotNull ZimPreferences prefs,
+                               final boolean force) {
         if (key.equals(KEY_DOCK_COLORED_GOOGLE)) {
             mIsGoogleColored = isGoogleColored();
             dM();
@@ -121,14 +121,14 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         y(false);
     }
 
-    private void y(boolean z) {
+    private void y(final boolean z) {
         View findViewById = findViewById(R.id.g_icon);
         if (findViewById != null) {
             findViewById.setAlpha(1.0f);
         }
     }
 
-    protected void onWindowVisibilityChanged(int i) {
+    protected void onWindowVisibilityChanged(final int i) {
         super.onWindowVisibilityChanged(i);
         if (i != 0) {
             y(false);
@@ -162,7 +162,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
                .equals(getContext().getString(R.string.default_live_wallpaper));
     }
 
-    protected final int aA(int i) {
+    protected final int aA(final int i) {
         View view = this.mActivity.getHotseat().getLayout();
         return (i - view.getPaddingLeft()) - view.getPaddingRight();
     }
@@ -193,7 +193,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
             getContext().sendOrderedBroadcast(getSearchIntent(), null,
             new BroadcastReceiver() {
                 @Override
-                public void onReceive(Context context, Intent intent) {
+                public void onReceive(final Context context, final Intent intent) {
                     if (getResultCode() == 0) {
                         fallbackSearch(
                             "com.google.android.googlequicksearchbox.TEXT_ASSIST");
@@ -240,7 +240,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         } else {
             mActivity.openQsb().addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEnd(final Animator animation) {
                     context.startActivity(searchIntent);
                 }
             });
@@ -251,18 +251,18 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         return false;
     }
 
-    protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
+    protected void onLayout(final boolean z, final int i, final int i2, final int i3, final int i4) {
         super.onLayout(z, i, i2, i3, i4);
         setTranslationY((float) (-getBottomMargin(this.mActivity)));
     }
 
-    public void setInsets(Rect rect) {
+    public void setInsets(final Rect rect) {
         super.setInsets(rect);
         setVisibility(
             mActivity.getDeviceProfile().isVerticalBarLayout() ? View.GONE : View.VISIBLE);
     }
 
-    public void onClick(View view) {
+    public void onClick(final View view) {
         super.onClick(view);
         if (view == this) {
             startSearch("", this.Di);
@@ -289,7 +289,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         return provider.isBroadcast() ? null : provider.getSettingsIntent();
     }
 
-    public final void l(String str) {
+    public final void l(final String str) {
         startSearch(str, 0);
     }
 
@@ -303,11 +303,11 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     }
 
     @Override
-    public final void startSearch(String str, int i) {
+    public final void startSearch(final String str, final int i) {
         doOnClick();
     }
 
-    static int getBottomMargin(Launcher launcher) {
+    static int getBottomMargin(final Launcher launcher) {
         Resources resources = launcher.getResources();
         int minBottom = launcher.getDeviceProfile().getInsets().bottom + launcher.getResources()
                         .getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
@@ -336,7 +336,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     }
 
     @Override
-    public void setAlpha(float alpha) {
+    public void setAlpha(final float alpha) {
         super.setAlpha(alpha);
         mActivity.findViewById(R.id.scrim_view).invalidate();
     }

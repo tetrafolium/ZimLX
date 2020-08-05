@@ -117,7 +117,7 @@ public class DbDowngradeHelperTest {
 
         helper = new DatabaseHelper(mContext, null, DB_FILE) {
             @Override
-            public void onOpen(SQLiteDatabase db) {
+            public void onOpen(final SQLiteDatabase db) {
             }
         };
         assertEquals(LauncherProvider.SCHEMA_VERSION, helper.getWritableDatabase().getVersion());
@@ -150,7 +150,7 @@ public class DbDowngradeHelperTest {
 
         DatabaseHelper dbHelper = new DatabaseHelper(mContext, null, DB_FILE) {
             @Override
-            public void onOpen(SQLiteDatabase db) {
+            public void onOpen(final SQLiteDatabase db) {
             }
         };
         // Insert dummy data
@@ -164,29 +164,29 @@ public class DbDowngradeHelperTest {
     }
 
     private static class DowngradeFailException extends RuntimeException {
-        public DowngradeFailException(Exception e) {
+        public DowngradeFailException(final Exception e) {
             super(e);
         }
     }
 
     private class TestOpenHelper extends SQLiteOpenHelper {
 
-        public TestOpenHelper(int version) {
+        public TestOpenHelper(final int version) {
             super(mContext, DB_FILE, null, version);
         }
 
         @Override
-        public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        public void onCreate(final SQLiteDatabase sqLiteDatabase) {
             throw new RuntimeException("DB should already be created");
         }
 
         @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
             throw new RuntimeException("Only downgrade supported");
         }
 
         @Override
-        public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        public void onDowngrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
             try {
                 DbDowngradeHelper.parse(mSchemaFile).onDowngrade(db, oldVersion, newVersion);
             } catch (Exception e) {

@@ -66,7 +66,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private ArgbEvaluator mArgbEvaluator = new ArgbEvaluator();
     private Path mIndicatorPath = new Path();
 
-    public PersonalWorkSlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public PersonalWorkSlidingTabStrip(final @NonNull Context context, final @Nullable AttributeSet attrs) {
         super(context, attrs);
         setOrientation(HORIZONTAL);
         setWillNotDraw(false);
@@ -87,12 +87,12 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         mIsRtl = Utilities.isRtl(getResources());
     }
 
-    private void updateIndicatorPosition(float scrollOffset) {
+    private void updateIndicatorPosition(final float scrollOffset) {
         mScrollOffset = scrollOffset;
         updateIndicatorPosition();
     }
 
-    private void updateTabTextColor(int pos) {
+    private void updateTabTextColor(final int pos) {
         mSelectedPosition = pos;
         for (int i = 0; i < getChildCount(); i++) {
             Button tab = (Button) getChildAt(i);
@@ -109,7 +109,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(final boolean changed, final int l, final int t, final int r, final int b) {
         int childWidth = getChildWidth();
         if (childWidth < getMeasuredWidth()) {
             boolean isLayoutRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
@@ -142,7 +142,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         updateIndicatorPosition(mScrollOffset);
     }
 
-    private void setChildFrame(View child, int left, int top, int width, int height) {
+    private void setChildFrame(final View child, final int left, final int top, final int width, final int height) {
         child.layout(left, top, left + width, top + height);
     }
 
@@ -196,7 +196,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private View getRightTab() {
         return mIsRtl ? getChildAt(0) : getChildAt(getChildCount() - 1);
     }
-    private void setIndicatorPosition(int left, int right) {
+    private void setIndicatorPosition(final int left, final int right) {
         if (left != mIndicatorLeft || right != mIndicatorRight) {
             mIndicatorLeft = left;
             mIndicatorRight = right;
@@ -216,7 +216,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
 
         float y = getHeight() - mDividerPaint.getStrokeWidth() / 2;
@@ -225,7 +225,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
                       mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
     }
 
-    private void drawIndicator(Canvas canvas, int l, int t, int r, int b, Paint paint) {
+    private void drawIndicator(final Canvas canvas, final int l, final int t, final int r, final int b, final Paint paint) {
         l = Math.max(l, getPaddingLeft());
         r = Math.min(r, getWidth() - getPaddingRight());
         paint.setAntiAlias(true);
@@ -258,13 +258,13 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     }
 
     @Override
-    public void setScroll(int currentScroll, int totalScroll) {
+    public void setScroll(final int currentScroll, final int totalScroll) {
         float scrollOffset = ((float) currentScroll) / totalScroll;
         updateIndicatorPosition(scrollOffset);
     }
 
     @Override
-    public void setActiveMarker(int activePage) {
+    public void setActiveMarker(final int activePage) {
         updateTabTextColor(activePage);
         if (mContainerView != null && mLastActivePage != activePage) {
             mContainerView.onTabChanged(activePage);
@@ -272,12 +272,12 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         mLastActivePage = activePage;
     }
 
-    public void setContainerView(AllAppsContainerView containerView) {
+    public void setContainerView(final AllAppsContainerView containerView) {
         mContainerView = containerView;
     }
 
     @Override
-    public void setMarkersCount(int numMarkers) {
+    public void setMarkersCount(final int numMarkers) {
     }
 
     @Override
@@ -285,7 +285,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         return false;
     }
 
-    void inflateButtons(AllAppsTabs tabs) {
+    void inflateButtons(final AllAppsTabs tabs) {
         int childCount = getChildCount();
         int count = tabs.getCount();
         LayoutInflater inflater = LayoutInflater.from(getContext());

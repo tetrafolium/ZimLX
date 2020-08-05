@@ -33,11 +33,11 @@ public class DragViewStateAnnouncer implements Runnable {
 
     private final View mTargetView;
 
-    private DragViewStateAnnouncer(View view) {
+    private DragViewStateAnnouncer(final View view) {
         mTargetView = view;
     }
 
-    public static DragViewStateAnnouncer createFor(View v) {
+    public static DragViewStateAnnouncer createFor(final View v) {
         if (((AccessibilityManager) v.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE))
                 .isEnabled()) {
             return new DragViewStateAnnouncer(v);
@@ -46,7 +46,7 @@ public class DragViewStateAnnouncer implements Runnable {
         }
     }
 
-    public void announce(CharSequence msg) {
+    public void announce(final CharSequence msg) {
         mTargetView.setContentDescription(msg);
         mTargetView.removeCallbacks(this);
         mTargetView.postDelayed(this, TIMEOUT_SEND_ACCESSIBILITY_EVENT);
@@ -61,7 +61,7 @@ public class DragViewStateAnnouncer implements Runnable {
         mTargetView.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
     }
 
-    public void completeAction(int announceResId) {
+    public void completeAction(final int announceResId) {
         cancel();
         Launcher launcher = Launcher.getLauncher(mTargetView.getContext());
         launcher.getDragLayer().announceForAccessibility(launcher.getText(announceResId));

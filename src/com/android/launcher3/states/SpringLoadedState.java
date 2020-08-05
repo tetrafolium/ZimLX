@@ -32,16 +32,16 @@ import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
  */
 public class SpringLoadedState extends LauncherState {
 
-    private static final int STATE_FLAGS = FLAG_MULTI_PAGE |
-                                           FLAG_DISABLE_ACCESSIBILITY | FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED |
-                                           FLAG_DISABLE_PAGE_CLIPPING | FLAG_PAGE_BACKGROUNDS | FLAG_HIDE_BACK_BUTTON;
+    private static final int STATE_FLAGS = FLAG_MULTI_PAGE
+                                           | FLAG_DISABLE_ACCESSIBILITY | FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
+                                           | FLAG_DISABLE_PAGE_CLIPPING | FLAG_PAGE_BACKGROUNDS | FLAG_HIDE_BACK_BUTTON;
 
-    public SpringLoadedState(int id) {
+    public SpringLoadedState(final int id) {
         super(id, ContainerType.OVERVIEW, SPRING_LOADED_TRANSITION_MS, STATE_FLAGS);
     }
 
     @Override
-    public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
+    public float[] getWorkspaceScaleAndTranslation(final Launcher launcher) {
         DeviceProfile grid = launcher.getDeviceProfile();
         Workspace ws = launcher.getWorkspace();
         if (ws.getChildCount() == 0) {
@@ -73,7 +73,7 @@ public class SpringLoadedState extends LauncherState {
     }
 
     @Override
-    public void onStateEnabled(Launcher launcher) {
+    public void onStateEnabled(final Launcher launcher) {
         Workspace ws = launcher.getWorkspace();
         ws.showPageIndicatorAtCurrentScroll();
         ws.getPageIndicator().setShouldAutoHide(false);
@@ -85,7 +85,7 @@ public class SpringLoadedState extends LauncherState {
     }
 
     @Override
-    public float getWorkspaceScrimAlpha(Launcher launcher) {
+    public float getWorkspaceScrimAlpha(final Launcher launcher) {
         return 0.3f;
     }
 

@@ -42,8 +42,8 @@ class FolderPreviewItemAnim {
      * @param onCompleteRunnable runnable to execute upon animation completion
      */
     FolderPreviewItemAnim(final PreviewItemManager previewItemManager,
-                          final PreviewItemDrawingParams params, int index0, int items0, int index1, int items1,
-                          int duration, final Runnable onCompleteRunnable) {
+                          final PreviewItemDrawingParams params, final int index0, final int items0, final int index1, final int items1,
+                          final int duration, final Runnable onCompleteRunnable) {
         previewItemManager.computePreviewItemDrawingParams(index1, items1, sTmpParams);
 
         finalScale = sTmpParams.scale;
@@ -58,7 +58,7 @@ class FolderPreviewItemAnim {
 
         mValueAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
         mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
+            public void onAnimationUpdate(final ValueAnimator animation) {
                 float progress = animation.getAnimatedFraction();
 
                 params.transX = transX0 + progress * (finalTransX - transX0);
@@ -69,7 +69,7 @@ class FolderPreviewItemAnim {
         });
         mValueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 if (onCompleteRunnable != null) {
                     onCompleteRunnable.run();
                 }
@@ -87,9 +87,9 @@ class FolderPreviewItemAnim {
         mValueAnimator.cancel();
     }
 
-    public boolean hasEqualFinalState(FolderPreviewItemAnim anim) {
-        return finalTransY == anim.finalTransY && finalTransX == anim.finalTransX &&
-               finalScale == anim.finalScale;
+    public boolean hasEqualFinalState(final FolderPreviewItemAnim anim) {
+        return finalTransY == anim.finalTransY && finalTransX == anim.finalTransX
+               && finalScale == anim.finalScale;
 
     }
 }

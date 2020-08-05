@@ -69,7 +69,7 @@ public class LauncherState {
     protected static final PageAlphaProvider DEFAULT_ALPHA_PROVIDER =
     new PageAlphaProvider(ACCEL_2) {
         @Override
-        public float getPageAlpha(int pageIndex) {
+        public float getPageAlpha(final int pageIndex) {
             return 1;
         }
     };
@@ -80,8 +80,8 @@ public class LauncherState {
      * TODO: Create a separate class for NORMAL state.
      */
     public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE, 0,
-            FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON |
-            FLAG_HAS_SYS_UI_SCRIM);
+            FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON
+            | FLAG_HAS_SYS_UI_SCRIM);
 
     /**
      * Various Launcher states arranged in the increasing order of UI layers
@@ -156,7 +156,7 @@ public class LauncherState {
 
     public final boolean hasSysUiScrim;
 
-    public LauncherState(int id, int containerType, int transitionDuration, int flags) {
+    public LauncherState(final int id, final int containerType, final int transitionDuration, final int flags) {
         this.containerType = containerType;
         this.transitionDuration = transitionDuration;
 
@@ -181,7 +181,7 @@ public class LauncherState {
         return Arrays.copyOf(sAllStates, sAllStates.length);
     }
 
-    public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
+    public float[] getWorkspaceScaleAndTranslation(final Launcher launcher) {
         return new float[] {1, 0, 0};
     }
 
@@ -190,18 +190,18 @@ public class LauncherState {
      * scale for the current and adjacent pages
      * translationY factor where 0 is top aligned and 0.5 is centered vertically
      */
-    public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
+    public float[] getOverviewScaleAndTranslationYFactor(final Launcher launcher) {
         return new float[] {1.1f, 0f};
     }
 
-    public void onStateEnabled(Launcher launcher) {
+    public void onStateEnabled(final Launcher launcher) {
         dispatchWindowStateChanged(launcher);
     }
 
-    public void onStateDisabled(Launcher launcher) {
+    public void onStateDisabled(final Launcher launcher) {
     }
 
-    public int getVisibleElements(Launcher launcher) {
+    public int getVisibleElements(final Launcher launcher) {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             return HOTSEAT_ICONS | VERTICAL_SWIPE_INDICATOR;
         }
@@ -213,39 +213,39 @@ public class LauncherState {
      *
      * @see com.android.launcher3.allapps.AllAppsTransitionController
      */
-    public float getVerticalProgress(Launcher launcher) {
+    public float getVerticalProgress(final Launcher launcher) {
         return 1f;
     }
 
-    public float getScrimProgress(Launcher launcher) {
+    public float getScrimProgress(final Launcher launcher) {
         return getVerticalProgress(launcher);
     }
 
-    public float getWorkspaceScrimAlpha(Launcher launcher) {
+    public float getWorkspaceScrimAlpha(final Launcher launcher) {
         return 0;
     }
 
-    public float getWorkspaceBlurAlpha(Launcher launcher) {
+    public float getWorkspaceBlurAlpha(final Launcher launcher) {
         return 0;
     }
-    public String getDescription(Launcher launcher) {
+    public String getDescription(final Launcher launcher) {
         return launcher.getWorkspace().getCurrentPageDescription();
     }
 
-    public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
+    public PageAlphaProvider getWorkspacePageAlphaProvider(final Launcher launcher) {
         if (this != NORMAL || !launcher.getDeviceProfile().shouldFadeAdjacentWorkspaceScreens()) {
             return DEFAULT_ALPHA_PROVIDER;
         }
         final int centerPage = launcher.getWorkspace().getNextPage();
         return new PageAlphaProvider(ACCEL_2) {
             @Override
-            public float getPageAlpha(int pageIndex) {
+            public float getPageAlpha(final int pageIndex) {
                 return pageIndex != centerPage ? 0 : 1f;
             }
         };
     }
 
-    public LauncherState getHistoryForState(LauncherState previousState) {
+    public LauncherState getHistoryForState(final LauncherState previousState) {
         // No history is supported
         return NORMAL;
     }
@@ -253,7 +253,7 @@ public class LauncherState {
     /**
      * Called when the start transition ends and the user settles on this particular state.
      */
-    public void onStateTransitionEnd(Launcher launcher) {
+    public void onStateTransitionEnd(final Launcher launcher) {
         if (this == NORMAL || this == SPRING_LOADED) {
             UiFactory.resetOverview(launcher);
         }
@@ -263,7 +263,7 @@ public class LauncherState {
         }
     }
 
-    protected static void dispatchWindowStateChanged(Launcher launcher) {
+    protected static void dispatchWindowStateChanged(final Launcher launcher) {
         launcher.getWindow().getDecorView().sendAccessibilityEvent(TYPE_WINDOW_STATE_CHANGED);
     }
 
@@ -271,7 +271,7 @@ public class LauncherState {
 
         public final Interpolator interpolator;
 
-        public PageAlphaProvider(Interpolator interpolator) {
+        public PageAlphaProvider(final Interpolator interpolator) {
             this.interpolator = interpolator;
         }
 

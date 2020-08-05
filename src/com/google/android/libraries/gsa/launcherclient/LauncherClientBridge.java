@@ -15,13 +15,13 @@ public class LauncherClientBridge extends IBridgeCallback.Stub implements Servic
     private final int mFlags;
     private ComponentName mConnectionName;
 
-    public LauncherClientBridge(BaseClientService launcherClientService, int flags) {
+    public LauncherClientBridge(final BaseClientService launcherClientService, final int flags) {
         mClientService = launcherClientService;
         mFlags = flags;
     }
 
     @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
+    public void onServiceConnected(final ComponentName name, final IBinder service) {
         try {
             if (INTERFACE_DESCRIPTOR.equals(service.getInterfaceDescriptor())) {
                 IBridge bridge = IBridge.Stub.asInterface(service);
@@ -39,7 +39,7 @@ public class LauncherClientBridge extends IBridgeCallback.Stub implements Servic
         }
     }
     @Override
-    public void onServiceDisconnected(ComponentName name) {
+    public void onServiceDisconnected(final ComponentName name) {
         if (mConnectionName != null) {
             mClientService.onServiceDisconnected(mConnectionName);
             mConnectionName = null;

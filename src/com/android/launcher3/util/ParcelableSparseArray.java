@@ -22,7 +22,7 @@ import android.util.SparseArray;
 public class ParcelableSparseArray extends SparseArray<Parcelable> implements Parcelable {
     public static final Parcelable.Creator<ParcelableSparseArray> CREATOR =
     new Parcelable.Creator<ParcelableSparseArray>() {
-        public ParcelableSparseArray createFromParcel(Parcel source) {
+        public ParcelableSparseArray createFromParcel(final Parcel source) {
             final ParcelableSparseArray array = new ParcelableSparseArray();
             final ClassLoader loader = array.getClass().getClassLoader();
             final int count = source.readInt();
@@ -32,7 +32,7 @@ public class ParcelableSparseArray extends SparseArray<Parcelable> implements Pa
             return array;
         }
 
-        public ParcelableSparseArray[] newArray(int size) {
+        public ParcelableSparseArray[] newArray(final int size) {
             return new ParcelableSparseArray[size];
         }
     };
@@ -41,7 +41,7 @@ public class ParcelableSparseArray extends SparseArray<Parcelable> implements Pa
         return 0;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         final int count = size();
         dest.writeInt(count);
         for (int i = 0; i < count; i++) {

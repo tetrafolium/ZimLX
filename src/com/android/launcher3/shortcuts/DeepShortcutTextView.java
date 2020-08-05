@@ -35,15 +35,15 @@ public class DeepShortcutTextView extends BubbleTextView {
     private final int mDragHandleWidth;
     private boolean mShouldPerformClick = true;
 
-    public DeepShortcutTextView(Context context) {
+    public DeepShortcutTextView(final Context context) {
         this(context, null, 0);
     }
 
-    public DeepShortcutTextView(Context context, AttributeSet attrs) {
+    public DeepShortcutTextView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public DeepShortcutTextView(Context context, AttributeSet attrs, int defStyle) {
+    public DeepShortcutTextView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
         Resources resources = getResources();
@@ -53,7 +53,7 @@ public class DeepShortcutTextView extends BubbleTextView {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         mDragHandleBounds.set(0, 0, mDragHandleWidth, getMeasuredHeight());
@@ -63,12 +63,12 @@ public class DeepShortcutTextView extends BubbleTextView {
     }
 
     @Override
-    protected void applyCompoundDrawables(Drawable icon) {
+    protected void applyCompoundDrawables(final Drawable icon) {
         // The icon is drawn in a separate view.
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(final MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             // Ignore clicks on the drag handle (long clicks still start the drag).
             mShouldPerformClick = !mDragHandleBounds.contains((int) ev.getX(), (int) ev.getY());

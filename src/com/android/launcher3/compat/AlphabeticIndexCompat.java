@@ -19,7 +19,7 @@ public class AlphabeticIndexCompat {
     private final BaseIndex mBaseIndex;
     private final String mDefaultMiscLabel;
 
-    public AlphabeticIndexCompat(Context context) {
+    public AlphabeticIndexCompat(final Context context) {
         BaseIndex index = null;
 
         try {
@@ -53,7 +53,7 @@ public class AlphabeticIndexCompat {
     /**
      * Computes the section name for an given string {@param s}.
      */
-    public String computeSectionName(CharSequence cs) {
+    public String computeSectionName(final CharSequence cs) {
         String s = Utilities.trim(cs);
         String sectionName = mBaseIndex.getBucketLabel(mBaseIndex.getBucketIndex(s));
         if (Utilities.trim(sectionName).isEmpty() && s.length() > 0) {
@@ -89,7 +89,7 @@ public class AlphabeticIndexCompat {
         /**
          * Returns the index of the bucket in which the given string should appear.
          */
-        protected int getBucketIndex(String s) {
+        protected int getBucketIndex(final String s) {
             if (s.isEmpty()) {
                 return UNKNOWN_BUCKET_INDEX;
             }
@@ -103,7 +103,7 @@ public class AlphabeticIndexCompat {
         /**
          * Returns the label for the bucket at the given index (as returned by getBucketIndex).
          */
-        protected String getBucketLabel(int index) {
+        protected String getBucketLabel(final int index) {
             return BUCKETS.substring(index, index + 1);
         }
     }
@@ -118,7 +118,7 @@ public class AlphabeticIndexCompat {
         private Method mGetBucketIndexMethod;
         private Method mGetBucketLabelMethod;
 
-        public AlphabeticIndexV16(Context context) throws Exception {
+        public AlphabeticIndexV16(final Context context) throws Exception {
             Locale curLocale = context.getResources().getConfiguration().locale;
             Class clazz = Class.forName("libcore.icu.AlphabeticIndex");
             mGetBucketIndexMethod = clazz.getDeclaredMethod("getBucketIndex", String.class);
@@ -136,7 +136,7 @@ public class AlphabeticIndexCompat {
          * Function is synchronized because underlying routine walks an iterator
          * whose state is maintained inside the index object.
          */
-        protected int getBucketIndex(String s) {
+        protected int getBucketIndex(final String s) {
             try {
                 return (Integer) mGetBucketIndexMethod.invoke(mAlphabeticIndex, s);
             } catch (Exception e) {
@@ -148,7 +148,7 @@ public class AlphabeticIndexCompat {
         /**
          * Returns the label for the bucket at the given index (as returned by getBucketIndex).
          */
-        protected String getBucketLabel(int index) {
+        protected String getBucketLabel(final int index) {
             try {
                 return (String) mGetBucketLabelMethod.invoke(mAlphabeticIndex, index);
             } catch (Exception e) {
@@ -166,7 +166,7 @@ public class AlphabeticIndexCompat {
 
         private final AlphabeticIndex.ImmutableIndex mAlphabeticIndex;
 
-        public AlphabeticIndexVN(Context context) {
+        public AlphabeticIndexVN(final Context context) {
             LocaleList locales = context.getResources().getConfiguration().getLocales();
             int localeCount = locales.size();
 
@@ -183,14 +183,14 @@ public class AlphabeticIndexCompat {
         /**
          * Returns the index of the bucket in which {@param s} should appear.
          */
-        protected int getBucketIndex(String s) {
+        protected int getBucketIndex(final String s) {
             return mAlphabeticIndex.getBucketIndex(s);
         }
 
         /**
          * Returns the label for the bucket at the given index
          */
-        protected String getBucketLabel(int index) {
+        protected String getBucketLabel(final int index) {
             return mAlphabeticIndex.getBucket(index).getLabel();
         }
     }

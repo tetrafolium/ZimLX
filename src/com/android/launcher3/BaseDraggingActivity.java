@@ -69,7 +69,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     private DisplayRotationListener mRotationListener;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mRotationListener = new DisplayRotationListener(this, this::onDeviceRotationChanged);
@@ -85,30 +85,30 @@ public abstract class BaseDraggingActivity extends BaseActivity
     }
 
     @Override
-    public void onExtractedColorsChanged(WallpaperColorInfo wallpaperColorInfo) {
+    public void onExtractedColorsChanged(final WallpaperColorInfo wallpaperColorInfo) {
         if (mThemeRes != getThemeRes(wallpaperColorInfo)) {
             recreate();
         }
     }
 
-    protected int getThemeRes(WallpaperColorInfo wallpaperColorInfo) {
+    protected int getThemeRes(final WallpaperColorInfo wallpaperColorInfo) {
         if (wallpaperColorInfo.isDark()) {
-            return wallpaperColorInfo.supportsDarkText() ?
-                   R.style.LauncherTheme_DarkText : R.style.LauncherTheme_Dark;
+            return wallpaperColorInfo.supportsDarkText()
+                   ? R.style.LauncherTheme_DarkText : R.style.LauncherTheme_Dark;
         } else {
-            return wallpaperColorInfo.supportsDarkText() ?
-                   R.style.LauncherTheme_Dark_DarkText : R.style.LauncherTheme;
+            return wallpaperColorInfo.supportsDarkText()
+                   ? R.style.LauncherTheme_Dark_DarkText : R.style.LauncherTheme;
         }
     }
 
     @Override
-    public void onActionModeStarted(ActionMode mode) {
+    public void onActionModeStarted(final ActionMode mode) {
         super.onActionModeStarted(mode);
         mCurrentActionMode = mode;
     }
 
     @Override
-    public void onActionModeFinished(ActionMode mode) {
+    public void onActionModeFinished(final ActionMode mode) {
         super.onActionModeFinished(mode);
         mCurrentActionMode = null;
     }
@@ -131,27 +131,27 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     public abstract void invalidateParent(ItemInfo info);
 
-    public static BaseDraggingActivity fromContext(Context context) {
+    public static BaseDraggingActivity fromContext(final Context context) {
         if (context instanceof BaseDraggingActivity) {
             return (BaseDraggingActivity) context;
         }
         return ((BaseDraggingActivity) ((ContextWrapper) context).getBaseContext());
     }
 
-    public Rect getViewBounds(View v) {
+    public Rect getViewBounds(final View v) {
         int[] pos = new int[2];
         v.getLocationOnScreen(pos);
         return new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight());
     }
 
-    public final Bundle getActivityLaunchOptionsAsBundle(View v) {
+    public final Bundle getActivityLaunchOptionsAsBundle(final View v) {
         ActivityOptions activityOptions = getActivityLaunchOptions(v);
         return activityOptions == null ? null : activityOptions.toBundle();
     }
 
     public abstract ActivityOptions getActivityLaunchOptions(View v);
 
-    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
+    public boolean startActivitySafely(final View v, final Intent intent, final ItemInfo item) {
         if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
             return false;
@@ -159,8 +159,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
         // Only launch using the new animation if the shortcut has not opted out (this is a
         // private contract between launcher and may be ignored in the future).
-        boolean useLaunchAnimation = (v != null) &&
-                                     !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
+        boolean useLaunchAnimation = (v != null)
+                                     && !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
         Bundle optsBundle = useLaunchAnimation
                             ? getActivityLaunchOptionsAsBundle(v)
                             : null;
@@ -197,7 +197,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         return false;
     }
 
-    private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info) {
+    private void startShortcutIntentSafely(final Intent intent, final Bundle optsBundle, final ItemInfo info) {
         try {
             StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
             try {
@@ -226,7 +226,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         }
     }
 
-    protected boolean onErrorStartingShortcut(Intent intent, ItemInfo info) {
+    protected boolean onErrorStartingShortcut(final Intent intent, final ItemInfo info) {
         return false;
     }
 
@@ -248,7 +248,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     }
 
-    public <T extends BaseDraggingActivity> void setOnStartCallback(OnStartCallback<T> callback) {
+    public <T extends BaseDraggingActivity> void setOnStartCallback(final OnStartCallback<T> callback) {
         mOnStartCallback = callback;
     }
 

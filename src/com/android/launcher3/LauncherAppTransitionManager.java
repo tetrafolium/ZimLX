@@ -28,12 +28,12 @@ import android.view.View;
  */
 public class LauncherAppTransitionManager {
 
-    public static LauncherAppTransitionManager newInstance(Context context) {
+    public static LauncherAppTransitionManager newInstance(final Context context) {
         return Utilities.getOverrideObject(LauncherAppTransitionManager.class,
                                            context, R.string.app_transition_manager_class);
     }
 
-    public ActivityOptions getActivityLaunchOptions(Launcher launcher, View v) {
+    public ActivityOptions getActivityLaunchOptions(final Launcher launcher, final View v) {
         if (Utilities.ATLEAST_MARSHMALLOW) {
             int left = 0, top = 0;
             int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();

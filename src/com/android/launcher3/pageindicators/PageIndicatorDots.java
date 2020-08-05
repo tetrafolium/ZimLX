@@ -61,12 +61,12 @@ public class PageIndicatorDots extends View implements PageIndicator {
     private static final Property<PageIndicatorDots, Float> CURRENT_POSITION
     = new Property<PageIndicatorDots, Float>(float.class, "current_position") {
         @Override
-        public Float get(PageIndicatorDots obj) {
+        public Float get(final PageIndicatorDots obj) {
             return obj.mCurrentPosition;
         }
 
         @Override
-        public void set(PageIndicatorDots obj, Float pos) {
+        public void set(final PageIndicatorDots obj, final Float pos) {
             obj.mCurrentPosition = pos;
             obj.invalidate();
             obj.invalidateOutline();
@@ -97,15 +97,15 @@ public class PageIndicatorDots extends View implements PageIndicator {
 
     private float[] mEntryAnimationRadiusFactors;
 
-    public PageIndicatorDots(Context context) {
+    public PageIndicatorDots(final Context context) {
         this(context, null);
     }
 
-    public PageIndicatorDots(Context context, AttributeSet attrs) {
+    public PageIndicatorDots(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PageIndicatorDots(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PageIndicatorDots(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -120,7 +120,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
     }
 
     @Override
-    public void setScroll(int currentScroll, int totalScroll) {
+    public void setScroll(final int currentScroll, final int totalScroll) {
         if (mNumPages > 1) {
             if (mIsRtl) {
                 currentScroll = totalScroll - currentScroll;
@@ -144,14 +144,14 @@ public class PageIndicatorDots extends View implements PageIndicator {
         }
     }
 
-    private void animateToPosition(float position) {
+    private void animateToPosition(final float position) {
         mFinalPosition = position;
         if (Math.abs(mCurrentPosition - mFinalPosition) < SHIFT_THRESHOLD) {
             mCurrentPosition = mFinalPosition;
         }
         if (mAnimator == null && Float.compare(mCurrentPosition, mFinalPosition) != 0) {
-            float positionForThisAnim = mCurrentPosition > mFinalPosition ?
-                                        mCurrentPosition - SHIFT_PER_ANIMATION : mCurrentPosition + SHIFT_PER_ANIMATION;
+            float positionForThisAnim = mCurrentPosition > mFinalPosition
+                                        ? mCurrentPosition - SHIFT_PER_ANIMATION : mCurrentPosition + SHIFT_PER_ANIMATION;
             mAnimator = ObjectAnimator.ofFloat(this, CURRENT_POSITION, positionForThisAnim);
             mAnimator.addListener(new AnimationCycleListener());
             mAnimator.setDuration(ANIMATION_DURATION);
@@ -192,7 +192,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
             final int index = i;
             anim.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
+                public void onAnimationUpdate(final ValueAnimator animation) {
                     mEntryAnimationRadiusFactors[index] = (Float) animation.getAnimatedValue();
                     invalidate();
                 }
@@ -205,7 +205,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
         animSet.addListener(new AnimatorListenerAdapter() {
 
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 mEntryAnimationRadiusFactors = null;
                 invalidateOutline();
                 invalidate();
@@ -215,30 +215,30 @@ public class PageIndicatorDots extends View implements PageIndicator {
     }
 
     @Override
-    public void setActiveMarker(int activePage) {
+    public void setActiveMarker(final int activePage) {
         if (mActivePage != activePage) {
             mActivePage = activePage;
         }
     }
 
     @Override
-    public void setMarkersCount(int numMarkers) {
+    public void setMarkersCount(final int numMarkers) {
         mNumPages = numMarkers;
         requestLayout();
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         // Add extra spacing of mDotRadius on all sides so than entry animation could be run.
-        int width = MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY ?
-                    MeasureSpec.getSize(widthMeasureSpec) : (int) ((mNumPages * 3 + 2) * mDotRadius);
-        int height = MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY ?
-                     MeasureSpec.getSize(heightMeasureSpec) : (int) (4 * mDotRadius);
+        int width = MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY
+                    ? MeasureSpec.getSize(widthMeasureSpec) : (int) ((mNumPages * 3 + 2) * mDotRadius);
+        int height = MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY
+                     ? MeasureSpec.getSize(heightMeasureSpec) : (int) (4 * mDotRadius);
         setMeasuredDimension(width, height);
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         // Draw all page indicators;
         float circleGap = 3 * mDotRadius;
         float startX = (getWidth() - mNumPages * circleGap + mDotRadius) / 2;
@@ -303,7 +303,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
     private class MyOutlineProver extends ViewOutlineProvider {
 
         @Override
-        public void getOutline(View view, Outline outline) {
+        public void getOutline(final View view, final Outline outline) {
             if (mEntryAnimationRadiusFactors == null) {
                 RectF activeRect = getActiveRect();
                 outline.setRoundRect(
@@ -325,12 +325,12 @@ public class PageIndicatorDots extends View implements PageIndicator {
         private boolean mCancelled = false;
 
         @Override
-        public void onAnimationCancel(Animator animation) {
+        public void onAnimationCancel(final Animator animation) {
             mCancelled = true;
         }
 
         @Override
-        public void onAnimationEnd(Animator animation) {
+        public void onAnimationEnd(final Animator animation) {
             if (!mCancelled) {
                 mAnimator = null;
                 animateToPosition(mFinalPosition);

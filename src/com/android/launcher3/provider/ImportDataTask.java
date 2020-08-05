@@ -80,14 +80,14 @@ public class ImportDataTask {
     private int mMaxGridSizeX;
     private int mMaxGridSizeY;
 
-    private ImportDataTask(Context context, String sourceAuthority) {
+    private ImportDataTask(final Context context, final String sourceAuthority) {
         mContext = context;
-        mOtherScreensUri = Uri.parse("content://" +
-                                     sourceAuthority + "/" + WorkspaceScreens.TABLE_NAME);
+        mOtherScreensUri = Uri.parse("content://"
+                                     + sourceAuthority + "/" + WorkspaceScreens.TABLE_NAME);
         mOtherFavoritesUri = Uri.parse("content://" + sourceAuthority + "/" + Favorites.TABLE_NAME);
     }
 
-    private static String getPackage(Intent intent) {
+    private static String getPackage(final Intent intent) {
         return intent.getComponent() != null ? intent.getComponent().getPackageName()
                : intent.getPackage();
     }
@@ -98,7 +98,7 @@ public class ImportDataTask {
      * @return true on successful data import, false if it was not available
      * @throws Exception if the import failed
      */
-    public static boolean performImportIfPossible(Context context) throws Exception {
+    public static boolean performImportIfPossible(final Context context) throws Exception {
         SharedPreferences devicePrefs = getDevicePrefs(context);
         String sourcePackage = devicePrefs.getString(KEY_DATA_IMPORT_SRC_PKG, "");
         String sourceAuthority = devicePrefs.getString(KEY_DATA_IMPORT_SRC_AUTHORITY, "");
@@ -128,8 +128,8 @@ public class ImportDataTask {
 
                 // Wait until we found a provider with matching authority.
                 if (sourceAuthority.equals(info.authority)) {
-                    if (TextUtils.isEmpty(info.readPermission) ||
-                            context.checkPermission(info.readPermission, Process.myPid(),
+                    if (TextUtils.isEmpty(info.readPermission)
+                            || context.checkPermission(info.readPermission, Process.myPid(),
                                                     Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
                         // All checks passed, run the import task.
                         return new ImportDataTask(context, sourceAuthority).importWorkspace();
@@ -140,7 +140,7 @@ public class ImportDataTask {
         return false;
     }
 
-    private static int getMyHotseatLayoutId(Context context) {
+    private static int getMyHotseatLayoutId(final Context context) {
         return LauncherAppState.getIDP(context).numHotseatIcons <= 5
                ? R.xml.dw_phone_hotseat
                : R.xml.dw_tablet_hotseat;
@@ -190,7 +190,7 @@ public class ImportDataTask {
      * 3) In the end fills any holes in hotseat with items from default hotseat layout.
      */
     private void importWorkspaceItems(
-        long firsetScreenId, LongSparseArray<Long> screenIdMap) throws Exception {
+        final long firsetScreenId, final LongSparseArray<Long> screenIdMap) throws Exception {
         String profileId = Long.toString(UserManagerCompat.getInstance(mContext)
                                          .getSerialNumberForUser(Process.myUserHandle()));
 
@@ -296,9 +296,9 @@ public class ImportDataTask {
                 }
                 case Favorites.ITEM_TYPE_APPWIDGET: {
                     values.put(Favorites.RESTORED,
-                               LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
-                               LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
-                               LauncherAppWidgetInfo.FLAG_UI_NOT_READY);
+                               LauncherAppWidgetInfo.FLAG_ID_NOT_VALID
+                               | LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY
+                               | LauncherAppWidgetInfo.FLAG_UI_NOT_READY);
                     values.put(Favorites.APPWIDGET_PROVIDER, c.getString(widgetProviderIndex));
                     break;
                 }
@@ -393,7 +393,7 @@ public class ImportDataTask {
      * Extension of {@link DefaultLayoutParser} which only allows icons and shortcuts.
      */
     private static class HotseatLayoutParser extends DefaultLayoutParser {
-        public HotseatLayoutParser(Context context, LayoutParserCallback callback) {
+        public HotseatLayoutParser(final Context context, final LayoutParserCallback callback) {
             super(context, null, callback, context.getResources(), getMyHotseatLayoutId(context));
         }
 
@@ -419,8 +419,8 @@ public class ImportDataTask {
         private int mStartItemId;
 
         HotseatParserCallback(
-            HashSet<String> existingApps, LongArrayMap<Object> existingItems,
-            ArrayList<ContentProviderOperation> outOps, int startItemId, int requiredSize) {
+            final HashSet<String> existingApps, final LongArrayMap<Object> existingItems,
+            final ArrayList<ContentProviderOperation> outOps, final int startItemId, final int requiredSize) {
             mExistingApps = existingApps;
             mExistingItems = existingItems;
             mOutOps = outOps;
@@ -434,7 +434,7 @@ public class ImportDataTask {
         }
 
         @Override
-        public long insertAndCheck(SQLiteDatabase db, ContentValues values) {
+        public long insertAndCheck(final SQLiteDatabase db, final ContentValues values) {
             if (mExistingItems.size() >= mRequiredSize) {
                 // No need to add more items.
                 return 0;

@@ -33,21 +33,21 @@ public class WidgetAddFlowHandler implements Parcelable {
 
     public static final Parcelable.Creator<WidgetAddFlowHandler> CREATOR =
     new Parcelable.Creator<WidgetAddFlowHandler>() {
-        public WidgetAddFlowHandler createFromParcel(Parcel source) {
+        public WidgetAddFlowHandler createFromParcel(final Parcel source) {
             return new WidgetAddFlowHandler(source);
         }
 
-        public WidgetAddFlowHandler[] newArray(int size) {
+        public WidgetAddFlowHandler[] newArray(final int size) {
             return new WidgetAddFlowHandler[size];
         }
     };
     private final AppWidgetProviderInfo mProviderInfo;
 
-    public WidgetAddFlowHandler(AppWidgetProviderInfo providerInfo) {
+    public WidgetAddFlowHandler(final AppWidgetProviderInfo providerInfo) {
         mProviderInfo = providerInfo;
     }
 
-    protected WidgetAddFlowHandler(Parcel parcel) {
+    protected WidgetAddFlowHandler(final Parcel parcel) {
         mProviderInfo = AppWidgetProviderInfo.CREATOR.createFromParcel(parcel);
     }
 
@@ -57,11 +57,11 @@ public class WidgetAddFlowHandler implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
+    public void writeToParcel(final Parcel parcel, final int i) {
         mProviderInfo.writeToParcel(parcel, i);
     }
 
-    public void startBindFlow(Launcher launcher, int appWidgetId, ItemInfo info, int requestCode) {
+    public void startBindFlow(final Launcher launcher, final int appWidgetId, final ItemInfo info, final int requestCode) {
         launcher.setWaitingForResult(PendingRequestArgs.forWidgetInfo(appWidgetId, this, info));
         launcher.getAppWidgetHost()
         .startBindFlow(launcher, appWidgetId, mProviderInfo, requestCode);
@@ -70,8 +70,8 @@ public class WidgetAddFlowHandler implements Parcelable {
     /**
      * @see #startConfigActivity(Launcher, int, ItemInfo, int)
      */
-    public boolean startConfigActivity(Launcher launcher, LauncherAppWidgetInfo info,
-                                       int requestCode) {
+    public boolean startConfigActivity(final Launcher launcher, final LauncherAppWidgetInfo info,
+                                       final int requestCode) {
         return startConfigActivity(launcher, info.appWidgetId, info, requestCode);
     }
 
@@ -80,8 +80,8 @@ public class WidgetAddFlowHandler implements Parcelable {
      *
      * @return true if the configuration flow was started, false otherwise.
      */
-    public boolean startConfigActivity(Launcher launcher, int appWidgetId, ItemInfo info,
-                                       int requestCode) {
+    public boolean startConfigActivity(final Launcher launcher, final int appWidgetId, final ItemInfo info,
+                                       final int requestCode) {
         if (!needsConfigure()) {
             return false;
         }
@@ -94,7 +94,7 @@ public class WidgetAddFlowHandler implements Parcelable {
         return mProviderInfo.configure != null;
     }
 
-    public LauncherAppWidgetProviderInfo getProviderInfo(Context context) {
+    public LauncherAppWidgetProviderInfo getProviderInfo(final Context context) {
         return LauncherAppWidgetProviderInfo.fromProviderInfo(context, mProviderInfo);
     }
 }

@@ -23,7 +23,7 @@ import android.os.Build;
 @TargetApi(Build.VERSION_CODES.N_MR1)
 public class UserManagerCompatVNMr1 extends UserManagerCompatVN {
 
-    UserManagerCompatVNMr1(Context context) {
+    UserManagerCompatVNMr1(final Context context) {
         super(context);
     }
 

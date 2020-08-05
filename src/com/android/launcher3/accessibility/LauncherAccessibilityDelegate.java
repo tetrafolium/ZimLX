@@ -75,7 +75,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
     private DragInfo mDragInfo = null;
 
-    public LauncherAccessibilityDelegate(Launcher launcher) {
+    public LauncherAccessibilityDelegate(final Launcher launcher) {
         mLauncher = launcher;
 
         mActions.put(REMOVE, new AccessibilityAction(REMOVE,
@@ -98,17 +98,17 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                      launcher.getText(R.string.shortcuts_menu_with_notifications_description)));
     }
 
-    public void addAccessibilityAction(int action, int actionLabel) {
+    public void addAccessibilityAction(final int action, final int actionLabel) {
         mActions.put(action, new AccessibilityAction(action, mLauncher.getText(actionLabel)));
     }
 
     @Override
-    public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
+    public void onInitializeAccessibilityNodeInfo(final View host, final AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(host, info);
         addSupportedActions(host, info, false);
     }
 
-    public void addSupportedActions(View host, AccessibilityNodeInfo info, boolean fromKeyboard) {
+    public void addSupportedActions(final View host, final AccessibilityNodeInfo info, final boolean fromKeyboard) {
         if (!(host.getTag() instanceof ItemInfo)) return;
         ItemInfo item = (ItemInfo) host.getTag();
 
@@ -146,7 +146,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     }
 
     @Override
-    public boolean performAccessibilityAction(View host, int action, Bundle args) {
+    public boolean performAccessibilityAction(final View host, final int action, final Bundle args) {
         if ((host.getTag() instanceof ItemInfo)
                 && performAction(host, (ItemInfo) host.getTag(), action)) {
             return true;
@@ -154,7 +154,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         return super.performAccessibilityAction(host, action, args);
     }
 
-    public boolean performAction(final View host, final ItemInfo item, int action) {
+    public boolean performAction(final View host, final ItemInfo item, final int action) {
         if (action == MOVE) {
             beginAccessibleDrag(host, item);
         } else if (action == ADD_TO_WORKSPACE) {
@@ -228,8 +228,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             return PopupContainerWithArrow.showForIcon((BubbleTextView) host) != null;
         } else {
             for (ButtonDropTarget dropTarget : mLauncher.getDropTargetBar().getDropTargets()) {
-                if (dropTarget.supportsAccessibilityDrop(item, host) &&
-                        action == dropTarget.getAccessibilityAction()) {
+                if (dropTarget.supportsAccessibilityDrop(item, host)
+                        && action == dropTarget.getAccessibilityAction()) {
                     dropTarget.onAccessibilityDrop(host, item);
                     return true;
                 }
@@ -238,7 +238,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         return false;
     }
 
-    private ArrayList<Integer> getSupportedResizeActions(View host, LauncherAppWidgetInfo info) {
+    private ArrayList<Integer> getSupportedResizeActions(final View host, final LauncherAppWidgetInfo info) {
         ArrayList<Integer> actions = new ArrayList<>();
 
         AppWidgetProviderInfo providerInfo = ((LauncherAppWidgetHostView) host).getAppWidgetInfo();
@@ -248,8 +248,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
         CellLayout layout = (CellLayout) host.getParent().getParent();
         if ((providerInfo.resizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0) {
-            if (layout.isRegionVacant(info.cellX + info.spanX, info.cellY, 1, info.spanY) ||
-                    layout.isRegionVacant(info.cellX - 1, info.cellY, 1, info.spanY)) {
+            if (layout.isRegionVacant(info.cellX + info.spanX, info.cellY, 1, info.spanY)
+                    || layout.isRegionVacant(info.cellX - 1, info.cellY, 1, info.spanY)) {
                 actions.add(R.string.action_increase_width);
             }
 
@@ -259,8 +259,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         }
 
         if ((providerInfo.resizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0) {
-            if (layout.isRegionVacant(info.cellX, info.cellY + info.spanY, info.spanX, 1) ||
-                    layout.isRegionVacant(info.cellX, info.cellY - 1, info.spanX, 1)) {
+            if (layout.isRegionVacant(info.cellX, info.cellY + info.spanY, info.spanX, 1)
+                    || layout.isRegionVacant(info.cellX, info.cellY - 1, info.spanX, 1)) {
                 actions.add(R.string.action_increase_height);
             }
 
@@ -272,7 +272,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     }
 
     @Thunk
-    void performResizeAction(int action, View host, LauncherAppWidgetInfo info) {
+    void performResizeAction(final int action, final View host, final LauncherAppWidgetInfo info) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) host.getLayoutParams();
         CellLayout layout = (CellLayout) host.getParent().getParent();
         layout.markCellsAsUnoccupiedForView(host);
@@ -312,12 +312,12 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     }
 
     @Thunk
-    void announceConfirmation(int resId) {
+    void announceConfirmation(final int resId) {
         announceConfirmation(mLauncher.getResources().getString(resId));
     }
 
     @Thunk
-    void announceConfirmation(String confirmation) {
+    void announceConfirmation(final String confirmation) {
         mLauncher.getDragLayer().announceForAccessibility(confirmation);
 
     }
@@ -335,8 +335,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
      * @param dropLocation relative to {@param clickedTarget}. If provided, its center is used
      * as the actual drop location otherwise the views center is used.
      */
-    public void handleAccessibleDrop(View clickedTarget, Rect dropLocation,
-                                     String confirmation) {
+    public void handleAccessibleDrop(final View clickedTarget, final Rect dropLocation,
+                                     final String confirmation) {
         if (!isInAccessibleDrag()) return;
 
         int[] loc = new int[2];
@@ -356,7 +356,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         }
     }
 
-    public void beginAccessibleDrag(View item, ItemInfo info) {
+    public void beginAccessibleDrag(final View item, final ItemInfo info) {
         mDragInfo = new DragInfo();
         mDragInfo.info = info;
         mDragInfo.item = item;
@@ -378,7 +378,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     }
 
     @Override
-    public void onDragStart(DragObject dragObject, DragOptions options) {
+    public void onDragStart(final DragObject dragObject, final DragOptions options) {
         // No-op
     }
 
@@ -391,7 +391,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     /**
      * Find empty space on the workspace and returns the screenId.
      */
-    protected long findSpaceOnWorkspace(ItemInfo info, int[] outCoordinates) {
+    protected long findSpaceOnWorkspace(final ItemInfo info, final int[] outCoordinates) {
         Workspace workspace = mLauncher.getWorkspace();
         ArrayList<Long> workspaceScreens = workspace.getScreenOrder();
         long screenId;

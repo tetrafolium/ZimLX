@@ -93,7 +93,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
      */
     private final PointF mTranslationForCentering = new PointF(0, 0);
 
-    public LauncherAppWidgetHostView(Context context) {
+    public LauncherAppWidgetHostView(final Context context) {
         super(context);
         mLauncher = Launcher.getLauncher(context);
         mLongPressHelper = new CheckLongPressHelper(this, this);
@@ -108,7 +108,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
-    public boolean onLongClick(View view) {
+    public boolean onLongClick(final View view) {
         if (mIsScrollable) {
             DragLayer dragLayer = Launcher.getLauncher(getContext()).getDragLayer();
             dragLayer.requestDisallowInterceptTouchEvent(false);
@@ -123,7 +123,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
-    public void updateAppWidget(RemoteViews remoteViews) {
+    public void updateAppWidget(final RemoteViews remoteViews) {
         super.updateAppWidget(remoteViews);
 
         // The provider info or the views might have changed.
@@ -137,11 +137,11 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     }
 
     private boolean isSameOrientation() {
-        return mLauncher.getResources().getConfiguration().orientation ==
-               mLauncher.getOrientation();
+        return mLauncher.getResources().getConfiguration().orientation
+               == mLauncher.getOrientation();
     }
 
-    private boolean checkScrollableRecursively(ViewGroup viewGroup) {
+    private boolean checkScrollableRecursively(final ViewGroup viewGroup) {
         if (viewGroup instanceof AdapterView) {
             return true;
         } else {
@@ -157,7 +157,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         return false;
     }
 
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onInterceptTouchEvent(final MotionEvent ev) {
         // Just in case the previous long press hasn't been cleared, we make sure to start fresh
         // on touch down.
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
@@ -206,7 +206,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         return false;
     }
 
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(final MotionEvent ev) {
         // If the widget does not handle touch, then cancel
         // long press when we release the touch
         switch (ev.getAction()) {
@@ -274,7 +274,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
+    public boolean dispatchKeyEvent(final KeyEvent event) {
         if (mChildrenFocused && event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE
                 && event.getAction() == KeyEvent.ACTION_UP) {
             mChildrenFocused = false;
@@ -285,7 +285,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
         if (!mChildrenFocused && keyCode == KeyEvent.KEYCODE_ENTER) {
             event.startTracking();
             return true;
@@ -294,7 +294,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
+    public boolean onKeyUp(final int keyCode, final KeyEvent event) {
         if (event.isTracking()) {
             if (!mChildrenFocused && keyCode == KeyEvent.KEYCODE_ENTER) {
                 mChildrenFocused = true;
@@ -326,7 +326,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
-    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+    protected void onFocusChanged(final boolean gainFocus, final int direction, final Rect previouslyFocusedRect) {
         if (gainFocus) {
             mChildrenFocused = false;
             dispatchChildFocus(false);
@@ -335,7 +335,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
-    public void requestChildFocus(View child, View focused) {
+    public void requestChildFocus(final View child, final View focused) {
         super.requestChildFocus(child, focused);
         dispatchChildFocus(mChildrenFocused && focused != null);
         if (focused != null) {
@@ -344,17 +344,17 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
-    public void clearChildFocus(View child) {
+    public void clearChildFocus(final View child) {
         super.clearChildFocus(child);
         dispatchChildFocus(false);
     }
 
     @Override
-    public boolean dispatchUnhandledMove(View focused, int direction) {
+    public boolean dispatchUnhandledMove(final View focused, final int direction) {
         return mChildrenFocused;
     }
 
-    private void dispatchChildFocus(boolean childIsFocused) {
+    private void dispatchChildFocus(final boolean childIsFocused) {
         // The host view's background changes when selected, to indicate the focus is inside.
         setSelected(childIsFocused);
     }
@@ -365,7 +365,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
         try {
             super.onLayout(changed, left, top, right, bottom);
         } catch (final RuntimeException e) {
@@ -381,13 +381,13 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
-    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+    public void onInitializeAccessibilityNodeInfo(final AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
         info.setClassName(getClass().getName());
     }
 
     @Override
-    protected void onWindowVisibilityChanged(int visibility) {
+    protected void onWindowVisibilityChanged(final int visibility) {
         super.onWindowVisibilityChanged(visibility);
         maybeRegisterAutoAdvance();
     }
@@ -445,8 +445,8 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
             return;
         }
         long now = SystemClock.uptimeMillis();
-        long advanceTime = now + (ADVANCE_INTERVAL - (now % ADVANCE_INTERVAL)) +
-                           ADVANCE_STAGGER * sAutoAdvanceWidgetIds.indexOfKey(getAppWidgetId());
+        long advanceTime = now + (ADVANCE_INTERVAL - (now % ADVANCE_INTERVAL))
+                           + ADVANCE_STAGGER * sAutoAdvanceWidgetIds.indexOfKey(getAppWidgetId());
         Handler handler = getHandler();
         if (handler != null) {
             handler.postAtTime(mAutoAdvanceRunnable, advanceTime);
@@ -461,7 +461,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         scheduleNextAdvance();
     }
 
-    public void setScaleToFit(float scale) {
+    public void setScaleToFit(final float scale) {
         mScaleToFit = scale;
         setScaleX(scale);
         setScaleY(scale);
@@ -471,7 +471,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         return mScaleToFit;
     }
 
-    public void setTranslationForCentering(float x, float y) {
+    public void setTranslationForCentering(final float x, final float y) {
         mTranslationForCentering.set(x, y);
         setTranslationX(x);
         setTranslationY(y);
@@ -482,7 +482,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
+    protected void onConfigurationChanged(final Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
         // Only reinflate when the final configuration is same as the required configuration

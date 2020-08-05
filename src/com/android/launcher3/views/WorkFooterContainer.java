@@ -25,26 +25,26 @@ import android.widget.RelativeLayout;
  */
 public class WorkFooterContainer extends RelativeLayout {
 
-    public WorkFooterContainer(Context context) {
+    public WorkFooterContainer(final Context context) {
         super(context);
     }
 
-    public WorkFooterContainer(Context context, AttributeSet attrs) {
+    public WorkFooterContainer(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public WorkFooterContainer(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WorkFooterContainer(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(final boolean changed, final int l, final int t, final int r, final int b) {
         super.onLayout(changed, l, t, r, b);
         updateTranslation();
     }
 
     @Override
-    public void offsetTopAndBottom(int offset) {
+    public void offsetTopAndBottom(final int offset) {
         super.offsetTopAndBottom(offset);
         updateTranslation();
     }

@@ -30,7 +30,7 @@ public abstract class UserManagerCompat {
     protected UserManagerCompat() {
     }
 
-    public static UserManagerCompat getInstance(Context context) {
+    public static UserManagerCompat getInstance(final Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
                 if (Utilities.ATLEAST_P) {

@@ -9,7 +9,7 @@ public class StringSetAppFilter extends AppFilter {
     private final HashSet<String> mBlackList = new HashSet<>();
     private final HashSet<String> mWidgetBlackList = new HashSet<>();
 
-    public StringSetAppFilter(Context context) {
+    public StringSetAppFilter(final Context context) {
         mBlackList.add("com.google.android.apps.wallpaper");
         mBlackList.add("com.google.android.launcher");
         mBlackList.add("com.google.android.as");
@@ -17,7 +17,7 @@ public class StringSetAppFilter extends AppFilter {
         mWidgetBlackList.add("com.google.android.launcher");
     }
 
-    public boolean shouldShowApp(String packageName, Context context, boolean isWidgetPanel) {
+    public boolean shouldShowApp(final String packageName, final Context context, final boolean isWidgetPanel) {
 
         Set<String> hiddenApps = Utilities.getZimPrefs(context).getHiddenPredictionAppSet();
 

@@ -57,7 +57,7 @@ public class SpringAnimationHandler<T> {
      * @param factory   The AnimationFactory is responsible for initializing and updating the
      *                  SpringAnimations added to this class.
      */
-    public SpringAnimationHandler(@Direction int direction, AnimationFactory<T> factory) {
+    public SpringAnimationHandler(final @Direction int direction, final AnimationFactory<T> factory) {
         mVelocityDirection = direction;
         mAnimationFactory = factory;
     }
@@ -65,7 +65,7 @@ public class SpringAnimationHandler<T> {
     /**
      * Helper method to create a new SpringAnimation for {@param view}.
      */
-    public static SpringAnimation forView(View view, FloatPropertyCompat property, float finalPos) {
+    public static SpringAnimation forView(final View view, final FloatPropertyCompat property, final float finalPos) {
         SpringAnimation spring = new SpringAnimation(view, property, finalPos);
         spring.setSpring(new SpringForce(finalPos));
         return spring;
@@ -78,7 +78,7 @@ public class SpringAnimationHandler<T> {
      * @param setDefaultValues If True, sets the spring to the default
      *                         {@link AnimationFactory} values.
      */
-    public void add(SpringAnimation spring, boolean setDefaultValues) {
+    public void add(final SpringAnimation spring, final boolean setDefaultValues) {
         if (setDefaultValues) {
             mAnimationFactory.setDefaultValues(spring);
         }
@@ -92,7 +92,7 @@ public class SpringAnimationHandler<T> {
      * @param view   The view the spring is attached to.
      * @param object Used to initialize and update the spring.
      */
-    public void add(View view, T object) {
+    public void add(final View view, final T object) {
         SpringAnimation spring = (SpringAnimation) view.getTag(R.id.spring_animation_tag);
         if (spring == null) {
             spring = mAnimationFactory.initialize(object);
@@ -105,11 +105,11 @@ public class SpringAnimationHandler<T> {
     /**
      * Stops and removes the spring attached to {@param view}.
      */
-    public void remove(View view) {
+    public void remove(final View view) {
         remove((SpringAnimation) view.getTag(R.id.spring_animation_tag));
     }
 
-    public void remove(SpringAnimation animation) {
+    public void remove(final SpringAnimation animation) {
         if (animation.canSkipToEnd()) {
             animation.skipToEnd();
         }
@@ -118,7 +118,7 @@ public class SpringAnimationHandler<T> {
         }
     }
 
-    public void addMovement(MotionEvent event) {
+    public void addMovement(final MotionEvent event) {
         int action = event.getActionMasked();
         if (DEBUG) Log.d(TAG, "addMovement#action=" + action);
         switch (action) {
@@ -132,7 +132,7 @@ public class SpringAnimationHandler<T> {
         mShouldComputeVelocity = true;
     }
 
-    public void animateToFinalPosition(float position, int startValue) {
+    public void animateToFinalPosition(final float position, final int startValue) {
         animateToFinalPosition(position, startValue, mShouldComputeVelocity);
     }
 
@@ -143,7 +143,7 @@ public class SpringAnimationHandler<T> {
      * @param setVelocity If true, we set the velocity to {@link #mCurrentVelocity} before
      *                    starting the animation.
      */
-    private void animateToFinalPosition(float position, int startValue, boolean setVelocity) {
+    private void animateToFinalPosition(final float position, final int startValue, final boolean setVelocity) {
         if (DEBUG) {
             Log.d(TAG, "animateToFinalPosition#position=" + position + ", startValue=" + startValue);
         }
@@ -168,7 +168,7 @@ public class SpringAnimationHandler<T> {
      * Similar to {@link #animateToFinalPosition(float, int)}, but used in cases where we want to
      * manually set the velocity.
      */
-    public void animateToPositionWithVelocity(float position, int startValue, float velocity) {
+    public void animateToPositionWithVelocity(final float position, final int startValue, final float velocity) {
         if (DEBUG) {
             Log.d(TAG, "animateToPosition#pos=" + position + ", start=" + startValue
                   + ", velocity=" + velocity);

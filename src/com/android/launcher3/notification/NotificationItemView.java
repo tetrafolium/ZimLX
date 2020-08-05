@@ -61,7 +61,7 @@ public class NotificationItemView {
     private boolean mAnimatingNextIcon;
     private int mNotificationHeaderTextColor = Notification.COLOR_DEFAULT;
 
-    public NotificationItemView(PopupContainerWithArrow container) {
+    public NotificationItemView(final PopupContainerWithArrow container) {
         mContainer = container;
         mContext = container.getContext();
 
@@ -114,7 +114,7 @@ public class NotificationItemView {
         }
     }
 
-    public void updateHeader(int notificationCount, int iconColor) {
+    public void updateHeader(final int notificationCount, final int iconColor) {
         mHeaderCount.setText(notificationCount <= 1 ? "" : String.valueOf(notificationCount));
         if (Color.alpha(iconColor) > 0) {
             if (mNotificationHeaderTextColor == Notification.COLOR_DEFAULT) {
@@ -127,7 +127,7 @@ public class NotificationItemView {
         }
     }
 
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onInterceptTouchEvent(final MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             sTempRect.set(mMainView.getLeft(), mMainView.getTop(),
                           mMainView.getRight(), mMainView.getBottom());
@@ -148,7 +148,7 @@ public class NotificationItemView {
         return mSwipeDetector.isDraggingOrSettling();
     }
 
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(final MotionEvent ev) {
         if (mIgnoreTouch) {
             return false;
         }

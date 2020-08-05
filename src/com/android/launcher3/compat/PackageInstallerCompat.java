@@ -34,7 +34,7 @@ public abstract class PackageInstallerCompat {
     private static final Object sInstanceLock = new Object();
     private static PackageInstallerCompat sInstance;
 
-    public static PackageInstallerCompat getInstance(Context context) {
+    public static PackageInstallerCompat getInstance(final Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
                 sInstance = new PackageInstallerCompatVL(context);
@@ -56,25 +56,25 @@ public abstract class PackageInstallerCompat {
         public final int state;
         public final int progress;
 
-        private PackageInstallInfo(@NonNull PackageInstaller.SessionInfo info) {
+        private PackageInstallInfo(final @NonNull PackageInstaller.SessionInfo info) {
             this.state = STATUS_INSTALLING;
             this.packageName = info.getAppPackageName();
             this.componentName = new ComponentName(packageName, "");
             this.progress = (int) (info.getProgress() * 100f);
         }
 
-        public PackageInstallInfo(String packageName, int state, int progress) {
+        public PackageInstallInfo(final String packageName, final int state, final int progress) {
             this.state = state;
             this.packageName = packageName;
             this.componentName = new ComponentName(packageName, "");
             this.progress = progress;
         }
 
-        public static PackageInstallInfo fromInstallingState(PackageInstaller.SessionInfo info) {
+        public static PackageInstallInfo fromInstallingState(final PackageInstaller.SessionInfo info) {
             return new PackageInstallInfo(info);
         }
 
-        public static PackageInstallInfo fromState(int state, String packageName) {
+        public static PackageInstallInfo fromState(final int state, final String packageName) {
             return new PackageInstallInfo(packageName, state, 0 /* progress */);
         }
 

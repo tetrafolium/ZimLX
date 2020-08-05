@@ -86,10 +86,10 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
     public void testPinWidgetNoConfig() throws Throwable {
         runTest("pinWidgetNoConfig", true, new ItemOperator() {
             @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info instanceof LauncherAppWidgetInfo &&
-                       ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
-                       ((LauncherAppWidgetInfo) info).providerName.getClassName()
+            public boolean evaluate(final ItemInfo info, final View view) {
+                return info instanceof LauncherAppWidgetInfo
+                       && ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId
+                       && ((LauncherAppWidgetInfo) info).providerName.getClassName()
                        .equals(AppWidgetNoConfig.class.getName());
             }
         });
@@ -104,10 +104,10 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         runTest("pinWidgetNoConfig", true, new ItemOperator() {
             @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info instanceof LauncherAppWidgetInfo &&
-                       ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
-                       ((LauncherAppWidgetInfo) info).providerName.getClassName()
+            public boolean evaluate(final ItemInfo info, final View view) {
+                return info instanceof LauncherAppWidgetInfo
+                       && ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId
+                       && ((LauncherAppWidgetInfo) info).providerName.getClassName()
                        .equals(AppWidgetNoConfig.class.getName());
             }
         }, command);
@@ -117,10 +117,10 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
     public void testPinWidgetWithConfig() throws Throwable {
         runTest("pinWidgetWithConfig", true, new ItemOperator() {
             @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info instanceof LauncherAppWidgetInfo &&
-                       ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
-                       ((LauncherAppWidgetInfo) info).providerName.getClassName()
+            public boolean evaluate(final ItemInfo info, final View view) {
+                return info instanceof LauncherAppWidgetInfo
+                       && ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId
+                       && ((LauncherAppWidgetInfo) info).providerName.getClassName()
                        .equals(AppWidgetWithConfig.class.getName());
             }
         });
@@ -135,16 +135,16 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         runTest("pinShortcut", false, new ItemOperator() {
             @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info instanceof ShortcutInfo &&
-                       info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
-                       ShortcutKey.fromItemInfo(info).getId().equals(mShortcutId);
+            public boolean evaluate(final ItemInfo info, final View view) {
+                return info instanceof ShortcutInfo
+                       && info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                       && ShortcutKey.fromItemInfo(info).getId().equals(mShortcutId);
             }
         }, command);
     }
 
-    private void runTest(String activityMethod, boolean isWidget, ItemOperator itemMatcher,
-                         Intent... commandIntents) throws Throwable {
+    private void runTest(final String activityMethod, final boolean isWidget, final ItemOperator itemMatcher,
+                         final Intent... commandIntents) throws Throwable {
         if (!Utilities.ATLEAST_OREO) {
             return;
         }
@@ -204,7 +204,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         private final ItemOperator mOp;
 
-        ItemSearchCondition(ItemOperator op) {
+        ItemSearchCondition(final ItemOperator op) {
             mOp = op;
         }
 

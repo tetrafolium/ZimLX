@@ -68,12 +68,12 @@ public class FastBitmapDrawable extends Drawable {
     private static final Property<FastBitmapDrawable, Float> SCALE
     = new Property<FastBitmapDrawable, Float>(Float.TYPE, "scale") {
         @Override
-        public Float get(FastBitmapDrawable fastBitmapDrawable) {
+        public Float get(final FastBitmapDrawable fastBitmapDrawable) {
             return fastBitmapDrawable.mScale;
         }
 
         @Override
-        public void set(FastBitmapDrawable fastBitmapDrawable, Float value) {
+        public void set(final FastBitmapDrawable fastBitmapDrawable, final Float value) {
             fastBitmapDrawable.mScale = value;
             fastBitmapDrawable.invalidateSelf();
         }
@@ -89,26 +89,26 @@ public class FastBitmapDrawable extends Drawable {
     private int mAlpha = 255;
     private int mPrevUpdateKey = Integer.MAX_VALUE;
 
-    public FastBitmapDrawable(Bitmap b) {
+    public FastBitmapDrawable(final Bitmap b) {
         this(b, Color.TRANSPARENT);
     }
 
-    public FastBitmapDrawable(BitmapInfo info) {
+    public FastBitmapDrawable(final BitmapInfo info) {
         this(info.icon, info.color);
     }
 
-    public FastBitmapDrawable(ItemInfoWithIcon info) {
+    public FastBitmapDrawable(final ItemInfoWithIcon info) {
         this(info.iconBitmap, info.iconColor);
     }
 
-    protected FastBitmapDrawable(Bitmap b, int iconColor) {
+    protected FastBitmapDrawable(final Bitmap b, final int iconColor) {
         mBitmap = b;
         mIconColor = iconColor;
         setFilterBitmap(true);
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(final Canvas canvas) {
         if (mScaleAnimation != null) {
             int count = canvas.save();
             Rect bounds = getBounds();
@@ -120,12 +120,12 @@ public class FastBitmapDrawable extends Drawable {
         }
     }
 
-    protected void drawInternal(Canvas canvas, Rect bounds) {
+    protected void drawInternal(final Canvas canvas, final Rect bounds) {
         canvas.drawBitmap(mBitmap, null, bounds, mPaint);
     }
 
     @Override
-    public void setColorFilter(ColorFilter cf) {
+    public void setColorFilter(final ColorFilter cf) {
         // No op
     }
 
@@ -135,13 +135,13 @@ public class FastBitmapDrawable extends Drawable {
     }
 
     @Override
-    public void setAlpha(int alpha) {
+    public void setAlpha(final int alpha) {
         mAlpha = alpha;
         mPaint.setAlpha(alpha);
     }
 
     @Override
-    public void setFilterBitmap(boolean filterBitmap) {
+    public void setFilterBitmap(final boolean filterBitmap) {
         mPaint.setFilterBitmap(filterBitmap);
         mPaint.setAntiAlias(filterBitmap);
     }
@@ -185,7 +185,7 @@ public class FastBitmapDrawable extends Drawable {
     }
 
     @Override
-    protected boolean onStateChange(int[] state) {
+    protected boolean onStateChange(final int[] state) {
         boolean isPressed = false;
         for (int s : state) {
             if (s == android.R.attr.state_pressed) {
@@ -221,7 +221,7 @@ public class FastBitmapDrawable extends Drawable {
         setBrightness(mIsDisabled ? DISABLED_BRIGHTNESS : 0);
     }
 
-    public void setIsDisabled(boolean isDisabled) {
+    public void setIsDisabled(final boolean isDisabled) {
         if (mIsDisabled != isDisabled) {
             mIsDisabled = isDisabled;
             invalidateDesaturationAndBrightness();
@@ -231,7 +231,7 @@ public class FastBitmapDrawable extends Drawable {
     /**
      * Sets the saturation of this icon, 0 [full color] -> 1 [desaturated]
      */
-    private void setDesaturation(float desaturation) {
+    private void setDesaturation(final float desaturation) {
         int newDesaturation = (int) Math.floor(desaturation * REDUCED_FILTER_VALUE_SPACE);
         if (mDesaturation != newDesaturation) {
             mDesaturation = newDesaturation;
@@ -246,7 +246,7 @@ public class FastBitmapDrawable extends Drawable {
     /**
      * Sets the brightness of this icon, 0 [no add. brightness] -> 1 [2bright2furious]
      */
-    private void setBrightness(float brightness) {
+    private void setBrightness(final float brightness) {
         int newBrightness = (int) Math.floor(brightness * REDUCED_FILTER_VALUE_SPACE);
         if (mBrightness != newBrightness) {
             mBrightness = newBrightness;
@@ -324,7 +324,7 @@ public class FastBitmapDrawable extends Drawable {
         protected final Bitmap mBitmap;
         protected final int mIconColor;
 
-        public MyConstantState(Bitmap bitmap, int color) {
+        public MyConstantState(final Bitmap bitmap, final int color) {
             mBitmap = bitmap;
             mIconColor = color;
         }

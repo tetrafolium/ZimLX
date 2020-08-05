@@ -33,7 +33,7 @@ import static com.android.launcher3.Utilities.ATLEAST_P;
  */
 public abstract class NoLocaleSQLiteHelper extends SQLiteOpenHelper {
 
-    public NoLocaleSQLiteHelper(Context context, String name, int version) {
+    public NoLocaleSQLiteHelper(final Context context, final String name, final int version) {
         super(ATLEAST_P ? context : new NoLocalContext(context), name, null, version);
         if (ATLEAST_P) {
             setOpenParams(new OpenParams.Builder().addOpenFlags(NO_LOCALIZED_COLLATORS).build());
@@ -41,13 +41,13 @@ public abstract class NoLocaleSQLiteHelper extends SQLiteOpenHelper {
     }
 
     private static class NoLocalContext extends ContextWrapper {
-        public NoLocalContext(Context base) {
+        public NoLocalContext(final Context base) {
             super(base);
         }
 
         @Override
         public SQLiteDatabase openOrCreateDatabase(
-            String name, int mode, CursorFactory factory, DatabaseErrorHandler errorHandler) {
+            final String name, final int mode, final CursorFactory factory, final DatabaseErrorHandler errorHandler) {
             return super.openOrCreateDatabase(
                        name, mode | Context.MODE_NO_LOCALIZED_COLLATORS, factory, errorHandler);
         }

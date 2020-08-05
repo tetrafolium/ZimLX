@@ -55,7 +55,7 @@ public class IconShapeOverride {
 
     private static final int RESTART_REQUEST_CODE = 42; // the answer to everything
 
-    public static boolean isSupported(Context context) {
+    public static boolean isSupported(final Context context) {
         if (!Utilities.ATLEAST_OREO) {
             return false;
         }
@@ -73,7 +73,7 @@ public class IconShapeOverride {
         return getConfigResId() != 0;
     }
 
-    public static void apply(Context context) {
+    public static void apply(final Context context) {
         if (!Utilities.ATLEAST_OREO) {
             return;
         }
@@ -115,7 +115,7 @@ public class IconShapeOverride {
         return Resources.getSystem().getIdentifier("system_icon_masks", "array", "android");
     }
 
-    public static String getAppliedValue(Context context) {
+    public static String getAppliedValue(final Context context) {
         String devValue = getDevicePrefs(context).getString(THEME_ICON_SHAPE, "");
         if (!TextUtils.isEmpty(devValue)) {
             // Migrate to general preferences to back up shape overrides
@@ -126,7 +126,7 @@ public class IconShapeOverride {
         return getPrefs(context).getString(THEME_ICON_SHAPE, "");
     }
 
-    public static void handlePreferenceUi(ListPreference preference) {
+    public static void handlePreferenceUi(final ListPreference preference) {
         Context context = preference.getContext();
         preference.setValue(getAppliedValue(context));
         preference.setOnPreferenceChangeListener(new PreferenceChangeHandler(context));
@@ -138,7 +138,7 @@ public class IconShapeOverride {
         private int mArrayOverrideId = 0;
         private final String mOverrideValue;
 
-        public ResourcesOverride(Resources parent, int overrideId, String overrideValue) {
+        public ResourcesOverride(final Resources parent, final int overrideId, final String overrideValue) {
             super(parent.getAssets(), parent.getDisplayMetrics(), parent.getConfiguration());
             mOverrideId = overrideId;
             mOverrideValue = overrideValue;
@@ -146,21 +146,21 @@ public class IconShapeOverride {
 
         @NonNull
         @Override
-        public String getString(int id) throws NotFoundException {
+        public String getString(final int id) throws NotFoundException {
             if (id == mOverrideId) {
                 return mOverrideValue;
             }
             return super.getString(id);
         }
 
-        void setArrayOverrideId(int id) {
+        void setArrayOverrideId(final int id) {
             mArrayOverrideId = id;
         }
 
         // I do admit that this is one hell of a hack
         @NonNull
         @Override
-        public String[] getStringArray(int id) throws NotFoundException {
+        public String[] getStringArray(final int id) throws NotFoundException {
             if (id != 0 && id == mArrayOverrideId) {
                 int size = super.getStringArray(id).length;
                 String[] arr = new String[size];
@@ -175,12 +175,12 @@ public class IconShapeOverride {
 
         private final Context mContext;
 
-        private PreferenceChangeHandler(Context context) {
+        private PreferenceChangeHandler(final Context context) {
             mContext = context;
         }
 
         @Override
-        public boolean onPreferenceChange(Preference preference, Object o) {
+        public boolean onPreferenceChange(final Preference preference, final Object o) {
             String newValue = (String) o;
             if (!getAppliedValue(mContext).equals(newValue)) {
                 if (preference instanceof ListPreference) {
@@ -199,7 +199,7 @@ public class IconShapeOverride {
         private final Context mContext;
         private final String mValue;
 
-        private OverrideApplyHandler(Context context, String value) {
+        private OverrideApplyHandler(final Context context, final String value) {
             mContext = context;
             mValue = value;
         }

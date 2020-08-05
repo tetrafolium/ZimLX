@@ -32,23 +32,23 @@ public class ButtonPreference extends Preference {
 
     private boolean mWidgetFrameVisible = false;
 
-    public ButtonPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ButtonPreference(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public ButtonPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ButtonPreference(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public ButtonPreference(Context context, AttributeSet attrs) {
+    public ButtonPreference(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ButtonPreference(Context context) {
+    public ButtonPreference(final Context context) {
         super(context);
     }
 
-    public void setWidgetFrameVisible(boolean isVisible) {
+    public void setWidgetFrameVisible(final boolean isVisible) {
         if (mWidgetFrameVisible != isVisible) {
             mWidgetFrameVisible = isVisible;
             notifyChanged();
@@ -56,7 +56,7 @@ public class ButtonPreference extends Preference {
     }
 
     @Override
-    public void onBindViewHolder(PreferenceViewHolder holder) {
+    public void onBindViewHolder(final PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
 
         ViewGroup widgetFrame = holder.itemView.findViewById(android.R.id.widget_frame);

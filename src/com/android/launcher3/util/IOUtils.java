@@ -30,19 +30,19 @@ public class IOUtils {
 
     private static final int BUF_SIZE = 0x1000; // 4K
 
-    public static byte[] toByteArray(File file) throws IOException {
+    public static byte[] toByteArray(final File file) throws IOException {
         try (InputStream in = new FileInputStream(file)) {
             return toByteArray(in);
         }
     }
 
-    public static byte[] toByteArray(InputStream in) throws IOException {
+    public static byte[] toByteArray(final InputStream in) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         copy(in, out);
         return out.toByteArray();
     }
 
-    public static long copy(InputStream from, OutputStream to) throws IOException {
+    public static long copy(final InputStream from, final OutputStream to) throws IOException {
         byte[] buf = new byte[BUF_SIZE];
         long total = 0;
         int r;

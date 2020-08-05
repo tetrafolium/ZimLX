@@ -35,22 +35,22 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
 
     private final ShadowInfo mShadowInfo;
 
-    public DoubleShadowBubbleTextView(Context context) {
+    public DoubleShadowBubbleTextView(final Context context) {
         this(context, null);
     }
 
-    public DoubleShadowBubbleTextView(Context context, AttributeSet attrs) {
+    public DoubleShadowBubbleTextView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public DoubleShadowBubbleTextView(Context context, AttributeSet attrs, int defStyle) {
+    public DoubleShadowBubbleTextView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
         mShadowInfo = new ShadowInfo(context, attrs, defStyle);
         setShadowLayer(mShadowInfo.ambientShadowBlur, 0, 0, mShadowInfo.ambientShadowColor);
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(final Canvas canvas) {
         // If text is transparent or shadow alpha is 0, don't draw any shadow
         if (mShadowInfo.skipDoubleShadow(this)) {
             super.onDraw(canvas);
@@ -84,7 +84,7 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
         public final float keyShadowOffset;
         public final int keyShadowColor;
 
-        public ShadowInfo(Context c, AttributeSet attrs, int defStyle) {
+        public ShadowInfo(final Context c, final AttributeSet attrs, final int defStyle) {
 
             TypedArray a = c.obtainStyledAttributes(
                                attrs, R.styleable.ShadowInfo, defStyle, 0);
@@ -98,7 +98,7 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
             a.recycle();
         }
 
-        public boolean skipDoubleShadow(TextView textView) {
+        public boolean skipDoubleShadow(final TextView textView) {
             int textAlpha = Color.alpha(textView.getCurrentTextColor());
             int keyShadowAlpha = Color.alpha(keyShadowColor);
             int ambientShadowAlpha = Color.alpha(ambientShadowColor);

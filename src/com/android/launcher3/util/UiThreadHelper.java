@@ -43,7 +43,7 @@ public class UiThreadHelper {
         return sHandlerThread.getLooper();
     }
 
-    private static Handler getHandler(Context context) {
+    private static Handler getHandler(final Context context) {
         if (sHandler == null) {
             sHandler = new Handler(getBackgroundLooper(),
                                    new UiCallbacks(context.getApplicationContext()));
@@ -51,7 +51,7 @@ public class UiThreadHelper {
         return sHandler;
     }
 
-    public static void hideKeyboardAsync(Context context, IBinder token) {
+    public static void hideKeyboardAsync(final Context context, final IBinder token) {
         Message.obtain(getHandler(context), MSG_HIDE_KEYBOARD, token).sendToTarget();
     }
 
@@ -59,12 +59,12 @@ public class UiThreadHelper {
 
         private final InputMethodManager mIMM;
 
-        UiCallbacks(Context context) {
+        UiCallbacks(final Context context) {
             mIMM = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         }
 
         @Override
-        public boolean handleMessage(Message message) {
+        public boolean handleMessage(final Message message) {
             switch (message.what) {
             case MSG_HIDE_KEYBOARD:
                 mIMM.hideSoftInputFromWindow((IBinder) message.obj, 0);

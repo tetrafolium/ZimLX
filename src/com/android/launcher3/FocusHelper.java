@@ -33,7 +33,7 @@ import com.android.launcher3.util.Thunk;
  */
 class IconKeyEventListener implements View.OnKeyListener {
     @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
+    public boolean onKey(final View v, final int keyCode, final KeyEvent event) {
         return FocusHelper.handleIconKeyEvent(v, keyCode, event);
     }
 }
@@ -43,7 +43,7 @@ class IconKeyEventListener implements View.OnKeyListener {
  */
 class HotseatIconKeyEventListener implements View.OnKeyListener {
     @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
+    public boolean onKey(final View v, final int keyCode, final KeyEvent event) {
         return FocusHelper.handleHotseatButtonKeyEvent(v, keyCode, event);
     }
 }
@@ -53,7 +53,7 @@ class HotseatIconKeyEventListener implements View.OnKeyListener {
  */
 class FullscreenKeyEventListener implements View.OnKeyListener {
     @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
+    public boolean onKey(final View v, final int keyCode, final KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
                 || keyCode == KeyEvent.KEYCODE_PAGE_DOWN || keyCode == KeyEvent.KEYCODE_PAGE_UP) {
             // Handle the key event just like a workspace icon would in these cases. In this case,
@@ -80,12 +80,12 @@ public class FocusHelper {
 
         private final Folder mFolder;
 
-        public PagedFolderKeyEventListener(Folder folder) {
+        public PagedFolderKeyEventListener(final Folder folder) {
             mFolder = folder;
         }
 
         @Override
-        public boolean onKey(View v, int keyCode, KeyEvent e) {
+        public boolean onKey(final View v, final int keyCode, final KeyEvent e) {
             boolean consume = FocusLogic.shouldConsume(keyCode);
             if (e.getAction() == KeyEvent.ACTION_UP) {
                 return consume;
@@ -187,7 +187,7 @@ public class FocusHelper {
             return consume;
         }
 
-        public void handleNoopKey(int keyCode, View v) {
+        public void handleNoopKey(final int keyCode, final View v) {
             if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                 mFolder.mFolderName.requestFocus();
                 playSoundEffect(keyCode, v);
@@ -201,7 +201,7 @@ public class FocusHelper {
      * the hotseat is on the side in landscape mode. This is to ensure that accessibility
      * consistency is maintained across rotations.
      */
-    static boolean handleHotseatButtonKeyEvent(View v, int keyCode, KeyEvent e) {
+    static boolean handleHotseatButtonKeyEvent(final View v, final int keyCode, final KeyEvent e) {
         boolean consume = FocusLogic.shouldConsume(keyCode);
         if (e.getAction() == KeyEvent.ACTION_UP || !consume) {
             return consume;
@@ -240,18 +240,18 @@ public class FocusHelper {
         ViewGroup parent = null;
         int[][] matrix = null;
 
-        if (keyCode == KeyEvent.KEYCODE_DPAD_UP &&
-                !profile.isVerticalBarLayout()) {
+        if (keyCode == KeyEvent.KEYCODE_DPAD_UP
+                && !profile.isVerticalBarLayout()) {
             matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
             iconIndex += iconParent.getChildCount();
             parent = iconParent;
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT &&
-                   profile.isVerticalBarLayout()) {
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT
+                   && profile.isVerticalBarLayout()) {
             matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
             iconIndex += iconParent.getChildCount();
             parent = iconParent;
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
-                   profile.isVerticalBarLayout()) {
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
+                   && profile.isVerticalBarLayout()) {
             keyCode = KeyEvent.KEYCODE_PAGE_DOWN;
         } else {
             // For other KEYCODE_DPAD_LEFT and KEYCODE_DPAD_RIGHT navigation, do not use the
@@ -316,7 +316,7 @@ public class FocusHelper {
     /**
      * Handles key events in a workspace containing icons.
      */
-    static boolean handleIconKeyEvent(View v, int keyCode, KeyEvent e) {
+    static boolean handleIconKeyEvent(final View v, final int keyCode, final KeyEvent e) {
         boolean consume = FocusLogic.shouldConsume(keyCode);
         if (e.getAction() == KeyEvent.ACTION_UP || !consume) {
             return consume;
@@ -352,8 +352,8 @@ public class FocusHelper {
         // with the hotseat.
         if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && !profile.isVerticalBarLayout()) {
             matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
-                   profile.isVerticalBarLayout()) {
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
+                   && profile.isVerticalBarLayout()) {
             matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
         } else {
             matrix = FocusLogic.createSparseMatrix(iconLayout);
@@ -453,8 +453,8 @@ public class FocusHelper {
             // current page, some item.
             if (0 <= newIconIndex && newIconIndex < parent.getChildCount()) {
                 newIcon = parent.getChildAt(newIconIndex);
-            } else if (parent.getChildCount() <= newIconIndex &&
-                       newIconIndex < parent.getChildCount() + hotseatParent.getChildCount()) {
+            } else if (parent.getChildCount() <= newIconIndex
+                       && newIconIndex < parent.getChildCount() + hotseatParent.getChildCount()) {
                 newIcon = hotseatParent.getChildAt(newIconIndex - parent.getChildCount());
             }
             break;
@@ -475,7 +475,7 @@ public class FocusHelper {
      */
     @Thunk
     static ShortcutAndWidgetContainer getCellLayoutChildrenForIndex(
-        ViewGroup container, int i) {
+        final ViewGroup container, final int i) {
         CellLayout parent = (CellLayout) container.getChildAt(i);
         return parent.getShortcutsAndWidgets();
     }
@@ -484,7 +484,7 @@ public class FocusHelper {
      * Helper method to be used for playing sound effects.
      */
     @Thunk
-    static void playSoundEffect(int keyCode, View v) {
+    static void playSoundEffect(final int keyCode, final View v) {
         switch (keyCode) {
         case KeyEvent.KEYCODE_DPAD_LEFT:
             v.playSoundEffect(SoundEffectConstants.NAVIGATION_LEFT);
@@ -507,8 +507,8 @@ public class FocusHelper {
         }
     }
 
-    private static View handlePreviousPageLastItem(Workspace workspace, CellLayout hotseatLayout,
-            int pageIndex, boolean isRtl) {
+    private static View handlePreviousPageLastItem(final Workspace workspace, final CellLayout hotseatLayout,
+            final int pageIndex, final boolean isRtl) {
         if (pageIndex - 1 < 0) {
             return null;
         }
@@ -522,8 +522,8 @@ public class FocusHelper {
         return newIcon;
     }
 
-    private static View handleNextPageFirstItem(Workspace workspace, CellLayout hotseatLayout,
-            int pageIndex, boolean isRtl) {
+    private static View handleNextPageFirstItem(final Workspace workspace, final CellLayout hotseatLayout,
+            final int pageIndex, final boolean isRtl) {
         if (pageIndex + 1 >= workspace.getPageCount()) {
             return null;
         }
@@ -537,7 +537,7 @@ public class FocusHelper {
         return newIcon;
     }
 
-    private static View getFirstFocusableIconInReadingOrder(CellLayout cellLayout, boolean isRtl) {
+    private static View getFirstFocusableIconInReadingOrder(final CellLayout cellLayout, final boolean isRtl) {
         View icon;
         int countX = cellLayout.getCountX();
         for (int y = 0; y < cellLayout.getCountY(); y++) {
@@ -551,8 +551,8 @@ public class FocusHelper {
         return null;
     }
 
-    private static View getFirstFocusableIconInReverseReadingOrder(CellLayout cellLayout,
-            boolean isRtl) {
+    private static View getFirstFocusableIconInReverseReadingOrder(final CellLayout cellLayout,
+            final boolean isRtl) {
         View icon;
         int countX = cellLayout.getCountX();
         for (int y = cellLayout.getCountY() - 1; y >= 0; y--) {

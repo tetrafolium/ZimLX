@@ -50,7 +50,7 @@ public class NexusLauncher {
 
     QsbAnimationController mQsbAnimationController;
 
-    public NexusLauncher(NexusLauncherActivity activity) {
+    public NexusLauncher(final NexusLauncherActivity activity) {
         mLauncher = activity;
         mExterns = activity;
         mCallbacks = new NexusLauncherCallbacks();
@@ -58,7 +58,7 @@ public class NexusLauncher {
         mLauncher.addOnDeviceProfileChangeListener(dp -> mClient.redraw());
     }
 
-    void registerSmartspaceView(SmartspaceView smartspace) {
+    void registerSmartspaceView(final SmartspaceView smartspace) {
         mCallbacks.registerSmartspaceView(smartspace);
     }
 
@@ -108,7 +108,7 @@ public class NexusLauncher {
             mFeedReconnector.start();
         }
 
-        void registerSmartspaceView(SmartspaceView smartspace) {
+        void registerSmartspaceView(final SmartspaceView smartspace) {
             mSmartspaceViews.add(smartspace);
         }
 
@@ -180,7 +180,7 @@ public class NexusLauncher {
         }
 
         @Override
-        public void onHomeIntent(boolean internalStateHandled) {
+        public void onHomeIntent(final boolean internalStateHandled) {
             mClient.hideOverlay(mFeedRunning);
         }
 
@@ -242,10 +242,10 @@ public class NexusLauncher {
             }
         }
 
-        public void onTrimMemory(int n) {
+        public void onTrimMemory(final int n) {
         }
 
-        public boolean startSearch(String s, boolean b, Bundle bundle) {
+        public boolean startSearch(final String s, final boolean b, final Bundle bundle) {
             View gIcon = mLauncher.findViewById(R.id.g_icon);
             while (gIcon != null && !gIcon.isClickable()) {
                 if (gIcon.getParent() instanceof View) {
@@ -258,7 +258,7 @@ public class NexusLauncher {
         }
 
         @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
             switch (key) {
             case SettingsActivity.ENABLE_MINUS_ONE_PREF:
                 LauncherClient launcherClient = mClient;
@@ -278,7 +278,7 @@ public class NexusLauncher {
         }
 
         @Override
-        public void onExtractedColorsChanged(WallpaperColorInfo wallpaperColorInfo) {
+        public void onExtractedColorsChanged(final WallpaperColorInfo wallpaperColorInfo) {
             int alpha = mLauncher.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
 
             mUiInformation.putInt("background_color_hint", primaryColor(wallpaperColorInfo, mLauncher, alpha));
@@ -287,7 +287,7 @@ public class NexusLauncher {
             applyFeedTheme(true);
         }
 
-        private void applyFeedTheme(boolean redraw) {
+        private void applyFeedTheme(final boolean redraw) {
             String prefValue = Utilities.getPrefs(mLauncher).getString(SettingsActivity.FEED_THEME_PREF, null);
             int feedTheme;
             try {
@@ -335,11 +335,11 @@ public class NexusLauncher {
 
             @Override
             public void run() {
-                if (Utilities.getPrefs(mLauncher).getBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, true) &&
-                        !mClient.mDestroyed &&
-                        mClient.mLayoutParams != null &&
-                        !mOverlay.mAttached &&
-                        mFeedConnectionTries++ < MAX_RETRIES) {
+                if (Utilities.getPrefs(mLauncher).getBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, true)
+                        && !mClient.mDestroyed
+                        && mClient.mLayoutParams != null
+                        && !mOverlay.mAttached
+                        && mFeedConnectionTries++ < MAX_RETRIES) {
                     mClient.exchangeConfig();
                     mHandler.postDelayed(this, RETRY_DELAY_MS);
                 }
@@ -347,15 +347,15 @@ public class NexusLauncher {
         }
     }
 
-    public static int primaryColor(WallpaperColorInfo wallpaperColorInfo, Context context, int alpha) {
+    public static int primaryColor(final WallpaperColorInfo wallpaperColorInfo, final Context context, final int alpha) {
         return compositeAllApps(ColorUtils.setAlphaComponent(wallpaperColorInfo.getMainColor(), alpha), context);
     }
 
-    public static int secondaryColor(WallpaperColorInfo wallpaperColorInfo, Context context, int alpha) {
+    public static int secondaryColor(final WallpaperColorInfo wallpaperColorInfo, final Context context, final int alpha) {
         return compositeAllApps(ColorUtils.setAlphaComponent(wallpaperColorInfo.getSecondaryColor(), alpha), context);
     }
 
-    private static int compositeAllApps(int color, Context context) {
+    private static int compositeAllApps(final int color, final Context context) {
         return ColorUtils.compositeColors(Themes.getAttrColor(context, R.attr.allAppsScrimColor), color);
     }
 }

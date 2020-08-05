@@ -39,11 +39,11 @@ import java.util.List;
 import java.util.Map;
 
 public class DeepShortcutManagerBackport {
-    static Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
+    static Drawable getShortcutIconDrawable(final ShortcutInfoCompat shortcutInfo, final int density) {
         return ((ShortcutInfoCompatBackport) shortcutInfo).getIcon(density);
     }
 
-    public static List<ShortcutInfoCompat> getForPackage(Context context, LauncherApps mLauncherApps, ComponentName activity, String packageName) {
+    public static List<ShortcutInfoCompat> getForPackage(final Context context, final LauncherApps mLauncherApps, final ComponentName activity, final String packageName) {
         List<ShortcutInfoCompat> shortcutInfoCompats = new ArrayList<>();
         if (Utilities.ATLEAST_MARSHMALLOW) {
             List<LauncherActivityInfo> infoList = mLauncherApps.getActivityList(packageName, android.os.Process.myUserHandle());
@@ -56,7 +56,7 @@ public class DeepShortcutManagerBackport {
         return shortcutInfoCompats;
     }
 
-    private static void parsePackageXml(Context context, String packageName, ComponentName activity, List<ShortcutInfoCompat> shortcutInfoCompats) {
+    private static void parsePackageXml(final Context context, final String packageName, final ComponentName activity, final List<ShortcutInfoCompat> shortcutInfoCompats) {
         PackageManager pm = context.getPackageManager();
 
         String resource = null;
@@ -87,9 +87,9 @@ public class DeepShortcutManagerBackport {
                         for (int i = 0; i < parseXml.getAttributeCount(); i++) {
                             parsedData.put(parseXml.getAttributeName(i), parseXml.getAttributeValue(i));
                         }
-                        if (parsedData.containsKey("name") &&
-                                parsedData.get("name").equals("android.app.shortcuts") &&
-                                parsedData.containsKey("resource")) {
+                        if (parsedData.containsKey("name")
+                                && parsedData.get("name").equals("android.app.shortcuts")
+                                && parsedData.containsKey("resource")) {
                             resource = parsedData.get("resource");
                         }
                     }
@@ -124,7 +124,7 @@ public class DeepShortcutManagerBackport {
         }
     }
 
-    private static ShortcutInfoCompat parseShortcut(Context context, ComponentName activity, Resources resourcesForApplication, String packageName, XmlResourceParser parseXml) {
+    private static ShortcutInfoCompat parseShortcut(final Context context, final ComponentName activity, final Resources resourcesForApplication, final String packageName, final XmlResourceParser parseXml) {
         try {
             return new ShortcutInfoCompatBackport(context, resourcesForApplication, packageName, activity, parseXml);
         } catch (Exception e) {

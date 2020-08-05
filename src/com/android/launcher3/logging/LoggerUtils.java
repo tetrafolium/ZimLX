@@ -43,7 +43,7 @@ public class LoggerUtils {
     private static final ArrayMap<Class, SparseArray<String>> sNameCache = new ArrayMap<>();
     private static final String UNKNOWN = "UNKNOWN";
 
-    public static String getFieldName(int value, Class c) {
+    public static String getFieldName(final int value, final Class c) {
         SparseArray<String> cache;
         synchronized (sNameCache) {
             cache = sNameCache.get(c);
@@ -66,7 +66,7 @@ public class LoggerUtils {
         return result != null ? result : UNKNOWN;
     }
 
-    public static String getActionStr(Action action) {
+    public static String getActionStr(final Action action) {
         String str = "";
         switch (action.type) {
         case Action.Type.TOUCH:
@@ -82,7 +82,7 @@ public class LoggerUtils {
         }
     }
 
-    public static String getTargetStr(Target t) {
+    public static String getTargetStr(final Target t) {
         if (t == null) {
             return "";
         }
@@ -96,8 +96,8 @@ public class LoggerUtils {
             break;
         case Target.Type.CONTAINER:
             str = getFieldName(t.containerType, ContainerType.class);
-            if (t.containerType == ContainerType.WORKSPACE ||
-                    t.containerType == ContainerType.HOTSEAT) {
+            if (t.containerType == ContainerType.WORKSPACE
+                    || t.containerType == ContainerType.HOTSEAT) {
                 str += " id=" + t.pageIndex;
             } else if (t.containerType == ContainerType.FOLDER) {
                 str += " grid(" + t.gridX + "," + t.gridY + ")";
@@ -114,7 +114,7 @@ public class LoggerUtils {
         return str;
     }
 
-    private static String getItemStr(Target t) {
+    private static String getItemStr(final Target t) {
         String typeStr = getFieldName(t.itemType, ItemType.class);
         if (t.packageNameHash != 0) {
             typeStr += ", packageHash=" + t.packageNameHash;
@@ -125,8 +125,8 @@ public class LoggerUtils {
         if (t.intentHash != 0) {
             typeStr += ", intentHash=" + t.intentHash;
         }
-        if ((t.packageNameHash != 0 || t.componentHash != 0 || t.intentHash != 0) &&
-                t.itemType != ItemType.TASK) {
+        if ((t.packageNameHash != 0 || t.componentHash != 0 || t.intentHash != 0)
+                && t.itemType != ItemType.TASK) {
             typeStr += ", predictiveRank=" + t.predictedRank + ", grid(" + t.gridX + "," + t.gridY
                        + "), span(" + t.spanX + "," + t.spanY
                        + "), pageIdx=" + t.pageIndex;
@@ -138,25 +138,25 @@ public class LoggerUtils {
         return typeStr;
     }
 
-    public static Target newItemTarget(int itemType) {
+    public static Target newItemTarget(final int itemType) {
         Target t = newTarget(Target.Type.ITEM);
         t.itemType = itemType;
         return t;
     }
 
-    public static Target newItemTarget(View v) {
+    public static Target newItemTarget(final View v) {
         return (v.getTag() instanceof ItemInfo)
                ? newItemTarget((ItemInfo) v.getTag(), null)
                : newTarget(Target.Type.ITEM);
     }
 
-    public static Target newItemTarget(View v, InstantAppResolver instantAppResolver) {
+    public static Target newItemTarget(final View v, final InstantAppResolver instantAppResolver) {
         return (v.getTag() instanceof ItemInfo)
                ? newItemTarget((ItemInfo) v.getTag(), instantAppResolver)
                : newTarget(Target.Type.ITEM);
     }
 
-    public static Target newItemTarget(ItemInfo info, InstantAppResolver instantAppResolver) {
+    public static Target newItemTarget(final ItemInfo info, final InstantAppResolver instantAppResolver) {
         Target t = newTarget(Target.Type.ITEM);
 
         switch (info.itemType) {
@@ -183,7 +183,7 @@ public class LoggerUtils {
         return t;
     }
 
-    public static Target newDropTarget(View v) {
+    public static Target newDropTarget(final View v) {
         if (!(v instanceof ButtonDropTarget)) {
             return newTarget(Target.Type.CONTAINER);
         }
@@ -193,50 +193,50 @@ public class LoggerUtils {
         return newTarget(Target.Type.CONTROL);
     }
 
-    public static Target newTarget(int targetType, TargetExtension extension) {
+    public static Target newTarget(final int targetType, final TargetExtension extension) {
         Target t = new Target();
         t.type = targetType;
         t.extension = extension;
         return t;
     }
 
-    public static Target newTarget(int targetType) {
+    public static Target newTarget(final int targetType) {
         Target t = new Target();
         t.type = targetType;
         return t;
     }
 
-    public static Target newControlTarget(int controlType) {
+    public static Target newControlTarget(final int controlType) {
         Target t = newTarget(Target.Type.CONTROL);
         t.controlType = controlType;
         return t;
     }
 
-    public static Target newContainerTarget(int containerType) {
+    public static Target newContainerTarget(final int containerType) {
         Target t = newTarget(Target.Type.CONTAINER);
         t.containerType = containerType;
         return t;
     }
 
-    public static Action newAction(int type) {
+    public static Action newAction(final int type) {
         Action a = new Action();
         a.type = type;
         return a;
     }
 
-    public static Action newCommandAction(int command) {
+    public static Action newCommandAction(final int command) {
         Action a = newAction(Action.Type.COMMAND);
         a.command = command;
         return a;
     }
 
-    public static Action newTouchAction(int touch) {
+    public static Action newTouchAction(final int touch) {
         Action a = newAction(Action.Type.TOUCH);
         a.touch = touch;
         return a;
     }
 
-    public static LauncherEvent newLauncherEvent(Action action, Target... srcTargets) {
+    public static LauncherEvent newLauncherEvent(final Action action, final Target... srcTargets) {
         LauncherEvent event = new LauncherEvent();
         event.srcTarget = srcTargets;
         event.action = action;

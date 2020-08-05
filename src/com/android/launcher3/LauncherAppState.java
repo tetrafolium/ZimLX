@@ -78,7 +78,7 @@ public class LauncherAppState {
         return mContext;
     }
 
-    private LauncherAppState(Context context) {
+    private LauncherAppState(final Context context) {
         if (getLocalProvider(context) == null) {
             throw new RuntimeException(
                 "Initializing LauncherAppState in the absence of LauncherProvider");
@@ -119,7 +119,7 @@ public class LauncherAppState {
             mNotificationBadgingObserver = new SettingsObserver.Secure(
             mContext.getContentResolver()) {
                 @Override
-                public void onSettingChanged(boolean isNotificationBadgingEnabled) {
+                public void onSettingChanged(final boolean isNotificationBadgingEnabled) {
                     if (isNotificationBadgingEnabled) {
                         NotificationListener.requestRebind(new ComponentName(
                                                                mContext, NotificationListener.class));
@@ -143,7 +143,7 @@ public class LauncherAppState {
         }
     }
 
-    LauncherModel setLauncher(Launcher launcher) {
+    LauncherModel setLauncher(final Launcher launcher) {
         mLauncher = launcher;
         getLocalProvider(mContext).setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
@@ -178,11 +178,11 @@ public class LauncherAppState {
     /**
      * Shorthand for {@link #getInvariantDeviceProfile()}
      */
-    public static InvariantDeviceProfile getIDP(Context context) {
+    public static InvariantDeviceProfile getIDP(final Context context) {
         return LauncherAppState.getInstance(context).getInvariantDeviceProfile();
     }
 
-    private static LauncherProvider getLocalProvider(Context context) {
+    private static LauncherProvider getLocalProvider(final Context context) {
         try (ContentProviderClient cl = context.getContentResolver()
                                             .acquireContentProviderClient(LauncherProvider.AUTHORITY)) {
             return (LauncherProvider) cl.getLocalContentProvider();

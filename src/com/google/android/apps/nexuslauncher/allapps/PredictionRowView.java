@@ -77,12 +77,12 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
 
     private static final Property<PredictionRowView, Integer> TEXT_ALPHA = new Property<PredictionRowView, Integer>(Integer.class, "textAlpha") {
         @Override
-        public void set(PredictionRowView predictionRowView, Integer value) {
+        public void set(final PredictionRowView predictionRowView, final Integer value) {
             predictionRowView.setTextAlpha(value);
         }
 
         @Override
-        public Integer get(PredictionRowView predictionRowView) {
+        public Integer get(final PredictionRowView predictionRowView) {
             return predictionRowView.mIconCurrentTextAlpha;
         }
     };
@@ -124,11 +124,11 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         return false;
     }
 
-    public PredictionRowView(@NonNull Context context) {
+    public PredictionRowView(final @NonNull Context context) {
         this(context, null);
     }
 
-    public PredictionRowView(@NonNull Context context, @Nullable AttributeSet attributeSet) {
+    public PredictionRowView(final @NonNull Context context, final @Nullable AttributeSet attributeSet) {
         super(context, attributeSet);
         mPredictedAppComponents = new ArrayList<>();
         mPredictedApps = new ArrayList<>();
@@ -177,12 +177,12 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         getAppsStore().unregisterIconContainer(this);
     }
 
-    public void setup(PredictionsFloatingHeader predictionsFloatingHeader, boolean z) {
+    public void setup(final PredictionsFloatingHeader predictionsFloatingHeader, final boolean z) {
         this.mParent = predictionsFloatingHeader;
         setPredictionsEnabled(z);
     }
 
-    private void setPredictionsEnabled(boolean z) {
+    private void setPredictionsEnabled(final boolean z) {
         if (z != this.mPredictionsEnabled) {
             this.mPredictionsEnabled = z;
             updateVisibility();
@@ -193,11 +193,11 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         setVisibility((!this.mPredictionsEnabled || this.mIsCollapsed) ? View.GONE : View.VISIBLE);
     }
 
-    protected void onMeasure(int i, int i2) {
+    protected void onMeasure(final int i, final int i2) {
         super.onMeasure(i, View.MeasureSpec.makeMeasureSpec(getExpectedHeight(), MeasureSpec.EXACTLY));
     }
 
-    protected void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(final Canvas canvas) {
         this.mFocusHelper.draw(canvas);
         super.dispatchDraw(canvas);
     }
@@ -210,7 +210,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         return dp.allAppsCellHeightPx + getPaddingBottom() + getPaddingTop();
     }
 
-    public void setDividerType(DividerType dividerType, boolean force) {
+    public void setDividerType(final DividerType dividerType, final boolean force) {
         int i = 0;
         if (mDividerType != dividerType || force) {
             if (dividerType == DividerType.ALL_APPS_LABEL) {
@@ -242,7 +242,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         return this.mPredictedApps;
     }
 
-    public void setPredictedApps(boolean z, List<ComponentKeyMapper> list) {
+    public void setPredictedApps(final boolean z, final List<ComponentKeyMapper> list) {
         setPredictionsEnabled(z);
         this.mPredictedAppComponents.clear();
         this.mPredictedAppComponents.addAll(list);
@@ -253,7 +253,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         return mPredictedAppComponents;
     }
 
-    public void onDeviceProfileChanged(DeviceProfile deviceProfile) {
+    public void onDeviceProfileChanged(final DeviceProfile deviceProfile) {
         removeAllViews();
         applyPredictionApps();
     }
@@ -315,7 +315,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         mParent.headerChanged();
     }
 
-    private List<ItemInfoWithIcon> processPredictedAppComponents(List<ComponentKeyMapper> list) {
+    private List<ItemInfoWithIcon> processPredictedAppComponents(final List<ComponentKeyMapper> list) {
         if (getAppsStore().getApps().isEmpty()) {
             return Collections.emptyList();
         }
@@ -332,7 +332,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         return arrayList;
     }
 
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         if (mDividerType == DividerType.LINE) {
             int dimensionPixelSize = getResources().getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
             float height = (float) (getHeight() - (getPaddingBottom() / 2));
@@ -343,7 +343,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         }
     }
 
-    public void fillInLogContainerData(View view, ItemInfo itemInfo, Target target, Target target2) {
+    public void fillInLogContainerData(final View view, final ItemInfo itemInfo, final Target target, final Target target2) {
         for (int i = 0; i < this.mPredictedApps.size(); i++) {
             if (this.mPredictedApps.get(i) == itemInfo) {
                 target2.containerType = 7;
@@ -353,12 +353,12 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         }
     }
 
-    public void setScrolledOut(boolean z) {
+    public void setScrolledOut(final boolean z) {
         this.mScrolledOut = z;
         updateTranslationAndAlpha();
     }
 
-    public void setTextAlpha(int i) {
+    public void setTextAlpha(final int i) {
         mIconCurrentTextAlpha = i;
         int alphaComponent = ColorUtils.setAlphaComponent(mIconTextColor, mIconCurrentTextAlpha);
         if (mLoadingProgress == null) {
@@ -377,7 +377,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         }
     }
 
-    public void setScrollTranslation(float f) {
+    public void setScrollTranslation(final float f) {
         this.mScrollTranslation = f;
         updateTranslationAndAlpha();
     }
@@ -389,7 +389,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
     }
 
     @SuppressLint("NewApi")
-    public void setContentVisibility(boolean hasHeader, boolean hasContent, PropertySetter propertySetter, Interpolator interpolator) {
+    public void setContentVisibility(final boolean hasHeader, final boolean hasContent, final PropertySetter propertySetter, final Interpolator interpolator) {
         int i = 0;
         boolean visible = getAlpha() > 0f;
         if (!hasHeader) {
@@ -407,11 +407,11 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         propertySetter.setFloat(mContentAlphaFactor, AnimatedFloat.VALUE, hasHeader ? 1f : 0f, interpolator);
     }
 
-    private void drawAllAppsHeader(Canvas canvas) {
+    private void drawAllAppsHeader(final Canvas canvas) {
         drawAllAppsHeader(canvas, this, mAllAppsLabelLayout);
     }
 
-    static void drawAllAppsHeader(Canvas canvas, View view, Layout allAppsLayout) {
+    static void drawAllAppsHeader(final Canvas canvas, final View view, final Layout allAppsLayout) {
         int width = (view.getWidth() / 2) - (allAppsLayout.getWidth() / 2);
         int height = view.getHeight() - view.getResources().getDimensionPixelSize(R.dimen.all_apps_label_bottom_padding) - allAppsLayout.getHeight();
         canvas.translate((float) width, (float) height);
@@ -423,7 +423,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         return (this.mAllAppsLabelLayout.getHeight() + getResources().getDimensionPixelSize(R.dimen.all_apps_label_top_padding)) + getResources().getDimensionPixelSize(R.dimen.all_apps_label_bottom_padding);
     }
 
-    public void setCollapsed(boolean z) {
+    public void setCollapsed(final boolean z) {
         if (z != this.mIsCollapsed) {
             this.mIsCollapsed = z;
             updateVisibility();

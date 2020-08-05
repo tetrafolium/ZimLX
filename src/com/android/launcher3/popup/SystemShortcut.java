@@ -32,7 +32,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
     public final int iconResId;
     public final int labelResId;
 
-    public SystemShortcut(int iconResId, int labelResId) {
+    public SystemShortcut(final int iconResId, final int labelResId) {
         this.iconResId = iconResId;
         this.labelResId = labelResId;
     }
@@ -46,7 +46,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         }
 
         @Override
-        public View.OnClickListener getOnClickListener(Launcher launcher, ItemInfo itemInfo) {
+        public View.OnClickListener getOnClickListener(final Launcher launcher, final ItemInfo itemInfo) {
             return null;
         }
     }
@@ -85,7 +85,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
 
         @Override
         public View.OnClickListener getOnClickListener(
-            BaseDraggingActivity activity, ItemInfo itemInfo) {
+            final BaseDraggingActivity activity, final ItemInfo itemInfo) {
             return (view) -> {
                 dismissTaskMenuView(activity);
                 Rect sourceBounds = activity.getViewBounds(view);
@@ -105,9 +105,9 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
 
         @Override
         public View.OnClickListener getOnClickListener(
-            BaseDraggingActivity activity, ItemInfo itemInfo) {
-            boolean supportsWebUI = (itemInfo instanceof ShortcutInfo) &&
-                                    ((ShortcutInfo) itemInfo).hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI);
+            final BaseDraggingActivity activity, final ItemInfo itemInfo) {
+            boolean supportsWebUI = (itemInfo instanceof ShortcutInfo)
+                                    && ((ShortcutInfo) itemInfo).hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI);
             boolean isInstantApp = false;
             if (itemInfo instanceof com.android.launcher3.AppInfo) {
                 com.android.launcher3.AppInfo appInfo = (com.android.launcher3.AppInfo) itemInfo;
@@ -121,7 +121,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         }
 
         public View.OnClickListener createOnClickListener(
-            BaseDraggingActivity activity, ItemInfo itemInfo) {
+            final BaseDraggingActivity activity, final ItemInfo itemInfo) {
             return view -> {
                 Intent intent = new PackageManagerHelper(view.getContext()).getMarketIntent(
                     itemInfo.getTargetComponent().getPackageName());
@@ -131,7 +131,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         }
     }
 
-    protected static void dismissTaskMenuView(BaseDraggingActivity activity) {
+    protected static void dismissTaskMenuView(final BaseDraggingActivity activity) {
         AbstractFloatingView.closeOpenViews(activity, true,
                                             AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
     }

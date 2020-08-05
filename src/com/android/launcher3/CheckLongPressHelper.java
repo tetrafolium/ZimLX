@@ -33,11 +33,11 @@ public class CheckLongPressHelper {
     private int mLongPressTimeout = DEFAULT_LONG_PRESS_TIMEOUT;
     private CheckForLongPress mPendingCheckForLongPress;
 
-    public CheckLongPressHelper(View v) {
+    public CheckLongPressHelper(final View v) {
         mView = v;
     }
 
-    public CheckLongPressHelper(View v, View.OnLongClickListener listener) {
+    public CheckLongPressHelper(final View v, final View.OnLongClickListener listener) {
         mView = v;
         mListener = listener;
     }
@@ -45,7 +45,7 @@ public class CheckLongPressHelper {
     /**
      * Overrides the default long press timeout.
      */
-    public void setLongPressTimeout(int longPressTimeout) {
+    public void setLongPressTimeout(final int longPressTimeout) {
         mLongPressTimeout = longPressTimeout;
     }
 

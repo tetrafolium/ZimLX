@@ -13,7 +13,7 @@ public class GridOccupancy {
     private final int mCountX;
     private final int mCountY;
 
-    public GridOccupancy(int countX, int countY) {
+    public GridOccupancy(final int countX, final int countY) {
         mCountX = countX;
         mCountY = countY;
         cells = new boolean[countX][countY];
@@ -27,7 +27,7 @@ public class GridOccupancy {
      * @param spanY     Vertical cell span.
      * @return true if a vacant cell was found
      */
-    public boolean findVacantCell(int[] vacantOut, int spanX, int spanY) {
+    public boolean findVacantCell(final int[] vacantOut, final int spanX, final int spanY) {
         for (int y = 0; (y + spanY) <= mCountY; y++) {
             for (int x = 0; (x + spanX) <= mCountX; x++) {
                 boolean available = !cells[x][y];
@@ -48,7 +48,7 @@ public class GridOccupancy {
         return false;
     }
 
-    public void copyTo(GridOccupancy dest) {
+    public void copyTo(final GridOccupancy dest) {
         for (int i = 0; i < mCountX; i++) {
             for (int j = 0; j < mCountY; j++) {
                 dest.cells[i][j] = cells[i][j];
@@ -56,7 +56,7 @@ public class GridOccupancy {
         }
     }
 
-    public boolean isRegionVacant(int x, int y, int spanX, int spanY) {
+    public boolean isRegionVacant(final int x, final int y, final int spanX, final int spanY) {
         int x2 = x + spanX - 1;
         int y2 = y + spanY - 1;
         if (x < 0 || y < 0 || x2 >= mCountX || y2 >= mCountY) {
@@ -72,7 +72,7 @@ public class GridOccupancy {
         return true;
     }
 
-    public void markCells(int cellX, int cellY, int spanX, int spanY, boolean value) {
+    public void markCells(final int cellX, final int cellY, final int spanX, final int spanY, final boolean value) {
         if (cellX < 0 || cellY < 0) return;
         for (int x = cellX; x < cellX + spanX && x < mCountX; x++) {
             for (int y = cellY; y < cellY + spanY && y < mCountY; y++) {
@@ -81,15 +81,15 @@ public class GridOccupancy {
         }
     }
 
-    public void markCells(Rect r, boolean value) {
+    public void markCells(final Rect r, final boolean value) {
         markCells(r.left, r.top, r.width(), r.height(), value);
     }
 
-    public void markCells(CellAndSpan cell, boolean value) {
+    public void markCells(final CellAndSpan cell, final boolean value) {
         markCells(cell.cellX, cell.cellY, cell.spanX, cell.spanY, value);
     }
 
-    public void markCells(ItemInfo item, boolean value) {
+    public void markCells(final ItemInfo item, final boolean value) {
         markCells(item.cellX, item.cellY, item.spanX, item.spanY, value);
     }
 

@@ -289,7 +289,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public Runnable mUpdatePredictionsIfResumed = () -> updatePredictions(false);
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         if (DEBUG_STRICT_MODE) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                                        //.detectDiskReads()
@@ -404,7 +404,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    public void updatePredictions(boolean force) {
+    public void updatePredictions(final boolean force) {
         if (hasBeenResumed() || force) {
             List<ComponentKeyMapper> apps = ((CustomAppPredictor) getUserEventDispatcher()).getPredictions();
             if (apps != null) {
@@ -490,14 +490,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         ((FrameLayout) minibar.getParent()).setBackgroundColor(prefs.getMinibarColor());
     }*/
 
-    public static Launcher getLauncher(Context context) {
+    public static Launcher getLauncher(final Context context) {
         if (context instanceof Launcher) {
             return (Launcher) context;
         }
         return ((Launcher) ((ContextWrapper) context).getBaseContext());
     }
 
-    protected void overrideTheme(boolean isDark, boolean supportsDarkText) {
+    protected void overrideTheme(final boolean isDark, final boolean supportsDarkText) {
         if (isDark) {
             setTheme(R.style.LauncherTheme_Dark);
         } else if (supportsDarkText) {
@@ -512,7 +512,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(final Configuration newConfig) {
         int diff = newConfig.diff(mOldConfig);
         if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
             mUserEventDispatcher = null;
@@ -545,7 +545,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    private void initDeviceProfile(InvariantDeviceProfile idp) {
+    private void initDeviceProfile(final InvariantDeviceProfile idp) {
         // Load configuration-specific DeviceProfile
         mDeviceProfile = idp.getDeviceProfile(this);
         if (isInMultiWindowModeCompat()) {
@@ -567,7 +567,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public <T extends View> T findViewById(int id) {
+    public <T extends View> T findViewById(final int id) {
         return mLauncherView.findViewById(id);
     }
 
@@ -586,14 +586,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     /**
      * Call this after onCreate to set or clear overlay.
      */
-    public void setLauncherOverlay(LauncherOverlay overlay) {
+    public void setLauncherOverlay(final LauncherOverlay overlay) {
         if (overlay != null) {
             overlay.setOverlayCallbacks(new LauncherOverlayCallbacksImpl());
         }
         mWorkspace.setLauncherOverlay(overlay);
     }
 
-    public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
+    public boolean setLauncherCallbacks(final LauncherCallbacks callbacks) {
         mLauncherCallbacks = callbacks;
         return true;
     }
@@ -611,7 +611,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return !isWorkspaceLoading();
     }
 
-    public int getViewIdForItem(ItemInfo info) {
+    public int getViewIdForItem(final ItemInfo info) {
         // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
         // This cast is safe as long as the id < 0x00FFFFFF
         // Since we jail all the dynamically generated views, there should be no clashes
@@ -623,18 +623,18 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return mPopupDataProvider;
     }
 
-    public void onInsetsChanged(Rect insets) {
+    public void onInsetsChanged(final Rect insets) {
         mDeviceProfile.updateInsets(insets);
         mDeviceProfile.layout(this, true);
     }
 
     @Override
-    public BadgeInfo getBadgeInfoForItem(ItemInfo info) {
+    public BadgeInfo getBadgeInfoForItem(final ItemInfo info) {
         return mPopupDataProvider.getBadgeInfoForItem(info);
     }
 
     @Override
-    public void invalidateParent(ItemInfo info) {
+    public void invalidateParent(final ItemInfo info) {
         FolderIconPreviewVerifier verifier = new FolderIconPreviewVerifier(getDeviceProfile().inv);
         if (verifier.isItemInPreview(info.rank) && (info.container >= 0)) {
             View folderIcon = getWorkspace().getHomescreenIconByItemId(info.container);
@@ -649,7 +649,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * a configuration step, this allows the proper animations to run after other transitions.
      */
     private long completeAdd(
-        int requestCode, Intent intent, int appWidgetId, PendingRequestArgs info) {
+        final int requestCode, final Intent intent, final int appWidgetId, final PendingRequestArgs info) {
         long screenId = info.screenId;
         if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
             // When the screen id represents an actual screen (as opposed to a rank) we make sure
@@ -714,8 +714,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         if (requestCode == REQUEST_BIND_APPWIDGET) {
             // This is called only if the user did not previously have permissions to bind widgets
-            final int appWidgetId = data != null ?
-                                    data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
+            final int appWidgetId = data != null
+                                    ? data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
             if (resultCode == RESULT_CANCELED) {
                 completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId, requestArgs);
                 mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
@@ -729,8 +729,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             return;
         }
 
-        boolean isWidgetDrop = (requestCode == REQUEST_PICK_APPWIDGET ||
-                                requestCode == REQUEST_CREATE_APPWIDGET);
+        boolean isWidgetDrop = (requestCode == REQUEST_PICK_APPWIDGET
+                                || requestCode == REQUEST_CREATE_APPWIDGET);
 
         // We have special handling for widgets
         if (isWidgetDrop) {
@@ -745,8 +745,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
             final int result;
             if (appWidgetId < 0 || resultCode == RESULT_CANCELED) {
-                Log.e(TAG, "Error: appWidgetId (EXTRA_APPWIDGET_ID) was not " +
-                      "returned from the widget configuration activity.");
+                Log.e(TAG, "Error: appWidgetId (EXTRA_APPWIDGET_ID) was not "
+                      + "returned from the widget configuration activity.");
                 result = RESULT_CANCELED;
                 completeTwoStageWidgetDrop(result, appWidgetId, requestArgs);
                 final Runnable onComplete = () -> getStateManager().goToState(NORMAL);
@@ -810,7 +810,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     /**
      * @Override for MNC
      */
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(final int requestCode, final String[] permissions, final int[] grantResults) {
         PendingRequestArgs pendingArgs = mPendingRequestArgs;
         if (requestCode == REQUEST_PERMISSION_CALL_PHONE && pendingArgs != null
                 && pendingArgs.getRequestCode() == REQUEST_PERMISSION_CALL_PHONE) {
@@ -844,7 +844,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * @param screenId the screen id to check
      * @return the new screen, or screenId if it exists
      */
-    private long ensurePendingDropLayoutExists(long screenId) {
+    private long ensurePendingDropLayoutExists(final long screenId) {
         CellLayout dropLayout = mWorkspace.getScreenWithId(screenId);
         if (dropLayout == null) {
             // it's possible that the add screen was removed because it was
@@ -985,7 +985,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         UiFactory.onLauncherStateOrResumeChanged(this);
     }
 
-    public boolean isInState(LauncherState state) {
+    public boolean isInState(final LauncherState state) {
         return mStateManager.getState() == state;
     }
 
@@ -1002,7 +1002,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     // We can't hide the IME if it was forced open.  So don't bother
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
+    public void onWindowFocusChanged(final boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         mStateManager.onWindowFocusChanged();
     }
@@ -1014,7 +1014,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
         final int uniChar = event.getUnicodeChar();
         final boolean handled = super.onKeyDown(keyCode, event);
         final boolean isKeyNotWhitespace = uniChar > 0 && !Character.isWhitespace(uniChar);
@@ -1053,7 +1053,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      *
      * @param savedState The previous state.
      */
-    private void restoreState(Bundle savedState) {
+    private void restoreState(final Bundle savedState) {
         if (savedState == null) {
             return;
         }
@@ -1129,8 +1129,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      *
      * @param data The intent describing the shortcut.
      */
-    private void completeAddShortcut(Intent data, long container, long screenId, int cellX,
-                                     int cellY, PendingRequestArgs args) {
+    private void completeAddShortcut(final Intent data, final long container, final long screenId, final int cellX,
+                                     final int cellY, final PendingRequestArgs args) {
         if (args.getRequestCode() != REQUEST_CREATE_SHORTCUT
                 || args.getPendingIntent().getComponent() == null) {
             return;
@@ -1210,7 +1210,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      *
      * @param info The data structure describing the shortcut.
      */
-    View createShortcut(ShortcutInfo info) {
+    View createShortcut(final ShortcutInfo info) {
         return createShortcut((ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentPage()), info);
     }
 
@@ -1221,7 +1221,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * @param info   The data structure describing the shortcut.
      * @return A View inflated from layoutResId.
      */
-    public View createShortcut(ViewGroup parent, ShortcutInfo info) {
+    public View createShortcut(final ViewGroup parent, final ShortcutInfo info) {
         BubbleTextView favorite = (BubbleTextView) LayoutInflater.from(parent.getContext())
                                   .inflate(R.layout.app_icon, parent, false);
         favorite.applyFromShortcutInfo(info);
@@ -1240,8 +1240,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * @param appWidgetId The app widget id
      */
     @Thunk
-    void completeAddAppWidget(int appWidgetId, ItemInfo itemInfo,
-                              AppWidgetHostView hostView, LauncherAppWidgetProviderInfo appWidgetInfo) {
+    void completeAddAppWidget(final int appWidgetId, final ItemInfo itemInfo,
+                              final AppWidgetHostView hostView, final LauncherAppWidgetProviderInfo appWidgetInfo) {
 
         if (appWidgetInfo == null) {
             appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(appWidgetId);
@@ -1267,7 +1267,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mWorkspace.addInScreen(hostView, launcherInfo);
     }
 
-    private void prepareAppWidget(AppWidgetHostView hostView, LauncherAppWidgetInfo item) {
+    private void prepareAppWidget(final AppWidgetHostView hostView, final LauncherAppWidgetInfo item) {
         hostView.setTag(item);
         item.onBindAppWidget(this, hostView);
         hostView.setFocusable(true);
@@ -1276,7 +1276,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     private final BroadcastReceiver mScreenOffReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             // Reset AllApps to its initial state only if we are not in the middle of
             // processing a multi-step drop
             if (mPendingRequestArgs == null) {
@@ -1318,7 +1318,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * Shows the overview button, and if {@param requestButtonFocus} is set, will force the focus
      * onto one of the overview panel buttons.
      */
-    void showOverviewMode(boolean animated, boolean requestButtonFocus) {
+    void showOverviewMode(final boolean animated, final boolean requestButtonFocus) {
         if (requestButtonFocus) {
         }
         mWorkspace.setVisibility(View.VISIBLE);
@@ -1390,12 +1390,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(final Intent intent) {
         TraceHelper.beginSection("NEW_INTENT");
         super.onNewIntent(intent);
 
-        boolean alreadyOnHome = hasWindowFocus() && ((intent.getFlags() &
-                                Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+        boolean alreadyOnHome = hasWindowFocus() && ((intent.getFlags()
+                                & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                                 != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 
         // Check this condition before handling isActionMain, as this will get reset.
@@ -1464,7 +1464,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle state) {
+    public void onRestoreInstanceState(final Bundle state) {
         super.onRestoreInstanceState(state);
         for (int page : mSynchronouslyBoundPages) {
             mWorkspace.restoreInstanceStateForChild(page);
@@ -1472,7 +1472,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(final Bundle outState) {
         if (mWorkspace.getChildCount() > 0) {
             outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getNextPage());
 
@@ -1518,13 +1518,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
+    public void startActivityForResult(final Intent intent, final int requestCode, final Bundle options) {
         super.startActivityForResult(intent, requestCode, options);
     }
 
     @Override
-    public void startIntentSenderForResult(IntentSender intent, int requestCode,
-                                           Intent fillInIntent, int flagsMask, int flagsValues, int extraFlags, Bundle options) {
+    public void startIntentSenderForResult(final IntentSender intent, final int requestCode,
+                                           final Intent fillInIntent, final int flagsMask, final int flagsValues, final int extraFlags, final Bundle options) {
         try {
             super.startIntentSenderForResult(intent, requestCode,
                                              fillInIntent, flagsMask, flagsValues, extraFlags, options);
@@ -1538,15 +1538,15 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * argument for {@link #startSearch} to true.
      */
     @Override
-    public void startSearch(String initialQuery, boolean selectInitialQuery,
-                            Bundle appSearchData, boolean globalSearch) {
+    public void startSearch(final String initialQuery, final boolean selectInitialQuery,
+                            final Bundle appSearchData, final boolean globalSearch) {
         if (appSearchData == null) {
             appSearchData = new Bundle();
             appSearchData.putString("source", "launcher-search");
         }
 
-        if (mLauncherCallbacks == null ||
-                !mLauncherCallbacks.startSearch(initialQuery, selectInitialQuery, appSearchData)) {
+        if (mLauncherCallbacks == null
+                || !mLauncherCallbacks.startSearch(initialQuery, selectInitialQuery, appSearchData)) {
             // Starting search from the callbacks failed. Start the default global search.
             super.startSearch(initialQuery, selectInitialQuery, appSearchData, true);
         }
@@ -1570,24 +1570,24 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return mWorkspaceLoading;
     }
 
-    private void setWorkspaceLoading(boolean value) {
+    private void setWorkspaceLoading(final boolean value) {
         mWorkspaceLoading = value;
     }
 
-    public void setWaitingForResult(PendingRequestArgs args) {
+    public void setWaitingForResult(final PendingRequestArgs args) {
         mPendingRequestArgs = args;
     }
 
-    void addAppWidgetFromDropImpl(int appWidgetId, ItemInfo info, AppWidgetHostView boundWidget,
-                                  WidgetAddFlowHandler addFlowHandler) {
+    void addAppWidgetFromDropImpl(final int appWidgetId, final ItemInfo info, final AppWidgetHostView boundWidget,
+                                  final WidgetAddFlowHandler addFlowHandler) {
         if (LOGD) {
             Log.d(TAG, "Adding widget from drop");
         }
         addAppWidgetImpl(appWidgetId, info, boundWidget, addFlowHandler, 0);
     }
 
-    void addAppWidgetImpl(int appWidgetId, ItemInfo info,
-                          AppWidgetHostView boundWidget, WidgetAddFlowHandler addFlowHandler, int delay) {
+    void addAppWidgetImpl(final int appWidgetId, final ItemInfo info,
+                          final AppWidgetHostView boundWidget, final WidgetAddFlowHandler addFlowHandler, final int delay) {
         if (!addFlowHandler.startConfigActivity(this, appWidgetId, info, REQUEST_CREATE_APPWIDGET)) {
             // If the configuration flow was not started, add the widget
 
@@ -1600,8 +1600,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    public void addPendingItem(PendingAddItemInfo info, long container, long screenId,
-                               int[] cell, int spanX, int spanY) {
+    public void addPendingItem(final PendingAddItemInfo info, final long container, final long screenId,
+                               final int[] cell, final int spanX, final int spanY) {
         info.container = container;
         info.screenId = screenId;
         if (cell != null) {
@@ -1627,7 +1627,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     /**
      * Process a shortcut drop.
      */
-    private void processShortcutFromDrop(PendingAddShortcutInfo info) {
+    private void processShortcutFromDrop(final PendingAddShortcutInfo info) {
         Intent intent = new Intent(Intent.ACTION_CREATE_SHORTCUT).setComponent(info.componentName);
         setWaitingForResult(PendingRequestArgs.forIntent(REQUEST_CREATE_SHORTCUT, intent, info));
         if (!info.activityInfo.startConfigActivity(this, REQUEST_CREATE_SHORTCUT)) {
@@ -1638,7 +1638,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     /**
      * Process a widget drop.
      */
-    private void addAppWidgetFromDrop(PendingAddWidgetInfo info) {
+    private void addAppWidgetFromDrop(final PendingAddWidgetInfo info) {
         AppWidgetHostView hostView = info.boundWidget;
         int appWidgetId;
         WidgetAddFlowHandler addFlowHandler = info.getHandler();
@@ -1657,8 +1657,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         } else {
             // In this case, we either need to start an activity to get permission to bind
             // the widget, or we need to start an activity to configure the widget, or both.
-            if (FeatureFlags.ENABLE_CUSTOM_WIDGETS &&
-                    info.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET) {
+            if (FeatureFlags.ENABLE_CUSTOM_WIDGETS
+                    && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET) {
                 appWidgetId = CustomWidgetParser.getWidgetIdForCustomProvider(
                                   this, info.componentName);
             } else {
@@ -1676,8 +1676,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    FolderIcon addFolder(CellLayout layout, long container, final long screenId, int cellX,
-                         int cellY) {
+    FolderIcon addFolder(final CellLayout layout, final long container, final long screenId, final int cellX,
+                         final int cellY) {
         final FolderInfo folderInfo = new FolderInfo();
         folderInfo.title = getText(R.string.folder_name);
 
@@ -1700,7 +1700,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * @param itemInfo     the {@link ItemInfo} for this view.
      * @param deleteFromDb whether or not to delete this item from the db.
      */
-    public boolean removeItem(View v, final ItemInfo itemInfo, boolean deleteFromDb) {
+    public boolean removeItem(final View v, final ItemInfo itemInfo, final boolean deleteFromDb) {
         if (itemInfo instanceof ShortcutInfo) {
             // Remove the shortcut from the folder before removing it from launcher
             View folderIcon = mWorkspace.getHomescreenIconByItemId(itemInfo.container);
@@ -1741,7 +1741,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
+    public boolean dispatchKeyEvent(final KeyEvent event) {
         return (event.getKeyCode() == KeyEvent.KEYCODE_HOME) || super.dispatchKeyEvent(event);
     }
 
@@ -1787,20 +1787,20 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
-    public ActivityOptions getActivityLaunchOptions(View v) {
+    public ActivityOptions getActivityLaunchOptions(final View v) {
         return mAppTransitionManager.getActivityLaunchOptions(this, v);
     }
 
-    public Rect getViewBounds(View v) {
+    public Rect getViewBounds(final View v) {
         int[] pos = new int[2];
         v.getLocationOnScreen(pos);
         return new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight());
     }
 
     @Override
-    public void modifyUserEvent(LauncherLogProto.LauncherEvent event) {
-        if (event.srcTarget != null && event.srcTarget.length > 0 &&
-                event.srcTarget[1].containerType == ContainerType.PREDICTION) {
+    public void modifyUserEvent(final LauncherLogProto.LauncherEvent event) {
+        if (event.srcTarget != null && event.srcTarget.length > 0
+                && event.srcTarget[1].containerType == ContainerType.PREDICTION) {
             Target[] targets = new Target[3];
             targets[0] = event.srcTarget[0];
             targets[1] = event.srcTarget[1];
@@ -1815,7 +1815,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
+    public boolean startActivitySafely(final View v, final Intent intent, final ItemInfo item) {
         boolean success = super.startActivitySafely(v, intent, item);
         if (success && v instanceof BubbleTextView) {
             // This is set to the view that launched the activity that navigated the user away
@@ -1829,16 +1829,16 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return success;
     }
 
-    boolean isHotseatLayout(View layout) {
+    boolean isHotseatLayout(final View layout) {
         // TODO: Remove this method
-        return mHotseat != null && layout != null &&
-               (layout instanceof CellLayout) && (layout == mHotseat.getLayout());
+        return mHotseat != null && layout != null
+               && (layout instanceof CellLayout) && (layout == mHotseat.getLayout());
     }
 
     /**
      * Returns the CellLayout of the specified container at the specified screen.
      */
-    public CellLayout getCellLayout(long container, long screenId) {
+    public CellLayout getCellLayout(final long container, final long screenId) {
         if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             if (mHotseat != null) {
                 return mHotseat.getLayout();
@@ -1851,7 +1851,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public void onTrimMemory(int level) {
+    public void onTrimMemory(final int level) {
         super.onTrimMemory(level);
         if (level >= ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
             // The widget preview db can result in holding onto over
@@ -1871,7 +1871,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
 
     @Override
-    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
+    public boolean dispatchPopulateAccessibilityEvent(final AccessibilityEvent event) {
         final boolean result = super.dispatchPopulateAccessibilityEvent(event);
         final List<CharSequence> text = event.getText();
         text.clear();
@@ -1883,7 +1883,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return result;
     }
 
-    public void setOnResumeCallback(OnResumeCallback callback) {
+    public void setOnResumeCallback(final OnResumeCallback callback) {
         if (mOnResumeCallback != null) {
             mOnResumeCallback.onLauncherResume();
         }
@@ -1904,7 +1904,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * @return {@code true} if we are currently paused. The caller might be able to skip some work
      */
     @Thunk
-    boolean waitUntilResume(Runnable run) {
+    boolean waitUntilResume(final Runnable run) {
         if (mPaused) {
             if (LOGD) Log.d(TAG, "Deferring update until onResume");
             if (run instanceof RunnableWithId) {
@@ -1971,10 +1971,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public void bindScreens(ArrayList<Long> orderedScreenIds) {
+    public void bindScreens(final ArrayList<Long> orderedScreenIds) {
         // Make sure the first screen is always at the start.
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
-                orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN
+                && orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
             orderedScreenIds.remove(Workspace.FIRST_SCREEN_ID);
             orderedScreenIds.add(0, Workspace.FIRST_SCREEN_ID);
             LauncherModel.updateWorkspaceScreenOrder(this, orderedScreenIds);
@@ -1989,7 +1989,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         // computed before the next layout
         mWorkspace.unlockWallpaperFromDefaultPageOnNextLayout();
     }
-    private void bindAddScreens(ArrayList<Long> orderedScreenIds) {
+    private void bindAddScreens(final ArrayList<Long> orderedScreenIds) {
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
             long screenId = orderedScreenIds.get(i);
@@ -2046,8 +2046,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             final ItemInfo item = items.get(i);
 
             // Short circuit if we are loading dock items for a configuration which has no dock
-            if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
-                    mHotseat == null) {
+            if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
+                    && mHotseat == null) {
                 continue;
             }
 
@@ -2138,7 +2138,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     /**
      * Add the views for a widget to the workspace.
      */
-    public void bindAppWidget(LauncherAppWidgetInfo item) {
+    public void bindAppWidget(final LauncherAppWidgetInfo item) {
         View view = inflateAppWidget(item);
         if (view != null) {
             mWorkspace.addInScreen(view, item);
@@ -2146,7 +2146,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    private View inflateAppWidget(LauncherAppWidgetInfo item) {
+    private View inflateAppWidget(final LauncherAppWidgetInfo item) {
         if (mIsSafeModeEnabled) {
             PendingAppWidgetHostView view =
                 new PendingAppWidgetHostView(this, item, mIconCache, true);
@@ -2172,8 +2172,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
 
         // If the provider is ready, but the width is not yet restored, try to restore it.
-        if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) &&
-                (item.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED)) {
+        if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
+                && (item.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED)) {
             if (appWidgetInfo == null) {
                 if (DEBUG_WIDGETS) {
                     Log.d(TAG, "Removing restored widget: id=" + item.appWidgetId
@@ -2272,7 +2272,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      *
      * @param appWidgetId The app widget id
      */
-    private LauncherAppWidgetInfo completeRestoreAppWidget(int appWidgetId, int finalRestoreFlag) {
+    private LauncherAppWidgetInfo completeRestoreAppWidget(final int appWidgetId, final int finalRestoreFlag) {
         LauncherAppWidgetHostView view = mWorkspace.getWidgetForAppWidgetId(appWidgetId);
         if ((view == null) || !(view instanceof PendingAppWidgetHostView)) {
             Log.e(TAG, "Widget update called, when the widget no longer exists.");
@@ -2293,12 +2293,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return info;
     }
 
-    public void onPageBoundSynchronously(int page) {
+    public void onPageBoundSynchronously(final int page) {
         mSynchronouslyBoundPages.add(page);
     }
 
     @Override
-    public void executeOnNextDraw(ViewOnDrawExecutor executor) {
+    public void executeOnNextDraw(final ViewOnDrawExecutor executor) {
         if (mPendingExecutor != null) {
             mPendingExecutor.markCompleted();
         }
@@ -2311,7 +2311,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         executor.attachTo(this);
     }
 
-    public void clearPendingExecutor(ViewOnDrawExecutor executor) {
+    public void clearPendingExecutor(final ViewOnDrawExecutor executor) {
         if (mPendingExecutor == executor) {
             mPendingExecutor = null;
         }
@@ -2325,7 +2325,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             if (executor != null) {
                 anim.addListener(new AnimatorListenerAdapter() {
                     @Override
-                    public void onAnimationEnd(Animator animation) {
+                    public void onAnimationEnd(final Animator animation) {
                         executor.onLoadAnimationCompleted();
                     }
                 });
@@ -2364,7 +2364,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return diff > (NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS * 1000);
     }
 
-    private ValueAnimator createNewAppBounceAnimation(View v, int i) {
+    private ValueAnimator createNewAppBounceAnimation(final View v, final int i) {
         ValueAnimator bounceAnim = LauncherAnimUtils.ofViewAlphaAndScale(v, 1, 1, 1);
         bounceAnim.setDuration(InstallShortcutReceiver.NEW_SHORTCUT_BOUNCE_DURATION);
         bounceAnim.setStartDelay(i * InstallShortcutReceiver.NEW_SHORTCUT_STAGGER_DELAY);
@@ -2381,7 +2381,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAllApplications(ArrayList<AppInfo> apps) {
+    public void bindAllApplications(final ArrayList<AppInfo> apps) {
         mAppsView.getAppsStore().setApps(apps);
 
         if (mLauncherCallbacks != null) {
@@ -2394,7 +2394,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * because LauncherModel's map is updated in the background, while Launcher runs on the UI.
      */
     @Override
-    public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
+    public void bindDeepShortcutMap(final MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
         mPopupDataProvider.setDeepShortcutMap(deepShortcutMapCopy);
     }
 
@@ -2404,12 +2404,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * Implementation of the method from LauncherModel.Callbacks.
      */
     @Override
-    public void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps) {
+    public void bindAppsAddedOrUpdated(final ArrayList<AppInfo> apps) {
         mAppsView.getAppsStore().addOrUpdateApps(apps);
     }
 
     @Override
-    public void bindPromiseAppProgressUpdated(PromiseAppInfo app) {
+    public void bindPromiseAppProgressUpdated(final PromiseAppInfo app) {
         mAppsView.getAppsStore().updatePromiseAppProgress(app);
     }
 
@@ -2490,7 +2490,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * @param packageUser if null, refreshes all widgets and shortcuts, otherwise only
      *                    refreshes the widgets and shortcuts associated with the given package/user
      */
-    public void refreshAndBindWidgetsForPackageUser(@Nullable PackageUserKey packageUser) {
+    public void refreshAndBindWidgetsForPackageUser(final @Nullable PackageUserKey packageUser) {
         mModel.refreshAndBindWidgetsAndShortcuts(packageUser);
     }
 
@@ -2503,7 +2503,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return mBlurWallpaperProvider;
     }
 
-    public void getAllAppsController(boolean immediate) {
+    public void getAllAppsController(final boolean immediate) {
         if (mRotationEnabled) {
             if (immediate) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -2517,7 +2517,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * $ adb shell dumpsys activity com.android.launcher3.Launcher [--all]
      */
     @Override
-    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
+    public void dump(final String prefix, final FileDescriptor fd, final PrintWriter writer, final String[] args) {
         super.dump(prefix, fd, writer, args);
 
         if (args.length > 0 && TextUtils.equals(args[0], "--all")) {
@@ -2567,7 +2567,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     @TargetApi(Build.VERSION_CODES.N)
     public void onProvideKeyboardShortcuts(
-        List<KeyboardShortcutGroup> data, Menu menu, int deviceId) {
+        final List<KeyboardShortcutGroup> data, final Menu menu, final int deviceId) {
 
         ArrayList<KeyboardShortcutInfo> shortcutInfos = new ArrayList<>();
         if (isInState(NORMAL)) {
@@ -2597,7 +2597,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public boolean onKeyShortcut(int keyCode, KeyEvent event) {
+    public boolean onKeyShortcut(final int keyCode, final KeyEvent event) {
         if (event.hasModifiers(KeyEvent.META_CTRL_ON)) {
             switch (keyCode) {
             case KeyEvent.KEYCODE_A:
@@ -2635,12 +2635,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
+    public boolean onKeyUp(final int keyCode, final KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             // KEYCODE_MENU is sent by some tests, for example
             // LauncherJankTests#testWidgetsContainerFling. Don't just remove its handling.
-            if (!mDragController.isDragging() && !mWorkspace.isSwitchingState() &&
-                    isInState(NORMAL)) {
+            if (!mDragController.isDragging() && !mWorkspace.isSwitchingState()
+                    && isInState(NORMAL)) {
                 // Close any open floating views.
                 AbstractFloatingView.closeAllOpenViews(this);
 
@@ -2698,14 +2698,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks, LauncherStateManager.StateListener {
 
-        public void onScrollChanged(float progress) {
+        public void onScrollChanged(final float progress) {
             addOrRemoveStateListener(progress);
             if (mWorkspace != null) {
                 mWorkspace.onOverlayScrollChanged(progress);
             }
         }
 
-        private void addOrRemoveStateListener(float progress) {
+        private void addOrRemoveStateListener(final float progress) {
             if (Float.compare(progress, 1.0f) == 0) {
                 getStateManager().addStateListener(this);
             } else if (Float.compare(progress, 0.0f) == 0) {
@@ -2713,13 +2713,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             }
         }
 
-        private void hideOverlay(LauncherState launcherState, boolean animate) {
+        private void hideOverlay(final LauncherState launcherState, final boolean animate) {
             if (launcherState == LauncherState.OVERVIEW || launcherState == LauncherState.FAST_OVERVIEW) {
                 hideOverlay(animate);
             }
         }
 
-        private void hideOverlay(boolean animate) {
+        private void hideOverlay(final boolean animate) {
             Launcher launcher = Launcher.this;
             if (launcher instanceof NexusLauncherActivity) {
                 Objects.requireNonNull(((NexusLauncherActivity) launcher).getGoogleNow()).hideOverlay(animate);
@@ -2727,17 +2727,17 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
 
         @Override
-        public void onStateSetImmediately(LauncherState state) {
+        public void onStateSetImmediately(final LauncherState state) {
             hideOverlay(state, false);
         }
 
         @Override
-        public void onStateTransitionStart(LauncherState toState) {
+        public void onStateTransitionStart(final LauncherState toState) {
             hideOverlay(toState, true);
         }
 
         @Override
-        public void onStateTransitionComplete(LauncherState finalState) {
+        public void onStateTransitionComplete(final LauncherState finalState) {
 
         }
 
@@ -2752,7 +2752,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             }
         }
 
-        public boolean isInState(LauncherState state) {
+        public boolean isInState(final LauncherState state) {
             return mStateManager.getState() == state;
         }
 

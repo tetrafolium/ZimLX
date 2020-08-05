@@ -14,7 +14,7 @@ public class BaseClientService implements ServiceConnection {
     private final int mFlags;
     private final ServiceConnection mBridge;
 
-    BaseClientService(Context context, int flags) {
+    BaseClientService(final Context context, final int flags) {
         mContext = context;
         mFlags = flags;
         mBridge = FeedBridge.getUseBridge()
@@ -43,10 +43,10 @@ public class BaseClientService implements ServiceConnection {
     }
 
     @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
+    public void onServiceConnected(final ComponentName name, final IBinder service) {
     }
 
     @Override
-    public void onServiceDisconnected(ComponentName name) {
+    public void onServiceDisconnected(final ComponentName name) {
     }
 }

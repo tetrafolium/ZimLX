@@ -46,7 +46,7 @@ public class GridOccupancyTest extends TestCase {
         assertFalse(grid.isRegionVacant(0, 0, 2, 1));
     }
 
-    private GridOccupancy initGrid(int rows, int... cells) {
+    private GridOccupancy initGrid(final int rows, final int... cells) {
         int cols = cells.length / rows;
         int i = 0;
         GridOccupancy grid = new GridOccupancy(cols, rows);

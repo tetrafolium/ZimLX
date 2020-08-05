@@ -35,13 +35,13 @@ public class Alarm implements Runnable {
         mHandler = new Handler();
     }
 
-    public void setOnAlarmListener(OnAlarmListener alarmListener) {
+    public void setOnAlarmListener(final OnAlarmListener alarmListener) {
         mAlarmListener = alarmListener;
     }
 
     // Sets the alarm to go off in a certain number of milliseconds. If the alarm is already set,
     // it's overwritten and only the new alarm setting is used
-    public void setAlarm(long millisecondsInFuture) {
+    public void setAlarm(final long millisecondsInFuture) {
         long currentTime = SystemClock.uptimeMillis();
         mAlarmPending = true;
         long oldTriggerTime = mAlarmTriggerTime;

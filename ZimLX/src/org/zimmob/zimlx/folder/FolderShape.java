@@ -57,7 +57,7 @@ public abstract class FolderShape {
     public static abstract class PathShape extends FolderShape {
         public final Path mTmpPath = new Path();
 
-        public final Animator createRevealAnimator(final Folder folder, Rect startRect, Rect endRect, float endRadius, boolean isReversed) {
+        public final Animator createRevealAnimator(final Folder folder, final Rect startRect, final Rect endRect, final float endRadius, final boolean isReversed) {
             Path path = new Path();
             AnimatorUpdateListener newUpdateListener = newUpdateListener(startRect, endRect,
                     endRadius, path);
@@ -66,13 +66,13 @@ public abstract class FolderShape {
             ofFloat.addListener(new AnimatorListenerAdapter() {
                 public ViewOutlineProvider mOldOutlineProvider;
 
-                public void onAnimationEnd(Animator animator) {
+                public void onAnimationEnd(final Animator animator) {
                     folder.setTranslationZ(0);
                     folder.setClipPath(null);
                     folder.setOutlineProvider(this.mOldOutlineProvider);
                 }
 
-                public void onAnimationStart(Animator animator) {
+                public void onAnimationStart(final Animator animator) {
                     this.mOldOutlineProvider = folder.getOutlineProvider();
                     folder.setOutlineProvider(null);
                     folder.setTranslationZ(-folder.getElevation());
@@ -86,7 +86,7 @@ public abstract class FolderShape {
             return ofFloat;
         }
 
-        public final void drawShape(Canvas canvas, float x, float y, float radius, Paint paint) {
+        public final void drawShape(final Canvas canvas, final float x, final float y, final float radius, final Paint paint) {
             this.mTmpPath.reset();
             addShape(this.mTmpPath, x, y, radius);
             canvas.drawPath(this.mTmpPath, paint);
@@ -99,7 +99,7 @@ public abstract class FolderShape {
 
         private final IconShape mIconShape;
 
-        public AdaptiveIconShape(Context context) {
+        public AdaptiveIconShape(final Context context) {
             mIconShape = IconShapeManager.Companion.getInstance(context).getIconShape();
             mAttrs = new SparseArray<>();
             int qsbEdgeRadius = mIconShape.getQsbEdgeRadius();
@@ -111,13 +111,13 @@ public abstract class FolderShape {
         }
 
         @Override
-        public void addShape(Path path, float x, float y, float radius) {
+        public void addShape(final Path path, final float x, final float y, final float radius) {
             mIconShape.addShape(path, x, y, radius);
         }
 
         @Override
-        public AnimatorUpdateListener newUpdateListener(Rect startRect, Rect endRect,
-                float endRadius, Path path) {
+        public AnimatorUpdateListener newUpdateListener(final Rect startRect, final Rect endRect,
+                final float endRadius, final Path path) {
             float startRadius = startRect.width() / 2f;
             float[] start = new float[] {startRect.left, startRect.top, startRect.right, startRect.bottom};
             float[] end = new float[] {endRect.left, endRect.top, endRect.right, endRect.bottom};
@@ -134,7 +134,7 @@ public abstract class FolderShape {
 
     public static abstract class SimpleRectShape extends FolderShape {
 
-        public final Animator createRevealAnimator(Folder folder, Rect startRect, Rect endRect, float endRadius, boolean isReversed) {
+        public final Animator createRevealAnimator(final Folder folder, final Rect startRect, final Rect endRect, final float endRadius, final boolean isReversed) {
             return new RoundedRectRevealOutlineProvider(getStartRadius(startRect), endRadius, startRect,
             endRect) {
                 public boolean shouldRemoveElevationDuringAnimation() {
@@ -148,20 +148,20 @@ public abstract class FolderShape {
 
     public static final class Circle extends SimpleRectShape {
 
-        public void addShape(Path path, float x, float y, float radius) {
+        public void addShape(final Path path, final float x, final float y, final float radius) {
             path.addCircle(x + radius, y + radius, radius, Path.Direction.CW);
         }
 
-        public void drawShape(Canvas canvas, float x, float y, float radius, Paint paint) {
+        public void drawShape(final Canvas canvas, final float x, final float y, final float radius, final Paint paint) {
             canvas.drawCircle(x + radius, y + radius, radius, paint);
         }
 
-        public float getStartRadius(Rect rect) {
+        public float getStartRadius(final Rect rect) {
             return ((float) rect.width()) / 2.0f;
         }
     }
 
-    public static FolderShape getShapeDefinition(String shape, float radiusRatio) {
+    public static FolderShape getShapeDefinition(final String shape, final float radiusRatio) {
         switch (shape) {
         case "Circle":
             return new Circle();
@@ -170,7 +170,7 @@ public abstract class FolderShape {
         }
     }
 
-    public static void init(Context context) {
+    public static void init(final Context context) {
         if (Utilities.ATLEAST_OREO) {
             sInstance = new AdaptiveIconShape(context);
             return;

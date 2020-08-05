@@ -55,7 +55,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
     // <package name>.addtohomescreen
     private static final String MARKER_PROVIDER_PREFIX = ".addtohomescreen";
 
-    public static void queueAppIconAddition(Context context, String packageName, UserHandle user) {
+    public static void queueAppIconAddition(final Context context, final String packageName, final UserHandle user) {
         List<LauncherActivityInfo> activities = LauncherAppsCompat.getInstance(context)
                                                 .getActivityList(packageName, user);
         if (activities == null || activities.isEmpty()) {
@@ -65,7 +65,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
         InstallShortcutReceiver.queueActivityInfo(activities.get(0), context);
     }
 
-    public static boolean isEnabled(Context context) {
+    public static boolean isEnabled(final Context context) {
         return Utilities.getPrefs(context).getBoolean(ADD_ICON_PREFERENCE_KEY, true);
     }
 
@@ -88,7 +88,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
         if (!isEnabled(context) || !Utilities.ATLEAST_OREO) {
             // User has decided to not add icons on homescreen.
             return;
@@ -98,8 +98,8 @@ public class SessionCommitReceiver extends BroadcastReceiver {
         UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
 
         if (Process.myUserHandle().equals(user)) {
-            if (TextUtils.isEmpty(info.getAppPackageName()) ||
-                    info.getInstallReason() != PackageManager.INSTALL_REASON_USER) {
+            if (TextUtils.isEmpty(info.getAppPackageName())
+                    || info.getInstallReason() != PackageManager.INSTALL_REASON_USER) {
                 return;
             }
         }
@@ -110,12 +110,12 @@ public class SessionCommitReceiver extends BroadcastReceiver {
     private static class PrefInitTask extends AsyncTask<Void, Void, Void> {
         private final Context mContext;
 
-        PrefInitTask(Context context) {
+        PrefInitTask(final Context context) {
             mContext = context;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(final Void... voids) {
             boolean addIconToHomeScreenEnabled = readValueFromMarketApp();
             Utilities.getPrefs(mContext).edit()
             .putBoolean(ADD_ICON_PREFERENCE_KEY, addIconToHomeScreenEnabled)

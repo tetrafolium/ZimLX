@@ -54,12 +54,12 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
     private static FloatProperty<NotificationMainView> CONTENT_TRANSLATION =
     new FloatProperty<NotificationMainView>("contentTranslation") {
         @Override
-        public void setValue(NotificationMainView view, float v) {
+        public void setValue(final NotificationMainView view, final float v) {
             view.setContentTranslation(v);
         }
 
         @Override
-        public Float get(NotificationMainView view) {
+        public Float get(final NotificationMainView view) {
             return view.mTextAndBackground.getTranslationX();
         }
     };
@@ -78,15 +78,15 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
 
     private SwipeDetector mSwipeDetector;
 
-    public NotificationMainView(Context context) {
+    public NotificationMainView(final Context context) {
         this(context, null, 0);
     }
 
-    public NotificationMainView(Context context, AttributeSet attrs) {
+    public NotificationMainView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public NotificationMainView(Context context, AttributeSet attrs, int defStyle) {
+    public NotificationMainView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
         mContentTranslateAnimator = ObjectAnimator.ofFloat(this, CONTENT_TRANSLATION, 0);
@@ -98,7 +98,7 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
 
         mTextAndBackground = findViewById(R.id.text_and_background);
         ColorDrawable colorBackground = (ColorDrawable) mTextAndBackground.getBackground();
-        mBackgroundColor = Color.RED;//colorBackground.getColor();
+        mBackgroundColor = Color.RED; //colorBackground.getColor();
         RippleDrawable rippleBackground = new RippleDrawable(ColorStateList.valueOf(
                     Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight)),
                 colorBackground, null);
@@ -108,14 +108,14 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
         mIconView = findViewById(R.id.popup_item_icon);
     }
 
-    public void setSwipeDetector(SwipeDetector swipeDetector) {
+    public void setSwipeDetector(final SwipeDetector swipeDetector) {
         mSwipeDetector = swipeDetector;
     }
 
     /**
      * Sets the content of this view, animating it after a new icon shifts up if necessary.
      */
-    public void applyNotificationInfo(NotificationInfo mainNotification, boolean animate) {
+    public void applyNotificationInfo(final NotificationInfo mainNotification, final boolean animate) {
         mNotificationInfo = mainNotification;
         NotificationListener listener = NotificationListener.getInstanceIfConnected();
         if (listener != null) {
@@ -145,12 +145,12 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
         }
     }
 
-    public void setContentTranslation(float translation) {
+    public void setContentTranslation(final float translation) {
         mTextAndBackground.setTranslationX(translation);
         mIconView.setTranslationX(translation);
     }
 
-    public void setContentVisibility(int visibility) {
+    public void setContentVisibility(final int visibility) {
         mTextAndBackground.setVisibility(visibility);
         mIconView.setVisibility(visibility);
     }
@@ -176,12 +176,12 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
 
     // SwipeDetector.Listener's
     @Override
-    public void onDragStart(boolean start) {
+    public void onDragStart(final boolean start) {
     }
 
 
     @Override
-    public boolean onDrag(float displacement, float velocity) {
+    public boolean onDrag(final float displacement, final float velocity) {
         setContentTranslation(canChildBeDismissed()
                               ? displacement : OverScroll.dampedScroll(displacement, getWidth()));
         mContentTranslateAnimator.cancel();
@@ -189,7 +189,7 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
     }
 
     @Override
-    public void onDragEnd(float velocity, boolean fling) {
+    public void onDragEnd(final float velocity, final boolean fling) {
         final boolean willExit;
         final float endTranslation;
         final float startTranslation = mTextAndBackground.getTranslationX();
@@ -217,7 +217,7 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
         mContentTranslateAnimator.setFloatValues(startTranslation, endTranslation);
         mContentTranslateAnimator.addListener(new AnimationSuccessListener() {
             @Override
-            public void onAnimationSuccess(Animator animator) {
+            public void onAnimationSuccess(final Animator animator) {
                 mSwipeDetector.finishedScrolling();
                 if (willExit) {
                     onChildDismissed();

@@ -83,7 +83,7 @@ public class Interpolators {
      */
     public static final Interpolator ZOOM_IN = new Interpolator() {
         @Override
-        public float getInterpolation(float v) {
+        public float getInterpolation(final float v) {
             return DEACCEL_3.getInterpolation(1 - ZOOM_OUT.getInterpolation(1 - v));
         }
     };
@@ -93,7 +93,7 @@ public class Interpolators {
         private static final float FOCAL_LENGTH = 0.35f;
 
         @Override
-        public float getInterpolation(float v) {
+        public float getInterpolation(final float v) {
             return zInterpolate(v);
         }
 
@@ -103,15 +103,15 @@ public class Interpolators {
          * animation on a view, it evokes the sense that the object is shrinking due to moving away
          * from the camera.
          */
-        private float zInterpolate(float input) {
-            return (1.0f - FOCAL_LENGTH / (FOCAL_LENGTH + input)) /
-                   (1.0f - FOCAL_LENGTH / (FOCAL_LENGTH + 1.0f));
+        private float zInterpolate(final float input) {
+            return (1.0f - FOCAL_LENGTH / (FOCAL_LENGTH + input))
+                   / (1.0f - FOCAL_LENGTH / (FOCAL_LENGTH + 1.0f));
         }
     };
 
     public static final Interpolator SCROLL = new Interpolator() {
         @Override
-        public float getInterpolation(float t) {
+        public float getInterpolation(final float t) {
             t -= 1.0f;
             return t * t * t * t * t + 1;
         }
@@ -119,7 +119,7 @@ public class Interpolators {
 
     public static final Interpolator SCROLL_CUBIC = new Interpolator() {
         @Override
-        public float getInterpolation(float t) {
+        public float getInterpolation(final float t) {
             t -= 1.0f;
             return t * t * t + 1;
         }
@@ -127,7 +127,7 @@ public class Interpolators {
 
     private static final float FAST_FLING_PX_MS = 10;
 
-    public static Interpolator scrollInterpolatorForVelocity(float velocity) {
+    public static Interpolator scrollInterpolatorForVelocity(final float velocity) {
         return Math.abs(velocity) > FAST_FLING_PX_MS ? SCROLL : SCROLL_CUBIC;
     }
 
@@ -136,7 +136,7 @@ public class Interpolators {
      *
      * @param velocity The start velocity of the animation we want to overshoot.
      */
-    public static Interpolator overshootInterpolatorForVelocity(float velocity) {
+    public static Interpolator overshootInterpolatorForVelocity(final float velocity) {
         return new OvershootInterpolator(Math.min(Math.abs(velocity), 3f));
     }
 
@@ -144,8 +144,8 @@ public class Interpolators {
      * Runs the given interpolator such that the entire progress is set between the given bounds.
      * That is, we set the interpolation to 0 until lowerBound and reach 1 by upperBound.
      */
-    public static Interpolator clampToProgress(Interpolator interpolator, float lowerBound,
-            float upperBound) {
+    public static Interpolator clampToProgress(final Interpolator interpolator, final float lowerBound,
+            final float upperBound) {
         if (upperBound <= lowerBound) {
             throw new IllegalArgumentException("lowerBound must be less than upperBound");
         }
@@ -165,8 +165,8 @@ public class Interpolators {
      * This is useful, for example, if we only use this interpolator for part of the animation,
      * such as to take over a user-controlled animation when they let go.
      */
-    public static Interpolator mapToProgress(Interpolator interpolator, float lowerBound,
-            float upperBound) {
+    public static Interpolator mapToProgress(final Interpolator interpolator, final float lowerBound,
+            final float upperBound) {
         return t -> Utilities.mapRange(interpolator.getInterpolation(t), lowerBound, upperBound);
     }
 
@@ -190,14 +190,14 @@ public class Interpolators {
          * @param velocityPxPerMs       The initial velocity that causes this overshoot.
          * @param totalDistancePx       The distance against which progress is calculated.
          */
-        public OvershootParams(float startProgress, float overshootPastProgress,
-                               float endProgress, float velocityPxPerMs, int totalDistancePx) {
+        public OvershootParams(final float startProgress, final float overshootPastProgress,
+                               final float endProgress, final float velocityPxPerMs, final int totalDistancePx) {
             velocityPxPerMs = Math.abs(velocityPxPerMs);
             start = startProgress;
             int startPx = (int) (start * totalDistancePx);
             // Overshoot by about half a frame.
-            float overshootBy = OVERSHOOT_FACTOR * velocityPxPerMs *
-                                SINGLE_FRAME_MS / totalDistancePx / 2;
+            float overshootBy = OVERSHOOT_FACTOR * velocityPxPerMs
+                                * SINGLE_FRAME_MS / totalDistancePx / 2;
             overshootBy = Utilities.boundToRange(overshootBy, 0.02f, 0.15f);
             end = overshootPastProgress + overshootBy;
             int endPx = (int) (end * totalDistancePx);

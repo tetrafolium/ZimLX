@@ -39,7 +39,7 @@ public class LauncherClient {
 
     public final BroadcastReceiver googleInstallListener = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             mBaseService.disconnect();
             mLauncherService.disconnect();
             LauncherClient.loadApiVersion(context);
@@ -69,7 +69,7 @@ public class LauncherClient {
         int mWindowShift;
 
         @Override
-        public final void overlayScrollChanged(float f) {
+        public final void overlayScrollChanged(final float f) {
             mUIHandler.removeMessages(2);
             Message.obtain(mUIHandler, 2, f).sendToTarget();
             if (f > 0f && mWindowHidden) {
@@ -78,12 +78,12 @@ public class LauncherClient {
         }
 
         @Override
-        public final void overlayStatusChanged(int i) {
+        public final void overlayStatusChanged(final int i) {
             Message.obtain(mUIHandler, 4, i, 0).sendToTarget();
         }
 
         @Override
-        public boolean handleMessage(Message message) {
+        public boolean handleMessage(final Message message) {
             if (mClient == null) {
                 return true;
             }
@@ -118,7 +118,7 @@ public class LauncherClient {
         }
     }
 
-    public LauncherClient(Activity activity, IScrollCallback scrollCallback, StaticInteger flags) {
+    public LauncherClient(final Activity activity, final IScrollCallback scrollCallback, final StaticInteger flags) {
         mActivity = activity;
         mScrollCallback = scrollCallback;
         mBaseService = new BaseClientService(activity, Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT);
@@ -138,9 +138,9 @@ public class LauncherClient {
         }
 
         reconnect();
-        if (mActivity.getWindow() != null &&
-                mActivity.getWindow().peekDecorView() != null &&
-                mActivity.getWindow().peekDecorView().isAttachedToWindow()) {
+        if (mActivity.getWindow() != null
+                && mActivity.getWindow().peekDecorView() != null
+                && mActivity.getWindow().peekDecorView().isAttachedToWindow()) {
             onAttachedToWindow();
         }
     }
@@ -223,7 +223,7 @@ public class LauncherClient {
         }
     }
 
-    public final void setLayoutParams(LayoutParams layoutParams) {
+    public final void setLayoutParams(final LayoutParams layoutParams) {
         if (mLayoutParams != layoutParams) {
             mLayoutParams = layoutParams;
             if (mLayoutParams != null) {
@@ -297,7 +297,7 @@ public class LauncherClient {
         }
     }
 
-    public final void setScroll(float f) {
+    public final void setScroll(final float f) {
         if (isConnected()) {
             try {
                 mOverlay.onScroll(f);
@@ -306,14 +306,14 @@ public class LauncherClient {
         }
     }
 
-    private int verifyAndGetAnimationFlags(int duration) {
+    private int verifyAndGetAnimationFlags(final int duration) {
         if ((duration <= 0) || (duration > 2047)) {
             throw new IllegalArgumentException("Invalid duration");
         }
         return 0x1 | duration << 2;
     }
 
-    public final void hideOverlay(boolean feedRunning) {
+    public final void hideOverlay(final boolean feedRunning) {
         if (mOverlay != null) {
             try {
                 mOverlay.closeOverlay(feedRunning ? 1 : 0);
@@ -322,7 +322,7 @@ public class LauncherClient {
         }
     }
 
-    public final void hideOverlay(int duration) {
+    public final void hideOverlay(final int duration) {
         if (mOverlay != null) {
             try {
                 mOverlay.closeOverlay(verifyAndGetAnimationFlags(duration));
@@ -332,7 +332,7 @@ public class LauncherClient {
     }
 
     // Only used for accessibility
-    public final void showOverlay(boolean feedRunning) {
+    public final void showOverlay(final boolean feedRunning) {
         if (mOverlay != null) {
             try {
                 mOverlay.openOverlay(feedRunning ? 1 : 0);
@@ -341,7 +341,7 @@ public class LauncherClient {
         }
     }
 
-    public final boolean startSearch(byte[] bArr, Bundle bundle) {
+    public final boolean startSearch(final byte[] bArr, final Bundle bundle) {
         if (apiVersion >= 6 && mOverlay != null) {
             try {
                 return mOverlay.startSearch(bArr, bundle);
@@ -352,7 +352,7 @@ public class LauncherClient {
         return false;
     }
 
-    public final void redraw(Bundle layoutBundle) {
+    public final void redraw(final Bundle layoutBundle) {
         mLayoutBundle = layoutBundle;
         if (mLayoutParams != null && apiVersion >= 7) {
             exchangeConfig();
@@ -365,7 +365,7 @@ public class LauncherClient {
         }
     }
 
-    final void setOverlay(ILauncherOverlay overlay) {
+    final void setOverlay(final ILauncherOverlay overlay) {
         mOverlay = overlay;
         if (mOverlay == null) {
             setServiceState(0);
@@ -374,32 +374,32 @@ public class LauncherClient {
         }
     }
 
-    private void setServiceState(int serviceState) {
+    private void setServiceState(final int serviceState) {
         if (mServiceState != serviceState) {
             mServiceState = serviceState;
             mScrollCallback.onServiceStateChanged((serviceState & 1) != 0);
         }
     }
 
-    static Intent getIntent(Context context, boolean proxy) {
+    static Intent getIntent(final Context context, final boolean proxy) {
         FeedBridge.BridgeInfo bridgeInfo = proxy ? FeedBridge.Companion.getInstance(context).resolveBridge() : null;
         String pkg = context.getPackageName();
         return new Intent("com.android.launcher3.WINDOW_OVERLAY")
                .setPackage(bridgeInfo != null ? bridgeInfo.getPackageName() : "com.google.android.googlequicksearchbox")
-               .setData(Uri.parse("app://" +
-                                  pkg +
-                                  ":" +
-                                  Process.myUid())
+               .setData(Uri.parse("app://"
+                                  + pkg
+                                  + ":"
+                                  + Process.myUid())
                         .buildUpon()
                         .appendQueryParameter("v", Integer.toString(7))
                         .appendQueryParameter("cv", Integer.toString(9))
                         .build());
     }
 
-    private static void loadApiVersion(Context context) {
+    private static void loadApiVersion(final Context context) {
         ResolveInfo resolveService = context.getPackageManager().resolveService(getIntent(context, false), PackageManager.GET_META_DATA);
-        apiVersion = resolveService == null || resolveService.serviceInfo.metaData == null ?
-                     1 :
-                     resolveService.serviceInfo.metaData.getInt("service.api.version", 1);
+        apiVersion = resolveService == null || resolveService.serviceInfo.metaData == null
+                     ? 1
+                     : resolveService.serviceInfo.metaData.getInt("service.api.version", 1);
     }
 }

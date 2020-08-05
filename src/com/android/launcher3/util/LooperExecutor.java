@@ -29,12 +29,12 @@ public class LooperExecutor extends AbstractExecutorService {
 
     private final Handler mHandler;
 
-    public LooperExecutor(Looper looper) {
+    public LooperExecutor(final Looper looper) {
         mHandler = new Handler(looper);
     }
 
     @Override
-    public void execute(Runnable runnable) {
+    public void execute(final Runnable runnable) {
         if (mHandler.getLooper() == Looper.myLooper()) {
             runnable.run();
         } else {
@@ -75,7 +75,7 @@ public class LooperExecutor extends AbstractExecutorService {
      */
     @Override
     @Deprecated
-    public boolean awaitTermination(long l, TimeUnit timeUnit) {
+    public boolean awaitTermination(final long l, final TimeUnit timeUnit) {
         throw new UnsupportedOperationException();
     }
 }

@@ -25,14 +25,14 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
     private boolean mSupportsDarkText;
     private OnThemeChangeListener mOnThemeChangeListener;
 
-    private WallpaperColorInfo(Context context) {
+    private WallpaperColorInfo(final Context context) {
         mWallpaperManager = WallpaperManagerCompat.getInstance(context);
         mWallpaperManager.addOnColorsChangedListener(this);
         mExtractionType = ColorExtractionAlgorithm.newInstance(context);
         update(mWallpaperManager.getWallpaperColors(FLAG_SYSTEM));
     }
 
-    public static WallpaperColorInfo getInstance(Context context) {
+    public static WallpaperColorInfo getInstance(final Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
                 sInstance = new WallpaperColorInfo(context.getApplicationContext());
@@ -58,7 +58,7 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
     }
 
     @Override
-    public void onColorsChanged(WallpaperColorsCompat colors, int which) {
+    public void onColorsChanged(final WallpaperColorsCompat colors, final int which) {
         if ((which & FLAG_SYSTEM) != 0) {
             boolean wasDarkTheme = mIsDark;
             boolean didSupportDarkText = mSupportsDarkText;
@@ -67,7 +67,7 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
         }
     }
 
-    private void update(WallpaperColorsCompat wallpaperColors) {
+    private void update(final WallpaperColorsCompat wallpaperColors) {
         Pair<Integer, Integer> colors = mExtractionType.extractInto(wallpaperColors);
         if (colors != null) {
             mMainColor = colors.first;
@@ -82,19 +82,19 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
                                               & WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME) > 0;
     }
 
-    public void setOnThemeChangeListener(OnThemeChangeListener onThemeChangeListener) {
+    public void setOnThemeChangeListener(final OnThemeChangeListener onThemeChangeListener) {
         this.mOnThemeChangeListener = onThemeChangeListener;
     }
 
-    public void addOnChangeListener(OnChangeListener listener) {
+    public void addOnChangeListener(final OnChangeListener listener) {
         mListeners.add(listener);
     }
 
-    public void removeOnChangeListener(OnChangeListener listener) {
+    public void removeOnChangeListener(final OnChangeListener listener) {
         mListeners.remove(listener);
     }
 
-    public void notifyChange(boolean themeChanged) {
+    public void notifyChange(final boolean themeChanged) {
         if (themeChanged) {
             if (mOnThemeChangeListener != null) {
                 mOnThemeChangeListener.onThemeChanged();

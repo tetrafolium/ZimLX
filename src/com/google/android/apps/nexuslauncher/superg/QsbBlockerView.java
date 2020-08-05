@@ -45,7 +45,7 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
 
     private final Paint mBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    public QsbBlockerView(Context context, AttributeSet attrs) {
+    public QsbBlockerView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
 
         mBgPaint.setColor(Color.WHITE);
@@ -69,7 +69,7 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         if (mView != null && mState == 2) {
             Launcher launcher = ZimUtilsKt.getLauncherOrNull(getContext());
             int size;
@@ -108,17 +108,17 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
     }
 
     @Override
-    public void prepareStateChange(AnimatorSetBuilder builder) {
+    public void prepareStateChange(final AnimatorSetBuilder builder) {
 
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         canvas.drawPaint(mBgPaint);
     }
 
     @Override
-    public void onDataUpdated(@Nullable WeatherData weather, @Nullable CardData card) {
+    public void onDataUpdated(final @Nullable WeatherData weather, final @Nullable CardData card) {
         final int oldState = mState;
         final View oldView = mView;
 
@@ -128,14 +128,14 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
 
         if (weather == null) {
             mState = 1;
-            mView = oldView != null && oldState == 1 ?
-                    oldView :
-                    LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
+            mView = oldView != null && oldState == 1
+                    ? oldView
+                    : LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
         } else {
             mState = 2;
-            mView = oldView != null && oldState == 2 ?
-                    oldView :
-                    LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
+            mView = oldView != null && oldState == 2
+                    ? oldView
+                    : LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
             applyWeather(mView, weather);
             mView.setOnClickListener(this);
         }
@@ -157,7 +157,7 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
         mView.setOnLongClickListener(this);
     }
 
-    private void applyWeather(View view, WeatherData weather) {
+    private void applyWeather(final View view, final WeatherData weather) {
         ImageView weatherIcon = view.findViewById(R.id.weather_widget_icon);
         weatherIcon.setImageBitmap(weather.getIcon());
         TextView weatherTemperature = view.findViewById(R.id.weather_widget_temperature);
@@ -166,18 +166,18 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
     }
 
     @Override
-    public void setPadding(int left, int top, int right, int bottom) {
+    public void setPadding(final int left, final int top, final int right, final int bottom) {
         super.setPadding(0, 0, 0, 0);
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         if (mController != null)
             mController.openWeather(v);
     }
 
     @Override
-    public boolean onLongClick(View v) {
+    public boolean onLongClick(final View v) {
         // TODO: move it to below the widget view
         ZimUtilsKt.openPopupMenu(mView, null, new SmartspacePreferencesShortcut());
         return true;
@@ -185,19 +185,19 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
 
     static class QsbBlockerViewAlpha extends Property<QsbBlockerView, Integer> {
 
-        public QsbBlockerViewAlpha(Class<Integer> type, String name) {
+        public QsbBlockerViewAlpha(final Class<Integer> type, final String name) {
             super(type, name);
         }
 
         @Override
-        public void set(QsbBlockerView qsbBlockerView, Integer num) {
+        public void set(final QsbBlockerView qsbBlockerView, final Integer num) {
             qsbBlockerView.mBgPaint.setAlpha(num);
             qsbBlockerView.setWillNotDraw(num == 0);
             qsbBlockerView.invalidate();
         }
 
         @Override
-        public Integer get(QsbBlockerView obj) {
+        public Integer get(final QsbBlockerView obj) {
             return obj.mBgPaint.getAlpha();
         }
 

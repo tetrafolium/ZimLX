@@ -16,7 +16,7 @@ public class QsbActionMode implements ActionMode.Callback {
     private final Intent settingsIntent;
     final /* synthetic */ AbstractQsbLayout qsbLayout;
 
-    public QsbActionMode(AbstractQsbLayout layout, String clipboardText, Intent settingBroadcast, Intent settingsIntent) {
+    public QsbActionMode(final AbstractQsbLayout layout, final String clipboardText, final Intent settingBroadcast, final Intent settingsIntent) {
         this.qsbLayout = layout;
         this.clipboardText = clipboardText;
         this.settingsBroadcast = settingBroadcast;
@@ -24,7 +24,7 @@ public class QsbActionMode implements ActionMode.Callback {
     }
 
     @SuppressLint("ResourceType")
-    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+    public boolean onCreateActionMode(final ActionMode actionMode, final Menu menu) {
         actionMode.setTitle(null);
         actionMode.setSubtitle(null);
         actionMode.setTitleOptionalHint(true);
@@ -38,11 +38,11 @@ public class QsbActionMode implements ActionMode.Callback {
         return clipboardText != null || settingsBroadcast != null || settingsIntent != null;
     }
 
-    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+    public boolean onPrepareActionMode(final ActionMode actionMode, final Menu menu) {
         return true;
     }
 
-    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+    public boolean onActionItemClicked(final ActionMode actionMode, final MenuItem menuItem) {
         if (menuItem.getItemId() == 16908322 && !TextUtils.isEmpty(this.clipboardText)) {
             this.qsbLayout.startSearch(this.clipboardText, 3);
             actionMode.finish();
@@ -59,6 +59,6 @@ public class QsbActionMode implements ActionMode.Callback {
         return false;
     }
 
-    public void onDestroyActionMode(ActionMode actionMode) {
+    public void onDestroyActionMode(final ActionMode actionMode) {
     }
 }

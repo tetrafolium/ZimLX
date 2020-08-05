@@ -67,7 +67,7 @@ public class ItemClickHandler {
     public static final OnClickListener FOLDER_COVER_INSTANCE = ItemClickHandler::onClickFolderCover;
 
     public static String TAG = "ItemClickHandler";
-    private static void onClick(View v) {
+    private static void onClick(final View v) {
         // Make sure that rogue clicks don't get through while allapps is launching, or after the
         // view has detached (it's possible for this to happen if the view is removed mid touch).
         if (v.getWindowToken() == null) {
@@ -100,7 +100,7 @@ public class ItemClickHandler {
         }
     }
 
-    private static void onClickFolderCover(View v) {
+    private static void onClickFolderCover(final View v) {
         if (v.getWindowToken() == null) {
             return;
         }
@@ -121,7 +121,7 @@ public class ItemClickHandler {
      *
      * @param v The view that was clicked. Must be an instance of {@link FolderIcon}.
      */
-    private static void onClickFolderIcon(View v) {
+    private static void onClickFolderIcon(final View v) {
         Folder folder = ((FolderIcon) v).getFolder();
         if (!folder.isOpen() && !folder.isDestroyed()) {
             // Open the requested folder
@@ -132,7 +132,7 @@ public class ItemClickHandler {
     /**
      * Event handler for the app widget view which has not fully restored.
      */
-    private static void onClickPendingWidget(PendingAppWidgetHostView v, Launcher launcher) {
+    private static void onClickPendingWidget(final PendingAppWidgetHostView v, final Launcher launcher) {
         if (launcher.getPackageManager().isSafeMode()) {
             Toast.makeText(launcher, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
             return;
@@ -163,8 +163,8 @@ public class ItemClickHandler {
         }
     }
 
-    private static void onClickPendingAppItem(View v, Launcher launcher, String packageName,
-            boolean downloadStarted) {
+    private static void onClickPendingAppItem(final View v, final Launcher launcher, final String packageName,
+            final boolean downloadStarted) {
         if (downloadStarted) {
             // If the download has started, simply direct to the market app.
             startMarketIntentForPackage(v, launcher, packageName);
@@ -181,7 +181,7 @@ public class ItemClickHandler {
         .create().show();
     }
 
-    private static void startMarketIntentForPackage(View v, Launcher launcher, String packageName) {
+    private static void startMarketIntentForPackage(final View v, final Launcher launcher, final String packageName) {
         ItemInfo item = (ItemInfo) v.getTag();
         Intent intent = new PackageManagerHelper(launcher).getMarketIntent(packageName);
         launcher.startActivitySafely(v, intent, item);
@@ -192,12 +192,12 @@ public class ItemClickHandler {
      *
      * @param v The view that was clicked. Must be a tagged with a {@link ShortcutInfo}.
      */
-    private static void onClickAppShortcut(View v, ShortcutInfo shortcut, Launcher launcher) {
+    private static void onClickAppShortcut(final View v, final ShortcutInfo shortcut, final Launcher launcher) {
         if (shortcut.isDisabled()) {
             final int disabledFlags = shortcut.runtimeStatusFlags & ShortcutInfo.FLAG_DISABLED_MASK;
-            if ((disabledFlags &
-                    ~FLAG_DISABLED_SUSPENDED &
-                    ~FLAG_DISABLED_QUIET_USER) == 0) {
+            if ((disabledFlags
+                    & ~FLAG_DISABLED_SUSPENDED
+                    & ~FLAG_DISABLED_QUIET_USER) == 0) {
                 // If the app is only disabled because of the above flags, launch activity anyway.
                 // Framework will tell the user why the app is suspended.
             } else {
@@ -210,8 +210,8 @@ public class ItemClickHandler {
                 int error = R.string.activity_not_available;
                 if ((shortcut.runtimeStatusFlags & FLAG_DISABLED_SAFEMODE) != 0) {
                     error = R.string.safemode_shortcut_error;
-                } else if ((shortcut.runtimeStatusFlags & FLAG_DISABLED_BY_PUBLISHER) != 0 ||
-                           (shortcut.runtimeStatusFlags & FLAG_DISABLED_LOCKED_USER) != 0) {
+                } else if ((shortcut.runtimeStatusFlags & FLAG_DISABLED_BY_PUBLISHER) != 0
+                           || (shortcut.runtimeStatusFlags & FLAG_DISABLED_LOCKED_USER) != 0) {
                     error = R.string.shortcut_not_available;
                 }
                 Toast.makeText(launcher, error, Toast.LENGTH_SHORT).show();
@@ -221,8 +221,8 @@ public class ItemClickHandler {
 
         // Check for abandoned promise
         if ((v instanceof BubbleTextView) && shortcut.hasPromiseIconUi()) {
-            String packageName = shortcut.intent.getComponent() != null ?
-                                 shortcut.intent.getComponent().getPackageName() : shortcut.intent.getPackage();
+            String packageName = shortcut.intent.getComponent() != null
+                                 ? shortcut.intent.getComponent().getPackageName() : shortcut.intent.getPackage();
             if (!TextUtils.isEmpty(packageName)) {
                 onClickPendingAppItem(v, launcher, packageName,
                                       shortcut.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE));
@@ -234,7 +234,7 @@ public class ItemClickHandler {
         startAppShortcutOrInfoActivity(v, shortcut, launcher);
     }
 
-    private static void startAppShortcutOrInfoActivity(View v, ItemInfo item, Launcher launcher) {
+    private static void startAppShortcutOrInfoActivity(final View v, final ItemInfo item, final Launcher launcher) {
         Intent intent;
         if (item instanceof PromiseAppInfo) {
             PromiseAppInfo promiseAppInfo = (PromiseAppInfo) item;

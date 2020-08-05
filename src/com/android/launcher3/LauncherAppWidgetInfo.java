@@ -103,7 +103,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
 
     private boolean mHasNotifiedInitialWidgetSizeChanged;
 
-    public LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {
+    public LauncherAppWidgetInfo(final int appWidgetId, final ComponentName providerName) {
         this.appWidgetId = appWidgetId;
         this.providerName = providerName;
 
@@ -134,7 +134,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     }
 
     @Override
-    public void onAddToDatabase(ContentWriter writer) {
+    public void onAddToDatabase(final ContentWriter writer) {
         super.onAddToDatabase(writer);
         writer.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId)
         .put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString())
@@ -146,7 +146,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      * When we bind the widget, we should notify the widget that the size has changed if we have not
      * done so already (only really for default workspace widgets).
      */
-    void onBindAppWidget(Launcher launcher, AppWidgetHostView hostView) {
+    void onBindAppWidget(final Launcher launcher, final AppWidgetHostView hostView) {
         if (!mHasNotifiedInitialWidgetSizeChanged) {
             AppWidgetResizeFrame.updateWidgetSizeRanges(hostView, launcher, spanX, spanY);
             mHasNotifiedInitialWidgetSizeChanged = true;
@@ -159,11 +159,11 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     }
 
     public final boolean isWidgetIdAllocated() {
-        return (restoreStatus & FLAG_ID_NOT_VALID) == 0 ||
-               (restoreStatus & FLAG_ID_ALLOCATED) == FLAG_ID_ALLOCATED;
+        return (restoreStatus & FLAG_ID_NOT_VALID) == 0
+               || (restoreStatus & FLAG_ID_ALLOCATED) == FLAG_ID_ALLOCATED;
     }
 
-    public final boolean hasRestoreFlag(int flag) {
+    public final boolean hasRestoreFlag(final int flag) {
         return (restoreStatus & flag) == flag;
     }
 }

@@ -22,26 +22,26 @@ public class LauncherNotifications implements NotificationListener.Notifications
 
     private final Set<NotificationListener.NotificationsChangedListener> mListeners = new HashSet<>();
 
-    public void addListener(NotificationListener.NotificationsChangedListener listener) {
+    public void addListener(final NotificationListener.NotificationsChangedListener listener) {
         mListeners.add(listener);
     }
 
     @Override
-    public void onNotificationPosted(PackageUserKey postedPackageUserKey, NotificationKeyData notificationKey, boolean shouldBeFilteredOut) {
+    public void onNotificationPosted(final PackageUserKey postedPackageUserKey, final NotificationKeyData notificationKey, final boolean shouldBeFilteredOut) {
         for (NotificationListener.NotificationsChangedListener listener : mListeners) {
             listener.onNotificationPosted(postedPackageUserKey, notificationKey, shouldBeFilteredOut);
         }
     }
 
     @Override
-    public void onNotificationRemoved(PackageUserKey removedPackageUserKey, NotificationKeyData notificationKey) {
+    public void onNotificationRemoved(final PackageUserKey removedPackageUserKey, final NotificationKeyData notificationKey) {
         for (NotificationListener.NotificationsChangedListener listener : mListeners) {
             listener.onNotificationRemoved(removedPackageUserKey, notificationKey);
         }
     }
 
     @Override
-    public void onNotificationFullRefresh(List<StatusBarNotification> activeNotifications) {
+    public void onNotificationFullRefresh(final List<StatusBarNotification> activeNotifications) {
         for (NotificationListener.NotificationsChangedListener listener : mListeners) {
             listener.onNotificationFullRefresh(activeNotifications);
         }

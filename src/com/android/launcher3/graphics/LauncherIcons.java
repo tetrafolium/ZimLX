@@ -86,7 +86,7 @@ public class LauncherIcons implements AutoCloseable {
      * Return a new Message instance from the global pool. Allows us to
      * avoid allocating new objects in many cases.
      */
-    public static LauncherIcons obtain(Context context) {
+    public static LauncherIcons obtain(final Context context) {
         synchronized (sPoolSync) {
             if (sPool != null) {
                 LauncherIcons m = sPool;
@@ -116,7 +116,7 @@ public class LauncherIcons implements AutoCloseable {
         recycle();
     }
 
-    private LauncherIcons(Context context) {
+    private LauncherIcons(final Context context) {
         mContext = context.getApplicationContext();
         mPm = mContext.getPackageManager();
 
@@ -146,7 +146,7 @@ public class LauncherIcons implements AutoCloseable {
      * Returns a bitmap suitable for the all apps view. If the package or the resource do not
      * exist, it returns null.
      */
-    public BitmapInfo createIconBitmap(ShortcutIconResource iconRes) {
+    public BitmapInfo createIconBitmap(final ShortcutIconResource iconRes) {
         try {
             Resources resources = mPm.getResourcesForApplication(iconRes.packageName);
             if (resources != null) {
@@ -166,7 +166,7 @@ public class LauncherIcons implements AutoCloseable {
     /**
      * Returns a bitmap which is of the appropriate size to be displayed as an icon
      */
-    public BitmapInfo createIconBitmap(Bitmap icon) {
+    public BitmapInfo createIconBitmap(final Bitmap icon) {
         if (mIconBitmapSize == icon.getWidth() && mIconBitmapSize == icon.getHeight()) {
             return BitmapInfo.fromBitmap(icon);
         }
@@ -179,7 +179,7 @@ public class LauncherIcons implements AutoCloseable {
      * view or workspace. The icon is badged for {@param user}.
      * The bitmap is also visually normalized with other icons.
      */
-    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk) {
+    public BitmapInfo createBadgedIconBitmap(final Drawable icon, final UserHandle user, final int iconAppTargetSdk) {
         return createBadgedIconBitmap(icon, user, iconAppTargetSdk, false);
     }
 
@@ -188,8 +188,8 @@ public class LauncherIcons implements AutoCloseable {
      * view or workspace. The icon is badged for {@param user}.
      * The bitmap is also visually normalized with other icons.
      */
-    public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk,
-            boolean isInstantApp) {
+    public BitmapInfo createBadgedIconBitmap(final Drawable icon, final UserHandle user, final int iconAppTargetSdk,
+            final boolean isInstantApp) {
 
         float[] scale = new float[1];
         icon = normalizeAndWrapToAdaptiveIcon(icon, iconAppTargetSdk, null, scale, user);
@@ -222,7 +222,7 @@ public class LauncherIcons implements AutoCloseable {
      * Creates a normalized bitmap suitable for the all apps view. The bitmap is also visually
      * normalized with other icons and has enough spacing to add shadow.
      */
-    public Bitmap createScaledBitmapWithoutShadow(Drawable icon, int iconAppTargetSdk) {
+    public Bitmap createScaledBitmapWithoutShadow(final Drawable icon, final int iconAppTargetSdk) {
         RectF iconBounds = new RectF();
         float[] scale = new float[1];
         icon = normalizeAndWrapToAdaptiveIcon(icon, iconAppTargetSdk, iconBounds, scale, null);
@@ -233,12 +233,12 @@ public class LauncherIcons implements AutoCloseable {
     /**
      * Sets the background color used for wrapped adaptive icon
      */
-    public void setWrapperBackgroundColor(int color) {
+    public void setWrapperBackgroundColor(final int color) {
         mWrapperBackgroundColor = (Color.alpha(color) < 255) ? DEFAULT_WRAPPER_BACKGROUND : color;
     }
 
-    private Drawable normalizeAndWrapToAdaptiveIcon(Drawable mIcon, int iconAppTargetSdk,
-            RectF outIconBounds, float[] outScale, UserHandle user) {
+    private Drawable normalizeAndWrapToAdaptiveIcon(final Drawable mIcon, final int iconAppTargetSdk,
+            final RectF outIconBounds, final float[] outScale, final UserHandle user) {
         float scale = 1f;
         Drawable icon = mIcon;
         if (Utilities.ATLEAST_OREO) {
@@ -272,7 +272,7 @@ public class LauncherIcons implements AutoCloseable {
     /**
      * Adds the {@param badge} on top of {@param target} using the badge dimensions.
      */
-    public void badgeWithDrawable(Bitmap target, Drawable badge) {
+    public void badgeWithDrawable(final Bitmap target, final Drawable badge) {
         mCanvas.setBitmap(target);
         badgeWithDrawable(mCanvas, badge);
         mCanvas.setBitmap(null);
@@ -281,7 +281,7 @@ public class LauncherIcons implements AutoCloseable {
     /**
      * Adds the {@param badge} on top of {@param target} using the badge dimensions.
      */
-    private void badgeWithDrawable(Canvas target, Drawable badge) {
+    private void badgeWithDrawable(final Canvas target, final Drawable badge) {
         int badgeSize = mContext.getResources().getDimensionPixelSize(R.dimen.profile_badge_size);
         badge.setBounds(mIconBitmapSize - badgeSize, mIconBitmapSize - badgeSize,
                         mIconBitmapSize, mIconBitmapSize);
@@ -291,7 +291,7 @@ public class LauncherIcons implements AutoCloseable {
     /**
      * @param scale the scale to apply before drawing {@param icon} on the canvas
      */
-    public Bitmap createIconBitmap(Drawable icon, float scale) {
+    public Bitmap createIconBitmap(final Drawable icon, final float scale) {
         int width = mIconBitmapSize;
         int height = mIconBitmapSize;
 
@@ -348,16 +348,16 @@ public class LauncherIcons implements AutoCloseable {
         return bitmap;
     }
 
-    public BitmapInfo createShortcutIcon(ShortcutInfoCompat shortcutInfo) {
+    public BitmapInfo createShortcutIcon(final ShortcutInfoCompat shortcutInfo) {
         return createShortcutIcon(shortcutInfo, true /* badged */);
     }
 
-    public BitmapInfo createShortcutIcon(ShortcutInfoCompat shortcutInfo, boolean badged) {
+    public BitmapInfo createShortcutIcon(final ShortcutInfoCompat shortcutInfo, final boolean badged) {
         return createShortcutIcon(shortcutInfo, badged, null);
     }
 
-    public BitmapInfo createShortcutIcon(ShortcutInfoCompat shortcutInfo,
-                                         boolean badged, @Nullable Provider<Bitmap> fallbackIconProvider) {
+    public BitmapInfo createShortcutIcon(final ShortcutInfoCompat shortcutInfo,
+                                         final boolean badged, final @Nullable Provider<Bitmap> fallbackIconProvider) {
         Drawable unbadgedDrawable = DeepShortcutManager.getInstance(mContext)
                                     .getShortcutIconDrawable(shortcutInfo, mFillResIconDpi);
         IconCache cache = LauncherAppState.getInstance(mContext).getIconCache();
@@ -394,7 +394,7 @@ public class LauncherIcons implements AutoCloseable {
         return result;
     }
 
-    public ItemInfoWithIcon getShortcutInfoBadge(ShortcutInfoCompat shortcutInfo, IconCache cache) {
+    public ItemInfoWithIcon getShortcutInfoBadge(final ShortcutInfoCompat shortcutInfo, final IconCache cache) {
         ComponentName cn = shortcutInfo.getActivity();
         String badgePkg = shortcutInfo.getBadgePackage(mContext);
         boolean hasBadgePkgSet = !badgePkg.equals(shortcutInfo.getPackage());
@@ -422,7 +422,7 @@ public class LauncherIcons implements AutoCloseable {
      */
     private static class FixedSizeBitmapDrawable extends BitmapDrawable {
 
-        public FixedSizeBitmapDrawable(Bitmap bitmap) {
+        public FixedSizeBitmapDrawable(final Bitmap bitmap) {
             super(null, bitmap);
         }
 

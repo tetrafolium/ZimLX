@@ -41,11 +41,11 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
     private final Rect mTempRect = new Rect();
     private final int[] mTempCords = new int[2];
 
-    public WorkspaceAccessibilityHelper(CellLayout layout) {
+    public WorkspaceAccessibilityHelper(final CellLayout layout) {
         super(layout);
     }
 
-    public static String getDescriptionForDropOver(View overChild, Context context) {
+    public static String getDescriptionForDropOver(final View overChild, final Context context) {
         ItemInfo info = (ItemInfo) overChild.getTag();
         if (info instanceof ShortcutInfo) {
             return context.getString(R.string.create_folder_with, info.title);
@@ -74,7 +74,7 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
      * the passed id is contained. For an icon, this is simply
      */
     @Override
-    protected int intersectsValidDropTarget(int id) {
+    protected int intersectsValidDropTarget(final int id) {
         int mCountX = mView.getCountX();
         int mCountY = mView.getCountY();
 
@@ -129,8 +129,8 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
             } else if (dragInfo.dragType != DragType.FOLDER) {
                 // For icons, we can consider cells that have another icon or a folder.
                 ItemInfo info = (ItemInfo) child.getTag();
-                if (info instanceof AppInfo || info instanceof FolderInfo ||
-                        info instanceof ShortcutInfo) {
+                if (info instanceof AppInfo || info instanceof FolderInfo
+                        || info instanceof ShortcutInfo) {
                     return id;
                 }
             }
@@ -139,7 +139,7 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
     }
 
     @Override
-    protected String getConfirmationForIconDrop(int id) {
+    protected String getConfirmationForIconDrop(final int id) {
         int x = id % mView.getCountX();
         int y = id / mView.getCountX();
         LauncherAccessibilityDelegate.DragInfo dragInfo = mDelegate.getDragInfo();
@@ -160,7 +160,7 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
     }
 
     @Override
-    protected void onPopulateNodeForVirtualView(int id, AccessibilityNodeInfoCompat node) {
+    protected void onPopulateNodeForVirtualView(final int id, final AccessibilityNodeInfoCompat node) {
         super.onPopulateNodeForVirtualView(id, node);
 
 
@@ -179,7 +179,7 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
     }
 
     @Override
-    protected String getLocationDescriptionForIconDrop(int id) {
+    protected String getLocationDescriptionForIconDrop(final int id) {
         int x = id % mView.getCountX();
         int y = id / mView.getCountX();
         LauncherAccessibilityDelegate.DragInfo dragInfo = mDelegate.getDragInfo();

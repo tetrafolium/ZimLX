@@ -56,7 +56,7 @@ public class WidgetsModel {
      * is not sorted. This list is sorted at the UI when using
      * {@link com.android.launcher3.widget.WidgetsDiffReporter}
      */
-    public synchronized ArrayList<WidgetListRowEntry> getWidgetsList(Context context) {
+    public synchronized ArrayList<WidgetListRowEntry> getWidgetsList(final Context context) {
         ArrayList<WidgetListRowEntry> result = new ArrayList<>();
         AlphabeticIndexCompat indexer = new AlphabeticIndexCompat(context);
 
@@ -74,7 +74,7 @@ public class WidgetsModel {
      * @param packageUser If null, all widgets and shortcuts are updated and returned, otherwise
      *                    only widgets and shortcuts associated with the package/user are.
      */
-    public void update(LauncherAppState app, @Nullable PackageUserKey packageUser) {
+    public void update(final LauncherAppState app, final @Nullable PackageUserKey packageUser) {
         Preconditions.assertWorkerThread();
 
         Context context = app.getContext();
@@ -110,8 +110,8 @@ public class WidgetsModel {
         app.getWidgetCache().removeObsoletePreviews(widgetsAndShortcuts, packageUser);
     }
 
-    private synchronized void setWidgetsAndShortcuts(ArrayList<WidgetItem> rawWidgetsShortcuts,
-            LauncherAppState app, @Nullable PackageUserKey packageUser) {
+    private synchronized void setWidgetsAndShortcuts(final ArrayList<WidgetItem> rawWidgetsShortcuts,
+            final LauncherAppState app, final @Nullable PackageUserKey packageUser) {
         if (DEBUG) {
             Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());
         }

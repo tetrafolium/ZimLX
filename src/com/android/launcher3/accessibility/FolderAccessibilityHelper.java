@@ -32,7 +32,7 @@ public class FolderAccessibilityHelper extends DragAndDropAccessibilityDelegate 
 
     private final FolderPagedView mParent;
 
-    public FolderAccessibilityHelper(CellLayout layout) {
+    public FolderAccessibilityHelper(final CellLayout layout) {
         super(layout);
         mParent = (FolderPagedView) layout.getParent();
 
@@ -41,17 +41,17 @@ public class FolderAccessibilityHelper extends DragAndDropAccessibilityDelegate 
     }
 
     @Override
-    protected int intersectsValidDropTarget(int id) {
+    protected int intersectsValidDropTarget(final int id) {
         return Math.min(id, mParent.getAllocatedContentSize() - mStartPosition - 1);
     }
 
     @Override
-    protected String getLocationDescriptionForIconDrop(int id) {
+    protected String getLocationDescriptionForIconDrop(final int id) {
         return mContext.getString(R.string.move_to_position, id + mStartPosition + 1);
     }
 
     @Override
-    protected String getConfirmationForIconDrop(int id) {
+    protected String getConfirmationForIconDrop(final int id) {
         return mContext.getString(R.string.item_moved);
     }
 }

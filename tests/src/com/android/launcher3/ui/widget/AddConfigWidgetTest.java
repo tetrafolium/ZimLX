@@ -95,7 +95,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
      * @param rotateConfig should the config screen be rotated
      * @param acceptConfig accept the config activity
      */
-    private void runTest(boolean rotateConfig, boolean acceptConfig) throws Throwable {
+    private void runTest(final boolean rotateConfig, final boolean acceptConfig) throws Throwable {
         lockRotation(true);
 
         clearHomescreen();
@@ -138,7 +138,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         }
     }
 
-    private void setResult(boolean success) {
+    private void setResult(final boolean success) {
 
         getInstrumentation().getTargetContext().sendBroadcast(
             WidgetConfigActivity.getCommandIntent(WidgetConfigActivity.class,
@@ -157,10 +157,10 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         }
 
         @Override
-        public boolean evaluate(ItemInfo info, View view) {
-            return info instanceof LauncherAppWidgetInfo &&
-                   ((LauncherAppWidgetInfo) info).providerName.equals(mWidgetInfo.provider) &&
-                   ((LauncherAppWidgetInfo) info).appWidgetId == mWidgetId;
+        public boolean evaluate(final ItemInfo info, final View view) {
+            return info instanceof LauncherAppWidgetInfo
+                   && ((LauncherAppWidgetInfo) info).providerName.equals(mWidgetInfo.provider)
+                   && ((LauncherAppWidgetInfo) info).appWidgetId == mWidgetId;
         }
     }
 

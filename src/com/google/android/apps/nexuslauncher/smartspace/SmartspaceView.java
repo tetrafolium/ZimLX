@@ -107,7 +107,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
 
     private boolean mPerformingSetup = false;
 
-    public SmartspaceView(final Context context, AttributeSet set) {
+    public SmartspaceView(final Context context, final AttributeSet set) {
         super(context, set);
 
         mController = ZimAppKt.getZimApp(context).getSmartspace();
@@ -170,7 +170,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         int size = MeasureSpec.getSize(widthMeasureSpec) - mHorizontalPadding;
         if (!mDoubleLine && mClockView != null && mTitleWeatherText != null && mTitleWeatherText.getVisibility() == View.VISIBLE) {
             int textSize = mTitleSize;
@@ -198,7 +198,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-    public final void setTitleSize(int size) {
+    public final void setTitleSize(final int size) {
         if (mClockView != null && ((int) mClockView.getTextSize()) != size) {
             mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         }
@@ -218,7 +218,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     }
 
     @Override
-    public void onDataUpdated(@Nullable WeatherData weather, @Nullable CardData card) {
+    public void onDataUpdated(final @Nullable WeatherData weather, final @Nullable CardData card) {
         if (mController.getRequiresSetup()) {
             if (getParent() instanceof SmartspacePreview) {
                 setupIfNeeded();
@@ -246,7 +246,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void loadDoubleLine(@Nullable WeatherData weather, @NotNull CardData card) {
+    private void loadDoubleLine(final @Nullable WeatherData weather, final @NotNull CardData card) {
         setOnClickListener(mEventClickListener);
         setBackgroundResource(mSmartspaceBackgroundRes);
         mTitleText.setText(card.getTitle());
@@ -260,7 +260,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void loadSingleLine(@Nullable WeatherData weather, @Nullable CardData card) {
+    private void loadSingleLine(final @Nullable WeatherData weather, final @Nullable CardData card) {
         setOnClickListener(null);
         setBackgroundResource(0);
         bindWeather(weather, mTitleWeatherContent, mTitleWeatherText, mTitleWeatherIcon);
@@ -293,7 +293,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
                                     getResources().getDimensionPixelSize(clockAboveTextSize));
     }
 
-    private void bindClockAndSeparator(boolean forced) {
+    private void bindClockAndSeparator(final boolean forced) {
         if (mPrefs.getSmartspaceDate() || mPrefs.getSmartspaceTime()) {
             mClockView.setVisibility(View.VISIBLE);
             mClockView.setOnClickListener(mCalendarClickListener);
@@ -311,7 +311,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         bindClockAbove(forced);
     }
 
-    private void bindClockAbove(boolean forced) {
+    private void bindClockAbove(final boolean forced) {
         if (mPrefs.getSmartspaceTime() && mPrefs.getSmartspaceTimeAbove()) {
             mClockAboveView.setVisibility(View.VISIBLE);
             mClockAboveView.setOnClickListener(mClockClickListener);
@@ -325,7 +325,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         }
     }
 
-    private void bindWeather(@Nullable WeatherData weather, View container, TextView title, ImageView icon) {
+    private void bindWeather(final @Nullable WeatherData weather, final View container, final TextView title, final ImageView icon) {
         mWeatherAvailable = weather != null;
         if (mWeatherAvailable) {
             container.setVisibility(View.VISIBLE);
@@ -346,7 +346,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         bindClockAbove(true);
     }
 
-    private Bitmap addShadowToBitmap(Bitmap bitmap) {
+    private Bitmap addShadowToBitmap(final Bitmap bitmap) {
         if (mEnableShadow && !bitmap.isRecycled()) {
             Bitmap newBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(newBitmap);
@@ -391,9 +391,9 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         final int indexOfChild = indexOfChild(mSmartspaceContent);
         removeView(mSmartspaceContent);
         final LayoutInflater from = LayoutInflater.from(getContext());
-        addView(from.inflate(mDoubleLine ?
-                             R.layout.smartspace_twolines :
-                             R.layout.smartspace_singleline, this, false), indexOfChild);
+        addView(from.inflate(mDoubleLine
+                             ? R.layout.smartspace_twolines
+                             : R.layout.smartspace_singleline, this, false), indexOfChild);
         loadViews();
     }
 
@@ -501,7 +501,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         backportClockVisibility(true);
     }
 
-    private void backportClockVisibility(boolean show) {
+    private void backportClockVisibility(final boolean show) {
         if (!Utilities.ATLEAST_NOUGAT && mClockView != null) {
             mClockView.onVisibilityAggregated(show && !mDoubleLine);
         }

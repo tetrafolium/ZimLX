@@ -51,7 +51,7 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
     private final ShortcutInfo mInfo;
     private final Context mContext;
 
-    public PinShortcutRequestActivityInfo(PinItemRequest request, Context context) {
+    public PinShortcutRequestActivityInfo(final PinItemRequest request, final Context context) {
         super(new ComponentName(request.getShortcutInfo().getPackage(), DUMMY_COMPONENT_CLASS),
               request.getShortcutInfo().getUserHandle());
         mRequest = request;
@@ -70,7 +70,7 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
     }
 
     @Override
-    public Drawable getFullResIcon(IconCache cache) {
+    public Drawable getFullResIcon(final IconCache cache) {
         Drawable d = mContext.getSystemService(LauncherApps.class)
                      .getShortcutIconDrawable(mInfo, LauncherAppState.getIDP(mContext).fillResIconDpi);
         if (d == null) {
@@ -82,16 +82,16 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
     @Override
     public com.android.launcher3.ShortcutInfo createShortcutInfo() {
         // Total duration for the drop animation to complete.
-        long duration = mContext.getResources().getInteger(R.integer.config_dropAnimMaxDuration) +
-                        Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT +
-                        mContext.getResources().getInteger(R.integer.config_overlayTransitionTime) / 2;
+        long duration = mContext.getResources().getInteger(R.integer.config_dropAnimMaxDuration)
+                        + Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT
+                        + mContext.getResources().getInteger(R.integer.config_overlayTransitionTime) / 2;
         // Delay the actual accept() call until the drop animation is complete.
         return LauncherAppsCompatVO.createShortcutInfoFromPinItemRequest(
                    mContext, mRequest, duration);
     }
 
     @Override
-    public boolean startConfigActivity(Activity activity, int requestCode) {
+    public boolean startConfigActivity(final Activity activity, final int requestCode) {
         return false;
     }
 

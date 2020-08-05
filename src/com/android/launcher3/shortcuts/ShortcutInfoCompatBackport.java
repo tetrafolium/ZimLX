@@ -49,7 +49,7 @@ public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
     private final String mDisabledMessage;
     private final Intent mIntent;
 
-    public ShortcutInfoCompatBackport(Context context, Resources resources, String packageName, ComponentName activity, XmlResourceParser parseXml) throws XmlPullParserException, IOException {
+    public ShortcutInfoCompatBackport(final Context context, final Resources resources, final String packageName, final ComponentName activity, final XmlResourceParser parseXml) throws XmlPullParserException, IOException {
         super(null);
         mContext = context;
         mPackageName = packageName;
@@ -64,21 +64,21 @@ public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
 
         mEnabled = !xmlData.containsKey("enabled") || xmlData.get("enabled").toLowerCase().equals("true");
 
-        mIcon = xmlData.containsKey("icon") ?
-                Integer.valueOf(xmlData.get("icon").substring(1)) :
-                0;
+        mIcon = xmlData.containsKey("icon")
+                ? Integer.valueOf(xmlData.get("icon").substring(1))
+                : 0;
 
-        mShortLabel = xmlData.containsKey("shortcutShortLabel") ?
-                      resources.getString(Integer.valueOf(xmlData.get("shortcutShortLabel").substring(1))) :
-                      "";
+        mShortLabel = xmlData.containsKey("shortcutShortLabel")
+                      ? resources.getString(Integer.valueOf(xmlData.get("shortcutShortLabel").substring(1)))
+                      : "";
 
-        mLongLabel = xmlData.containsKey("shortcutLongLabel") ?
-                     resources.getString(Integer.valueOf(xmlData.get("shortcutLongLabel").substring(1))) :
-                     mShortLabel;
+        mLongLabel = xmlData.containsKey("shortcutLongLabel")
+                     ? resources.getString(Integer.valueOf(xmlData.get("shortcutLongLabel").substring(1)))
+                     : mShortLabel;
 
-        mDisabledMessage = xmlData.containsKey("shortcutDisabledMessage") ?
-                           resources.getString(Integer.valueOf(xmlData.get("shortcutDisabledMessage").substring(1))) :
-                           "";
+        mDisabledMessage = xmlData.containsKey("shortcutDisabledMessage")
+                           ? resources.getString(Integer.valueOf(xmlData.get("shortcutDisabledMessage").substring(1)))
+                           : "";
 
         HashMap<String, String> xmlDataIntent = new HashMap<>();
         HashMap<String, String> xmlDataExtras = new HashMap<>();
@@ -105,14 +105,14 @@ public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
             }
         } while (parseXml.getDepth() > startDepth);
 
-        String action = xmlDataIntent.containsKey("action") ?
-                        xmlDataIntent.get("action") :
-                        Intent.ACTION_MAIN;
+        String action = xmlDataIntent.containsKey("action")
+                        ? xmlDataIntent.get("action")
+                        : Intent.ACTION_MAIN;
 
         boolean useTargetPackage = xmlDataIntent.containsKey("targetPackage");
-        String targetPackage = useTargetPackage ?
-                               xmlDataIntent.get("targetPackage") :
-                               mPackageName;
+        String targetPackage = useTargetPackage
+                               ? xmlDataIntent.get("targetPackage")
+                               : mPackageName;
 
         mIntent = new Intent(action)
         .setPackage(targetPackage)
@@ -134,7 +134,7 @@ public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
         mIntent.putExtra(USE_PACKAGE, useTargetPackage);
     }
 
-    static Intent stripPackage(Intent intent) {
+    static Intent stripPackage(final Intent intent) {
         intent = new Intent(intent);
         if (!intent.getBooleanExtra(ShortcutInfoCompatBackport.USE_PACKAGE, true)) {
             intent.setPackage(null);
@@ -143,7 +143,7 @@ public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
         return intent;
     }
 
-    public Drawable getIcon(int density) {
+    public Drawable getIcon(final int density) {
         try {
             return mContext.getPackageManager()
                    .getResourcesForApplication(mPackageName)

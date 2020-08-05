@@ -57,7 +57,7 @@ public class TouchEventGenerator {
      */
     private long mTime;
 
-    public TouchEventGenerator(Listener listener) {
+    public TouchEventGenerator(final Listener listener) {
         mListener = listener;
         mFingers = new HashMap<Integer, Point>();
     }
@@ -65,7 +65,7 @@ public class TouchEventGenerator {
     /**
      * Adds a finger on the touchscreen.
      */
-    public TouchEventGenerator put(int id, int x, int y, long ms) {
+    public TouchEventGenerator put(final int id, final int x, final int y, final long ms) {
         checkFingerExistence(id, false);
         boolean isInitialDown = mFingers.isEmpty();
         mFingers.put(id, new Point(x, y));
@@ -84,7 +84,7 @@ public class TouchEventGenerator {
     /**
      * Adds a finger on the touchscreen after advancing default time interval.
      */
-    public TouchEventGenerator put(int id, int x, int y) {
+    public TouchEventGenerator put(final int id, final int x, final int y) {
         return put(id, x, y, TIME_INCREMENT_MS);
     }
 
@@ -93,7 +93,7 @@ public class TouchEventGenerator {
      *
      * @see #move(long ms)
      */
-    public TouchEventGenerator position(int id, int x, int y) {
+    public TouchEventGenerator position(final int id, final int x, final int y) {
         checkFingerExistence(id, true);
         mFingers.get(id).set(x, y);
         return this;
@@ -105,7 +105,7 @@ public class TouchEventGenerator {
      *
      * @see #position(int, int, int)
      */
-    public TouchEventGenerator move(long ms) {
+    public TouchEventGenerator move(final long ms) {
         generateEvent(MotionEvent.ACTION_MOVE, ms);
         return this;
     }
@@ -123,21 +123,21 @@ public class TouchEventGenerator {
     /**
      * Moves a single finger on the touchscreen.
      */
-    public TouchEventGenerator move(int id, int x, int y, long ms) {
+    public TouchEventGenerator move(final int id, final int x, final int y, final long ms) {
         return position(id, x, y).move(ms);
     }
 
     /**
      * Moves a single finger on the touchscreen after advancing default time interval.
      */
-    public TouchEventGenerator move(int id, int x, int y) {
+    public TouchEventGenerator move(final int id, final int x, final int y) {
         return move(id, x, y, TIME_INCREMENT_MS);
     }
 
     /**
      * Removes an existing finger from the touchscreen.
      */
-    public TouchEventGenerator lift(int id, long ms) {
+    public TouchEventGenerator lift(final int id, final long ms) {
         checkFingerExistence(id, true);
         boolean isFinalUp = mFingers.size() == 1;
         int action;
@@ -156,7 +156,7 @@ public class TouchEventGenerator {
     /**
      * Removes a finger from the touchscreen.
      */
-    public TouchEventGenerator lift(int id, int x, int y, long ms) {
+    public TouchEventGenerator lift(final int id, final int x, final int y, final long ms) {
         checkFingerExistence(id, true);
         mFingers.get(id).set(x, y);
         return lift(id, ms);
@@ -165,14 +165,14 @@ public class TouchEventGenerator {
     /**
      * Removes an existing finger from the touchscreen after advancing default time interval.
      */
-    public TouchEventGenerator lift(int id) {
+    public TouchEventGenerator lift(final int id) {
         return lift(id, TIME_INCREMENT_MS);
     }
 
     /**
      * Cancels an ongoing sequence.
      */
-    public TouchEventGenerator cancel(long ms) {
+    public TouchEventGenerator cancel(final long ms) {
         generateEvent(MotionEvent.ACTION_CANCEL, ms);
         mFingers.clear();
         return this;
@@ -185,14 +185,14 @@ public class TouchEventGenerator {
         return cancel(TIME_INCREMENT_MS);
     }
 
-    private void checkFingerExistence(int id, boolean shouldExist) {
+    private void checkFingerExistence(final int id, final boolean shouldExist) {
         if (shouldExist != mFingers.containsKey(id)) {
             throw new IllegalArgumentException(
                 shouldExist ? "Finger does not exist" : "Finger already exists");
         }
     }
 
-    private void generateEvent(int action, long ms) {
+    private void generateEvent(final int action, final long ms) {
         mTime = mLastEventTime + ms;
         Pair<PointerProperties[], PointerCoords[]> state = getFingerState();
         MotionEvent event = MotionEvent.obtain(

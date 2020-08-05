@@ -73,7 +73,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
 
     private int mLastActivityFlags = -1;
 
-    public RotationHelper(Activity activity) {
+    public RotationHelper(final Activity activity) {
         mActivity = activity;
 
         // On large devices we do not handle auto-rotate differently.
@@ -89,20 +89,20 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String s) {
         mAutoRotateEnabled = mPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
                                                getAllowRotationDefaultValue());
         notifyChange();
     }
 
-    public void setStateHandlerRequest(int request) {
+    public void setStateHandlerRequest(final int request) {
         if (mStateHandlerRequest != request) {
             mStateHandlerRequest = request;
             notifyChange();
         }
     }
 
-    public void setCurrentStateRequest(int request) {
+    public void setCurrentStateRequest(final int request) {
         if (mCurrentStateRequest != request) {
             mCurrentStateRequest = request;
             notifyChange();
@@ -132,8 +132,8 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
 
         final int activityFlags;
         if (mStateHandlerRequest != REQUEST_NONE) {
-            activityFlags = mStateHandlerRequest == REQUEST_LOCK ?
-                            SCREEN_ORIENTATION_LOCKED : SCREEN_ORIENTATION_UNSPECIFIED;
+            activityFlags = mStateHandlerRequest == REQUEST_LOCK
+                            ? SCREEN_ORIENTATION_LOCKED : SCREEN_ORIENTATION_UNSPECIFIED;
         } else if (mCurrentStateRequest == REQUEST_LOCK) {
             activityFlags = SCREEN_ORIENTATION_LOCKED;
         } else if (mIgnoreAutoRotateSettings || mCurrentStateRequest == REQUEST_ROTATE

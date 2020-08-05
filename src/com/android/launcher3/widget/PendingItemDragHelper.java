@@ -49,12 +49,12 @@ public class PendingItemDragHelper extends DragPreviewProvider {
 
     private RemoteViews mPreview;
 
-    public PendingItemDragHelper(View view) {
+    public PendingItemDragHelper(final View view) {
         super(view);
         mAddInfo = (PendingAddItemInfo) view.getTag();
     }
 
-    public void setPreview(RemoteViews preview) {
+    public void setPreview(final RemoteViews preview) {
         mPreview = preview;
     }
 
@@ -67,8 +67,8 @@ public class PendingItemDragHelper extends DragPreviewProvider {
      * @param previewViewWidth The width of {@link WidgetImageView} displaying the preview
      * @param screenPos Position of {@link WidgetImageView} on the screen
      */
-    public void startDrag(Rect previewBounds, int previewBitmapWidth, int previewViewWidth,
-                          Point screenPos, DragSource source, DragOptions options) {
+    public void startDrag(final Rect previewBounds, final int previewBitmapWidth, final int previewViewWidth,
+                          final Point screenPos, final DragSource source, final DragOptions options) {
         final Launcher launcher = Launcher.getLauncher(mView.getContext());
         LauncherAppState app = LauncherAppState.getInstance(launcher);
 
@@ -153,7 +153,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
     }
 
     @Override
-    protected Bitmap convertPreviewToAlphaBitmap(Bitmap preview) {
+    protected Bitmap convertPreviewToAlphaBitmap(final Bitmap preview) {
         if (mAddInfo instanceof PendingAddShortcutInfo || mEstimatedCellSize == null) {
             return super.convertPreviewToAlphaBitmap(preview);
         }

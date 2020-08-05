@@ -24,7 +24,7 @@ public class NewCardInfo {
     public final long dl;
     public final Intent intent;
 
-    public NewCardInfo(b di, Intent intent, boolean dj, long dl, PackageInfo dk) {
+    public NewCardInfo(final b di, final Intent intent, final boolean dj, final long dl, final PackageInfo dk) {
         this.di = di;
         this.dj = dj;
         this.intent = intent;
@@ -32,7 +32,7 @@ public class NewCardInfo {
         this.dk = dk;
     }
 
-    private static Object getParcelableExtra(String name, Intent intent) {
+    private static Object getParcelableExtra(final String name, final Intent intent) {
         if (!TextUtils.isEmpty(name)) {
             return intent.getParcelableExtra(name);
         }

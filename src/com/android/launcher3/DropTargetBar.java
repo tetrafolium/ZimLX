@@ -59,11 +59,11 @@ public class DropTargetBar extends FrameLayout
 
     private boolean mIsVertical = true;
 
-    public DropTargetBar(Context context, AttributeSet attrs) {
+    public DropTargetBar(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public DropTargetBar(Context context, AttributeSet attrs, int defStyle) {
+    public DropTargetBar(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -78,7 +78,7 @@ public class DropTargetBar extends FrameLayout
     }
 
     @Override
-    public void setInsets(Rect insets) {
+    public void setInsets(final Rect insets) {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
         DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
         mIsVertical = grid.isVerticalBarLayout();
@@ -118,7 +118,7 @@ public class DropTargetBar extends FrameLayout
         }
     }
 
-    public void setup(DragController dragController) {
+    public void setup(final DragController dragController) {
         dragController.addDragListener(this);
         for (int i = 0; i < mDropTargets.length; i++) {
             dragController.addDragListener(mDropTargets[i]);
@@ -127,7 +127,7 @@ public class DropTargetBar extends FrameLayout
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
 
@@ -164,7 +164,7 @@ public class DropTargetBar extends FrameLayout
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
         if (mIsVertical) {
             int gap = getResources().getDimensionPixelSize(R.dimen.drop_target_vertical_gap);
             int start = gap;
@@ -204,7 +204,7 @@ public class DropTargetBar extends FrameLayout
         return visibleCount;
     }
 
-    private void animateToVisibility(boolean isVisible) {
+    private void animateToVisibility(final boolean isVisible) {
         if (mVisible != isVisible) {
             mVisible = isVisible;
 
@@ -230,7 +230,7 @@ public class DropTargetBar extends FrameLayout
      * DragController.DragListener implementation
      */
     @Override
-    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+    public void onDragStart(final DropTarget.DragObject dragObject, final DragOptions options) {
         animateToVisibility(true);
     }
 

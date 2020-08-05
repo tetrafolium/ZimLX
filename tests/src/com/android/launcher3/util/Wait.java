@@ -9,11 +9,11 @@ public class Wait {
 
     private static final long DEFAULT_SLEEP_MS = 200;
 
-    public static boolean atMost(Condition condition, long timeout) {
+    public static boolean atMost(final Condition condition, final long timeout) {
         return atMost(condition, timeout, DEFAULT_SLEEP_MS);
     }
 
-    public static boolean atMost(Condition condition, long timeout, long sleepMillis) {
+    public static boolean atMost(final Condition condition, final long timeout, final long sleepMillis) {
         long endTime = SystemClock.uptimeMillis() + timeout;
         while (SystemClock.uptimeMillis() < endTime) {
             try {

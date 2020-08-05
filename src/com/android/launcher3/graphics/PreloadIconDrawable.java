@@ -45,12 +45,12 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     private static final Property<PreloadIconDrawable, Float> INTERNAL_STATE =
     new Property<PreloadIconDrawable, Float>(Float.TYPE, "internalStateProgress") {
         @Override
-        public Float get(PreloadIconDrawable object) {
+        public Float get(final PreloadIconDrawable object) {
             return object.mInternalStateProgress;
         }
 
         @Override
-        public void set(PreloadIconDrawable object, Float value) {
+        public void set(final PreloadIconDrawable object, final Float value) {
             object.setInternalProgress(value);
         }
     };
@@ -104,7 +104,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     /**
      * @param progressPath fixed path in the bounds [0, 0, 100, 100] representing a progress bar.
      */
-    public PreloadIconDrawable(ItemInfoWithIcon info, Path progressPath, Context context) {
+    public PreloadIconDrawable(final ItemInfoWithIcon info, final Path progressPath, final Context context) {
         super(info);
         mItem = info;
         mProgressPath = progressPath;
@@ -120,7 +120,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     }
 
     @Override
-    protected void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(final Rect bounds) {
         super.onBoundsChange(bounds);
         mTmpMatrix.setScale(
             (bounds.width() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE,
@@ -141,7 +141,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         setInternalProgress(mInternalStateProgress);
     }
 
-    private Bitmap getShadowBitmap(int width, int height, float shadowRadius) {
+    private Bitmap getShadowBitmap(final int width, final int height, final float shadowRadius) {
         int key = (width << 16) | height;
         WeakReference<Bitmap> shadowRef = sShadowCache.get(key);
         Bitmap shadow = shadowRef != null ? shadowRef.get() : null;
@@ -162,7 +162,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     }
 
     @Override
-    public void drawInternal(Canvas canvas, Rect bounds) {
+    public void drawInternal(final Canvas canvas, final Rect bounds) {
         if (mRanFinishAnimation) {
             super.drawInternal(canvas, bounds);
             return;
@@ -186,7 +186,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
      * Updates the install progress based on the level
      */
     @Override
-    protected boolean onLevelChange(int level) {
+    protected boolean onLevelChange(final int level) {
         // Run the animation if we have already been bound.
         updateInternalState(level * 0.01f, getBounds().width() > 0, false);
         return true;
@@ -208,7 +208,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         return !mRanFinishAnimation;
     }
 
-    private void updateInternalState(float finalProgress, boolean shouldAnimate, boolean isFinish) {
+    private void updateInternalState(final float finalProgress, final boolean shouldAnimate, final boolean isFinish) {
         if (mCurrentAnim != null) {
             mCurrentAnim.cancel();
             mCurrentAnim = null;
@@ -230,7 +230,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
             if (isFinish) {
                 mCurrentAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
-                    public void onAnimationEnd(Animator animation) {
+                    public void onAnimationEnd(final Animator animation) {
                         mRanFinishAnimation = true;
                     }
                 });
@@ -259,7 +259,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
      *   for progress >= (1 + COMPLETE_ANIM_FRACTION)
      *     - only icon is drawn in normal state
      */
-    private void setInternalProgress(float progress) {
+    private void setInternalProgress(final float progress) {
         mInternalStateProgress = progress;
         if (progress <= 0) {
             mIconScale = SMALL_SCALE;

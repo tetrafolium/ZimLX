@@ -102,7 +102,7 @@ public abstract class AbstractStateChangeTouchController
 
     private float mAtomicComponentsStartProgress;
 
-    public AbstractStateChangeTouchController(Launcher l, SwipeDetector.Direction dir) {
+    public AbstractStateChangeTouchController(final Launcher l, final SwipeDetector.Direction dir) {
         mLauncher = l;
         mDetector = new SwipeDetector(l, this, dir);
     }
@@ -110,7 +110,7 @@ public abstract class AbstractStateChangeTouchController
     protected abstract boolean canInterceptTouch(MotionEvent ev);
 
     @Override
-    public final boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+    public final boolean onControllerInterceptTouchEvent(final MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = !canInterceptTouch(ev);
             if (mNoIntercept) {
@@ -157,7 +157,7 @@ public abstract class AbstractStateChangeTouchController
     }
 
     @Override
-    public final boolean onControllerTouchEvent(MotionEvent ev) {
+    public final boolean onControllerTouchEvent(final MotionEvent ev) {
         return mDetector.onTouchEvent(ev);
     }
 
@@ -179,7 +179,7 @@ public abstract class AbstractStateChangeTouchController
      */
     protected abstract int getLogContainerTypeForNormalState();
 
-    private boolean reinitCurrentAnimation(boolean reachedToState, boolean isDragTowardPositive) {
+    private boolean reinitCurrentAnimation(final boolean reachedToState, final boolean isDragTowardPositive) {
         LauncherState newFromState = mFromState == null ? mLauncher.getStateManager().getState()
                                      : reachedToState ? mToState : mFromState;
         LauncherState newToState = getTargetState(newFromState, isDragTowardPositive);
@@ -218,14 +218,14 @@ public abstract class AbstractStateChangeTouchController
         return true;
     }
 
-    private boolean goingBetweenNormalAndOverview(LauncherState fromState, LauncherState toState) {
+    private boolean goingBetweenNormalAndOverview(final LauncherState fromState, final LauncherState toState) {
         return (fromState == NORMAL || fromState == OVERVIEW)
                && (toState == NORMAL || toState == OVERVIEW)
                && mPendingAnimation == null;
     }
 
     @Override
-    public void onDragStart(boolean start) {
+    public void onDragStart(final boolean start) {
         mStartState = mLauncher.getStateManager().getState();
         if (mStartState == ALL_APPS) {
             mStartContainerType = LauncherLogProto.ContainerType.ALLAPPS;
@@ -254,7 +254,7 @@ public abstract class AbstractStateChangeTouchController
     }
 
     @Override
-    public boolean onDrag(float displacement, float velocity) {
+    public boolean onDrag(final float displacement, final float velocity) {
         float deltaProgress = mProgressMultiplier * (displacement - mDisplacementShift);
         float progress = deltaProgress + mStartProgress;
         updateProgress(progress);
@@ -280,7 +280,7 @@ public abstract class AbstractStateChangeTouchController
         return true;
     }
 
-    protected void updateProgress(float fraction) {
+    protected void updateProgress(final float fraction) {
         mCurrentAnimation.setPlayFraction(fraction);
         if (mAtomicComponentsController != null) {
             // Make sure we don't divide by 0, and have at least a small runway.
@@ -294,8 +294,8 @@ public abstract class AbstractStateChangeTouchController
      * When going between normal and overview states, see if we passed the overview threshold and
      * play the appropriate atomic animation if so.
      */
-    private void maybeUpdateAtomicAnim(LauncherState fromState, LauncherState toState,
-                                       float progress) {
+    private void maybeUpdateAtomicAnim(final LauncherState fromState, final LauncherState toState,
+                                       final float progress) {
         if (!goingBetweenNormalAndOverview(fromState, toState)) {
             return;
         }
@@ -312,14 +312,14 @@ public abstract class AbstractStateChangeTouchController
             mAtomicAnim = createAtomicAnimForState(atomicFromState, atomicToState, ATOMIC_DURATION);
             mAtomicAnim.addListener(new AnimationSuccessListener() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEnd(final Animator animation) {
                     super.onAnimationEnd(animation);
                     mAtomicAnim = null;
                     mScheduleResumeAtomicComponent = false;
                 }
 
                 @Override
-                public void onAnimationSuccess(Animator animator) {
+                public void onAnimationSuccess(final Animator animator) {
                     if (!mScheduleResumeAtomicComponent) {
                         return;
                     }
@@ -341,8 +341,8 @@ public abstract class AbstractStateChangeTouchController
         }
     }
 
-    private AnimatorSet createAtomicAnimForState(LauncherState fromState, LauncherState targetState,
-            long duration) {
+    private AnimatorSet createAtomicAnimForState(final LauncherState fromState, final LauncherState targetState,
+            final long duration) {
         AnimatorSetBuilder builder = getAnimatorSetBuilderForStates(fromState, targetState);
         mLauncher.getStateManager().prepareForAtomicAnimation(fromState, targetState, builder);
         AnimationConfig config = new AnimationConfig();
@@ -354,13 +354,13 @@ public abstract class AbstractStateChangeTouchController
         return builder.build();
     }
 
-    protected AnimatorSetBuilder getAnimatorSetBuilderForStates(LauncherState fromState,
-            LauncherState toState) {
+    protected AnimatorSetBuilder getAnimatorSetBuilderForStates(final LauncherState fromState,
+            final LauncherState toState) {
         return new AnimatorSetBuilder();
     }
 
     @Override
-    public void onDragEnd(float velocity, boolean fling) {
+    public void onDragEnd(final float velocity, final boolean fling) {
         final int logAction = fling ? Touch.FLING : Touch.SWIPE;
 
         boolean blockedFling = fling && mFlingBlockCheck.isBlocked();
@@ -462,7 +462,7 @@ public abstract class AbstractStateChangeTouchController
             atomicAnim.setDuration(duration);
             atomicAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEnd(final Animator animation) {
                     if (mAtomicComponentsController == controller) {
                         mAtomicComponentsController = null;
                     }
@@ -487,8 +487,8 @@ public abstract class AbstractStateChangeTouchController
         }
     }
 
-    protected void updateSwipeCompleteAnimation(ValueAnimator animator, long expectedDuration,
-            LauncherState targetState, float velocity, boolean isFling) {
+    protected void updateSwipeCompleteAnimation(final ValueAnimator animator, final long expectedDuration,
+            final LauncherState targetState, final float velocity, final boolean isFling) {
         animator.setDuration(expectedDuration)
         .setInterpolator(scrollInterpolatorForVelocity(velocity));
     }
@@ -497,7 +497,7 @@ public abstract class AbstractStateChangeTouchController
         return mToState.ordinal > mFromState.ordinal ? Direction.UP : Direction.DOWN;
     }
 
-    protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
+    protected void onSwipeInteractionCompleted(final LauncherState targetState, final int logAction) {
         if (mAtomicComponentsController != null) {
             mAtomicComponentsController.getAnimationPlayer().end();
             mAtomicComponentsController = null;
@@ -518,7 +518,7 @@ public abstract class AbstractStateChangeTouchController
         }
     }
 
-    private void logReachedState(int logAction, LauncherState targetState) {
+    private void logReachedState(final int logAction, final LauncherState targetState) {
         // Transition complete. log the action
         mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
                 getDirectionForLog(),
@@ -557,7 +557,7 @@ public abstract class AbstractStateChangeTouchController
         public final float toProgress;
         public final long endTime;
 
-        AutoPlayAtomicAnimationInfo(float toProgress, long duration) {
+        AutoPlayAtomicAnimationInfo(final float toProgress, final long duration) {
             this.toProgress = toProgress;
             this.endTime = duration + SystemClock.elapsedRealtime();
         }

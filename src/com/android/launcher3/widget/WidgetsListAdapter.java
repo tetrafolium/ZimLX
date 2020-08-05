@@ -61,9 +61,9 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     private boolean mApplyBitmapDeferred;
 
-    public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
-                              WidgetPreviewLoader widgetPreviewLoader, IconCache iconCache,
-                              OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
+    public WidgetsListAdapter(final Context context, final LayoutInflater layoutInflater,
+                              final WidgetPreviewLoader widgetPreviewLoader, final IconCache iconCache,
+                              final OnClickListener iconClickListener, final OnLongClickListener iconLongClickListener) {
         mLayoutInflater = layoutInflater;
         mWidgetPreviewLoader = widgetPreviewLoader;
         mIconClickListener = iconClickListener;
@@ -77,7 +77,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
      *
      * @see WidgetCell#setApplyBitmapDeferred(boolean)
      */
-    public void setApplyBitmapDeferred(boolean isDeferred, RecyclerView rv) {
+    public void setApplyBitmapDeferred(final boolean isDeferred, final RecyclerView rv) {
         mApplyBitmapDeferred = isDeferred;
 
         for (int i = rv.getChildCount() - 1; i >= 0; i--) {
@@ -95,7 +95,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     /**
      * Update the widget list.
      */
-    public void setWidgets(ArrayList<WidgetListRowEntry> tempEntries) {
+    public void setWidgets(final ArrayList<WidgetListRowEntry> tempEntries) {
         WidgetListRowEntryComparator rowComparator = new WidgetListRowEntryComparator();
         Collections.sort(tempEntries, rowComparator);
         mDiffReporter.process(mEntries, tempEntries, rowComparator);
@@ -106,12 +106,12 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         return mEntries.size();
     }
 
-    public String getSectionName(int pos) {
+    public String getSectionName(final int pos) {
         return mEntries.get(pos).titleSectionName;
     }
 
     @Override
-    public void onBindViewHolder(WidgetsRowViewHolder holder, int pos) {
+    public void onBindViewHolder(final WidgetsRowViewHolder holder, final int pos) {
         WidgetListRowEntry entry = mEntries.get(pos);
         List<WidgetItem> infoList = entry.widgets;
 
@@ -167,7 +167,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     }
 
     @Override
-    public WidgetsRowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public WidgetsRowViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         if (DEBUG) {
             Log.v(TAG, "\nonCreateViewHolder");
         }
@@ -183,7 +183,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     }
 
     @Override
-    public void onViewRecycled(WidgetsRowViewHolder holder) {
+    public void onViewRecycled(final WidgetsRowViewHolder holder) {
         int total = holder.cellContainer.getChildCount();
         for (int i = 0; i < total; i += 2) {
             WidgetCell widget = (WidgetCell) holder.cellContainer.getChildAt(i);
@@ -191,7 +191,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         }
     }
 
-    public boolean onFailedToRecycleView(WidgetsRowViewHolder holder) {
+    public boolean onFailedToRecycleView(final WidgetsRowViewHolder holder) {
         // If child views are animating, then the RecyclerView may choose not to recycle the view,
         // causing extraneous onCreateViewHolder() calls.  It is safe in this case to continue
         // recycling this view, and take care in onViewRecycled() to cancel any existing
@@ -200,7 +200,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     }
 
     @Override
-    public long getItemId(int pos) {
+    public long getItemId(final int pos) {
         return pos;
     }
 
@@ -212,7 +212,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         private final LabelComparator mComparator = new LabelComparator();
 
         @Override
-        public int compare(WidgetListRowEntry a, WidgetListRowEntry b) {
+        public int compare(final WidgetListRowEntry a, final WidgetListRowEntry b) {
             return mComparator.compare(a.pkgItem.title.toString(), b.pkgItem.title.toString());
         }
     }

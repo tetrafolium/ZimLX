@@ -104,8 +104,8 @@ public class LauncherSettings {
         /**
          * The content:// style URL for this table
          */
-        public static final Uri CONTENT_URI = Uri.parse("content://" +
-                                              LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
+        public static final Uri CONTENT_URI = Uri.parse("content://"
+                                              + LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
 
         /**
          * The rank of this screen -- ie. how it is ordered relative to the other screens.
@@ -124,8 +124,8 @@ public class LauncherSettings {
         /**
          * The content:// style URL for this table
          */
-        public static final Uri CONTENT_URI = Uri.parse("content://" +
-                                              LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
+        public static final Uri CONTENT_URI = Uri.parse("content://"
+                                              + LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
 
         /**
          * The content:// style URL for a given row, identified by its id.
@@ -133,9 +133,9 @@ public class LauncherSettings {
          * @param id The row id.
          * @return The unique content URL for the specified row.
          */
-        public static Uri getContentUri(long id) {
-            return Uri.parse("content://" + LauncherProvider.AUTHORITY +
-                             "/" + TABLE_NAME + "/" + id);
+        public static Uri getContentUri(final long id) {
+            return Uri.parse("content://" + LauncherProvider.AUTHORITY
+                             + "/" + TABLE_NAME + "/" + id);
         }
 
         /**
@@ -150,7 +150,7 @@ public class LauncherSettings {
         public static final int CONTAINER_DESKTOP = -100;
         public static final int CONTAINER_HOTSEAT = -101;
 
-        static final String containerToString(int container) {
+        static final String containerToString(final int container) {
             switch (container) {
             case CONTAINER_DESKTOP:
                 return "desktop";
@@ -161,7 +161,7 @@ public class LauncherSettings {
             }
         }
 
-        static final String itemTypeToString(int type) {
+        static final String itemTypeToString(final int type) {
             switch (type) {
             case ITEM_TYPE_APPLICATION:
                 return "APP";
@@ -276,34 +276,34 @@ public class LauncherSettings {
 
         public static final String SWIPE_UP_ACTION = "swipeUpAction";
 
-        public static void addTableToDb(SQLiteDatabase db, long myProfileId, boolean optional) {
+        public static void addTableToDb(final SQLiteDatabase db, final long myProfileId, final boolean optional) {
             String ifNotExists = optional ? " IF NOT EXISTS " : "";
-            db.execSQL("CREATE TABLE " + ifNotExists + TABLE_NAME + " (" +
-                       "_id INTEGER PRIMARY KEY," +
-                       "title TEXT," +
-                       "intent TEXT," +
-                       "container INTEGER," +
-                       "screen INTEGER," +
-                       "cellX INTEGER," +
-                       "cellY INTEGER," +
-                       "spanX INTEGER," +
-                       "spanY INTEGER," +
-                       "itemType INTEGER," +
-                       "appWidgetId INTEGER NOT NULL DEFAULT -1," +
-                       "iconPackage TEXT," +
-                       "iconResource TEXT," +
-                       "icon BLOB," +
-                       "customIcon BLOB," +
-                       "customIconEntry TEXT," +
-                       "titleAlias TEXT," +
-                       "swipeUpAction TEXT," +
-                       "appWidgetProvider TEXT," +
-                       "modified INTEGER NOT NULL DEFAULT 0," +
-                       "restored INTEGER NOT NULL DEFAULT 0," +
-                       "profileId INTEGER DEFAULT " + myProfileId + "," +
-                       "rank INTEGER NOT NULL DEFAULT 0," +
-                       "options INTEGER NOT NULL DEFAULT 0" +
-                       ");");
+            db.execSQL("CREATE TABLE " + ifNotExists + TABLE_NAME + " ("
+                       + "_id INTEGER PRIMARY KEY,"
+                       + "title TEXT,"
+                       + "intent TEXT,"
+                       + "container INTEGER,"
+                       + "screen INTEGER,"
+                       + "cellX INTEGER,"
+                       + "cellY INTEGER,"
+                       + "spanX INTEGER,"
+                       + "spanY INTEGER,"
+                       + "itemType INTEGER,"
+                       + "appWidgetId INTEGER NOT NULL DEFAULT -1,"
+                       + "iconPackage TEXT,"
+                       + "iconResource TEXT,"
+                       + "icon BLOB,"
+                       + "customIcon BLOB,"
+                       + "customIconEntry TEXT,"
+                       + "titleAlias TEXT,"
+                       + "swipeUpAction TEXT,"
+                       + "appWidgetProvider TEXT,"
+                       + "modified INTEGER NOT NULL DEFAULT 0,"
+                       + "restored INTEGER NOT NULL DEFAULT 0,"
+                       + "profileId INTEGER DEFAULT " + myProfileId + ","
+                       + "rank INTEGER NOT NULL DEFAULT 0,"
+                       + "options INTEGER NOT NULL DEFAULT 0"
+                       + ");");
         }
     }
 
@@ -312,8 +312,8 @@ public class LauncherSettings {
      */
     public static final class Settings {
 
-        public static final Uri CONTENT_URI = Uri.parse("content://" +
-                                              LauncherProvider.AUTHORITY + "/settings");
+        public static final Uri CONTENT_URI = Uri.parse("content://"
+                                              + LauncherProvider.AUTHORITY + "/settings");
 
         public static final String METHOD_CLEAR_EMPTY_DB_FLAG = "clear_empty_db_flag";
         public static final String METHOD_WAS_EMPTY_DB_CREATED = "get_empty_db_flag";
@@ -336,7 +336,7 @@ public class LauncherSettings {
 
         public static final String EXTRA_VALUE = "value";
 
-        public static Bundle call(ContentResolver cr, String method) {
+        public static Bundle call(final ContentResolver cr, final String method) {
             return cr.call(CONTENT_URI, method, null, null);
         }
     }

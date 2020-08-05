@@ -75,12 +75,12 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
         }
     };
 
-    public AllAppsFastScrollHelper(AllAppsRecyclerView rv, AlphabeticalAppsList apps) {
+    public AllAppsFastScrollHelper(final AllAppsRecyclerView rv, final AlphabeticalAppsList apps) {
         mRv = rv;
         mApps = apps;
     }
 
-    public void onSetAdapter(AllAppsGridAdapter adapter) {
+    public void onSetAdapter(final AllAppsGridAdapter adapter) {
         adapter.setBindViewCallback(this);
     }
 
@@ -89,8 +89,8 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
      *
      * @return whether the fastscroller can scroll to the new section.
      */
-    public boolean smoothScrollToSection(int scrollY, int availableScrollHeight,
-                                         AlphabeticalAppsList.FastScrollSectionInfo info) {
+    public boolean smoothScrollToSection(final int scrollY, final int availableScrollHeight,
+                                         final AlphabeticalAppsList.FastScrollSectionInfo info) {
         if (mTargetFastScrollPosition != info.fastScrollToItem.position) {
             mTargetFastScrollPosition = info.fastScrollToItem.position;
             smoothSnapToPosition(scrollY, availableScrollHeight, info);
@@ -103,8 +103,8 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
      * Smoothly snaps to a given position.  We do this manually by calculating the keyframes
      * ourselves and animating the scroll on the recycler view.
      */
-    private void smoothSnapToPosition(int scrollY, int availableScrollHeight,
-                                      AlphabeticalAppsList.FastScrollSectionInfo info) {
+    private void smoothSnapToPosition(final int scrollY, final int availableScrollHeight,
+                                      final AlphabeticalAppsList.FastScrollSectionInfo info) {
         mRv.removeCallbacks(mSmoothSnapNextFrameRunnable);
         mRv.removeCallbacks(mFastScrollToTargetSectionRunnable);
 
@@ -130,9 +130,9 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
             // scrubbing a while and makes multiple big jumps, then reduce the time needed for the
             // fast scroll to settle so it doesn't feel so long.
             mRv.postDelayed(mFastScrollToTargetSectionRunnable,
-                            mHasFastScrollTouchSettledAtLeastOnce ?
-                            REPEAT_TOUCH_SETTLING_DURATION :
-                            INITIAL_TOUCH_SETTLING_DURATION);
+                            mHasFastScrollTouchSettledAtLeastOnce
+                            ? REPEAT_TOUCH_SETTLING_DURATION
+                            : INITIAL_TOUCH_SETTLING_DURATION);
         }
 
         // Calculate the full animation from the current scroll position to the final scroll
@@ -177,7 +177,7 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
     }
 
     @Override
-    public void onBindView(AllAppsGridAdapter.ViewHolder holder) {
+    public void onBindView(final AllAppsGridAdapter.ViewHolder holder) {
         // Update newly bound views to the current fast scroll state if we are fast scrolling
         if (mCurrentFastScrollSection != null || mTargetFastScrollSection != null) {
             mTrackedFastScrollViews.add(holder);
@@ -208,9 +208,9 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
                     && pos > RecyclerView.NO_POSITION
                     && pos < mApps.getAdapterItems().size()) {
                 AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(pos);
-                isActive = item != null &&
-                           mCurrentFastScrollSection.equals(item.sectionName) &&
-                           item.position == mTargetFastScrollPosition;
+                isActive = item != null
+                           && mCurrentFastScrollSection.equals(item.sectionName)
+                           && item.position == mTargetFastScrollPosition;
             }
             viewHolder.itemView.setActivated(isActive);
         }

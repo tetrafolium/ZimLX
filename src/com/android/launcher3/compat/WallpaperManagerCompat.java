@@ -27,7 +27,7 @@ public abstract class WallpaperManagerCompat {
     private static final Object sInstanceLock = new Object();
     private static WallpaperManagerCompat sInstance;
 
-    public static WallpaperManagerCompat getInstance(Context context) {
+    public static WallpaperManagerCompat getInstance(final Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
                 context = context.getApplicationContext();

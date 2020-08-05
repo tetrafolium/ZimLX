@@ -70,8 +70,8 @@ public class ModelWriter {
     private boolean mPreparingToUndo;
     private List<Runnable> mDeleteRunnables = new ArrayList<>();
 
-    public ModelWriter(Context context, LauncherModel model, BgDataModel dataModel,
-                       boolean hasVerticalHotseat, boolean verifyChanges) {
+    public ModelWriter(final Context context, final LauncherModel model, final BgDataModel dataModel,
+                       final boolean hasVerticalHotseat, final boolean verifyChanges) {
         mContext = context;
         mModel = model;
         mBgDataModel = dataModel;
@@ -82,7 +82,7 @@ public class ModelWriter {
     }
 
     private void updateItemInfoProps(
-        ItemInfo item, long container, long screenId, int cellX, int cellY) {
+        final ItemInfo item, final long container, final long screenId, final int cellX, final int cellY) {
         item.container = container;
         item.cellX = cellX;
         item.cellY = cellY;
@@ -95,7 +95,7 @@ public class ModelWriter {
         }
     }
 
-    private int getOrderInHotseat(int x, int y, int size) {
+    private int getOrderInHotseat(final int x, final int y, final int size) {
         int xOrder = mHasVerticalHotseat ? (size - y - 1) : x;
         int yOrder = mHasVerticalHotseat ? x : y;
         return xOrder + yOrder * size;
@@ -105,8 +105,8 @@ public class ModelWriter {
      * Adds an item to the DB if it was not created previously, or move it to a new
      * <container, screen, cellX, cellY>
      */
-    public void addOrMoveItemInDatabase(ItemInfo item,
-                                        long container, long screenId, int cellX, int cellY) {
+    public void addOrMoveItemInDatabase(final ItemInfo item,
+                                        final long container, final long screenId, final int cellX, final int cellY) {
         if (item.container == ItemInfo.NO_ID) {
             // From all apps
             addItemToDatabase(item, container, screenId, cellX, cellY);
@@ -116,23 +116,23 @@ public class ModelWriter {
         }
     }
 
-    private void checkItemInfoLocked(long itemId, ItemInfo item, StackTraceElement[] stackTrace) {
+    private void checkItemInfoLocked(final long itemId, final ItemInfo item, final StackTraceElement[] stackTrace) {
         ItemInfo modelItem = mBgDataModel.itemsIdMap.get(itemId);
         if (modelItem != null && item != modelItem) {
             // check all the data is consistent
             if (modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
                 ShortcutInfo modelShortcut = (ShortcutInfo) modelItem;
                 ShortcutInfo shortcut = (ShortcutInfo) item;
-                if (modelShortcut.title.toString().equals(shortcut.title.toString()) &&
-                        modelShortcut.intent.filterEquals(shortcut.intent) &&
-                        modelShortcut.id == shortcut.id &&
-                        modelShortcut.itemType == shortcut.itemType &&
-                        modelShortcut.container == shortcut.container &&
-                        modelShortcut.screenId == shortcut.screenId &&
-                        modelShortcut.cellX == shortcut.cellX &&
-                        modelShortcut.cellY == shortcut.cellY &&
-                        modelShortcut.spanX == shortcut.spanX &&
-                        modelShortcut.spanY == shortcut.spanY) {
+                if (modelShortcut.title.toString().equals(shortcut.title.toString())
+                        && modelShortcut.intent.filterEquals(shortcut.intent)
+                        && modelShortcut.id == shortcut.id
+                        && modelShortcut.itemType == shortcut.itemType
+                        && modelShortcut.container == shortcut.container
+                        && modelShortcut.screenId == shortcut.screenId
+                        && modelShortcut.cellX == shortcut.cellX
+                        && modelShortcut.cellY == shortcut.cellY
+                        && modelShortcut.spanX == shortcut.spanX
+                        && modelShortcut.spanY == shortcut.spanY) {
                     // For all intents and purposes, this is the same object
                     return;
                 }
@@ -141,10 +141,10 @@ public class ModelWriter {
             // the modelItem needs to match up perfectly with item if our model is
             // to be consistent with the database-- for now, just require
             // modelItem == item or the equality check above
-            String msg = "item: " + ((item != null) ? item.toString() : "null") +
-                         "modelItem: " +
-                         ((modelItem != null) ? modelItem.toString() : "null") +
-                         "Error: ItemInfo passed to checkItemInfo doesn't match original";
+            String msg = "item: " + ((item != null) ? item.toString() : "null")
+                         + "modelItem: "
+                         + ((modelItem != null) ? modelItem.toString() : "null")
+                         + "Error: ItemInfo passed to checkItemInfo doesn't match original";
             RuntimeException e = new RuntimeException(msg);
             if (stackTrace != null) {
                 e.setStackTrace(stackTrace);
@@ -157,7 +157,7 @@ public class ModelWriter {
      * Move an item in the DB to a new <container, screen, cellX, cellY>
      */
     public void moveItemInDatabase(final ItemInfo item,
-                                   long container, long screenId, int cellX, int cellY) {
+                                   final long container, final long screenId, final int cellX, final int cellY) {
         updateItemInfoProps(item, container, screenId, cellX, cellY);
 
         final ContentWriter writer = new ContentWriter(mContext)
@@ -174,7 +174,7 @@ public class ModelWriter {
      * Move items in the DB to a new <container, screen, cellX, cellY>. We assume that the
      * cellX, cellY have already been updated on the ItemInfos.
      */
-    public void moveItemsInDatabase(final ArrayList<ItemInfo> items, long container, int screen) {
+    public void moveItemsInDatabase(final ArrayList<ItemInfo> items, final long container, final int screen) {
         ArrayList<ContentValues> contentValues = new ArrayList<>();
         int count = items.size();
 
@@ -198,7 +198,7 @@ public class ModelWriter {
      * Move and/or resize item in the DB to a new <container, screen, cellX, cellY, spanX, spanY>
      */
     public void modifyItemInDatabase(final ItemInfo item,
-                                     long container, long screenId, int cellX, int cellY, int spanX, int spanY) {
+                                     final long container, final long screenId, final int cellX, final int cellY, final int spanX, final int spanY) {
         updateItemInfoProps(item, container, screenId, cellX, cellY);
         item.spanX = spanX;
         item.spanY = spanY;
@@ -215,15 +215,15 @@ public class ModelWriter {
         mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
     }
 
-    private void executeUpdateItem(ItemInfo item, ContentWriter writer) {
+    private void executeUpdateItem(final ItemInfo item, final ContentWriter writer) {
         mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
     }
 
 
-    public static void modifyItemInDatabase(Context context, final ItemInfo item, String alias,
-                                            String swipeUpAction,
-                                            IconPackManager.CustomIconEntry iconEntry, Bitmap icon,
-                                            boolean updateIcon, boolean reload) {
+    public static void modifyItemInDatabase(final Context context, final ItemInfo item, final String alias,
+                                            final String swipeUpAction,
+                                            final IconPackManager.CustomIconEntry iconEntry, final Bitmap icon,
+                                            final boolean updateIcon, final boolean reload) {
         final ContentWriter writer = new ContentWriter(context);
         writer.put(Favorites.TITLE_ALIAS, alias);
         writer.put(Favorites.SWIPE_UP_ACTION, swipeUpAction);
@@ -241,7 +241,7 @@ public class ModelWriter {
     /**
      * Update an item to the database in a specified container.
      */
-    public void updateItemInDatabase(ItemInfo item) {
+    public void updateItemInDatabase(final ItemInfo item) {
         ContentWriter writer = new ContentWriter(mContext);
         item.onAddToDatabase(writer);
         mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
@@ -252,7 +252,7 @@ public class ModelWriter {
      * cellY fields of the item. Also assigns an ID to the item.
      */
     public void addItemToDatabase(final ItemInfo item,
-                                  long container, long screenId, int cellX, int cellY) {
+                                  final long container, final long screenId, final int cellX, final int cellY) {
         updateItemInfoProps(item, container, screenId, cellX, cellY);
 
         final ContentWriter writer = new ContentWriter(mContext);
@@ -279,14 +279,14 @@ public class ModelWriter {
     /**
      * Removes the specified item from the database
      */
-    public void deleteItemFromDatabase(ItemInfo item) {
+    public void deleteItemFromDatabase(final ItemInfo item) {
         deleteItemsFromDatabase(Arrays.asList(item));
     }
 
     /**
      * Removes all the items from the database matching {@param matcher}.
      */
-    public void deleteItemsFromDatabase(ItemInfoMatcher matcher) {
+    public void deleteItemsFromDatabase(final ItemInfoMatcher matcher) {
         deleteItemsFromDatabase(matcher.filterItemInfos(mBgDataModel.itemsIdMap));
     }
 
@@ -329,7 +329,7 @@ public class ModelWriter {
         });
     }
 
-    private void enqueueDeleteRunnable(Runnable runnable) {
+    private void enqueueDeleteRunnable(final Runnable runnable) {
         if (mPreparingToUndo) {
             mDeleteRunnables.add(runnable);
         } else {
@@ -337,13 +337,13 @@ public class ModelWriter {
         }
     }
 
-    public void deleteWidgetInfo(LauncherAppWidgetInfo widgetInfo, LauncherAppWidgetHost appWidgetHost) {
+    public void deleteWidgetInfo(final LauncherAppWidgetInfo widgetInfo, final LauncherAppWidgetHost appWidgetHost) {
         enqueueDeleteRunnable(() -> {
             if (appWidgetHost != null && !widgetInfo.isCustomWidget() && widgetInfo.isWidgetIdAllocated()) {
                 // Deleting an app widget ID is a void call but writes to disk before returning
                 // to the caller...
                 new AsyncTask<Void, Void, Void>() {
-                    public Void doInBackground(Void... args) {
+                    public Void doInBackground(final Void... args) {
                         appWidgetHost.deleteAppWidgetId(widgetInfo.appWidgetId);
                         return null;
                     }
@@ -368,7 +368,7 @@ public class ModelWriter {
         mDeleteRunnables.clear();
     }
 
-    public void undoDelete(int reloadPage) {
+    public void undoDelete(final int reloadPage) {
         mPreparingToUndo = false;
         mDeleteRunnables.clear();
         mModel.forceReload(reloadPage);
@@ -379,7 +379,7 @@ public class ModelWriter {
         private final ContentWriter mWriter;
         private final long mItemId;
 
-        UpdateItemRunnable(ItemInfo item, ContentWriter writer) {
+        UpdateItemRunnable(final ItemInfo item, final ContentWriter writer) {
             mItem = item;
             mWriter = writer;
             mItemId = item.id;
@@ -397,7 +397,7 @@ public class ModelWriter {
         private final ArrayList<ContentValues> mValues;
         private final ArrayList<ItemInfo> mItems;
 
-        UpdateItemsRunnable(ArrayList<ItemInfo> items, ArrayList<ContentValues> values) {
+        UpdateItemsRunnable(final ArrayList<ItemInfo> items, final ArrayList<ContentValues> values) {
             mValues = values;
             mItems = items;
         }
@@ -431,19 +431,19 @@ public class ModelWriter {
             mStackTrace = new Throwable().getStackTrace();
         }
 
-        protected void updateItemArrays(ItemInfo item, long itemId) {
+        protected void updateItemArrays(final ItemInfo item, final long itemId) {
             // Lock on mBgLock *after* the db operation
             synchronized (mBgDataModel) {
                 checkItemInfoLocked(itemId, item, mStackTrace);
 
-                if (item.container != Favorites.CONTAINER_DESKTOP &&
-                        item.container != Favorites.CONTAINER_HOTSEAT) {
+                if (item.container != Favorites.CONTAINER_DESKTOP
+                        && item.container != Favorites.CONTAINER_HOTSEAT) {
                     // Item is in a folder, make sure this folder exists
                     if (!mBgDataModel.folders.containsKey(item.container)) {
                         // An items container is being set to a that of an item which is not in
                         // the list of Folders.
-                        String msg = "item: " + item + " container being set to: " +
-                                     item.container + ", not in the list of folders";
+                        String msg = "item: " + item + " container being set to: "
+                                     + item.container + ", not in the list of folders";
                         Log.e(TAG, msg);
                     }
                 }
@@ -452,9 +452,9 @@ public class ModelWriter {
                 // as in Workspace.onDrop. Here, we just add/remove them from the list of items
                 // that are on the desktop, as appropriate
                 ItemInfo modelItem = mBgDataModel.itemsIdMap.get(itemId);
-                if (modelItem != null &&
-                        (modelItem.container == Favorites.CONTAINER_DESKTOP ||
-                         modelItem.container == Favorites.CONTAINER_HOTSEAT)) {
+                if (modelItem != null
+                        && (modelItem.container == Favorites.CONTAINER_DESKTOP
+                         || modelItem.container == Favorites.CONTAINER_HOTSEAT)) {
                     switch (modelItem.itemType) {
                     case Favorites.ITEM_TYPE_APPLICATION:
                     case Favorites.ITEM_TYPE_SHORTCUT:

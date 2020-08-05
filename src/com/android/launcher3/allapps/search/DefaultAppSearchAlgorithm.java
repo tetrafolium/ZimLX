@@ -55,7 +55,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
 
     private final AppFilter mBaseFilter;
 
-    public DefaultAppSearchAlgorithm(Context context, List<AppInfo> apps) {
+    public DefaultAppSearchAlgorithm(final Context context, final List<AppInfo> apps) {
         mContext = context;
         mApps = apps;
         mResultHandler = new Handler();
@@ -63,7 +63,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
     }
 
     @Override
-    public void cancel(boolean interruptActiveRequests) {
+    public void cancel(final boolean interruptActiveRequests) {
         if (interruptActiveRequests) {
             mResultHandler.removeCallbacksAndMessages(null);
         }
@@ -82,7 +82,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
             }
         });
     }
-    private ArrayList<ComponentKey> getTitleMatchResult(String query) {
+    private ArrayList<ComponentKey> getTitleMatchResult(final String query) {
         // Do an intersection of the words in the query and each title, and filter out all the
         // apps that don't match all of the words in the query.
         final String queryTextLower = query.toLowerCase();
@@ -96,7 +96,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         return result;
     }
 
-    private List<String> getSuggestions(String query) {
+    private List<String> getSuggestions(final String query) {
         SearchProvider provider = SearchProviderController.Companion
                                   .getInstance(mContext).getSearchProvider();
         if (provider instanceof WebSearchProvider) {
@@ -105,7 +105,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         return Collections.emptyList();
     }
 
-    public static List<AppInfo> getApps(Context context, List<AppInfo> defaultApps, AppFilter filter) {
+    public static List<AppInfo> getApps(final Context context, final List<AppInfo> defaultApps, final AppFilter filter) {
         if (!Utilities.getPrefs(context).getBoolean(SEARCH_HIDDEN_APPS, false)) {
             return defaultApps;
         }
@@ -128,11 +128,11 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         return apps;
     }
 
-    public static boolean matches(AppInfo info, String query, StringMatcher matcher) {
+    public static boolean matches(final AppInfo info, final String query, final StringMatcher matcher) {
         return matches(info, query, matcher, false) || matches(info, query, matcher, true);
     }
 
-    private static boolean matches(AppInfo info, String query, StringMatcher matcher, boolean normalize) {
+    private static boolean matches(final AppInfo info, final String query, final StringMatcher matcher, final boolean normalize) {
         int queryLength = query.length();
 
         String title = info.title.toString();
@@ -155,17 +155,17 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         for (int i = 0; i <= end; i++) {
             lastType = thisType;
             thisType = nextType;
-            nextType = i < (titleLength - 1) ?
-                       Character.getType(title.codePointAt(i + 1)) : Character.UNASSIGNED;
-            if (isBreak(thisType, lastType, nextType) &&
-                    matcher.matches(query, title.substring(i, i + queryLength))) {
+            nextType = i < (titleLength - 1)
+                       ? Character.getType(title.codePointAt(i + 1)) : Character.UNASSIGNED;
+            if (isBreak(thisType, lastType, nextType)
+                    && matcher.matches(query, title.substring(i, i + queryLength))) {
                 return true;
             }
         }
         return false;
     }
 
-    private static String normalize(String in) {
+    private static String normalize(final String in) {
         return complementaryGlyphs.matcher(Normalizer.normalize(in, Normalizer.Form.NFKD)).replaceAll("");
     }
 
@@ -177,7 +177,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
      *      3) Any capital character after a digit or small character
      *      4) Any capital character before a small character
      */
-    private static boolean isBreak(int thisType, int prevType, int nextType) {
+    private static boolean isBreak(final int thisType, final int prevType, final int nextType) {
         switch (prevType) {
         case Character.UNASSIGNED:
         case Character.SPACE_SEPARATOR:
@@ -233,7 +233,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         /**
          * Returns true if {@param query} is a prefix of {@param target}
          */
-        public boolean matches(String query, String target) {
+        public boolean matches(final String query, final String target) {
             switch (mCollator.compare(query, target)) {
             case 0:
                 return true;

@@ -119,15 +119,15 @@ public class InvariantDeviceProfile {
     public InvariantDeviceProfile() {
     }
 
-    private InvariantDeviceProfile(InvariantDeviceProfile p) {
+    private InvariantDeviceProfile(final InvariantDeviceProfile p) {
         this(p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns,
              p.numFolderRows, p.numFolderColumns,
              p.iconSize, p.landscapeIconSize, p.iconTextSize, p.numHotseatIcons,
              p.defaultLayoutId, p.demoModeLayoutId);
     }
 
-    private InvariantDeviceProfile(String n, float w, float h, int r, int c, int fr, int fc,
-                                   float is, float lis, float its, int hs, int dlId, int dmlId) {
+    private InvariantDeviceProfile(final String n, final float w, final float h, final int r, final int c, final int fr, final int fc,
+                                   final float is, final float lis, final float its, final int hs, final int dlId, final int dmlId) {
         name = n;
         minWidthDps = w;
         minHeightDps = h;
@@ -144,7 +144,7 @@ public class InvariantDeviceProfile {
     }
 
     @TargetApi(23)
-    public InvariantDeviceProfile(Context context) {
+    public InvariantDeviceProfile(final Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
@@ -229,7 +229,7 @@ public class InvariantDeviceProfile {
         }
     }
 
-    private void customizationHook(Context context) {
+    private void customizationHook(final Context context) {
         ZimPreferences prefs = Utilities.getZimPrefs(context);
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = Objects.requireNonNull(wm).getDefaultDisplay();
@@ -248,14 +248,14 @@ public class InvariantDeviceProfile {
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
     }
 
-    ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles(Context context) {
+    ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles(final Context context) {
         ArrayList<InvariantDeviceProfile> profiles = new ArrayList<>();
         try (XmlResourceParser parser = context.getResources().getXml(R.xml.device_profiles)) {
             final int depth = parser.getDepth();
             int type;
 
-            while (((type = parser.next()) != XmlPullParser.END_TAG ||
-                    parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
+            while (((type = parser.next()) != XmlPullParser.END_TAG
+                    || parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
                 if ((type == XmlPullParser.START_TAG) && "profile".equals(parser.getName())) {
                     TypedArray a = context.obtainStyledAttributes(
                                        Xml.asAttributeSet(parser), R.styleable.InvariantDeviceProfile);
@@ -285,7 +285,7 @@ public class InvariantDeviceProfile {
         return profiles;
     }
 
-    private int getLauncherIconDensity(int requiredSize) {
+    private int getLauncherIconDensity(final int requiredSize) {
         // Densities typically defined by an app.
         int[] densityBuckets = new int[] {
             DisplayMetrics.DENSITY_LOW,
@@ -314,7 +314,7 @@ public class InvariantDeviceProfile {
      *
      * Currently we support: all apps row / column count.
      */
-    private void applyPartnerDeviceProfileOverrides(Context context, DisplayMetrics dm) {
+    private void applyPartnerDeviceProfileOverrides(final Context context, final DisplayMetrics dm) {
         Partner p = Partner.get(context.getPackageManager());
         if (p != null) {
             p.applyInvariantDeviceProfileOverrides(this, dm);
@@ -322,7 +322,7 @@ public class InvariantDeviceProfile {
     }
 
     @Thunk
-    float dist(float x0, float y0, float x1, float y1) {
+    float dist(final float x0, final float y0, final float x1, final float y1) {
         return (float) Math.hypot(x1 - x0, y1 - y0);
     }
 
@@ -331,7 +331,7 @@ public class InvariantDeviceProfile {
      */
     // Package private visibility for testing.
     ArrayList<InvariantDeviceProfile> findClosestDeviceProfiles(
-        final float width, final float height, ArrayList<InvariantDeviceProfile> points) {
+        final float width, final float height, final ArrayList<InvariantDeviceProfile> points) {
 
         // Sort the profiles by their closeness to the dimensions
         ArrayList<InvariantDeviceProfile> pointsByNearness = points;
@@ -342,8 +342,8 @@ public class InvariantDeviceProfile {
     }
 
     // Package private visibility for testing.
-    InvariantDeviceProfile invDistWeightedInterpolate(float width, float height,
-            ArrayList<InvariantDeviceProfile> points) {
+    InvariantDeviceProfile invDistWeightedInterpolate(final float width, final float height,
+            final ArrayList<InvariantDeviceProfile> points) {
         float weights = 0;
 
         InvariantDeviceProfile p = points.get(0);
@@ -361,13 +361,13 @@ public class InvariantDeviceProfile {
         return out.multiply(1.0f / weights);
     }
 
-    private void add(InvariantDeviceProfile p) {
+    private void add(final InvariantDeviceProfile p) {
         iconSize += p.iconSize;
         landscapeIconSize += p.landscapeIconSize;
         iconTextSize += p.iconTextSize;
     }
 
-    private InvariantDeviceProfile multiply(float w) {
+    private InvariantDeviceProfile multiply(final float w) {
         iconSize *= w;
         landscapeIconSize *= w;
         iconTextSize *= w;
@@ -381,16 +381,16 @@ public class InvariantDeviceProfile {
         return numHotseatIcons / 2;
     }
 
-    public boolean isAllAppsButtonRank(int rank) {
+    public boolean isAllAppsButtonRank(final int rank) {
         return rank == getAllAppsButtonRank();
     }
 
-    public DeviceProfile getDeviceProfile(Context context) {
+    public DeviceProfile getDeviceProfile(final Context context) {
         return context.getResources().getConfiguration().orientation
                == Configuration.ORIENTATION_LANDSCAPE ? landscapeProfile : portraitProfile;
     }
 
-    private float weight(float x0, float y0, float x1, float y1, float pow) {
+    private float weight(final float x0, final float y0, final float x1, final float y1, final float pow) {
         float d = dist(x0, y0, x1, y1);
         if (Float.compare(d, 0f) == 0) {
             return Float.POSITIVE_INFINITY;
@@ -402,7 +402,7 @@ public class InvariantDeviceProfile {
      * As a ratio of screen height, the total distance we want the parallax effect to span
      * horizontally
      */
-    private static float wallpaperTravelToScreenWidthRatio(int width, int height) {
+    private static float wallpaperTravelToScreenWidthRatio(final int width, final int height) {
         float aspectRatio = width / (float) height;
 
         // At an aspect ratio of 16/10, the wallpaper parallax effect should span 1.5 * screen width
@@ -421,13 +421,13 @@ public class InvariantDeviceProfile {
         //   (10/16)x + y = 1.2
         // We solve for x and y and end up with a final formula:
         final float x =
-            (WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE - WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT) /
-            (ASPECT_RATIO_LANDSCAPE - ASPECT_RATIO_PORTRAIT);
+            (WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE - WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT)
+            / (ASPECT_RATIO_LANDSCAPE - ASPECT_RATIO_PORTRAIT);
         final float y = WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT - x * ASPECT_RATIO_PORTRAIT;
         return x * aspectRatio + y;
     }
 
-    public void onDockStyleChanged(ZimPreferences prefs) {
+    public void onDockStyleChanged(final ZimPreferences prefs) {
         portraitProfile.onValueChanged("", prefs, false);
         landscapeProfile.onValueChanged("", prefs, false);
     }

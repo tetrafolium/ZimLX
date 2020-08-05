@@ -45,8 +45,8 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
     private final UserHandle mUser;
     private final boolean mUpdateIdMap;
 
-    public ShortcutsChangedTask(String packageName, List<ShortcutInfoCompat> shortcuts,
-                                UserHandle user, boolean updateIdMap) {
+    public ShortcutsChangedTask(final String packageName, final List<ShortcutInfoCompat> shortcuts,
+                                final UserHandle user, final boolean updateIdMap) {
         mPackageName = packageName;
         mShortcuts = shortcuts;
         mUser = user;
@@ -54,7 +54,7 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
     }
 
     @Override
-    public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+    public void execute(final LauncherAppState app, final BgDataModel dataModel, final AllAppsList apps) {
         final Context context = app.getContext();
         DeepShortcutManager deepShortcutManager = DeepShortcutManager.getInstance(context);
         deepShortcutManager.onShortcutsChanged(mShortcuts);

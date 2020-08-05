@@ -16,7 +16,7 @@ public class NinePatchDrawHelper {
     public final Rect mSrc = new Rect();
     public final Paint paint = new Paint(1);
 
-    public final void draw(Bitmap bitmap, Canvas canvas, float left, float top, float right) {
+    public final void draw(final Bitmap bitmap, final Canvas canvas, final float left, final float top, final float right) {
         int height = bitmap.getHeight();
         mSrc.top = 0;
         mSrc.bottom = height;
@@ -25,7 +25,7 @@ public class NinePatchDrawHelper {
         draw3Patch(bitmap, canvas, left, right);
     }
 
-    public final void draw3Patch(Bitmap bitmap, Canvas canvas, float left, float right) {
+    public final void draw3Patch(final Bitmap bitmap, final Canvas canvas, final float left, final float right) {
         int width = bitmap.getWidth();
         int center = width / 2;
         float leftWidth = left + center;
@@ -35,7 +35,7 @@ public class NinePatchDrawHelper {
         drawRegion(bitmap, canvas, center - 5, center + 5, leftWidth, rightWidth);
     }
 
-    private void drawRegion(Bitmap bitmap, Canvas canvas, int srcL, int srcR, float dstL, float dstR) {
+    private void drawRegion(final Bitmap bitmap, final Canvas canvas, final int srcL, final int srcR, final float dstL, final float dstR) {
         mSrc.left = srcL;
         mSrc.right = srcR;
         mDst.left = dstL;
@@ -48,8 +48,8 @@ public class NinePatchDrawHelper {
      * vertically into two parts, bottom part of size {@link #EXTENSION_PX} / 2 which is
      * stretched vertically.
      */
-    public void drawVerticallyStretched(Bitmap bitmap, Canvas canvas, float left, float top,
-                                        float right, float bottom) {
+    public void drawVerticallyStretched(final Bitmap bitmap, final Canvas canvas, final float left, final float top,
+                                        final float right, final float bottom) {
         draw(bitmap, canvas, left, top, right);
 
         // Draw bottom stretched region.

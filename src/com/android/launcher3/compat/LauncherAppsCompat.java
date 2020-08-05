@@ -41,7 +41,7 @@ public abstract class LauncherAppsCompat {
     protected LauncherAppsCompat() {
     }
 
-    public static LauncherAppsCompat getInstance(Context context) {
+    public static LauncherAppsCompat getInstance(final Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
                 if (Utilities.ATLEAST_OREO) {
@@ -81,7 +81,7 @@ public abstract class LauncherAppsCompat {
     public abstract List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(
         @Nullable PackageUserKey packageUser);
 
-    public void showAppDetailsForProfile(ComponentName component, UserHandle user) {
+    public void showAppDetailsForProfile(final ComponentName component, final UserHandle user) {
         showAppDetailsForProfile(component, user, null, null);
     }
 

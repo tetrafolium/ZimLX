@@ -64,12 +64,12 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     private static final Property<WorkspacePageIndicator, Integer> PAINT_ALPHA
     = new Property<WorkspacePageIndicator, Integer>(Integer.class, "paint_alpha") {
         @Override
-        public Integer get(WorkspacePageIndicator obj) {
+        public Integer get(final WorkspacePageIndicator obj) {
             return obj.mLinePaint.getAlpha();
         }
 
         @Override
-        public void set(WorkspacePageIndicator obj, Integer alpha) {
+        public void set(final WorkspacePageIndicator obj, final Integer alpha) {
             obj.mLinePaint.setAlpha(alpha);
             obj.invalidate();
         }
@@ -78,12 +78,12 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     private static final Property<WorkspacePageIndicator, Float> NUM_PAGES
     = new Property<WorkspacePageIndicator, Float>(Float.class, "num_pages") {
         @Override
-        public Float get(WorkspacePageIndicator obj) {
+        public Float get(final WorkspacePageIndicator obj) {
             return obj.mNumPagesFloat;
         }
 
         @Override
-        public void set(WorkspacePageIndicator obj, Float numPages) {
+        public void set(final WorkspacePageIndicator obj, final Float numPages) {
             obj.mNumPagesFloat = numPages;
             obj.invalidate();
         }
@@ -92,12 +92,12 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     private static final Property<WorkspacePageIndicator, Integer> TOTAL_SCROLL
     = new Property<WorkspacePageIndicator, Integer>(Integer.class, "total_scroll") {
         @Override
-        public Integer get(WorkspacePageIndicator obj) {
+        public Integer get(final WorkspacePageIndicator obj) {
             return obj.mTotalScroll;
         }
 
         @Override
-        public void set(WorkspacePageIndicator obj, Integer totalScroll) {
+        public void set(final WorkspacePageIndicator obj, final Integer totalScroll) {
             obj.mTotalScroll = totalScroll;
             obj.invalidate();
         }
@@ -105,15 +105,15 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
 
     private Runnable mHideLineRunnable = () -> animateLineToAlpha(0);
 
-    public WorkspacePageIndicator(Context context) {
+    public WorkspacePageIndicator(final Context context) {
         this(context, null);
     }
 
-    public WorkspacePageIndicator(Context context, AttributeSet attrs) {
+    public WorkspacePageIndicator(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public WorkspacePageIndicator(Context context, AttributeSet attrs, int defStyle) {
+    public WorkspacePageIndicator(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
         Resources res = context.getResources();
@@ -136,7 +136,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         if (mTotalScroll == 0 || mNumPagesFloat == 0) {
             return;
         }
@@ -153,7 +153,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     }
 
     @Override
-    public void setScroll(int currentScroll, int totalScroll) {
+    public void setScroll(final int currentScroll, final int totalScroll) {
         if (getAlpha() == 0) {
             return;
         }
@@ -179,11 +179,11 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     }
 
     @Override
-    public void setActiveMarker(int activePage) {
+    public void setActiveMarker(final int activePage) {
     }
 
     @Override
-    public void setMarkersCount(int numMarkers) {
+    public void setMarkersCount(final int numMarkers) {
         if (Float.compare(numMarkers, mNumPagesFloat) != 0) {
             setupAndRunAnimation(ObjectAnimator.ofFloat(this, NUM_PAGES, numMarkers),
                                  NUM_PAGES_ANIMATOR_INDEX);
@@ -195,7 +195,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         }
     }
 
-    public void setShouldAutoHide(boolean shouldAutoHide) {
+    public void setShouldAutoHide(final boolean shouldAutoHide) {
         mShouldAutoHide = shouldAutoHide;
         if (shouldAutoHide && mLinePaint.getAlpha() > 0) {
             hideAfterDelay();
@@ -204,7 +204,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         }
     }
 
-    private void animateLineToAlpha(int alpha) {
+    private void animateLineToAlpha(final int alpha) {
         if (alpha == mToAlpha) {
             // Ignore the new animation if it is going to the same alpha as the current animation.
             return;
@@ -214,7 +214,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
                              LINE_ALPHA_ANIMATOR_INDEX);
     }
 
-    private void animateToTotalScroll(int totalScroll) {
+    private void animateToTotalScroll(final int totalScroll) {
         setupAndRunAnimation(ObjectAnimator.ofInt(this, TOTAL_SCROLL, totalScroll),
                              TOTAL_SCROLL_ANIMATOR_INDEX);
     }
@@ -226,14 +226,14 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
      * If an animator is already at the index (i.e. it is already playing), it is canceled and
      * replaced with the new animator.
      */
-    private void setupAndRunAnimation(ValueAnimator animator, final int animatorIndex) {
+    private void setupAndRunAnimation(final ValueAnimator animator, final int animatorIndex) {
         if (mAnimators[animatorIndex] != null) {
             mAnimators[animatorIndex].cancel();
         }
         mAnimators[animatorIndex] = animator;
         mAnimators[animatorIndex].addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(final Animator animation) {
                 mAnimators[animatorIndex] = null;
             }
         });
@@ -264,7 +264,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     }
 
     @Override
-    public void setInsets(Rect insets) {
+    public void setInsets(final Rect insets) {
         DeviceProfile grid = mLauncher.getDeviceProfile();
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
 

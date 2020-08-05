@@ -60,7 +60,7 @@ public class PackageManagerHelper {
     private final PackageManager mPm;
     private final LauncherAppsCompat mLauncherApps;
 
-    public PackageManagerHelper(Context context) {
+    public PackageManagerHelper(final Context context) {
         mContext = context;
         mPm = context.getPackageManager();
         mLauncherApps = LauncherAppsCompat.getInstance(context);
@@ -70,13 +70,13 @@ public class PackageManagerHelper {
      * Returns true if the app can possibly be on the SDCard. This is just a workaround and doesn't
      * guarantee that the app is on SD card.
      */
-    public boolean isAppOnSdcard(String packageName, UserHandle user) {
+    public boolean isAppOnSdcard(final String packageName, final UserHandle user) {
         ApplicationInfo info = mLauncherApps.getApplicationInfo(
                                    packageName, PackageManager.MATCH_UNINSTALLED_PACKAGES, user);
         return info != null && (info.flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0;
     }
 
-    public static boolean isAppEnabled(PackageManager pm, String packageName, int flags) {
+    public static boolean isAppEnabled(final PackageManager pm, final String packageName, final int flags) {
         try {
             ApplicationInfo info = pm.getApplicationInfo(packageName, flags);
             return info != null && info.enabled;
@@ -85,7 +85,7 @@ public class PackageManagerHelper {
         }
     }
 
-    public static boolean isAppInstalled(PackageManager pm, String packageName, int flags) {
+    public static boolean isAppInstalled(final PackageManager pm, final String packageName, final int flags) {
         try {
             ApplicationInfo info = pm.getApplicationInfo(packageName, flags);
             return info != null;
@@ -107,7 +107,7 @@ public class PackageManagerHelper {
      * Returns whether the target app is suspended for a given user as per
      * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
      */
-    public boolean isAppSuspended(String packageName, UserHandle user) {
+    public boolean isAppSuspended(final String packageName, final UserHandle user) {
         ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, 0, user);
         return info != null && isAppSuspended(info);
     }
@@ -116,17 +116,17 @@ public class PackageManagerHelper {
         return mContext.getPackageManager().isSafeMode();
     }
 
-    public Intent getAppLaunchIntent(String pkg, UserHandle user) {
+    public Intent getAppLaunchIntent(final String pkg, final UserHandle user) {
         List<LauncherActivityInfo> activities = mLauncherApps.getActivityList(pkg, user);
-        return activities.isEmpty() ? null :
-               AppInfo.makeLaunchIntent(activities.get(0));
+        return activities.isEmpty() ? null
+               : AppInfo.makeLaunchIntent(activities.get(0));
     }
 
     /**
      * Returns whether an application is suspended as per
      * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
      */
-    public static boolean isAppSuspended(ApplicationInfo info) {
+    public static boolean isAppSuspended(final ApplicationInfo info) {
         // The value of FLAG_SUSPENDED was reused by a hidden constant
         // ApplicationInfo.FLAG_PRIVILEGED prior to N, so only check for suspended flag on N
         // or later.
@@ -142,7 +142,7 @@ public class PackageManagerHelper {
      * {@param intent}. If {@param srcPackage} is null, then the activity should not need
      * any permissions
      */
-    public boolean hasPermissionForActivity(Intent intent, String srcPackage) {
+    public boolean hasPermissionForActivity(final Intent intent, final String srcPackage) {
         ResolveInfo target = mPm.resolveActivity(intent, 0);
         if (target == null) {
             // Not a valid target
@@ -158,8 +158,8 @@ public class PackageManagerHelper {
         }
 
         // Source does not have sufficient permissions.
-        if (mPm.checkPermission(target.activityInfo.permission, srcPackage) !=
-                PackageManager.PERMISSION_GRANTED) {
+        if (mPm.checkPermission(target.activityInfo.permission, srcPackage)
+                != PackageManager.PERMISSION_GRANTED) {
             return false;
         }
 
@@ -185,7 +185,7 @@ public class PackageManagerHelper {
         return false;
     }
 
-    public Intent getMarketIntent(String packageName) {
+    public Intent getMarketIntent(final String packageName) {
         return new Intent(Intent.ACTION_VIEW)
                .setData(new Uri.Builder()
                         .scheme("market")
@@ -199,7 +199,7 @@ public class PackageManagerHelper {
     /**
      * Creates a new market search intent.
      */
-    public static Intent getMarketSearchIntent(Context context, String query) {
+    public static Intent getMarketSearchIntent(final Context context, final String query) {
         try {
             Intent intent = Intent.parseUri(context.getString(R.string.market_search_intent), 0);
             if (!TextUtils.isEmpty(query)) {
@@ -216,7 +216,7 @@ public class PackageManagerHelper {
     /**
      * Starts the details activity for {@code info}
      */
-    public void startDetailsActivityForInfo(ItemInfo info, Rect sourceBounds, Bundle opts) {
+    public void startDetailsActivityForInfo(final ItemInfo info, final Rect sourceBounds, final Bundle opts) {
         if (info instanceof PromiseAppInfo) {
             PromiseAppInfo promiseAppInfo = (PromiseAppInfo) info;
             mContext.startActivity(promiseAppInfo.getMarketIntent(mContext));

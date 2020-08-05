@@ -49,7 +49,7 @@ public class ConfigBuilder {
     private final boolean mIsAllApps;
     private final UserManagerCompat mUserManager;
 
-    public ConfigBuilder(AbstractQsbLayout qsbLayout, boolean isAllApps) {
+    public ConfigBuilder(final AbstractQsbLayout qsbLayout, final boolean isAllApps) {
         mBundle = new Bundle();
         mNano = new c_search();
         mQsbLayout = qsbLayout;
@@ -58,7 +58,7 @@ public class ConfigBuilder {
         mUserManager = UserManagerCompat.getInstance(mActivity);
     }
 
-    public static Intent getSearchIntent(Rect sourceBounds, View gIcon, View micIcon) {
+    public static Intent getSearchIntent(final Rect sourceBounds, final View gIcon, final View micIcon) {
         Intent intent = new Intent("com.google.nexuslauncher.FAST_TEXT_SEARCH");
         intent.setSourceBounds(sourceBounds);
         if (micIcon.getVisibility() != View.VISIBLE) {
@@ -147,9 +147,9 @@ public class ConfigBuilder {
         }
 
         final View gIcon = mQsbLayout.findViewById(R.id.g_icon);
-        int horizontalPadding = mQsbLayout.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL ?
-                                mQsbLayout.getWidth() - gIcon.getRight() :
-                                gIcon.getLeft();
+        int horizontalPadding = mQsbLayout.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL
+                                ? mQsbLayout.getWidth() - gIcon.getRight()
+                                : gIcon.getLeft();
         remoteViews.setViewPadding(R.id.qsb_icon_container, horizontalPadding, 0, horizontalPadding, 0);
 
         return remoteViews;
@@ -168,9 +168,9 @@ public class ConfigBuilder {
         mNano.ey = "search_box_template";
         mBundle.putParcelable(mNano.ey, searchQsbTemplate());
         mNano.ew = R.id.g_icon;
-        mNano.ex = mQsbLayout.mMicIconView.getVisibility() == View.VISIBLE ?
-                   R.id.mic_icon :
-                   0;
+        mNano.ex = mQsbLayout.mMicIconView.getVisibility() == View.VISIBLE
+                   ? R.id.mic_icon
+                   : 0;
         final a_search viewBounds = getViewBounds(mActivity.getDragLayer());
         final int topShift = mNano.en.eg + (co ? 0 : mNano.en.ee);
         viewBounds.eg += topShift;
@@ -180,12 +180,12 @@ public class ConfigBuilder {
             Bitmap bitmap = BitmapRenderer.createHardwareBitmap(viewBounds.eh, viewBounds.ee, out -> a(topShift, out));
             mBundle.putParcelable(mNano.eu, bitmap);
         } else {
-            String stringBuilder = "Invalid preview bitmap size. width: " +
-                                   viewBounds.eh +
-                                   "hight: " +
-                                   viewBounds.ee +
-                                   " top shift: " +
-                                   topShift;
+            String stringBuilder = "Invalid preview bitmap size. width: "
+                                   + viewBounds.eh
+                                   + "hight: "
+                                   + viewBounds.ee
+                                   + " top shift: "
+                                   + topShift;
             Log.e("ConfigBuilder", stringBuilder);
             viewBounds.ee = 0;
             viewBounds.ef = 0;
@@ -197,7 +197,7 @@ public class ConfigBuilder {
         }
     }
 
-    private /* synthetic */ void a(int i, Canvas canvas) {
+    private /* synthetic */ void a(final int i, final Canvas canvas) {
         int save = canvas.save();
         canvas.translate(0.0f, (float) (-i));
         a(canvas, mActivity.getAppsView().getRecyclerViewContainer());
@@ -205,7 +205,7 @@ public class ConfigBuilder {
         canvas.restoreToCount(save);
     }
 
-    private void a(Canvas canvas, View view) {
+    private void a(final Canvas canvas, final View view) {
         final int[] array = {0, 0};
         mActivity.getDragLayer().mapCoordInSelfToDescendant(mActivity.getAppsView(), array);
         mActivity.getDragLayer().mapCoordInSelfToDescendant(view, array);

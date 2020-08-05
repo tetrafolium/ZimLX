@@ -24,17 +24,17 @@ public class BitmapInfo {
     public Bitmap icon;
     public int color;
 
-    public void applyTo(ItemInfoWithIcon info) {
+    public void applyTo(final ItemInfoWithIcon info) {
         info.iconBitmap = icon;
         info.iconColor = color;
     }
 
-    public void applyTo(BitmapInfo info) {
+    public void applyTo(final BitmapInfo info) {
         info.icon = icon;
         info.color = color;
     }
 
-    public static BitmapInfo fromBitmap(Bitmap bitmap) {
+    public static BitmapInfo fromBitmap(final Bitmap bitmap) {
         BitmapInfo info = new BitmapInfo();
         info.icon = bitmap;
         info.color = ColorExtractor.findDominantColorByHue(bitmap);

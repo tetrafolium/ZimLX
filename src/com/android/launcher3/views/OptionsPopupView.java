@@ -55,25 +55,25 @@ public class OptionsPopupView extends ArrowPopup
     private final ArrayMap<View, OptionItem> mItemMap = new ArrayMap<>();
     private RectF mTargetRect;
 
-    public OptionsPopupView(Context context, AttributeSet attrs) {
+    public OptionsPopupView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public OptionsPopupView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public OptionsPopupView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(final View view) {
         handleViewClick(view, Action.Touch.TAP);
     }
 
     @Override
-    public boolean onLongClick(View view) {
+    public boolean onLongClick(final View view) {
         return handleViewClick(view, Action.Touch.LONGPRESS);
     }
 
-    private boolean handleViewClick(View view, int action) {
+    private boolean handleViewClick(final View view, final int action) {
         OptionItem item = mItemMap.get(view);
         if (item == null) {
             return false;
@@ -88,12 +88,12 @@ public class OptionsPopupView extends ArrowPopup
         return false;
     }
 
-    private void logTap(int action, int controlType) {
+    private void logTap(final int action, final int controlType) {
         mLauncher.getUserEventDispatcher().logActionOnControl(action, controlType);
     }
 
     @Override
-    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+    public boolean onControllerInterceptTouchEvent(final MotionEvent ev) {
         if (ev.getAction() != MotionEvent.ACTION_DOWN) {
             return false;
         }
@@ -105,21 +105,21 @@ public class OptionsPopupView extends ArrowPopup
     }
 
     @Override
-    public void logActionCommand(int command) {
+    public void logActionCommand(final int command) {
         // TODO:
     }
 
     @Override
-    protected boolean isOfType(int type) {
+    protected boolean isOfType(final int type) {
         return (type & TYPE_OPTIONS_POPUP) != 0;
     }
 
     @Override
-    protected void getTargetObjectLocation(Rect outPos) {
+    protected void getTargetObjectLocation(final Rect outPos) {
         mTargetRect.roundOut(outPos);
     }
 
-    public static void show(Launcher launcher, RectF targetRect, List<OptionItem> items) {
+    public static void show(final Launcher launcher, final RectF targetRect, final List<OptionItem> items) {
         OptionsPopupView popup = (OptionsPopupView) launcher.getLayoutInflater()
                                  .inflate(R.layout.longpress_options_menu, launcher.getDragLayer(), false);
         popup.mTargetRect = targetRect;
@@ -136,7 +136,7 @@ public class OptionsPopupView extends ArrowPopup
         popup.reorderAndShow(popup.getChildCount());
     }
 
-    public static void show(Launcher launcher, float x, float y, List<OptionItem> items) {
+    public static void show(final Launcher launcher, final float x, final float y, final List<OptionItem> items) {
         float halfSize = launcher.getResources().getDimension(R.dimen.options_menu_thumb_size) / 2;
         if (x < 0 || y < 0) {
             x = launcher.getDragLayer().getWidth() / 2;
@@ -146,7 +146,7 @@ public class OptionsPopupView extends ArrowPopup
         show(launcher, target, items);
     }
 
-    public static void showDefaultOptions(Launcher launcher, float x, float y) {
+    public static void showDefaultOptions(final Launcher launcher, final float x, final float y) {
         float halfSize = launcher.getResources().getDimension(R.dimen.options_menu_thumb_size) / 2;
         if (x < 0 || y < 0) {
             x = launcher.getDragLayer().getWidth() / 2;
@@ -167,11 +167,11 @@ public class OptionsPopupView extends ArrowPopup
         show(launcher, target, options);
     }
 
-    public static boolean onWidgetsClicked(View view) {
+    public static boolean onWidgetsClicked(final View view) {
         return openWidgets(Launcher.getLauncher(view.getContext()));
     }
 
-    public static boolean openWidgets(Launcher launcher) {
+    public static boolean openWidgets(final Launcher launcher) {
         if (launcher.getPackageManager().isSafeMode()) {
             Toast.makeText(launcher, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
             return false;
@@ -181,7 +181,7 @@ public class OptionsPopupView extends ArrowPopup
         }
     }
 
-    public static boolean startSettings(View view) {
+    public static boolean startSettings(final View view) {
         Launcher launcher = Launcher.getLauncher(view.getContext());
         launcher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                                .setPackage(launcher.getPackageName())
@@ -189,7 +189,7 @@ public class OptionsPopupView extends ArrowPopup
         return true;
     }
 
-    public static boolean startOrganizer(View view) {
+    public static boolean startOrganizer(final View view) {
         Launcher launcher = Launcher.getLauncher(view.getContext());
         launcher.getStateManager().goToState(LauncherState.OPTIONS, true);
         return true;
@@ -199,7 +199,7 @@ public class OptionsPopupView extends ArrowPopup
      * Event handler for the wallpaper picker button that appears after a long press
      * on the home screen.
      */
-    public static boolean startWallpaperPicker(View v) {
+    public static boolean startWallpaperPicker(final View v) {
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!Utilities.isWallpaperAllowed(launcher)) {
             Toast.makeText(launcher, R.string.msg_disabled_by_admin, Toast.LENGTH_SHORT).show();
@@ -230,8 +230,8 @@ public class OptionsPopupView extends ArrowPopup
         private final int mControlTypeForLog;
         private final OnLongClickListener mClickListener;
 
-        public OptionItem(int labelRes, int iconRes, int controlTypeForLog,
-                          OnLongClickListener clickListener) {
+        public OptionItem(final int labelRes, final int iconRes, final int controlTypeForLog,
+                          final OnLongClickListener clickListener) {
             mLabelRes = labelRes;
             mIconRes = iconRes;
             mControlTypeForLog = controlTypeForLog;

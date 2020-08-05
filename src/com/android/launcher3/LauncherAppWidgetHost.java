@@ -56,14 +56,14 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     private final Context mContext;
     private int mFlags = FLAG_RESUMED;
 
-    public LauncherAppWidgetHost(Context context) {
+    public LauncherAppWidgetHost(final Context context) {
         super(context, APPWIDGET_HOST_ID);
         mContext = context;
     }
 
     @Override
-    protected LauncherAppWidgetHostView onCreateView(Context context, int appWidgetId,
-            AppWidgetProviderInfo appWidget) {
+    protected LauncherAppWidgetHostView onCreateView(final Context context, final int appWidgetId,
+            final AppWidgetProviderInfo appWidget) {
         LauncherAppWidgetHostView view = new LauncherAppWidgetHostView(context);
         mViews.put(appWidgetId, view);
         return view;
@@ -112,7 +112,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
      *
      * @see #setListenIfResumed(boolean)
      */
-    public void setResumed(boolean isResumed) {
+    public void setResumed(final boolean isResumed) {
         if (isResumed == ((mFlags & FLAG_RESUMED) != 0)) {
             return;
         }
@@ -133,7 +133,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
      *
      * @see #setResumed(boolean)
      */
-    public void setListenIfResumed(boolean listenIfResumed) {
+    public void setListenIfResumed(final boolean listenIfResumed) {
         if (!Utilities.ATLEAST_NOUGAT_MR1) {
             return;
         }
@@ -163,11 +163,11 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         return super.allocateAppWidgetId();
     }
 
-    public void addProviderChangeListener(ProviderChangedListener callback) {
+    public void addProviderChangeListener(final ProviderChangedListener callback) {
         mProviderChangeListeners.add(callback);
     }
 
-    public void removeProviderChangeListener(ProviderChangedListener callback) {
+    public void removeProviderChangeListener(final ProviderChangedListener callback) {
         mProviderChangeListeners.remove(callback);
     }
 
@@ -179,8 +179,8 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         }
     }
 
-    public AppWidgetHostView createView(Context context, int appWidgetId,
-                                        LauncherAppWidgetProviderInfo appWidget) {
+    public AppWidgetHostView createView(final Context context, final int appWidgetId,
+                                        final LauncherAppWidgetProviderInfo appWidget) {
         if (appWidget.isCustomWidget()) {
             LauncherAppWidgetHostView lahv = new LauncherAppWidgetHostView(context);
             LayoutInflater inflater = (LayoutInflater)
@@ -219,7 +219,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
      * Called when the AppWidget provider for a AppWidget has been upgraded to a new apk.
      */
     @Override
-    protected void onProviderChanged(int appWidgetId, AppWidgetProviderInfo appWidget) {
+    protected void onProviderChanged(final int appWidgetId, final AppWidgetProviderInfo appWidget) {
         LauncherAppWidgetProviderInfo info = LauncherAppWidgetProviderInfo.fromProviderInfo(
                 mContext, appWidget);
         super.onProviderChanged(appWidgetId, info);
@@ -229,7 +229,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     }
 
     @Override
-    public void deleteAppWidgetId(int appWidgetId) {
+    public void deleteAppWidgetId(final int appWidgetId) {
         super.deleteAppWidgetId(appWidgetId);
         mViews.remove(appWidgetId);
     }
@@ -240,8 +240,8 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         mViews.clear();
     }
 
-    public void startBindFlow(BaseActivity activity,
-                              int appWidgetId, AppWidgetProviderInfo info, int requestCode) {
+    public void startBindFlow(final BaseActivity activity,
+                              final int appWidgetId, final AppWidgetProviderInfo info, final int requestCode) {
 
         if (FeatureFlags.GO_DISABLE_WIDGETS) {
             sendActionCancelled(activity, requestCode);
@@ -258,7 +258,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     }
 
 
-    public void startConfigActivity(BaseActivity activity, int widgetId, int requestCode) {
+    public void startConfigActivity(final BaseActivity activity, final int widgetId, final int requestCode) {
         if (FeatureFlags.GO_DISABLE_WIDGETS) {
             sendActionCancelled(activity, requestCode);
             return;

@@ -40,24 +40,24 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
     private LauncherState mToState;
     private final Workspace mWorkspace;
 
-    public PinchStateChangeTouchController(Launcher launcher) {
+    public PinchStateChangeTouchController(final Launcher launcher) {
         mLauncher = launcher;
         mWorkspace = launcher.getWorkspace();
         mDetector = new ScaleGestureDetector(mLauncher, this);
     }
 
     @Override
-    public boolean onControllerInterceptTouchEvent(MotionEvent motionEvent) {
+    public boolean onControllerInterceptTouchEvent(final MotionEvent motionEvent) {
         mDetector.onTouchEvent(motionEvent);
         return mPinchStarted;
     }
 
     @Override
-    public boolean onControllerTouchEvent(MotionEvent motionEvent) {
+    public boolean onControllerTouchEvent(final MotionEvent motionEvent) {
         return mPinchStarted && motionEvent.getPointerCount() <= 2 && mDetector.onTouchEvent(motionEvent);
     }
 
-    private LauncherState getTargetState(LauncherState launcherState) {
+    private LauncherState getTargetState(final LauncherState launcherState) {
         if (launcherState == LauncherState.NORMAL) {
             return LauncherState.OPTIONS;
         }
@@ -87,7 +87,7 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
         return true;
     }
 
-    public boolean onScaleBegin(ScaleGestureDetector r4) {
+    public boolean onScaleBegin(final ScaleGestureDetector r4) {
         if (mCurrentAnimation != null) return true;
 
         if (mLauncher.isInState(LauncherState.NORMAL) || mLauncher.isInState(LauncherState.OPTIONS)) {
@@ -103,7 +103,7 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
         return false;
     }
 
-    public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
+    public boolean onScale(final ScaleGestureDetector scaleGestureDetector) {
         if (mCurrentAnimation == null) {
             Log.d(TAG, "onScale# No animation.");
             return false;
@@ -123,11 +123,11 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
         return false;
     }
 
-    private void updateProgress(float f) {
+    private void updateProgress(final float f) {
         mCurrentAnimation.setPlayFraction(f);
     }
 
-    public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
+    public void onScaleEnd(final ScaleGestureDetector scaleGestureDetector) {
         if (mCurrentAnimation == null) {
             Log.d(TAG, "onScaleEnd# No animation.");
             clearState();
@@ -178,7 +178,7 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
         return mToState.ordinal > mFromState.ordinal ? 5 : 6;
     }
 
-    private void onPinchInteractionCompleted(LauncherState launcherState, int i) {
+    private void onPinchInteractionCompleted(final LauncherState launcherState, final int i) {
         clearState();
         boolean i2 = true;
         if (mPendingAnimation != null) {

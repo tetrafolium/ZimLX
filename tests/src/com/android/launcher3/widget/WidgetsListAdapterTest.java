@@ -132,7 +132,7 @@ public class WidgetsListAdapterTest {
      * @param num the number of WidgetItem the map should contain
      * @return
      */
-    private ArrayList<WidgetListRowEntry> generateSampleMap(int num) {
+    private ArrayList<WidgetListRowEntry> generateSampleMap(final int num) {
         ArrayList<WidgetListRowEntry> result = new ArrayList<>();
         if (num <= 0) return result;
 

@@ -41,17 +41,17 @@ public class DumpTargetWrapper {
         children = new ArrayList<>();
     }
 
-    public DumpTargetWrapper(int containerType, int id) {
+    public DumpTargetWrapper(final int containerType, final int id) {
         this();
         node = newContainerTarget(containerType, id);
     }
 
-    public DumpTargetWrapper(ItemInfo info) {
+    public DumpTargetWrapper(final ItemInfo info) {
         this();
         node = newItemTarget(info);
     }
 
-    public static String getDumpTargetStr(DumpTarget t) {
+    public static String getDumpTargetStr(final DumpTarget t) {
         if (t == null) {
             return "";
         }
@@ -71,7 +71,7 @@ public class DumpTargetWrapper {
         }
     }
 
-    private static String getItemStr(DumpTarget t) {
+    private static String getItemStr(final DumpTarget t) {
         String typeStr = LoggerUtils.getFieldName(t.itemType, ItemType.class);
         if (!TextUtils.isEmpty(t.packageName)) {
             typeStr += ", package=" + t.packageName;
@@ -87,7 +87,7 @@ public class DumpTargetWrapper {
         return node;
     }
 
-    public void add(DumpTargetWrapper child) {
+    public void add(final DumpTargetWrapper child) {
         children.add(child);
     }
 
@@ -103,7 +103,7 @@ public class DumpTargetWrapper {
         return list;
     }
 
-    public DumpTarget newItemTarget(ItemInfo info) {
+    public DumpTarget newItemTarget(final ItemInfo info) {
         DumpTarget dt = new DumpTarget();
         dt.type = DumpTarget.Type.ITEM;
 
@@ -124,7 +124,7 @@ public class DumpTargetWrapper {
         return dt;
     }
 
-    public DumpTarget newContainerTarget(int type, int id) {
+    public DumpTarget newContainerTarget(final int type, final int id) {
         DumpTarget dt = new DumpTarget();
         dt.type = DumpTarget.Type.CONTAINER;
         dt.containerType = type;
@@ -132,11 +132,11 @@ public class DumpTargetWrapper {
         return dt;
     }
 
-    public DumpTarget writeToDumpTarget(ItemInfo info) {
-        node.component = info.getTargetComponent() == null ? "" :
-                         info.getTargetComponent().flattenToString();
-        node.packageName = info.getTargetComponent() == null ? "" :
-                           info.getTargetComponent().getPackageName();
+    public DumpTarget writeToDumpTarget(final ItemInfo info) {
+        node.component = info.getTargetComponent() == null ? ""
+                         : info.getTargetComponent().flattenToString();
+        node.packageName = info.getTargetComponent() == null ? ""
+                           : info.getTargetComponent().getPackageName();
         if (info instanceof LauncherAppWidgetInfo) {
             node.component = ((LauncherAppWidgetInfo) info).providerName.flattenToString();
             node.packageName = ((LauncherAppWidgetInfo) info).providerName.getPackageName();

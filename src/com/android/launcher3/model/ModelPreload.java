@@ -40,8 +40,8 @@ public class ModelPreload implements ModelUpdateTask {
     private AllAppsList mAllAppsList;
 
     @Override
-    public final void init(LauncherAppState app, LauncherModel model, BgDataModel dataModel,
-                           AllAppsList allAppsList, Executor uiExecutor) {
+    public final void init(final LauncherAppState app, final LauncherModel model, final BgDataModel dataModel,
+                           final AllAppsList allAppsList, final Executor uiExecutor) {
         mApp = app;
         mModel = model;
         mBgDataModel = dataModel;
@@ -60,10 +60,10 @@ public class ModelPreload implements ModelUpdateTask {
      * Called when the task is complete
      */
     @WorkerThread
-    public void onComplete(boolean isSuccess) {
+    public void onComplete(final boolean isSuccess) {
     }
 
-    public void start(Context context) {
+    public void start(final Context context) {
         LauncherAppState.getInstance(context).getModel().enqueueModelUpdateTask(this);
     }
 }

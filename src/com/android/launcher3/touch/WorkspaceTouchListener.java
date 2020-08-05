@@ -64,7 +64,7 @@ public class WorkspaceTouchListener extends GestureTouchListener implements OnTo
 
     private int mLongPressState = STATE_CANCELLED;
 
-    public WorkspaceTouchListener(Launcher launcher, Workspace workspace) {
+    public WorkspaceTouchListener(final Launcher launcher, final Workspace workspace) {
         super(launcher);
         mLauncher = launcher;
         mWorkspace = workspace;
@@ -72,7 +72,7 @@ public class WorkspaceTouchListener extends GestureTouchListener implements OnTo
     }
 
     @Override
-    public boolean onTouch(View view, MotionEvent ev) {
+    public boolean onTouch(final View view, final MotionEvent ev) {
         mTouchDownPoint.set(ev.getX(), ev.getY());
         if (super.onTouch(view, ev)) {
             cancelLongPress();

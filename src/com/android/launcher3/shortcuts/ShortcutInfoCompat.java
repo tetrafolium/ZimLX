@@ -38,7 +38,7 @@ public class ShortcutInfoCompat {
     public static final String EXTRA_SHORTCUT_ID = "shortcut_id";
     private ShortcutInfo mShortcutInfo;
 
-    public ShortcutInfoCompat(ShortcutInfo shortcutInfo) {
+    public ShortcutInfoCompat(final ShortcutInfo shortcutInfo) {
         mShortcutInfo = shortcutInfo;
     }
 
@@ -60,7 +60,7 @@ public class ShortcutInfoCompat {
         return mShortcutInfo.getPackage();
     }
 
-    public String getBadgePackage(Context context) {
+    public String getBadgePackage(final Context context) {
         String whitelistedPkg = context.getString(R.string.shortcutinfocompat_badgepkg_whitelist);
         if (whitelistedPkg.equals(getPackage())
                 && mShortcutInfo.getExtras().containsKey(EXTRA_BADGEPKG)) {

@@ -35,11 +35,11 @@ public class ShellCommandRule implements TestRule {
 
     private final String mCmd;
 
-    public ShellCommandRule(String cmd) {
+    public ShellCommandRule(final String cmd) {
         mCmd = cmd;
     }
 
-    public static void runShellCommand(String command) throws IOException {
+    public static void runShellCommand(final String command) throws IOException {
         ParcelFileDescriptor pfd = InstrumentationRegistry.getInstrumentation().getUiAutomation()
                                    .executeShellCommand(command);
 
@@ -64,12 +64,12 @@ public class ShellCommandRule implements TestRule {
         ActivityInfo launcher = InstrumentationRegistry.getTargetContext().getPackageManager()
                                 .queryIntentActivities(LauncherActivityRule.getHomeIntent(), 0).get(0)
                                 .activityInfo;
-        return new ShellCommandRule("cmd package set-home-activity " +
-                                    new ComponentName(launcher.packageName, launcher.name).flattenToString());
+        return new ShellCommandRule("cmd package set-home-activity "
+                                    + new ComponentName(launcher.packageName, launcher.name).flattenToString());
     }
 
     @Override
-    public Statement apply(Statement base, Description description) {
+    public Statement apply(final Statement base, final Description description) {
         return new MyStatement(base, mCmd);
     }
 
@@ -77,7 +77,7 @@ public class ShellCommandRule implements TestRule {
         private final Statement mBase;
         private final String mCmd;
 
-        public MyStatement(Statement base, String cmd) {
+        public MyStatement(final Statement base, final String cmd) {
             mBase = base;
             mCmd = cmd;
         }

@@ -41,7 +41,7 @@ public class CaretDrawable extends Drawable {
     private boolean mHidden;
     private boolean mForceDark;
 
-    public CaretDrawable(Context context) {
+    public CaretDrawable(final Context context) {
         final Resources res = context.getResources();
 
         final int strokeWidth = res.getDimensionPixelSize(R.dimen.all_apps_caret_stroke_width);
@@ -78,7 +78,7 @@ public class CaretDrawable extends Drawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(final Canvas canvas) {
         if (mHidden) {
             return;
         }
@@ -124,7 +124,7 @@ public class CaretDrawable extends Drawable {
      *                 {@value #PROGRESS_CARET_POINTING_DOWN} for pointing down, {@value #PROGRESS_CARET_NEUTRAL}
      *                 for neutral)
      */
-    public void setCaretProgress(float progress) {
+    public void setCaretProgress(final float progress) {
         mCaretProgress = progress;
         invalidateSelf();
     }
@@ -135,8 +135,8 @@ public class CaretDrawable extends Drawable {
      * @return The normalized progress
      */
     public float getNormalizedCaretProgress() {
-        return (mCaretProgress - PROGRESS_CARET_POINTING_UP) /
-               (PROGRESS_CARET_POINTING_DOWN - PROGRESS_CARET_POINTING_UP);
+        return (mCaretProgress - PROGRESS_CARET_POINTING_UP)
+               / (PROGRESS_CARET_POINTING_DOWN - PROGRESS_CARET_POINTING_UP);
     }
 
     @Override
@@ -145,22 +145,22 @@ public class CaretDrawable extends Drawable {
     }
 
     @Override
-    public void setAlpha(int alpha) {
+    public void setAlpha(final int alpha) {
         mCaretPaint.setAlpha(alpha);
         mShadowPaint.setAlpha(alpha);
         invalidateSelf();
     }
 
     @Override
-    public void setColorFilter(ColorFilter cf) {
+    public void setColorFilter(final ColorFilter cf) {
         // no-op
     }
 
-    public void setHidden(boolean hidden) {
+    public void setHidden(final boolean hidden) {
         mHidden = hidden;
     }
 
-    public void setForceDark(boolean forceDark) {
+    public void setForceDark(final boolean forceDark) {
         if (mForceDark != forceDark) {
             mForceDark = forceDark;
             mCaretPaint.setColor(mForceDark ? 0xFF212121 : mWorkspaceTextColor);

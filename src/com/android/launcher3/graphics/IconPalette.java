@@ -52,7 +52,7 @@ public class IconPalette {
     public final int textColor;
     public final int secondaryColor;
 
-    private IconPalette(int color, boolean desaturateBackground) {
+    private IconPalette(final int color, final boolean desaturateBackground) {
         dominantColor = color;
         backgroundColor = desaturateBackground ? getMutedColor(dominantColor, 0.87f) : dominantColor;
         ColorMatrix backgroundColorMatrix = new ColorMatrix();
@@ -69,7 +69,7 @@ public class IconPalette {
         secondaryColor = getLowContrastColor(backgroundColor);
     }
 
-    public static IconPalette fromDominantColor(int dominantColor, boolean desaturateBackground) {
+    public static IconPalette fromDominantColor(final int dominantColor, final boolean desaturateBackground) {
         return new IconPalette(dominantColor, desaturateBackground);
     }
 
@@ -78,7 +78,7 @@ public class IconPalette {
      * If that color is Color.TRANSPARENT, then returns null instead.
      */
     @Nullable
-    public static IconPalette getBadgePalette(Resources resources) {
+    public static IconPalette getBadgePalette(final Resources resources) {
         int badgeColor = resources.getColor(R.color.badge_color);
         if (badgeColor == Color.TRANSPARENT) {
             // Colors will be extracted per app icon, so a static palette won't work.
@@ -94,7 +94,7 @@ public class IconPalette {
      * Returns an IconPalette based on the folder_badge_color in colors.xml.
      */
     @NonNull
-    public static IconPalette getFolderBadgePalette(Resources resources) {
+    public static IconPalette getFolderBadgePalette(final Resources resources) {
         if (sFolderBadgePalette == null) {
             int badgeColor = resources.getColor(R.color.folder_badge_color);
             sFolderBadgePalette = fromDominantColor(badgeColor, false);
@@ -105,7 +105,7 @@ public class IconPalette {
     /**
      * Returns a color suitable for the progress bar color of preload icon.
      */
-    public static int getPreloadProgressColor(Context context, int dominantColor) {
+    public static int getPreloadProgressColor(final Context context, final int dominantColor) {
         int result = dominantColor;
 
         // Make sure that the dominant color has enough saturation to be visible properly.
@@ -128,7 +128,7 @@ public class IconPalette {
      *
      * This was copied from com.android.internal.util.NotificationColorUtil.
      */
-    public static int resolveContrastColor(Context context, int color, int background) {
+    public static int resolveContrastColor(final Context context, final int color, final int background) {
         final int resolvedColor = resolveColor(context, color);
 
         int contrastingColor = ensureTextContrast(resolvedColor, background);
@@ -136,8 +136,8 @@ public class IconPalette {
         if (contrastingColor != resolvedColor) {
             if (DEBUG) {
                 Log.w(TAG, String.format(
-                          "Enhanced contrast of notification for %s " +
-                          "%s (over background) by changing #%s to %s",
+                          "Enhanced contrast of notification for %s "
+                          + "%s (over background) by changing #%s to %s",
                           context.getPackageName(),
                           contrastChange(resolvedColor, contrastingColor, background),
                           Integer.toHexString(resolvedColor), Integer.toHexString(contrastingColor)));
@@ -151,7 +151,7 @@ public class IconPalette {
      *
      * This was copied from com.android.internal.util.NotificationColorUtil.
      */
-    private static int resolveColor(Context context, int color) {
+    private static int resolveColor(final Context context, final int color) {
         if (color == Notification.COLOR_DEFAULT) {
             return context.getResources().getColor(R.color.notification_icon_default_color);
         }
@@ -161,7 +161,7 @@ public class IconPalette {
     /**
      * For debugging. This was copied from com.android.internal.util.NotificationColorUtil.
      */
-    private static String contrastChange(int colorOld, int colorNew, int bg) {
+    private static String contrastChange(final int colorOld, final int colorNew, final int bg) {
         return String.format("from %.2f:1 to %.2f:1",
                              ColorUtils.calculateContrast(colorOld, bg),
                              ColorUtils.calculateContrast(colorNew, bg));
@@ -173,7 +173,7 @@ public class IconPalette {
      *
      * This was copied from com.android.internal.util.NotificationColorUtil.
      */
-    public static int ensureTextContrast(int color, int bg) {
+    public static int ensureTextContrast(final int color, final int bg) {
         return findContrastColor(color, bg, 4.5);
     }
 
@@ -188,7 +188,7 @@ public class IconPalette {
      *
      * This was copied from com.android.internal.util.NotificationColorUtil.
      */
-    private static int findContrastColor(int fg, int bg, double minRatio) {
+    private static int findContrastColor(final int fg, final int bg, final double minRatio) {
         if (ColorUtils.calculateContrast(fg, bg) >= minRatio) {
             return fg;
         }
@@ -216,25 +216,25 @@ public class IconPalette {
         return ColorUtils.LABToColor(low, a, b);
     }
 
-    public static int getMutedColor(int color, float whiteScrimAlpha) {
+    public static int getMutedColor(final int color, final float whiteScrimAlpha) {
         int whiteScrim = ColorUtils.setAlphaComponent(Color.WHITE, (int) (255 * whiteScrimAlpha));
         return ColorUtils.compositeColors(whiteScrim, color);
     }
 
-    public static int getMutedColor(Context context, int color, float scrimAlpha) {
+    public static int getMutedColor(final Context context, final int color, final float scrimAlpha) {
         int scrim = ColorUtils.setAlphaComponent(Color.WHITE, (int) (255 * scrimAlpha));
         return ColorUtils.compositeColors(scrim, color);
     }
 
-    private static int getTextColorForBackground(int backgroundColor) {
+    private static int getTextColorForBackground(final int backgroundColor) {
         return getLighterOrDarkerVersionOfColor(backgroundColor, 4.5f);
     }
 
-    private static int getLowContrastColor(int color) {
+    private static int getLowContrastColor(final int color) {
         return getLighterOrDarkerVersionOfColor(color, 1.5f);
     }
 
-    private static int getLighterOrDarkerVersionOfColor(int color, float contrastRatio) {
+    private static int getLighterOrDarkerVersionOfColor(final int color, final float contrastRatio) {
         int whiteMinAlpha = ColorUtils.calculateMinimumAlpha(Color.WHITE, color, contrastRatio);
         int blackMinAlpha = ColorUtils.calculateMinimumAlpha(Color.BLACK, color, contrastRatio);
         int translucentWhiteOrBlack;

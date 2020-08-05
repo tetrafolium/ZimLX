@@ -58,7 +58,7 @@ public class AppInfo extends ItemInfoWithIcon {
     /**
      * Must not hold the Context.
      */
-    public AppInfo(Context context, LauncherActivityInfo info, UserHandle user) {
+    public AppInfo(final Context context, final LauncherActivityInfo info, final UserHandle user) {
         this(info, user, UserManagerCompat.getInstance(context).isQuietModeEnabled(user));
     }
 
@@ -67,7 +67,7 @@ public class AppInfo extends ItemInfoWithIcon {
         return isDisabled != 0;
     }
 
-    public AppInfo(LauncherActivityInfo info, UserHandle user, boolean quietModeEnabled) {
+    public AppInfo(final LauncherActivityInfo info, final UserHandle user, final boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
         this.user = user;
@@ -84,7 +84,7 @@ public class AppInfo extends ItemInfoWithIcon {
         updateRuntimeFlagsForActivityTarget(this, info);
     }
 
-    public AppInfo(AppInfo info) {
+    public AppInfo(final AppInfo info) {
         super(info);
         componentName = info.componentName;
         title = Utilities.trim(info.title);
@@ -105,11 +105,11 @@ public class AppInfo extends ItemInfoWithIcon {
         return new ComponentKey(componentName, user);
     }
 
-    public static Intent makeLaunchIntent(LauncherActivityInfo info) {
+    public static Intent makeLaunchIntent(final LauncherActivityInfo info) {
         return makeLaunchIntent(info.getComponentName());
     }
 
-    public static Intent makeLaunchIntent(ComponentName cn) {
+    public static Intent makeLaunchIntent(final ComponentName cn) {
         return new Intent(Intent.ACTION_MAIN)
                .addCategory(Intent.CATEGORY_LAUNCHER)
                .setComponent(cn)
@@ -117,7 +117,7 @@ public class AppInfo extends ItemInfoWithIcon {
     }
 
     public static void updateRuntimeFlagsForActivityTarget(
-        ItemInfoWithIcon info, LauncherActivityInfo lai) {
+        final ItemInfoWithIcon info, final LauncherActivityInfo lai) {
         ApplicationInfo appInfo = lai.getApplicationInfo();
         if (PackageManagerHelper.isAppSuspended(appInfo)) {
             info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;

@@ -34,7 +34,7 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
     private static final Object sInstanceLock = new Object();
     private static WallpaperColorInfo sInstance;
 
-    public static WallpaperColorInfo getInstance(Context context) {
+    public static WallpaperColorInfo getInstance(final Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
                 sInstance = new WallpaperColorInfo(context.getApplicationContext());
@@ -53,7 +53,7 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
 
     private OnChangeListener[] mTempListeners;
 
-    private WallpaperColorInfo(Context context) {
+    private WallpaperColorInfo(final Context context) {
         mWallpaperManager = WallpaperManagerCompat.getInstance(context);
         mWallpaperManager.addOnColorsChangedListener(this);
         mExtractionType = ColorExtractionAlgorithm.newInstance(context);
@@ -77,14 +77,14 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
     }
 
     @Override
-    public void onColorsChanged(WallpaperColorsCompat colors, int which) {
+    public void onColorsChanged(final WallpaperColorsCompat colors, final int which) {
         if ((which & FLAG_SYSTEM) != 0) {
             update(colors);
             notifyChange();
         }
     }
 
-    private void update(WallpaperColorsCompat wallpaperColors) {
+    private void update(final WallpaperColorsCompat wallpaperColors) {
         Pair<Integer, Integer> colors = mExtractionType.extractInto(wallpaperColors);
         if (colors != null) {
             mMainColor = colors.first;
@@ -99,18 +99,18 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
                                               & WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME) > 0;
     }
 
-    public void addOnChangeListener(OnChangeListener listener) {
+    public void addOnChangeListener(final OnChangeListener listener) {
         mListeners.add(listener);
     }
 
-    public void removeOnChangeListener(OnChangeListener listener) {
+    public void removeOnChangeListener(final OnChangeListener listener) {
         mListeners.remove(listener);
     }
 
     private void notifyChange() {
         OnChangeListener[] copy =
-            mTempListeners != null && mTempListeners.length == mListeners.size() ?
-            mTempListeners : new OnChangeListener[mListeners.size()];
+            mTempListeners != null && mTempListeners.length == mListeners.size()
+            ? mTempListeners : new OnChangeListener[mListeners.size()];
 
         // Create a new array to avoid concurrent modification when the activity destroys itself.
         mTempListeners = mListeners.toArray(copy);

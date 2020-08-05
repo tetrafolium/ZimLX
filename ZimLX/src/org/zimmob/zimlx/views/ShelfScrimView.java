@@ -79,7 +79,7 @@ public class ShelfScrimView extends ScrimView {
     protected final int DEFAULT_END_ALPHA;
     protected final ZimPreferences prefs;
 
-    public ShelfScrimView(Context context, AttributeSet attrs) {
+    public ShelfScrimView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         mMaxScrimAlpha = Math.round(OVERVIEW.getWorkspaceScrimAlpha(mLauncher) * 255);
 
@@ -94,7 +94,7 @@ public class ShelfScrimView extends ScrimView {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mRemainingScreenPathValid = false;
     }
@@ -165,12 +165,12 @@ public class ShelfScrimView extends ScrimView {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         drawBackground(canvas);
         drawDragHandle(canvas);
     }
 
-    private void drawBackground(Canvas canvas) {
+    private void drawBackground(final Canvas canvas) {
         if (mDrawingFlatColor) {
             onDrawFlatColor(canvas);
             if (mCurrentFlatColor != 0) {
@@ -213,8 +213,8 @@ public class ShelfScrimView extends ScrimView {
     }
 
     @Override
-    protected void onDrawRoundRect(Canvas canvas, float left, float top, float right, float bottom,
-                                   float rx, float ry, Paint paint) {
+    protected void onDrawRoundRect(final Canvas canvas, final float left, final float top, final float right, final float bottom,
+                                   final float rx, final float ry, final Paint paint) {
         canvas.drawRoundRect(left, top, right, bottom, rx, ry, paint);
     }
 

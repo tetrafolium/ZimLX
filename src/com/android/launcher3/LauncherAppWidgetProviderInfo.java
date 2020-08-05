@@ -23,8 +23,8 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
     public int minSpanX;
     public int minSpanY;
 
-    public static LauncherAppWidgetProviderInfo fromProviderInfo(Context context,
-            AppWidgetProviderInfo info) {
+    public static LauncherAppWidgetProviderInfo fromProviderInfo(final Context context,
+            final AppWidgetProviderInfo info) {
         final LauncherAppWidgetProviderInfo launcherInfo;
         if (info instanceof LauncherAppWidgetProviderInfo) {
             launcherInfo = (LauncherAppWidgetProviderInfo) info;
@@ -47,11 +47,11 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
     protected LauncherAppWidgetProviderInfo() {
     }
 
-    protected LauncherAppWidgetProviderInfo(Parcel in) {
+    protected LauncherAppWidgetProviderInfo(final Parcel in) {
         super(in);
     }
 
-    public void initSpans(Context context) {
+    public void initSpans(final Context context) {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
 
         Point paddingLand = idp.landscapeProfile.getTotalWorkspacePadding();
@@ -83,7 +83,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
                                 (minResizeHeight + widgetPadding.top + widgetPadding.bottom) / smallestCellHeight));
     }
 
-    public String getLabel(PackageManager packageManager) {
+    public String getLabel(final PackageManager packageManager) {
         return super.loadLabel(packageManager);
     }
 

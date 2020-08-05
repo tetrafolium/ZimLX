@@ -49,16 +49,16 @@ public class SmartspaceCard {
         this.dL = dl;
     }
 
-    static SmartspaceCard cD(Context context, i iVar, boolean z) {
+    static SmartspaceCard cD(final Context context, final i iVar, final boolean z) {
         if (iVar != null) {
             try {
-                Intent parseUri = TextUtils.isEmpty(iVar.de.cG.cZ) ?
-                                  null :
-                                  Intent.parseUri(iVar.de.cG.cZ, 0);
+                Intent parseUri = TextUtils.isEmpty(iVar.de.cG.cZ)
+                                  ? null
+                                  : Intent.parseUri(iVar.de.cG.cZ, 0);
 
-                Bitmap bitmap = iVar.dd == null ?
-                                null :
-                                BitmapFactory.decodeByteArray(iVar.dd, 0, iVar.dd.length, null);
+                Bitmap bitmap = iVar.dd == null
+                                ? null
+                                : BitmapFactory.decodeByteArray(iVar.dd, 0, iVar.dd.length, null);
 
                 if (bitmap != null) {
                     bitmap = ShadowGenerator
@@ -269,7 +269,7 @@ public class SmartspaceCard {
         return System.currentTimeMillis() > this.cF();
     }
 
-    void click(View view) {
+    void click(final View view) {
         if (this.dI.cG == null) {
             Log.e("SmartspaceCard", "no tap action available: " + this);
             return;

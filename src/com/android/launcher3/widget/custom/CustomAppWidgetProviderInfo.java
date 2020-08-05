@@ -38,8 +38,8 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
     public int customizeScreen;
     public boolean customizeHasPreview;
 
-    protected CustomAppWidgetProviderInfo(Parcel parcel, boolean readSelf,
-                                          int providerId, boolean noPadding) {
+    protected CustomAppWidgetProviderInfo(final Parcel parcel, final boolean readSelf,
+                                          final int providerId, final boolean noPadding) {
         super(parcel);
         if (readSelf) {
             this.providerId = parcel.readInt();
@@ -67,11 +67,11 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
     }
 
     @Override
-    public void initSpans(Context context) {
+    public void initSpans(final Context context) {
     }
 
     @Override
-    public String getLabel(PackageManager packageManager) {
+    public String getLabel(final PackageManager packageManager) {
         return Utilities.trim(label);
     }
 
@@ -81,7 +81,7 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
     }
 
     @Override
-    public void writeToParcel(Parcel out, int flags) {
+    public void writeToParcel(final Parcel out, final int flags) {
         super.writeToParcel(out, flags);
         out.writeInt(providerId);
         out.writeString(provider.getPackageName());
@@ -102,11 +102,11 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
     = new Parcelable.Creator<CustomAppWidgetProviderInfo>() {
 
         @Override
-        public CustomAppWidgetProviderInfo createFromParcel(Parcel parcel) {
+        public CustomAppWidgetProviderInfo createFromParcel(final Parcel parcel) {
             return new CustomAppWidgetProviderInfo(parcel, true, 0, false);
         }
         @Override
-        public CustomAppWidgetProviderInfo[] newArray(int size) {
+        public CustomAppWidgetProviderInfo[] newArray(final int size) {
             return new CustomAppWidgetProviderInfo[size];
         }
     };

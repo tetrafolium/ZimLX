@@ -43,16 +43,16 @@ public class SystemUiController {
     private final Window mWindow;
     private final int[] mStates = new int[5];
 
-    public SystemUiController(Window window) {
+    public SystemUiController(final Window window) {
         mWindow = window;
     }
 
-    public void updateUiState(int uiState, boolean isLight) {
+    public void updateUiState(final int uiState, final boolean isLight) {
         updateUiState(uiState, isLight
                       ? (FLAG_LIGHT_NAV | FLAG_LIGHT_STATUS) : (FLAG_DARK_NAV | FLAG_DARK_STATUS));
     }
 
-    public void updateUiState(int uiState, int flags) {
+    public void updateUiState(final int uiState, final int flags) {
         if (mStates[uiState] == flags) {
             return;
         }

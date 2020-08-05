@@ -52,7 +52,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     private final Context mAppContext;
     private final HashMap<String, Boolean> mSessionVerifiedMap = new HashMap<>();
 
-    PackageInstallerCompatVL(Context context) {
+    PackageInstallerCompatVL(final Context context) {
         mAppContext = context.getApplicationContext();
         mInstaller = context.getPackageManager().getPackageInstaller();
         mCache = LauncherAppState.getInstance(context).getIconCache();
@@ -75,7 +75,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     }
 
     @Thunk
-    void addSessionInfoToCache(SessionInfo info, UserHandle user) {
+    void addSessionInfoToCache(final SessionInfo info, final UserHandle user) {
         String packageName = info.getAppPackageName();
         if (packageName != null) {
             mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
@@ -89,7 +89,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     }
 
     @Thunk
-    void sendUpdate(PackageInstallInfo info) {
+    void sendUpdate(final PackageInstallInfo info) {
         LauncherAppState app = LauncherAppState.getInstanceNoCreate();
         if (app != null) {
             app.getModel().setPackageState(info);
@@ -99,7 +99,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     private final SessionCallback mCallback = new SessionCallback() {
 
         @Override
-        public void onCreated(int sessionId) {
+        public void onCreated(final int sessionId) {
             SessionInfo sessionInfo = pushSessionDisplayToLauncher(sessionId);
             if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS && sessionInfo != null) {
                 LauncherAppState app = LauncherAppState.getInstanceNoCreate();
@@ -111,7 +111,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         }
 
         @Override
-        public void onFinished(int sessionId, boolean success) {
+        public void onFinished(final int sessionId, final boolean success) {
             // For a finished session, we can't get the session info. So use the
             // packageName from our local cache.
             String packageName = mActiveSessions.get(sessionId);
@@ -125,7 +125,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         }
 
         @Override
-        public void onProgressChanged(int sessionId, float progress) {
+        public void onProgressChanged(final int sessionId, final float progress) {
             SessionInfo session = verify(mInstaller.getSessionInfo(sessionId));
             if (session != null && session.getAppPackageName() != null) {
                 sendUpdate(PackageInstallInfo.fromInstallingState(session));
@@ -133,15 +133,15 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         }
 
         @Override
-        public void onActiveChanged(int sessionId, boolean active) {
+        public void onActiveChanged(final int sessionId, final boolean active) {
         }
 
         @Override
-        public void onBadgingChanged(int sessionId) {
+        public void onBadgingChanged(final int sessionId) {
             pushSessionDisplayToLauncher(sessionId);
         }
 
-        private SessionInfo pushSessionDisplayToLauncher(int sessionId) {
+        private SessionInfo pushSessionDisplayToLauncher(final int sessionId) {
             SessionInfo session = verify(mInstaller.getSessionInfo(sessionId));
             if (session != null && session.getAppPackageName() != null) {
                 mActiveSessions.put(sessionId, session.getAppPackageName());
@@ -156,7 +156,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         }
     };
 
-    private PackageInstaller.SessionInfo verify(PackageInstaller.SessionInfo sessionInfo) {
+    private PackageInstaller.SessionInfo verify(final PackageInstaller.SessionInfo sessionInfo) {
         if (sessionInfo == null
                 || sessionInfo.getInstallerPackageName() == null
                 || TextUtils.isEmpty(sessionInfo.getAppPackageName())) {

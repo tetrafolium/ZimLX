@@ -47,7 +47,7 @@ public abstract class ShortcutConfigActivityInfo {
     private final ComponentName mCn;
     private final UserHandle mUser;
 
-    protected ShortcutConfigActivityInfo(ComponentName cn, UserHandle user) {
+    protected ShortcutConfigActivityInfo(final ComponentName cn, final UserHandle user) {
         mCn = cn;
         mUser = user;
     }
@@ -76,7 +76,7 @@ public abstract class ShortcutConfigActivityInfo {
         return null;
     }
 
-    public boolean startConfigActivity(Activity activity, int requestCode) {
+    public boolean startConfigActivity(final Activity activity, final int requestCode) {
         Intent intent = new Intent(Intent.ACTION_CREATE_SHORTCUT)
         .setComponent(getComponent());
         try {
@@ -86,9 +86,9 @@ public abstract class ShortcutConfigActivityInfo {
             Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
         } catch (SecurityException e) {
             Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Launcher does not have the permission to launch " + intent +
-                  ". Make sure to create a MAIN intent-filter for the corresponding activity " +
-                  "or use the exported attribute for this activity.", e);
+            Log.e(TAG, "Launcher does not have the permission to launch " + intent
+                  + ". Make sure to create a MAIN intent-filter for the corresponding activity "
+                  + "or use the exported attribute for this activity.", e);
         }
         return false;
     }
@@ -107,7 +107,7 @@ public abstract class ShortcutConfigActivityInfo {
         private final PackageManager mPm;
 
 
-        public ShortcutConfigActivityInfoVL(ActivityInfo info, PackageManager pm) {
+        public ShortcutConfigActivityInfoVL(final ActivityInfo info, final PackageManager pm) {
             super(new ComponentName(info.packageName, info.name), Process.myUserHandle());
             mInfo = info;
             mPm = pm;
@@ -119,7 +119,7 @@ public abstract class ShortcutConfigActivityInfo {
         }
 
         @Override
-        public Drawable getFullResIcon(IconCache cache) {
+        public Drawable getFullResIcon(final IconCache cache) {
             return cache.getFullResIcon(mInfo);
         }
     }
@@ -129,7 +129,7 @@ public abstract class ShortcutConfigActivityInfo {
 
         private final LauncherActivityInfo mInfo;
 
-        public ShortcutConfigActivityInfoVO(LauncherActivityInfo info) {
+        public ShortcutConfigActivityInfoVO(final LauncherActivityInfo info) {
             super(info.getComponentName(), info.getUser());
             mInfo = info;
         }
@@ -140,12 +140,12 @@ public abstract class ShortcutConfigActivityInfo {
         }
 
         @Override
-        public Drawable getFullResIcon(IconCache cache) {
+        public Drawable getFullResIcon(final IconCache cache) {
             return cache.getFullResIcon(mInfo);
         }
 
         @Override
-        public boolean startConfigActivity(Activity activity, int requestCode) {
+        public boolean startConfigActivity(final Activity activity, final int requestCode) {
             if (getUser().equals(Process.myUserHandle())) {
                 return super.startConfigActivity(activity, requestCode);
             }

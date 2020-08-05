@@ -80,12 +80,12 @@ public class SwipeDetector {
     public static final Direction VERTICAL = new Direction() {
 
         @Override
-        float getDisplacement(MotionEvent ev, int pointerIndex, PointF refPoint) {
+        float getDisplacement(final MotionEvent ev, final int pointerIndex, final PointF refPoint) {
             return ev.getY(pointerIndex) - refPoint.y;
         }
 
         @Override
-        float getActiveTouchSlop(MotionEvent ev, int pointerIndex, PointF downPos) {
+        float getActiveTouchSlop(final MotionEvent ev, final int pointerIndex, final PointF downPos) {
             return Math.abs(ev.getX(pointerIndex) - downPos.x);
         }
     };
@@ -93,12 +93,12 @@ public class SwipeDetector {
     public static final Direction HORIZONTAL = new Direction() {
 
         @Override
-        float getDisplacement(MotionEvent ev, int pointerIndex, PointF refPoint) {
+        float getDisplacement(final MotionEvent ev, final int pointerIndex, final PointF refPoint) {
             return ev.getX(pointerIndex) - refPoint.x;
         }
 
         @Override
-        float getActiveTouchSlop(MotionEvent ev, int pointerIndex, PointF downPos) {
+        float getActiveTouchSlop(final MotionEvent ev, final int pointerIndex, final PointF downPos) {
             return Math.abs(ev.getY(pointerIndex) - downPos.y);
         }
     };
@@ -110,7 +110,7 @@ public class SwipeDetector {
     // SETTLING -> (MotionEvent#ACTION_DOWN) -> DRAGGING
     // SETTLING -> (View settled) -> IDLE
 
-    private void setState(ScrollState newState) {
+    private void setState(final ScrollState newState) {
         if (DBG) {
             Log.d(TAG, "setState:" + mState + "->" + newState);
         }
@@ -175,22 +175,22 @@ public class SwipeDetector {
         void onDragEnd(float velocity, boolean fling);
     }
 
-    public SwipeDetector(@NonNull Context context, @NonNull Listener l, @NonNull Direction dir) {
+    public SwipeDetector(final @NonNull Context context, final @NonNull Listener l, final @NonNull Direction dir) {
         this(ViewConfiguration.get(context).getScaledTouchSlop(), l, dir);
     }
 
     @VisibleForTesting
-    protected SwipeDetector(float touchSlope, @NonNull Listener l, @NonNull Direction dir) {
+    protected SwipeDetector(final float touchSlope, final @NonNull Listener l, final @NonNull Direction dir) {
         mTouchSlop = touchSlope;
         mListener = l;
         mDir = dir;
     }
 
-    public void updateDirection(Direction dir) {
+    public void updateDirection(final Direction dir) {
         mDir = dir;
     }
 
-    public void setDetectableScrollConditions(int scrollDirectionFlags, boolean ignoreSlop) {
+    public void setDetectableScrollConditions(final int scrollDirectionFlags, final boolean ignoreSlop) {
         mScrollConditions = scrollDirectionFlags;
         mIgnoreSlopWhenSettling = ignoreSlop;
     }
@@ -199,7 +199,7 @@ public class SwipeDetector {
         return mScrollConditions;
     }
 
-    private boolean shouldScrollStart(MotionEvent ev, int pointerIndex) {
+    private boolean shouldScrollStart(final MotionEvent ev, final int pointerIndex) {
         // reject cases where the angle or slop condition is not met.
         if (Math.max(mDir.getActiveTouchSlop(ev, pointerIndex, mDownPos), mTouchSlop)
                 > Math.abs(mDisplacement)) {
@@ -207,11 +207,11 @@ public class SwipeDetector {
         }
 
         // Check if the client is interested in scroll in current direction.
-        return ((mScrollConditions & DIRECTION_NEGATIVE) > 0 && mDisplacement > 0) ||
-               ((mScrollConditions & DIRECTION_POSITIVE) > 0 && mDisplacement < 0);
+        return ((mScrollConditions & DIRECTION_NEGATIVE) > 0 && mDisplacement > 0)
+               || ((mScrollConditions & DIRECTION_POSITIVE) > 0 && mDisplacement < 0);
     }
 
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(final MotionEvent ev) {
         switch (ev.getActionMasked()) {
         case MotionEvent.ACTION_DOWN:
             mActivePointerId = ev.getPointerId(0);
@@ -273,7 +273,7 @@ public class SwipeDetector {
         setState(ScrollState.IDLE);
     }
 
-    private boolean reportDragStart(boolean recatch) {
+    private boolean reportDragStart(final boolean recatch) {
         mListener.onDragStart(!recatch);
         if (DBG) {
             Log.d(TAG, "onDragStart recatch:" + recatch);
@@ -327,7 +327,7 @@ public class SwipeDetector {
     /**
      * Computes the damped velocity.
      */
-    public float computeVelocity(float delta, long currentMillis) {
+    public float computeVelocity(final float delta, final long currentMillis) {
         long previousMillis = mCurrentMillis;
         mCurrentMillis = currentMillis;
 
@@ -345,18 +345,18 @@ public class SwipeDetector {
     /**
      * Returns a time-dependent dampening factor using delta time.
      */
-    private static float computeDampeningFactor(float deltaTime) {
+    private static float computeDampeningFactor(final float deltaTime) {
         return deltaTime / (SCROLL_VELOCITY_DAMPENING_RC + deltaTime);
     }
 
     /**
      * Returns the linear interpolation between two values
      */
-    public static float interpolate(float from, float to, float alpha) {
+    public static float interpolate(final float from, final float to, final float alpha) {
         return (1.0f - alpha) * from + alpha * to;
     }
 
-    public static long calculateDuration(float velocity, float progressNeeded) {
+    public static long calculateDuration(final float velocity, final float progressNeeded) {
         // TODO: make these values constants after tuning.
         float velocityDivisor = Math.max(2f, Math.abs(0.5f * velocity));
         float travelDistance = Math.max(0.2f, progressNeeded);

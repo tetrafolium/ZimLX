@@ -44,7 +44,7 @@ public class LauncherDbUtils {
      * the first row. The items in the first screen are moved and resized but the carry-forward
      * items are simply deleted.
      */
-    public static boolean prepareScreenZeroToHostQsb(Context context, SQLiteDatabase db) {
+    public static boolean prepareScreenZeroToHostQsb(final Context context, final SQLiteDatabase db) {
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             // Get the existing screens
             ArrayList<Long> screenIds = getScreenIdsFromCursor(db.query(WorkspaceScreens.TABLE_NAME,
@@ -86,7 +86,7 @@ public class LauncherDbUtils {
         }
     }
 
-    private static void renameScreen(SQLiteDatabase db, long oldScreen, long newScreen) {
+    private static void renameScreen(final SQLiteDatabase db, final long oldScreen, final long newScreen) {
         String[] whereParams = new String[] {Long.toString(oldScreen)};
 
         ContentValues values = new ContentValues();
@@ -101,7 +101,7 @@ public class LauncherDbUtils {
     /**
      * Parses the cursor containing workspace screens table and returns the list of screen IDs
      */
-    public static ArrayList<Long> getScreenIdsFromCursor(Cursor sc) {
+    public static ArrayList<Long> getScreenIdsFromCursor(final Cursor sc) {
         try {
             return iterateCursor(sc,
                                  sc.getColumnIndexOrThrow(WorkspaceScreens._ID),
@@ -111,7 +111,7 @@ public class LauncherDbUtils {
         }
     }
 
-    public static <T extends Collection<Long>> T iterateCursor(Cursor c, int columnIndex, T out) {
+    public static <T extends Collection<Long>> T iterateCursor(final Cursor c, final int columnIndex, final T out) {
         while (c.moveToNext()) {
             out.add(c.getLong(columnIndex));
         }
@@ -124,7 +124,7 @@ public class LauncherDbUtils {
     public static class SQLiteTransaction implements AutoCloseable {
         private final SQLiteDatabase mDb;
 
-        public SQLiteTransaction(SQLiteDatabase db) {
+        public SQLiteTransaction(final SQLiteDatabase db) {
             mDb = db;
             db.beginTransaction();
         }

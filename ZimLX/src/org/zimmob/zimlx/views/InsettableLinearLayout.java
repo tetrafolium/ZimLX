@@ -23,11 +23,11 @@ public class InsettableLinearLayout extends LinearLayout implements Insettable {
         return mInsets;
     }
 
-    public InsettableLinearLayout(Context context, AttributeSet attrs) {
+    public InsettableLinearLayout(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void setLinearLayoutChildInsets(View child, Rect newInsets, Rect oldInsets) {
+    public void setLinearLayoutChildInsets(final View child, final Rect newInsets, final Rect oldInsets) {
         final LayoutParams lp = (LayoutParams) child.getLayoutParams();
 
         int childIndex = indexOfChild(child);
@@ -48,7 +48,7 @@ public class InsettableLinearLayout extends LinearLayout implements Insettable {
     }
 
     @Override
-    public void setInsets(Rect insets) {
+    public void setInsets(final Rect insets) {
         if (getOrientation() != VERTICAL) {
             throw new IllegalStateException("Doesn't support horizontal orientation");
         }
@@ -62,7 +62,7 @@ public class InsettableLinearLayout extends LinearLayout implements Insettable {
     }
 
     @Override
-    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+    public LayoutParams generateLayoutParams(final AttributeSet attrs) {
         return new InsettableLinearLayout.LayoutParams(getContext(), attrs);
     }
 
@@ -73,19 +73,19 @@ public class InsettableLinearLayout extends LinearLayout implements Insettable {
 
     // Override to allow type-checking of LayoutParams.
     @Override
-    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+    protected boolean checkLayoutParams(final ViewGroup.LayoutParams p) {
         return p instanceof InsettableLinearLayout.LayoutParams;
     }
 
     @Override
-    protected LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+    protected LayoutParams generateLayoutParams(final ViewGroup.LayoutParams p) {
         return new LayoutParams(p);
     }
 
     public static class LayoutParams extends LinearLayout.LayoutParams {
         boolean ignoreInsets = false;
 
-        public LayoutParams(Context c, AttributeSet attrs) {
+        public LayoutParams(final Context c, final AttributeSet attrs) {
             super(c, attrs);
             TypedArray a = c.obtainStyledAttributes(attrs,
                                                     R.styleable.InsettableFrameLayout_Layout);
@@ -94,17 +94,17 @@ public class InsettableLinearLayout extends LinearLayout implements Insettable {
             a.recycle();
         }
 
-        public LayoutParams(int width, int height) {
+        public LayoutParams(final int width, final int height) {
             super(width, height);
         }
 
-        public LayoutParams(ViewGroup.LayoutParams lp) {
+        public LayoutParams(final ViewGroup.LayoutParams lp) {
             super(lp);
         }
     }
 
     @Override
-    public void onViewAdded(View child) {
+    public void onViewAdded(final View child) {
         super.onViewAdded(child);
         if (mInsetsSet) {
             throw new IllegalStateException("Cannot modify views after insets are set");
@@ -112,7 +112,7 @@ public class InsettableLinearLayout extends LinearLayout implements Insettable {
     }
 
     @Override
-    public void onViewRemoved(View child) {
+    public void onViewRemoved(final View child) {
         super.onViewRemoved(child);
         if (mInsetsSet) {
             throw new IllegalStateException("Cannot modify views after insets are set");

@@ -33,20 +33,20 @@ import java.util.List;
  */
 public class InstantAppResolver {
 
-    public static InstantAppResolver newInstance(Context context) {
+    public static InstantAppResolver newInstance(final Context context) {
         return Utilities.getOverrideObject(
                    InstantAppResolver.class, context, R.string.instant_app_resolver_class);
     }
 
-    public boolean isInstantApp(ApplicationInfo info) {
+    public boolean isInstantApp(final ApplicationInfo info) {
         return false;
     }
 
-    public boolean isInstantApp(AppInfo info) {
+    public boolean isInstantApp(final AppInfo info) {
         return false;
     }
 
-    public boolean isInstantApp(Context context, String packageName) {
+    public boolean isInstantApp(final Context context, final String packageName) {
         PackageManager packageManager = context.getPackageManager();
         try {
             return isInstantApp(packageManager.getPackageInfo(packageName, 0).applicationInfo);

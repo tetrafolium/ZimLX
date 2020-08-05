@@ -37,18 +37,18 @@ public class NotificationKeyData {
     public final String shortcutId;
     public int count;
 
-    private NotificationKeyData(String notificationKey, String shortcutId, int count) {
+    private NotificationKeyData(final String notificationKey, final String shortcutId, final int count) {
         this.notificationKey = notificationKey;
         this.shortcutId = shortcutId;
         this.count = Math.max(1, count);
     }
 
-    public static NotificationKeyData fromNotification(StatusBarNotification sbn) {
+    public static NotificationKeyData fromNotification(final StatusBarNotification sbn) {
         Notification notif = sbn.getNotification();
         return new NotificationKeyData(sbn.getKey(), Utilities.ATLEAST_OREO ? notif.getShortcutId() : null, notif.number);
     }
 
-    public static List<String> extractKeysOnly(@NonNull List<NotificationKeyData> notificationKeys) {
+    public static List<String> extractKeysOnly(final @NonNull List<NotificationKeyData> notificationKeys) {
         List<String> keysOnly = new ArrayList<>(notificationKeys.size());
         for (NotificationKeyData notificationKeyData : notificationKeys) {
             keysOnly.add(notificationKeyData.notificationKey);
@@ -57,7 +57,7 @@ public class NotificationKeyData {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (!(obj instanceof NotificationKeyData)) {
             return false;
         }

@@ -28,12 +28,12 @@ public class MultiValueAlpha {
     new Property<AlphaProperty, Float>(Float.TYPE, "value") {
 
         @Override
-        public Float get(AlphaProperty alphaProperty) {
+        public Float get(final AlphaProperty alphaProperty) {
             return alphaProperty.mValue;
         }
 
         @Override
-        public void set(AlphaProperty object, Float value) {
+        public void set(final AlphaProperty object, final Float value) {
             object.setValue(value);
         }
     };
@@ -43,7 +43,7 @@ public class MultiValueAlpha {
 
     private int mValidMask;
 
-    public MultiValueAlpha(View view, int size) {
+    public MultiValueAlpha(final View view, final int size) {
         mView = view;
         mMyProperties = new AlphaProperty[size];
 
@@ -55,7 +55,7 @@ public class MultiValueAlpha {
         }
     }
 
-    public AlphaProperty getProperty(int index) {
+    public AlphaProperty getProperty(final int index) {
         return mMyProperties[index];
     }
 
@@ -67,11 +67,11 @@ public class MultiValueAlpha {
         // Factor of all other alpha channels, only valid if mMyMask is present in mValidMask.
         private float mOthers = 1;
 
-        AlphaProperty(int myMask) {
+        AlphaProperty(final int myMask) {
             mMyMask = myMask;
         }
 
-        public void setValue(float value) {
+        public void setValue(final float value) {
             if (mValue == value) {
                 return;
             }
