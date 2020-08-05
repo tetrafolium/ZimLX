@@ -461,7 +461,7 @@ public void onDestroy() {
     ArrayList<DashItem> dashItems = new ArrayList<>();
     for (String action : prefs.getMinibarItems()) {
         //if (action.length() > 1) {
-        Log.d("Dash APP", "Loading Action lenght: " + action.length());
+        Log.d("Dash APP", "Loading Action length: " + action.length());
         DashItem item = null;
         if (action.length() == 2) {
             item = DashUtils.getDashItemFromString(action);

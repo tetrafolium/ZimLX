@@ -410,7 +410,7 @@ public void onDragStart(final DropTarget.DragObject dragObject,
 	// the workspace. We do not support accessibility drag from other sources
 	// and instead provide a direct action for move/add to homescreen. When a
 	// accessible drag is started by the folder, we only allow rearranging
-	// withing the folder.
+	// within the folder.
 	boolean addNewPage =
 		!(options.isAccessibleDrag && dragObject.dragSource != this);
 

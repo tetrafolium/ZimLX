@@ -248,7 +248,7 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
     }
 
     /**
-     * A ranked list with roll over to get/store currently relevant events and rank them by occurence
+     * A ranked list with roll over to get/store currently relevant events and rank them by occurrence
      */
     inner class CountRankedArrayPreference(private val prefs: SharedPreferences, private val key: String, private val maxSize: Int = -1, private val delimiter: String = ";") {
         private var list = load()

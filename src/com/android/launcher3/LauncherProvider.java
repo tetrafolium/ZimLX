@@ -659,7 +659,7 @@ public void onCreate(final SQLiteDatabase db) {
 }
 
 /**
- * Overriden in tests.
+ * Overridden in tests.
  */
 protected void onEmptyDbCreated() {
 	// Database was just created, so wipe any previous widgets

@@ -913,7 +913,7 @@ public void onDropCompleted(final View target, final DragObject d,
 	mItemAddedBackToSelfViaIcon = false;
 	mCurrentDragView = null;
 
-	// Reordering may have occured, and we need to save the new item locations.
+	// Reordering may have occurred, and we need to save the new item locations.
 	// We do this once at the end to prevent unnecessary database operations.
 	updateItemLocationsInDatabaseBatch();
 

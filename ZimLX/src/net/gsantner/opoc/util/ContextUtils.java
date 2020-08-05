@@ -226,7 +226,7 @@ public String getAppInstallationSource() {
 }
 
 /**
- * Send a {@link Intent#ACTION_VIEW} Intent with given paramter
+ * Send a {@link Intent#ACTION_VIEW} Intent with given parameter
  * If the parameter is an string a browser will get triggered
  */
 public void openWebpageInExternalBrowser(final String url) {

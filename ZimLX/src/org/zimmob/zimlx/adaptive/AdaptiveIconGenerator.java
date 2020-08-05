@@ -99,7 +99,7 @@ private void loop() {
 				return;
 			}
 			AdaptiveIconCompat aid = (AdaptiveIconCompat)icon;
-			// we still check this seperately as this is the only information we
+			// we still check this separately as this is the only information we
 			// need from the background
 			if (!ColorExtractor.isSingleColor(aid.getBackground(), Color.WHITE)) {
 				onExitLoop();

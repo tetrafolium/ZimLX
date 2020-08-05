@@ -613,7 +613,7 @@ public boolean addViewToCellLayout(final View child, final int index,
 			bubbleChild.setIconSize(mDockIconSize);
 			bubbleChild.setLineCount(mPrefs.getDockLabelRows());
 			bubbleChild.setTextSize(TypedValue.COMPLEX_UNIT_PX, mDockIconTextSize);
-			// TODO: seperate font selection for dock
+			// TODO: separate font selection for dock
 		}
 	}
 
@@ -1694,7 +1694,7 @@ private boolean addViewsToTempLocation(final ArrayList<View> views,
 	                boundingRect.height(), direction, mTmpOccupied.cells,
 	                blockOccupied.cells, mTempLocation);
 
-	// If we successfuly found a location by pushing the block of views, we
+	// If we successfully found a location by pushing the block of views, we
 	// commit it
 	if (mTempLocation[0] >= 0 && mTempLocation[1] >= 0) {
 		int deltaX = mTempLocation[0] - boundingRect.left;

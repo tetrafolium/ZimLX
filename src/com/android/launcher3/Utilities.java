@@ -603,7 +603,7 @@ public static <T> T getOverrideObject(final Class<T> clazz,
 		} catch (ClassNotFoundException | InstantiationException |
 		         IllegalAccessException | ClassCastException |
 		         NoSuchMethodException | InvocationTargetException e) {
-			Log.e(TAG, "Bad overriden class", e);
+			Log.e(TAG, "Bad overridden class", e);
 		}
 	}
 

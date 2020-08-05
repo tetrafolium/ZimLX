@@ -19,7 +19,7 @@ Flowerpot files are built as a line delimited list of rules. Except for metadata
 |     `$`    | Version          | Version tag (integer)               | Must be the first non-comment item, can only occur once |
 |     `:`    | IntentAction     | Intent action to filter by          |                                                         |
 |     `;`    | IntentCategory   | Intent category to filter by        | Tested in combination with the `MAIN` action            |
-|     `&`    | CodeRule         | Rule which has been defined in code | Accepts arguments seperated by `|`                      |
+|     `&`    | CodeRule         | Rule which has been defined in code | Accepts arguments separated by `|`                      |
 
 ### File names
 

@@ -117,7 +117,7 @@ protected GridSizeMigrationTask(final Context context,
 
 /**
  * Applied all the pending DB operations
- * @return true if any DB operation was commited.
+ * @return true if any DB operation was committed.
  */
 public boolean applyOperations() throws Exception {
 	// Update items

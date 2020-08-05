@@ -879,7 +879,7 @@ public boolean onInterceptTouchEvent(final MotionEvent ev) {
 			determineScrollingStart(ev);
 		}
 		// if mActivePointerId is INVALID_POINTER, then we must have missed an
-		// ACTION_DOWN event. in that case, treat the first occurence of a move
+		// ACTION_DOWN event. in that case, treat the first occurrence of a move
 		// event as a ACTION_DOWN i.e. fall through to the next case (don't break)
 		// (We sometimes miss ACTION_DOWN events in Workspace because it ignores
 		// all events while it's small- this was causing a crash before we checked
