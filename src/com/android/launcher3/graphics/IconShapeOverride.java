@@ -88,7 +88,7 @@ public class IconShapeOverride {
         // magic
         try {
             Resources override =
-                    new ResourcesOverride(Resources.getSystem(), getConfigResId(), path);
+                new ResourcesOverride(Resources.getSystem(), getConfigResId(), path);
             getSystemResField().set(null, override);
             int masks = getOverrideMasksResId();
             if (masks != 0) {
@@ -188,7 +188,7 @@ public class IconShapeOverride {
                 }
 
                 new LooperExecutor(LauncherModel.getWorkerLooper()).execute(
-                        new OverrideApplyHandler(mContext, newValue));
+                    new OverrideApplyHandler(mContext, newValue));
             }
             return false;
         }
@@ -214,7 +214,7 @@ public class IconShapeOverride {
 
             // Schedule restart
             ((ZimLauncher) LauncherAppState.getInstanceNoCreate().getLauncher())
-                    .scheduleRestart();
+            .scheduleRestart();
         }
     }
 }

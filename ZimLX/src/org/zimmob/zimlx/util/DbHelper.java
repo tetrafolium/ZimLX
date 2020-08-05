@@ -21,10 +21,10 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String COLUMN_PACKAGE_ID = "count_id";
 
     private static final String SQL_CREATE_COUNT =
-            "CREATE TABLE " + TABLE_APP_COUNT + " ("
-                    + COLUMN_PACKAGE_ID + " INTEGER PRIMARY KEY,"
-                    + COLUMN_PACKAGE_NAME + " VARCHAR, "
-                    + COLUMN_PACKAGE_COUNT + " INTEGER)";
+        "CREATE TABLE " + TABLE_APP_COUNT + " ("
+        + COLUMN_PACKAGE_ID + " INTEGER PRIMARY KEY,"
+        + COLUMN_PACKAGE_NAME + " VARCHAR, "
+        + COLUMN_PACKAGE_COUNT + " INTEGER)";
 
     private static final String SQL_DELETE = "DROP TABLE IF EXISTS ";
 

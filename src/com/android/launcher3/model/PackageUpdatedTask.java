@@ -99,72 +99,72 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         final HashSet<String> packageSet = new HashSet<>(Arrays.asList(packages));
         ItemInfoMatcher matcher = ItemInfoMatcher.ofPackages(packageSet, mUser);
         switch (mOp) {
-            case OP_ADD: {
-                ZimPreferences prefs = Utilities.getZimPrefs(context);
+        case OP_ADD: {
+            ZimPreferences prefs = Utilities.getZimPrefs(context);
 
-                for (int i = 0; i < N; i++) {
-                    if (DEBUG) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
-                    iconCache.updateIconsForPkg(packages[i], mUser);
-                    if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS) {
-                        appsList.removePackage(packages[i], Process.myUserHandle());
-                    }
-                    appsList.addPackage(context, packages[i], mUser);
+            for (int i = 0; i < N; i++) {
+                if (DEBUG) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
+                iconCache.updateIconsForPkg(packages[i], mUser);
+                if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS) {
+                    appsList.removePackage(packages[i], Process.myUserHandle());
+                }
+                appsList.addPackage(context, packages[i], mUser);
 
-                    if (Utilities.ATLEAST_OREO && prefs.getAutoAddInstalled() &&
-                            !ZimUtilsKt.workspaceContains(dataModel, packages[i])) {
-                        SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
-                    } else if (!Utilities.ATLEAST_OREO && !Process.myUserHandle().equals(mUser)) {
-                        // Automatically add homescreen icon for work profile apps for below O device.
-                        SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
-                    }
+                if (Utilities.ATLEAST_OREO && prefs.getAutoAddInstalled() &&
+                        !ZimUtilsKt.workspaceContains(dataModel, packages[i])) {
+                    SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
+                } else if (!Utilities.ATLEAST_OREO && !Process.myUserHandle().equals(mUser)) {
+                    // Automatically add homescreen icon for work profile apps for below O device.
+                    SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
                 }
-                flagOp = FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
-                break;
             }
-            case OP_UPDATE:
-                for (int i = 0; i < N; i++) {
-                    if (DEBUG) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
-                    iconCache.updateIconsForPkg(packages[i], mUser);
-                    appsList.updatePackage(context, packages[i], mUser);
-                    app.getWidgetCache().removePackage(packages[i], mUser);
-                }
-                // Since package was just updated, the target must be available now.
-                flagOp = FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
-                break;
-            case OP_REMOVE: {
-                for (int i = 0; i < N; i++) {
-                    iconCache.removeIconsForPkg(packages[i], mUser);
-                }
-                // Fall through
+            flagOp = FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
+            break;
+        }
+        case OP_UPDATE:
+            for (int i = 0; i < N; i++) {
+                if (DEBUG) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
+                iconCache.updateIconsForPkg(packages[i], mUser);
+                appsList.updatePackage(context, packages[i], mUser);
+                app.getWidgetCache().removePackage(packages[i], mUser);
             }
-            case OP_UNAVAILABLE:
-                for (int i = 0; i < N; i++) {
-                    if (DEBUG) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
-                    appsList.removePackage(packages[i], mUser);
-                    app.getWidgetCache().removePackage(packages[i], mUser);
-                }
-                flagOp = FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
-                break;
-            case OP_SUSPEND:
-            case OP_UNSUSPEND:
-                flagOp = mOp == OP_SUSPEND ?
-                        FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED) :
-                        FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED);
-                if (DEBUG) Log.d(TAG, "mAllAppsList.(un)suspend " + N);
-                appsList.updateDisabledFlags(matcher, flagOp);
-                break;
-            case OP_USER_AVAILABILITY_CHANGE:
-                flagOp = UserManagerCompat.getInstance(context).isQuietModeEnabled(mUser)
-                        ? FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_QUIET_USER)
-                        : FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_QUIET_USER);
-                // We want to update all packages for this user.
-                matcher = ItemInfoMatcher.ofUser(mUser);
-                appsList.updateDisabledFlags(matcher, flagOp);
-                break;
-            case OP_RELOAD:
-                if (DEBUG) Log.d(TAG, "mAllAppsList.reloadPackages");
-                appsList.reloadPackages(context, mUser);
-                break;
+            // Since package was just updated, the target must be available now.
+            flagOp = FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
+            break;
+        case OP_REMOVE: {
+            for (int i = 0; i < N; i++) {
+                iconCache.removeIconsForPkg(packages[i], mUser);
+            }
+            // Fall through
+        }
+        case OP_UNAVAILABLE:
+            for (int i = 0; i < N; i++) {
+                if (DEBUG) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
+                appsList.removePackage(packages[i], mUser);
+                app.getWidgetCache().removePackage(packages[i], mUser);
+            }
+            flagOp = FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
+            break;
+        case OP_SUSPEND:
+        case OP_UNSUSPEND:
+            flagOp = mOp == OP_SUSPEND ?
+                     FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED) :
+                     FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED);
+            if (DEBUG) Log.d(TAG, "mAllAppsList.(un)suspend " + N);
+            appsList.updateDisabledFlags(matcher, flagOp);
+            break;
+        case OP_USER_AVAILABILITY_CHANGE:
+            flagOp = UserManagerCompat.getInstance(context).isQuietModeEnabled(mUser)
+                     ? FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_QUIET_USER)
+                     : FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_QUIET_USER);
+            // We want to update all packages for this user.
+            matcher = ItemInfoMatcher.ofUser(mUser);
+            appsList.updateDisabledFlags(matcher, flagOp);
+            break;
+        case OP_RELOAD:
+            if (DEBUG) Log.d(TAG, "mAllAppsList.reloadPackages");
+            appsList.reloadPackages(context, mUser);
+            break;
         }
 
         final ArrayList<AppInfo> addedOrModified = new ArrayList<>();
@@ -227,9 +227,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                 boolean isTargetValid = true;
                                 if (si.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                                     List<ShortcutInfoCompat> shortcut = DeepShortcutManager
-                                            .getInstance(context).queryForPinnedShortcuts(
-                                                    cn.getPackageName(),
-                                                    Arrays.asList(si.getDeepShortcutId()), mUser);
+                                                                        .getInstance(context).queryForPinnedShortcuts(
+                                                                            cn.getPackageName(),
+                                                                            Arrays.asList(si.getDeepShortcutId()), mUser);
                                     if (shortcut.isEmpty()) {
                                         isTargetValid = false;
                                     } else {
@@ -238,7 +238,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                     }
                                 } else if (!cn.getClassName().equals(IconCache.EMPTY_CLASS_NAME)) {
                                     isTargetValid = LauncherAppsCompat.getInstance(context)
-                                            .isActivityEnabledForProfile(cn, mUser);
+                                                    .isActivityEnabledForProfile(cn, mUser);
                                 }
 
                                 if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
@@ -246,7 +246,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                     if (!isTargetValid) {
                                         // Try to find the best match activity.
                                         Intent intent = new PackageManagerHelper(context)
-                                                .getAppLaunchIntent(cn.getPackageName(), mUser);
+                                        .getAppLaunchIntent(cn.getPackageName(), mUser);
                                         if (intent != null) {
                                             cn = intent.getComponent();
                                             appInfo = addedOrUpdatedApps.get(cn);
@@ -264,7 +264,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                 } else if (!isTargetValid) {
                                     removedShortcuts.put(si.id, true);
                                     FileLog.e(TAG, "Restored shortcut no longer valid "
-                                            + si.intent);
+                                              + si.intent);
                                     continue;
                                 } else {
                                     si.status = ShortcutInfo.DEFAULT;
@@ -297,8 +297,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                 && widgetInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
                                 && packageSet.contains(widgetInfo.providerName.getPackageName())) {
                             widgetInfo.restoreStatus &=
-                                    ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY &
-                                            ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
+                                ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY &
+                                ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
 
                             // adding this flag ensures that launcher shows 'click to setup'
                             // if the widget has a config activity. In case there is no config
@@ -352,8 +352,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
 
         if (!removedPackages.isEmpty() || !removedComponents.isEmpty()) {
             ItemInfoMatcher removeMatch = ItemInfoMatcher.ofPackages(removedPackages, mUser)
-                    .or(ItemInfoMatcher.ofComponents(removedComponents, mUser))
-                    .and(ItemInfoMatcher.ofItemIds(removedShortcuts, true));
+                                          .or(ItemInfoMatcher.ofComponents(removedComponents, mUser))
+                                          .and(ItemInfoMatcher.ofItemIds(removedShortcuts, true));
             deleteAndBindComponentsRemoved(removeMatch);
 
             // Remove any queued items from the install queue

@@ -24,39 +24,39 @@ import androidx.annotation.RequiresApi;
 @RequiresApi(Build.VERSION_CODES.P)
 public class HiddenApiCompat {
 
-/*    public static boolean tryAccess() {
-        // TODO: is there a better way?
-        try {
-            //ThreadedRenderer.class.getMethod("setContextPriority", int.class);
-            return true;
-        } catch (NoSuchMethodException e) {
-            return false;
+    /*    public static boolean tryAccess() {
+            // TODO: is there a better way?
+            try {
+                //ThreadedRenderer.class.getMethod("setContextPriority", int.class);
+                return true;
+            } catch (NoSuchMethodException e) {
+                return false;
+            }
         }
-    }
 
-    public static boolean supportsMultiWindow(Context context) {
-        return ActivityManager.supportsMultiWindow(context);
-    }
+        public static boolean supportsMultiWindow(Context context) {
+            return ActivityManager.supportsMultiWindow(context);
+        }
 
-    public static boolean isResizeableMode(int mode) {
-        return ActivityInfo.isResizeableMode(mode);
-    }
+        public static boolean isResizeableMode(int mode) {
+            return ActivityInfo.isResizeableMode(mode);
+        }
 
-    public static ActivityOptions makePopupWindowOptions() {
-        ActivityOptions options = ActivityOptions.makeBasic();
-        options.setLaunchWindowingMode(WindowConfiguration.WINDOWING_MODE_FREEFORM);
-        return options;
-    }
+        public static ActivityOptions makePopupWindowOptions() {
+            ActivityOptions options = ActivityOptions.makeBasic();
+            options.setLaunchWindowingMode(WindowConfiguration.WINDOWING_MODE_FREEFORM);
+            return options;
+        }
 
-    public static boolean isInstantApp(ApplicationInfo applicationInfo) {
-        return applicationInfo.isInstantApp();
-    }
+        public static boolean isInstantApp(ApplicationInfo applicationInfo) {
+            return applicationInfo.isInstantApp();
+        }
 
-    public static int getIconResource(TaskDescription desc) {
-        return desc.getIconResource();
-    }
+        public static int getIconResource(TaskDescription desc) {
+            return desc.getIconResource();
+        }
 
-    public static Bitmap loadTaskDescriptionIcon(TaskDescription desc, int userId) {
-        return TaskDescription.loadTaskDescriptionIcon(desc.getIconFilename(), userId);
-    }*/
+        public static Bitmap loadTaskDescriptionIcon(TaskDescription desc, int userId) {
+            return TaskDescription.loadTaskDescriptionIcon(desc.getIconFilename(), userId);
+        }*/
 }

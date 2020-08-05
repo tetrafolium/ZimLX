@@ -137,9 +137,9 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     public void onAddToDatabase(ContentWriter writer) {
         super.onAddToDatabase(writer);
         writer.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId)
-                .put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString())
-                .put(LauncherSettings.Favorites.RESTORED, restoreStatus)
-                .put(LauncherSettings.Favorites.INTENT, bindOptions);
+        .put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString())
+        .put(LauncherSettings.Favorites.RESTORED, restoreStatus)
+        .put(LauncherSettings.Favorites.INTENT, bindOptions);
     }
 
     /**
@@ -160,7 +160,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
 
     public final boolean isWidgetIdAllocated() {
         return (restoreStatus & FLAG_ID_NOT_VALID) == 0 ||
-                (restoreStatus & FLAG_ID_ALLOCATED) == FLAG_ID_ALLOCATED;
+               (restoreStatus & FLAG_ID_ALLOCATED) == FLAG_ID_ALLOCATED;
     }
 
     public final boolean hasRestoreFlag(int flag) {

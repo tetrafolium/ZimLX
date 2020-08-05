@@ -98,7 +98,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
 
     private List<String> getSuggestions(String query) {
         SearchProvider provider = SearchProviderController.Companion
-                .getInstance(mContext).getSearchProvider();
+                                  .getInstance(mContext).getSearchProvider();
         if (provider instanceof WebSearchProvider) {
             return ((WebSearchProvider) provider).getSuggestions(query);
         }
@@ -156,7 +156,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
             lastType = thisType;
             thisType = nextType;
             nextType = i < (titleLength - 1) ?
-                    Character.getType(title.codePointAt(i + 1)) : Character.UNASSIGNED;
+                       Character.getType(title.codePointAt(i + 1)) : Character.UNASSIGNED;
             if (isBreak(thisType, lastType, nextType) &&
                     matcher.matches(query, title.substring(i, i + queryLength))) {
                 return true;
@@ -179,40 +179,40 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
      */
     private static boolean isBreak(int thisType, int prevType, int nextType) {
         switch (prevType) {
-            case Character.UNASSIGNED:
-            case Character.SPACE_SEPARATOR:
-            case Character.LINE_SEPARATOR:
-            case Character.PARAGRAPH_SEPARATOR:
-                return true;
+        case Character.UNASSIGNED:
+        case Character.SPACE_SEPARATOR:
+        case Character.LINE_SEPARATOR:
+        case Character.PARAGRAPH_SEPARATOR:
+            return true;
         }
         switch (thisType) {
-            case Character.UPPERCASE_LETTER:
-                if (nextType == Character.UPPERCASE_LETTER) {
-                    return true;
-                }
-                // Follow through
-            case Character.TITLECASE_LETTER:
-                // Break point if previous was not a upper case
-                return prevType != Character.UPPERCASE_LETTER;
-            case Character.LOWERCASE_LETTER:
-                // Break point if previous was not a letter.
-                return prevType > Character.OTHER_LETTER || prevType <= Character.UNASSIGNED;
-            case Character.DECIMAL_DIGIT_NUMBER:
-            case Character.LETTER_NUMBER:
-            case Character.OTHER_NUMBER:
-                // Break point if previous was not a number
-                return !(prevType == Character.DECIMAL_DIGIT_NUMBER
-                        || prevType == Character.LETTER_NUMBER
-                        || prevType == Character.OTHER_NUMBER);
-            case Character.MATH_SYMBOL:
-            case Character.CURRENCY_SYMBOL:
-            case Character.OTHER_PUNCTUATION:
-            case Character.DASH_PUNCTUATION:
-            case Character.OTHER_LETTER:
-                // Always a break point for a symbol
+        case Character.UPPERCASE_LETTER:
+            if (nextType == Character.UPPERCASE_LETTER) {
                 return true;
-            default:
-                return false;
+            }
+        // Follow through
+        case Character.TITLECASE_LETTER:
+            // Break point if previous was not a upper case
+            return prevType != Character.UPPERCASE_LETTER;
+        case Character.LOWERCASE_LETTER:
+            // Break point if previous was not a letter.
+            return prevType > Character.OTHER_LETTER || prevType <= Character.UNASSIGNED;
+        case Character.DECIMAL_DIGIT_NUMBER:
+        case Character.LETTER_NUMBER:
+        case Character.OTHER_NUMBER:
+            // Break point if previous was not a number
+            return !(prevType == Character.DECIMAL_DIGIT_NUMBER
+                     || prevType == Character.LETTER_NUMBER
+                     || prevType == Character.OTHER_NUMBER);
+        case Character.MATH_SYMBOL:
+        case Character.CURRENCY_SYMBOL:
+        case Character.OTHER_PUNCTUATION:
+        case Character.DASH_PUNCTUATION:
+        case Character.OTHER_LETTER:
+            // Always a break point for a symbol
+            return true;
+        default:
+            return false;
         }
     }
 
@@ -235,16 +235,16 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
          */
         public boolean matches(String query, String target) {
             switch (mCollator.compare(query, target)) {
-                case 0:
-                    return true;
-                case -1:
-                    // The target string can contain a modifier which would make it larger than
-                    // the query string (even though the length is same). If the query becomes
-                    // larger after appending a unicode character, it was originally a prefix of
-                    // the target string and hence should match.
-                    return mCollator.compare(query + MAX_UNICODE, target) > -1;
-                default:
-                    return false;
+            case 0:
+                return true;
+            case -1:
+                // The target string can contain a modifier which would make it larger than
+                // the query string (even though the length is same). If the query becomes
+                // larger after appending a unicode character, it was originally a prefix of
+                // the target string and hence should match.
+                return mCollator.compare(query + MAX_UNICODE, target) > -1;
+            default:
+                return false;
             }
         }
 

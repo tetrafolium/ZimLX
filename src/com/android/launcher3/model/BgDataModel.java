@@ -172,7 +172,7 @@ public class BgDataModel {
         LongArrayMap<DumpTargetWrapper> workspaces = new LongArrayMap<>();
         for (int i = 0; i < workspaceScreens.size(); i++) {
             workspaces.put(workspaceScreens.get(i),
-                    new DumpTargetWrapper(ContainerType.WORKSPACE, i));
+                           new DumpTargetWrapper(ContainerType.WORKSPACE, i));
         }
         DumpTargetWrapper dtw;
         // Add non leaf / non top nodes (L2)
@@ -253,40 +253,40 @@ public class BgDataModel {
     public synchronized void removeItem(Context context, Iterable<? extends ItemInfo> items) {
         for (ItemInfo item : items) {
             switch (item.itemType) {
-                case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                    folders.remove(item.id);
-                    if (FeatureFlags.IS_DOGFOOD_BUILD) {
-                        for (ItemInfo info : itemsIdMap) {
-                            if (info.container == item.id) {
-                                // We are deleting a folder which still contains items that
-                                // think they are contained by that folder.
-                                String msg = "deleting a folder (" + item + ") which still " +
-                                        "contains items (" + info + ")";
-                                Log.e(TAG, msg);
-                            }
+            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                folders.remove(item.id);
+                if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                    for (ItemInfo info : itemsIdMap) {
+                        if (info.container == item.id) {
+                            // We are deleting a folder which still contains items that
+                            // think they are contained by that folder.
+                            String msg = "deleting a folder (" + item + ") which still " +
+                                         "contains items (" + info + ")";
+                            Log.e(TAG, msg);
                         }
                     }
-                    workspaceItems.remove(item);
-                    break;
-                case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
-                    // Decrement pinned shortcut count
-                    ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
-                    MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
-                    if ((count == null || --count.value == 0)
-                            && !InstallShortcutReceiver.getPendingShortcuts(context)
-                            .contains(pinnedShortcut)) {
-                        DeepShortcutManager.getInstance(context).unpinShortcut(pinnedShortcut);
-                    }
-                    // Fall through.
                 }
-                case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                    workspaceItems.remove(item);
-                    break;
-                case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
-                    appWidgets.remove(item);
-                    break;
+                workspaceItems.remove(item);
+                break;
+            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
+                // Decrement pinned shortcut count
+                ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
+                MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
+                if ((count == null || --count.value == 0)
+                        && !InstallShortcutReceiver.getPendingShortcuts(context)
+                        .contains(pinnedShortcut)) {
+                    DeepShortcutManager.getInstance(context).unpinShortcut(pinnedShortcut);
+                }
+                // Fall through.
+            }
+            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                workspaceItems.remove(item);
+                break;
+            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+            case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
+                appWidgets.remove(item);
+                break;
             }
             itemsIdMap.remove(item.id);
         }
@@ -295,50 +295,50 @@ public class BgDataModel {
     public synchronized void addItem(Context context, ItemInfo item, boolean newItem) {
         itemsIdMap.put(item.id, item);
         switch (item.itemType) {
-            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                folders.put(item.id, (FolderInfo) item);
-                workspaceItems.add(item);
-                break;
-            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
-                // Increment the count for the given shortcut
-                ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
-                MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
-                if (count == null) {
-                    count = new MutableInt(1);
-                    pinnedShortcutCounts.put(pinnedShortcut, count);
-                } else {
-                    count.value++;
-                }
-
-                // Since this is a new item, pin the shortcut in the system server.
-                if (newItem && count.value == 1) {
-                    DeepShortcutManager.getInstance(context).pinShortcut(pinnedShortcut);
-                }
-                // Fall through
+        case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+            folders.put(item.id, (FolderInfo) item);
+            workspaceItems.add(item);
+            break;
+        case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
+            // Increment the count for the given shortcut
+            ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
+            MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
+            if (count == null) {
+                count = new MutableInt(1);
+                pinnedShortcutCounts.put(pinnedShortcut, count);
+            } else {
+                count.value++;
             }
-            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
-                        item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                    workspaceItems.add(item);
-                } else {
-                    if (newItem) {
-                        if (!folders.containsKey(item.container)) {
-                            // Adding an item to a folder that doesn't exist.
-                            String msg = "adding item: " + item + " to a folder that " +
-                                    " doesn't exist";
-                            Log.e(TAG, msg);
-                        }
-                    } else {
-                        findOrMakeFolder(item.container).add((ShortcutInfo) item, false);
-                    }
 
+            // Since this is a new item, pin the shortcut in the system server.
+            if (newItem && count.value == 1) {
+                DeepShortcutManager.getInstance(context).pinShortcut(pinnedShortcut);
+            }
+            // Fall through
+        }
+        case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
+                    item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                workspaceItems.add(item);
+            } else {
+                if (newItem) {
+                    if (!folders.containsKey(item.container)) {
+                        // Adding an item to a folder that doesn't exist.
+                        String msg = "adding item: " + item + " to a folder that " +
+                                     " doesn't exist";
+                        Log.e(TAG, msg);
+                    }
+                } else {
+                    findOrMakeFolder(item.container).add((ShortcutInfo) item, false);
                 }
-                break;
-            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-            case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
-                appWidgets.add((LauncherAppWidgetInfo) item);
-                break;
+
+            }
+            break;
+        case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+        case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
+            appWidgets.add((LauncherAppWidgetInfo) item);
+            break;
         }
     }
 
@@ -361,7 +361,7 @@ public class BgDataModel {
      * Clear all the deep shortcuts for the given package, and re-add the new shortcuts.
      */
     public synchronized void updateDeepShortcutMap(
-            String packageName, UserHandle user, List<ShortcutInfoCompat> shortcuts) {
+        String packageName, UserHandle user, List<ShortcutInfoCompat> shortcuts) {
         if (packageName != null) {
             Iterator<ComponentKey> keysIter = deepShortcutMap.keySet().iterator();
             while (keysIter.hasNext()) {
@@ -376,10 +376,10 @@ public class BgDataModel {
         // Now add the new shortcuts to the map.
         for (ShortcutInfoCompat shortcut : shortcuts) {
             boolean shouldShowInContainer = shortcut.isEnabled()
-                    && (shortcut.isDeclaredInManifest() || shortcut.isDynamic());
+                                            && (shortcut.isDeclaredInManifest() || shortcut.isDynamic());
             if (shouldShowInContainer) {
                 ComponentKey targetComponent
-                        = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
+                    = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
                 deepShortcutMap.addToList(targetComponent, shortcut.getId());
             }
         }

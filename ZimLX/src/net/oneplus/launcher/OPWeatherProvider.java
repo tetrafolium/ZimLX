@@ -43,7 +43,7 @@ public class OPWeatherProvider {
     private final String KEY_WEATHER_CODE = "weather_code";
     private final String KEY_WEATHER_NAME = "weather_description";
     private final Uri WEATHER_CONTENT_URI = Uri
-            .parse("content://com.oneplus.weather.ContentProvider/data");
+                                            .parse("content://com.oneplus.weather.ContentProvider/data");
     private ArrayList<IWeatherCallback> mCallbacks;
     private Context mContext;
     private WeatherObserver mObserver;
@@ -132,13 +132,13 @@ public class OPWeatherProvider {
 
         public String toString() {
             return "[timestamp] " + timestamp + "; "
-                    + "[cityName] " + cityName + "; "
-                    + "[weatherCode] " + weatherCode + "; "
-                    + "[weatherName] " + weatherName + "; "
-                    + "[temperature] " + temperature + "; "
-                    + "[temperatureHigh] " + temperatureHigh + "; "
-                    + "[temperatureLow] " + temperatureLow + "; "
-                    + "[temperatureUnit] " + temperatureUnit + "; ";
+                   + "[cityName] " + cityName + "; "
+                   + "[weatherCode] " + weatherCode + "; "
+                   + "[weatherName] " + weatherName + "; "
+                   + "[temperature] " + temperature + "; "
+                   + "[temperatureHigh] " + temperatureHigh + "; "
+                   + "[temperatureLow] " + temperatureLow + "; "
+                   + "[temperatureUnit] " + temperatureUnit + "; ";
         }
     }
 
@@ -169,13 +169,13 @@ public class OPWeatherProvider {
             weatherData.cityName = defaultSharedPreferences.getString(KEY_CITY_NAME, "");
             weatherData.weatherCode = defaultSharedPreferences.getInt(KEY_WEATHER_CODE, 9999);
             weatherData.weatherName = defaultSharedPreferences
-                    .getString(KEY_WEATHER_NAME, WEATHER_NAME_NONE);
+                                      .getString(KEY_WEATHER_NAME, WEATHER_NAME_NONE);
             weatherData.temperature = defaultSharedPreferences.getInt(KEY_TEMPERATURE, -99);
             weatherData.temperatureHigh = defaultSharedPreferences
-                    .getInt(KEY_TEMPERATURE_HIGH, -99);
+                                          .getInt(KEY_TEMPERATURE_HIGH, -99);
             weatherData.temperatureLow = defaultSharedPreferences.getInt(KEY_TEMPERATURE_LOW, -99);
             weatherData.temperatureUnit = defaultSharedPreferences
-                    .getString(KEY_TEMPERATURE_UNIT, TEMP_UNIT_CELSIUS);
+                                          .getString(KEY_TEMPERATURE_UNIT, TEMP_UNIT_CELSIUS);
             weatherData.icon = WEATHER_TYPE.getWeather(weatherData.weatherCode).icon;
             return weatherData;
         }
@@ -197,7 +197,7 @@ public class OPWeatherProvider {
 
     public void subscribeCallback(@NonNull IWeatherCallback iWeatherCallback) {
         Log.i(TAG,
-                "subscribe new weather callback: " + iWeatherCallback.getClass().getSimpleName());
+              "subscribe new weather callback: " + iWeatherCallback.getClass().getSimpleName());
         if (!isAppEnabled()) {
             Log.w(TAG, "the weather application is not installed, may not receive the updates");
         }
@@ -212,7 +212,7 @@ public class OPWeatherProvider {
     public void unsubscribeCallback(@NonNull IWeatherCallback iWeatherCallback) {
         if (mCallbacks.contains(iWeatherCallback)) {
             Log.i(TAG, "un-subscribe the weather callback: " + iWeatherCallback.getClass()
-                    .getSimpleName());
+                  .getSimpleName());
             mCallbacks.remove(iWeatherCallback);
             return;
         }
@@ -241,7 +241,7 @@ public class OPWeatherProvider {
             Log.d(str, stringBuilder.toString());
             try {
                 contentResolver
-                        .registerContentObserver(WEATHER_CONTENT_URI, true, mObserver);
+                .registerContentObserver(WEATHER_CONTENT_URI, true, mObserver);
                 mUiWorkerHandler.post(this::queryWeatherInformation);
             } catch (SecurityException e) {
                 Log.e(TAG, "register with Weather provider failed: ", e);
@@ -276,13 +276,13 @@ public class OPWeatherProvider {
 
     private boolean isAppEnabled() {
         return PackageManagerHelper
-                .isAppEnabled(mContext.getPackageManager(), WEATHER_PACKAGE_NAME, 0);
+               .isAppEnabled(mContext.getPackageManager(), WEATHER_PACKAGE_NAME, 0);
     }
 
     private void queryWeatherInformation() {
         if (isAppEnabled()) {
             processWeatherInformation(mContext.getContentResolver()
-                    .query(WEATHER_CONTENT_URI, null, null, null, null));
+                                      .query(WEATHER_CONTENT_URI, null, null, null, null));
         } else {
             Log.w(TAG, "the weather application is not installed, stop querying...");
         }
@@ -296,7 +296,7 @@ public class OPWeatherProvider {
             if (cursor.getColumnCount() < WEATHER_COLUMNS.values().length) {
                 Log.e(TAG, "the column count is not met the spec, contact OPWeather owner.");
                 String stringBuilder2 = "expected columns: " + WEATHER_COLUMNS.values().length
-                        + ", actual columns: " + cursor.getColumnCount();
+                                        + ", actual columns: " + cursor.getColumnCount();
                 Log.e(TAG, stringBuilder2);
             }
             WeatherData weatherData = new WeatherData();
@@ -311,15 +311,15 @@ public class OPWeatherProvider {
                 String string7 = cursor.getString(WEATHER_COLUMNS.TEMP_LOW.index);
                 String string8 = cursor.getString(WEATHER_COLUMNS.TEMP_UNIT.index);
                 Log.d(TAG, "[Raw Weather Data] timestamp: " + string2
-                        + ", city: " + string + ", code: " + string3 + ", name: " + string4
-                        + ", temp: " + string5 + ", high: " + string6 + ", low: " + string7
-                        + ", unit: " + string8);
+                      + ", city: " + string + ", code: " + string3 + ", name: " + string4
+                      + ", temp: " + string5 + ", high: " + string6 + ", low: " + string7
+                      + ", unit: " + string8);
                 weatherData.timestamp =
-                        new SimpleDateFormat("yyyyMMddkkmm", Locale.getDefault()).parse(string2)
-                                .getTime() / 1000;
+                    new SimpleDateFormat("yyyyMMddkkmm", Locale.getDefault()).parse(string2)
+                .getTime() / 1000;
                 weatherData.cityName = string;
                 weatherData.weatherCode = WEATHER_TYPE
-                        .getWeather(Integer.parseInt(string3)).weatherCode;
+                                          .getWeather(Integer.parseInt(string3)).weatherCode;
                 weatherData.weatherName = string4;
                 weatherData.temperature = Integer.parseInt(string5);
                 weatherData.temperatureHigh = Integer.parseInt(string6);
@@ -370,13 +370,13 @@ public class OPWeatherProvider {
 
     private void writePreferences(WeatherData weatherData) {
         PreferenceManager.getDefaultSharedPreferences(mContext).edit()
-                .putLong(KEY_TIMESTAMP, weatherData.timestamp)
-                .putString(KEY_CITY_NAME, weatherData.cityName)
-                .putInt(KEY_WEATHER_CODE, weatherData.weatherCode)
-                .putString(KEY_WEATHER_NAME, weatherData.weatherName)
-                .putInt(KEY_TEMPERATURE, weatherData.temperature)
-                .putInt(KEY_TEMPERATURE_HIGH, weatherData.temperatureHigh)
-                .putInt(KEY_TEMPERATURE_LOW, weatherData.temperatureLow)
-                .putString(KEY_TEMPERATURE_UNIT, weatherData.temperatureUnit).apply();
+        .putLong(KEY_TIMESTAMP, weatherData.timestamp)
+        .putString(KEY_CITY_NAME, weatherData.cityName)
+        .putInt(KEY_WEATHER_CODE, weatherData.weatherCode)
+        .putString(KEY_WEATHER_NAME, weatherData.weatherName)
+        .putInt(KEY_TEMPERATURE, weatherData.temperature)
+        .putInt(KEY_TEMPERATURE_HIGH, weatherData.temperatureHigh)
+        .putInt(KEY_TEMPERATURE_LOW, weatherData.temperatureLow)
+        .putString(KEY_TEMPERATURE_UNIT, weatherData.temperatureUnit).apply();
     }
 }

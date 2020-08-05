@@ -56,7 +56,7 @@ public class DrawableFactory {
         synchronized (LOCK) {
             if (sInstance == null) {
                 sInstance = Utilities.getOverrideObject(DrawableFactory.class,
-                        context.getApplicationContext(), R.string.drawable_factory_class);
+                                                        context.getApplicationContext(), R.string.drawable_factory_class);
             }
             return sInstance;
         }
@@ -100,7 +100,7 @@ public class DrawableFactory {
                 // Try to load the path from Mask Icon
                 Drawable icon = context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper);
                 icon.setBounds(0, 0,
-                        PreloadIconDrawable.PATH_SIZE, PreloadIconDrawable.PATH_SIZE);
+                               PreloadIconDrawable.PATH_SIZE, PreloadIconDrawable.PATH_SIZE);
                 return (Path) icon.getClass().getMethod("getIconMask").invoke(icon);
             } catch (Exception e) {
                 Log.e(TAG, "Error loading mask icon", e);
@@ -145,8 +145,8 @@ public class DrawableFactory {
         badgeBitmap = Bitmap.createBitmap(badgeSize, badgeSize, Bitmap.Config.ARGB_8888);
 
         Drawable drawable = context.getPackageManager().getUserBadgedDrawableForDensity(
-                new BitmapDrawable(res, badgeBitmap), user, new Rect(0, 0, badgeSize, badgeSize),
-                0);
+                                new BitmapDrawable(res, badgeBitmap), user, new Rect(0, 0, badgeSize, badgeSize),
+                                0);
         if (drawable instanceof BitmapDrawable) {
             badgeBitmap = ((BitmapDrawable) drawable).getBitmap();
         } else {

@@ -41,7 +41,7 @@ public class ComponentKeyMapper {
     T getItem(Map<ComponentKey, T> map) {
         return map.get(mComponentKey);
     }
-*/
+    */
     public String getPackage() {
         return mComponentKey.componentName.getPackageName();
     }

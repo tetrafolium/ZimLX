@@ -251,40 +251,40 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     private void sortApps(int sortType) {
         switch (sortType) {
-            //SORT BY NAME AZ
-            case SORT_AZ:
-                Collections.sort(mApps, mAppNameComparator);
-                break;
+        //SORT BY NAME AZ
+        case SORT_AZ:
+            Collections.sort(mApps, mAppNameComparator);
+            break;
 
-            //SORT BY NAME ZA
-            case SORT_ZA:
-                Collections.sort(mApps, (p2, p1) -> Collator
-                        .getInstance()
-                        .compare(p1.title, p2.title));
-                break;
+        //SORT BY NAME ZA
+        case SORT_ZA:
+            Collections.sort(mApps, (p2, p1) -> Collator
+                             .getInstance()
+                             .compare(p1.title, p2.title));
+            break;
 
-            //SORT BY LAST INSTALLED
-            case SORT_LAST_INSTALLED:
-                PackageManager pm = mLauncher.getApplicationContext().getPackageManager();
-                InstallTimeComparator installTimeComparator = new InstallTimeComparator(pm);
-                Collections.sort(mApps, installTimeComparator);
-                break;
+        //SORT BY LAST INSTALLED
+        case SORT_LAST_INSTALLED:
+            PackageManager pm = mLauncher.getApplicationContext().getPackageManager();
+            InstallTimeComparator installTimeComparator = new InstallTimeComparator(pm);
+            Collections.sort(mApps, installTimeComparator);
+            break;
 
-            //SORT BY MOST USED DESC
-            case SORT_MOST_USED:
-                DbHelper db = new DbHelper(mLauncher.getApplicationContext());
-                List<AppCountInfo> appsCounter = db.getAppsCount();
-                db.close();
-                MostUsedComparator mostUsedComparator = new MostUsedComparator(appsCounter);
-                Collections.sort(mApps, mostUsedComparator);
-                break;
+        //SORT BY MOST USED DESC
+        case SORT_MOST_USED:
+            DbHelper db = new DbHelper(mLauncher.getApplicationContext());
+            List<AppCountInfo> appsCounter = db.getAppsCount();
+            db.close();
+            MostUsedComparator mostUsedComparator = new MostUsedComparator(appsCounter);
+            Collections.sort(mApps, mostUsedComparator);
+            break;
 
-            case SORT_BY_COLOR:
-                Collections.sort(mApps, mAppColorComparator);
-                break;
-            default:
-                Collections.sort(mApps, mAppNameComparator);
-                break;
+        case SORT_BY_COLOR:
+            Collections.sort(mApps, mAppColorComparator);
+            break;
+        default:
+            Collections.sort(mApps, mAppNameComparator);
+            break;
 
         }
     }
@@ -391,8 +391,8 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         // coalesce sections
         Locale curLocale = mLauncher.getResources().getConfiguration().locale;
         boolean localeRequiresSectionSorting =
-                curLocale.getLanguage().equals(Locale.SIMPLIFIED_CHINESE.getLanguage()) &&
-                        curLocale.getCountry().equals(Locale.SIMPLIFIED_CHINESE.getCountry());
+            curLocale.getLanguage().equals(Locale.SIMPLIFIED_CHINESE.getLanguage()) &&
+            curLocale.getCountry().equals(Locale.SIMPLIFIED_CHINESE.getCountry());
         if (localeRequiresSectionSorting) {
             // Compute the section headers. We use a TreeMap with the section name comparator to
             // ensure that the sections are ordered when we iterate over it later
@@ -477,7 +477,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 info.setAppsStore(mAllAppsStore);
                 // Create an folder item
                 AdapterItem appItem = AdapterItem
-                        .asFolder(position++, sectionName, info, folderIndex++);
+                                      .asFolder(position++, sectionName, info, folderIndex++);
                 if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
                     lastFastScrollerSectionInfo.fastScrollToItem = appItem;
                 }
@@ -550,32 +550,32 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
             // Pre-calculate all the fast scroller fractions
             switch (mFastScrollDistributionMode) {
-                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION:
-                    float rowFraction = 1f / mNumAppRowsInAdapter;
-                    for (FastScrollSectionInfo info : mFastScrollerSections) {
-                        AdapterItem item = info.fastScrollToItem;
-                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
-                            info.touchFraction = 0f;
-                            continue;
-                        }
+            case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION:
+                float rowFraction = 1f / mNumAppRowsInAdapter;
+                for (FastScrollSectionInfo info : mFastScrollerSections) {
+                    AdapterItem item = info.fastScrollToItem;
+                    if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                        info.touchFraction = 0f;
+                        continue;
+                    }
 
-                        float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
-                        info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
+                    float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
+                    info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
+                }
+                break;
+            case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS:
+                float perSectionTouchFraction = 1f / mFastScrollerSections.size();
+                float cumulativeTouchFraction = 0f;
+                for (FastScrollSectionInfo info : mFastScrollerSections) {
+                    AdapterItem item = info.fastScrollToItem;
+                    if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                        info.touchFraction = 0f;
+                        continue;
                     }
-                    break;
-                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS:
-                    float perSectionTouchFraction = 1f / mFastScrollerSections.size();
-                    float cumulativeTouchFraction = 0f;
-                    for (FastScrollSectionInfo info : mFastScrollerSections) {
-                        AdapterItem item = info.fastScrollToItem;
-                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
-                            info.touchFraction = 0f;
-                            continue;
-                        }
-                        info.touchFraction = cumulativeTouchFraction;
-                        cumulativeTouchFraction += perSectionTouchFraction;
-                    }
-                    break;
+                    info.touchFraction = cumulativeTouchFraction;
+                    cumulativeTouchFraction += perSectionTouchFraction;
+                }
+                break;
             }
         }
 
@@ -587,9 +587,9 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     private boolean shouldShowWorkFooter() {
         return mIsWork && Utilities.ATLEAST_P &&
-                (DeepShortcutManager.getInstance(mLauncher).hasHostPermission()
-                        || Utilities
-                        .hasPermission(mLauncher, "android.permission.MODIFY_QUIET_MODE"));
+               (DeepShortcutManager.getInstance(mLauncher).hasHostPermission()
+                || Utilities
+                .hasPermission(mLauncher, "android.permission.MODIFY_QUIET_MODE"));
     }
 
     private List<AppInfo> getFiltersAppInfos() {
@@ -646,16 +646,16 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     private List<DrawerFolderInfo> getFolderInfos() {
         return Utilities.getZimPrefs(mLauncher)
-                .getAppGroupsManager()
-                .getDrawerFolders()
-                .getFolderInfos(this);
+               .getAppGroupsManager()
+               .getDrawerFolders()
+               .getFolderInfos(this);
     }
 
     private Set<ComponentKey> getFolderFilteredApps() {
         return Utilities.getZimPrefs(mLauncher)
-                .getAppGroupsManager()
-                .getDrawerFolders()
-                .getHiddenComponents();
+               .getAppGroupsManager()
+               .getDrawerFolders()
+               .getHiddenComponents();
     }
 
     public void reset() {

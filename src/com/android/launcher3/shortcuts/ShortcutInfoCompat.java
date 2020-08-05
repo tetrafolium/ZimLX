@@ -45,11 +45,11 @@ public class ShortcutInfoCompat {
     @TargetApi(Build.VERSION_CODES.N)
     public Intent makeIntent() {
         return new Intent(Intent.ACTION_MAIN)
-                .addCategory(INTENT_CATEGORY)
-                .setComponent(getActivity())
-                .setPackage(getPackage())
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-                .putExtra(EXTRA_SHORTCUT_ID, getId());
+               .addCategory(INTENT_CATEGORY)
+               .setComponent(getActivity())
+               .setPackage(getPackage())
+               .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+               .putExtra(EXTRA_SHORTCUT_ID, getId());
     }
 
     public ShortcutInfo getShortcutInfo() {

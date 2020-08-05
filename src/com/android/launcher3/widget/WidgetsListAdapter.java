@@ -82,7 +82,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         for (int i = rv.getChildCount() - 1; i >= 0; i--) {
             WidgetsRowViewHolder holder = (WidgetsRowViewHolder)
-                    rv.getChildViewHolder(rv.getChildAt(i));
+                                          rv.getChildViewHolder(rv.getChildAt(i));
             for (int j = holder.cellContainer.getChildCount() - 1; j >= 0; j--) {
                 View v = holder.cellContainer.getChildAt(j);
                 if (v instanceof WidgetCell) {
@@ -118,8 +118,8 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         ViewGroup row = holder.cellContainer;
         if (DEBUG) {
             Log.d(TAG, String.format(
-                    "onBindViewHolder [pos=%d, widget#=%d, row.getChildCount=%d]",
-                    pos, infoList.size(), row.getChildCount()));
+                      "onBindViewHolder [pos=%d, widget#=%d, row.getChildCount=%d]",
+                      pos, infoList.size(), row.getChildCount()));
         }
 
         // Add more views.
@@ -135,7 +135,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
                 } else {
                     // Add cell for even index
                     WidgetCell widget = (WidgetCell) mLayoutInflater.inflate(
-                            R.layout.widget_cell, row, false);
+                                            R.layout.widget_cell, row, false);
 
                     // set up touch.
                     widget.setOnClickListener(mIconClickListener);
@@ -173,7 +173,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         }
 
         ViewGroup container = (ViewGroup) mLayoutInflater.inflate(
-                R.layout.widgets_list_row_view, parent, false);
+                                  R.layout.widgets_list_row_view, parent, false);
 
         // if the end padding is 0, then container view (horizontal scroll view) doesn't respect
         // the end of the linear layout width + the start padding and doesn't allow scrolling.

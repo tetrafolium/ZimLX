@@ -37,7 +37,7 @@ import com.android.launcher3.anim.PropertySetter;
 import java.util.ArrayList;
 
 public class FloatingHeaderView extends LinearLayout implements
-        ValueAnimator.AnimatorUpdateListener {
+    ValueAnimator.AnimatorUpdateListener {
 
     private final Rect mClip = new Rect(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
     private final ValueAnimator mAnimator = ValueAnimator.ofInt(0, 0);

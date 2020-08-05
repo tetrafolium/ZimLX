@@ -88,11 +88,11 @@ public class PendingItemDragHelper extends DragPreviewProvider {
 
             if (mPreview != null) {
                 preview = LivePreviewWidgetCell.generateFromRemoteViews(launcher, mPreview,
-                        createWidgetInfo.info, maxWidth, previewSizeBeforeScale);
+                          createWidgetInfo.info, maxWidth, previewSizeBeforeScale);
             }
             if (preview == null) {
                 preview = app.getWidgetCache().generateWidgetPreview(
-                        launcher, createWidgetInfo.info, maxWidth, null, previewSizeBeforeScale);
+                              launcher, createWidgetInfo.info, maxWidth, null, previewSizeBeforeScale);
             }
 
             if (previewSizeBeforeScale[0] < previewBitmapWidth) {
@@ -126,7 +126,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             int iconSize = dp.iconSizePx;
 
             int padding = launcher.getResources()
-                    .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
+                          .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
             previewBounds.left += padding;
             previewBounds.top += padding;
 
@@ -134,7 +134,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             dragRegion.left = (mEstimatedCellSize[0] - iconSize) / 2;
             dragRegion.right = dragRegion.left + iconSize;
             dragRegion.top = (mEstimatedCellSize[1]
-                    - iconSize - dp.iconTextSizePx - dp.iconDrawablePaddingPx) / 2;
+                              - iconSize - dp.iconTextSizePx - dp.iconDrawablePaddingPx) / 2;
             dragRegion.bottom = dragRegion.top + iconSize;
         }
 
@@ -143,13 +143,13 @@ public class PendingItemDragHelper extends DragPreviewProvider {
         launcher.getWorkspace().prepareDragWithProvider(this);
 
         int dragLayerX = screenPos.x + previewBounds.left
-                + (int) ((scale * preview.getWidth() - preview.getWidth()) / 2);
+                         + (int) ((scale * preview.getWidth() - preview.getWidth()) / 2);
         int dragLayerY = screenPos.y + previewBounds.top
-                + (int) ((scale * preview.getHeight() - preview.getHeight()) / 2);
+                         + (int) ((scale * preview.getHeight() - preview.getHeight()) / 2);
 
         // Start the drag
         launcher.getDragController().startDrag(preview, dragLayerX, dragLayerY, source, mAddInfo,
-                dragOffset, dragRegion, scale, scale, options);
+                                               dragOffset, dragRegion, scale, scale, options);
     }
 
     @Override
@@ -164,7 +164,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
         Rect src = new Rect(0, 0, preview.getWidth(), preview.getHeight());
 
         float scaleFactor = Math.min((w - blurSizeOutline) / (float) preview.getWidth(),
-                (h - blurSizeOutline) / (float) preview.getHeight());
+                                     (h - blurSizeOutline) / (float) preview.getHeight());
         int scaledWidth = (int) (scaleFactor * preview.getWidth());
         int scaledHeight = (int) (scaleFactor * preview.getHeight());
         Rect dst = new Rect(0, 0, scaledWidth, scaledHeight);

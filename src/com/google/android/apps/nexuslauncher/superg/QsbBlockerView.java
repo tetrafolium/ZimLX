@@ -162,7 +162,7 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
         weatherIcon.setImageBitmap(weather.getIcon());
         TextView weatherTemperature = view.findViewById(R.id.weather_widget_temperature);
         weatherTemperature.setText(weather.getTitle(
-                Utilities.getZimPrefs(getContext()).getWeatherUnit()));
+                                       Utilities.getZimPrefs(getContext()).getWeatherUnit()));
     }
 
     @Override

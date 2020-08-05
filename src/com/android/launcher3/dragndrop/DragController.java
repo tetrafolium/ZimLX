@@ -169,11 +169,11 @@ public class DragController implements DragDriver.EventListener, TouchController
         mDragObject = new DropTarget.DragObject();
 
         mIsInPreDrag = mOptions.preDragCondition != null
-                && !mOptions.preDragCondition.shouldStartDrag(0);
+                       && !mOptions.preDragCondition.shouldStartDrag(0);
 
         final Resources res = mLauncher.getResources();
         final float scaleDps = mIsInPreDrag
-                ? res.getDimensionPixelSize(R.dimen.pre_drag_view_scale) : 0f;
+                               ? res.getDimensionPixelSize(R.dimen.pre_drag_view_scale) : 0f;
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
                 registrationY, initialDragViewScale, dragViewScaleOnDrop, scaleDps);
         dragView.setItemInfo(dragInfo);
@@ -314,7 +314,7 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     public void animateDragViewToOriginalPosition(final Runnable onComplete,
-                                                  final View originalIcon, int duration) {
+            final View originalIcon, int duration) {
         Runnable onCompleteRunnable = new Runnable() {
             @Override
             public void run() {
@@ -426,14 +426,14 @@ public class DragController implements DragDriver.EventListener, TouchController
         final int dragLayerY = dragLayerPos[1];
 
         switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                // Remember location of down touch
-                mMotionDownX = dragLayerX;
-                mMotionDownY = dragLayerY;
-                break;
-            case MotionEvent.ACTION_UP:
-                mLastTouchUpTime = System.currentTimeMillis();
-                break;
+        case MotionEvent.ACTION_DOWN:
+            // Remember location of down touch
+            mMotionDownX = dragLayerX;
+            mMotionDownY = dragLayerY;
+            break;
+        case MotionEvent.ACTION_UP:
+            mLastTouchUpTime = System.currentTimeMillis();
+            break;
         }
 
         return mDragDriver != null && mDragDriver.onInterceptTouchEvent(ev);
@@ -534,11 +534,11 @@ public class DragController implements DragDriver.EventListener, TouchController
         final int dragLayerY = dragLayerPos[1];
 
         switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                // Remember where the motion event started
-                mMotionDownX = dragLayerX;
-                mMotionDownY = dragLayerY;
-                break;
+        case MotionEvent.ACTION_DOWN:
+            // Remember where the motion event started
+            mMotionDownX = dragLayerX;
+            mMotionDownY = dragLayerY;
+            break;
         }
 
         return mDragDriver.onTouchEvent(ev);

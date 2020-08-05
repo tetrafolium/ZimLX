@@ -40,10 +40,10 @@ public class DynamicClock extends BroadcastReceiver {
         mContext = context;
         final Handler handler = new Handler(LauncherModel.getWorkerLooper());
         mContext.registerReceiver(this,
-                ActionIntentFilter.newInstance("com.google.android.deskclock",
-                        Intent.ACTION_PACKAGE_ADDED,
-                        Intent.ACTION_PACKAGE_CHANGED),
-                null, handler);
+                                  ActionIntentFilter.newInstance("com.google.android.deskclock",
+                                          Intent.ACTION_PACKAGE_ADDED,
+                                          Intent.ACTION_PACKAGE_CHANGED),
+                                  null, handler);
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -115,8 +115,8 @@ public class DynamicClock extends BroadcastReceiver {
 
     private void loadTimeZone(String timeZoneId) {
         TimeZone timeZone = timeZoneId == null ?
-                TimeZone.getDefault() :
-                TimeZone.getTimeZone(timeZoneId);
+                            TimeZone.getDefault() :
+                            TimeZone.getTimeZone(timeZoneId);
 
         for (AutoUpdateClock a : mUpdaters) {
             a.setTimeZone(timeZone);
@@ -128,8 +128,8 @@ public class DynamicClock extends BroadcastReceiver {
             @Override
             public void run() {
                 updateWrapper(getClockLayers(mContext,
-                        LauncherAppState.getIDP(mContext).fillResIconDpi,
-                        !FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION));
+                                             LauncherAppState.getIDP(mContext).fillResIconDpi,
+                                             !FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION));
             }
         });
     }

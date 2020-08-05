@@ -48,10 +48,10 @@ public class SmartspaceController implements Handler.Callback {
                 dd();
             }
         }, ActionIntentFilter.googleInstance(
-                Intent.ACTION_PACKAGE_ADDED,
-                Intent.ACTION_PACKAGE_CHANGED,
-                Intent.ACTION_PACKAGE_REMOVED,
-                Intent.ACTION_PACKAGE_DATA_CLEARED));
+            Intent.ACTION_PACKAGE_ADDED,
+            Intent.ACTION_PACKAGE_CHANGED,
+            Intent.ACTION_PACKAGE_REMOVED,
+            Intent.ACTION_PACKAGE_DATA_CLEARED));
     }
 
     public static SmartspaceController get(final Context context) {
@@ -63,8 +63,8 @@ public class SmartspaceController implements Handler.Callback {
 
     private Intent db() {
         return new Intent("com.google.android.apps.gsa.smartspace.SETTINGS")
-                .setPackage(FeedBridge.Companion.getInstance(mAppContext).resolveSmartspace())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+               .setPackage(FeedBridge.Companion.getInstance(mAppContext).resolveSmartspace())
+               .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
     private void dc() {
         final boolean cr = this.dQ.isWeatherAvailable();
@@ -76,8 +76,8 @@ public class SmartspaceController implements Handler.Callback {
         if (cs && !this.dQ.cS()) {
             this.df(null, SmartspaceController.Store.CURRENT);
             this.mAppContext.sendBroadcast(new Intent("com.google.android.apps.gsa.smartspace.EXPIRE_EVENT")
-                    .setPackage(FeedBridge.Companion.getInstance(mAppContext).resolveSmartspace())
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                           .setPackage(FeedBridge.Companion.getInstance(mAppContext).resolveSmartspace())
+                                           .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
     }
 
@@ -90,8 +90,8 @@ public class SmartspaceController implements Handler.Callback {
 
     private void de() {
         this.mAppContext.sendBroadcast(new Intent("com.google.android.apps.gsa.smartspace.ENABLE_UPDATE")
-                .setPackage(FeedBridge.Companion.getInstance(mAppContext).resolveSmartspace())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                       .setPackage(FeedBridge.Companion.getInstance(mAppContext).resolveSmartspace())
+                                       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     private void df(final NewCardInfo a, final SmartspaceController.Store SmartspaceControllerStore) {
@@ -148,40 +148,40 @@ public class SmartspaceController implements Handler.Callback {
     public boolean handleMessage(final Message message) {
         SmartspaceCard dVar = null;
         switch (message.what) {
-            case 1:
-                i data = new i();
-                SmartspaceCard weatherCard = this.dT.dv(SmartspaceController.Store.WEATHER.filename, data) ?
-                        SmartspaceCard.cD(this.mAppContext, data, true) :
-                        null;
+        case 1:
+            i data = new i();
+            SmartspaceCard weatherCard = this.dT.dv(SmartspaceController.Store.WEATHER.filename, data) ?
+                                         SmartspaceCard.cD(this.mAppContext, data, true) :
+                                         null;
 
-                data = new i();
-                SmartspaceCard eventCard = this.dT.dv(SmartspaceController.Store.CURRENT.filename, data) ?
-                        SmartspaceCard.cD(this.mAppContext, data, false) :
-                        null;
+            data = new i();
+            SmartspaceCard eventCard = this.dT.dv(SmartspaceController.Store.CURRENT.filename, data) ?
+                                       SmartspaceCard.cD(this.mAppContext, data, false) :
+                                       null;
 
-                Message.obtain(this.mUiHandler, 101, new SmartspaceCard[]{weatherCard, eventCard}).sendToTarget();
-                break;
-            case 2:
-                this.dT.dw(SmartspaceCard.cQ(this.mAppContext, (NewCardInfo) message.obj), SmartspaceController.Store.values()[message.arg1].filename);
-                Message.obtain(this.mUiHandler, 1).sendToTarget();
-                break;
-            case 101:
-                SmartspaceCard[] dVarArr = (SmartspaceCard[]) message.obj;
-                if (dVarArr != null) {
-                    this.dQ.dO = dVarArr.length > 0 ?
-                            dVarArr[0] :
-                            null;
+            Message.obtain(this.mUiHandler, 101, new SmartspaceCard[] {weatherCard, eventCard}).sendToTarget();
+            break;
+        case 2:
+            this.dT.dw(SmartspaceCard.cQ(this.mAppContext, (NewCardInfo) message.obj), SmartspaceController.Store.values()[message.arg1].filename);
+            Message.obtain(this.mUiHandler, 1).sendToTarget();
+            break;
+        case 101:
+            SmartspaceCard[] dVarArr = (SmartspaceCard[]) message.obj;
+            if (dVarArr != null) {
+                this.dQ.dO = dVarArr.length > 0 ?
+                             dVarArr[0] :
+                             null;
 
-                    SmartspaceDataContainer eVar = this.dQ;
-                    if (dVarArr.length > 1) {
-                        dVar = dVarArr[1];
-                    }
-
-                    eVar.dP = dVar;
+                SmartspaceDataContainer eVar = this.dQ;
+                if (dVarArr.length > 1) {
+                    dVar = dVarArr[1];
                 }
-                this.dQ.cU();
-                update();
-                break;
+
+                eVar.dP = dVar;
+            }
+            this.dQ.cU();
+            update();
+            break;
         }
         return true;
     }

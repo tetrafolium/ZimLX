@@ -54,8 +54,8 @@ import static com.android.launcher3.graphics.IconNormalizer.ICON_VISIBLE_AREA_FA
  * Layout to contain the All-apps search UI.
  */
 public class AppsSearchContainerLayout extends ExtendedEditText
-        implements SearchUiManager, AllAppsSearchBarController.Callbacks,
-        AllAppsStore.OnUpdateListener, Insettable {
+    implements SearchUiManager, AllAppsSearchBarController.Callbacks,
+    AllAppsStore.OnUpdateListener, Insettable {
 
 
     private final Launcher mLauncher;
@@ -95,7 +95,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         // and the icon.
         SpannableString spanned = new SpannableString("  " + getHint());
         spanned.setSpan(new TintedDrawableSpan(getContext(), R.drawable.ic_allapps_search),
-                0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                        0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         setHint(spanned);
     }
 
@@ -117,7 +117,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         DeviceProfile dp = mLauncher.getDeviceProfile();
         int myRequestedWidth = getSize(widthMeasureSpec);
         int rowWidth = myRequestedWidth - mAppsView.getActiveRecyclerView().getPaddingLeft()
-                - mAppsView.getActiveRecyclerView().getPaddingRight();
+                       - mAppsView.getActiveRecyclerView().getPaddingRight();
 
         int cellWidth = DeviceProfile.calculateCellWidth(rowWidth, dp.inv.numHotseatIcons);
         int iconVisibleSize = Math.round(ICON_VISIBLE_AREA_FACTOR * dp.iconSizePx);
@@ -145,7 +145,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         mApps = appsView.getApps();
         mAppsView = appsView;
         mSearchBarController.initialize(
-                new FuzzyAppSearchAlgorithm(getContext(), mApps.getApps()), this, mLauncher, this);
+            new FuzzyAppSearchAlgorithm(getContext(), mApps.getApps()), this, mLauncher, this);
     }
 
 
@@ -167,10 +167,10 @@ public class AppsSearchContainerLayout extends ExtendedEditText
                 event.getAction() == KeyEvent.ACTION_DOWN) {
             final int unicodeChar = event.getUnicodeChar();
             final boolean isKeyNotWhitespace = unicodeChar > 0 &&
-                    !Character.isWhitespace(unicodeChar) && !Character.isSpaceChar(unicodeChar);
+                                               !Character.isWhitespace(unicodeChar) && !Character.isSpaceChar(unicodeChar);
             if (isKeyNotWhitespace) {
                 boolean gotKey = TextKeyListener.getInstance().onKeyDown(this, mSearchQueryBuilder,
-                        event.getKeyCode(), event);
+                                 event.getKeyCode(), event);
                 if (gotKey && mSearchQueryBuilder.length() > 0) {
                     mSearchBarController.focusSearchField();
                 }
@@ -230,7 +230,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
             mLauncher.getAllAppsController().setScrollRangeDelta(0);
         } else {
             mLauncher.getAllAppsController().setScrollRangeDelta(
-                    insets.bottom + mlp.topMargin + mFixedTranslationY);
+                insets.bottom + mlp.topMargin + mFixedTranslationY);
         }
     }
 

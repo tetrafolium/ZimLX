@@ -60,7 +60,7 @@ import org.zimmob.zimlx.graphics.NinePatchDrawHelper;
 import static org.zimmob.zimlx.ZimUtilsKt.round;
 
 public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedPreferenceChangeListener,
-        OnClickListener, OnLongClickListener, Insettable, SearchProviderController.OnProviderChangeListener {
+    OnClickListener, OnLongClickListener, Insettable, SearchProviderController.OnProviderChangeListener {
     protected final static String GOOGLE_QSB = "com.google.android.googlequicksearchbox";
     private static final Rect CS = new Rect();
     protected final TextPaint CT;
@@ -365,7 +365,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
             TypedValue edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
             if (edgeRadius != null) {
                 pill = builder.createPill(i2, dC,
-                        edgeRadius.getDimension(getResources().getDisplayMetrics()));
+                                          edgeRadius.getDimension(getResources().getDisplayMetrics()));
             } else {
                 pill = builder.createPill(i2, dC);
             }
@@ -481,7 +481,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     protected float getCornerRadius() {
         return getCornerRadius(getContext(),
-                Utilities.pxFromDp(100, getResources().getDisplayMetrics()));
+                               Utilities.pxFromDp(100, getResources().getDisplayMetrics()));
     }
 
     public static float getCornerRadius(Context context, float defaultRadius) {
@@ -503,7 +503,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     public void onClick(View view) {
         SearchProviderController controller = SearchProviderController.Companion
-                .getInstance(mActivity);
+                                              .getInstance(mActivity);
         SearchProvider provider = controller.getSearchProvider();
         if (view == mMicIconView) {
             if (controller.isGoogle()) {
@@ -545,10 +545,10 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
         switch (str) {
-            case "opa_enabled":
-            case "opa_assistant":
-            case "pref_bubbleSearchStyle":
-                loadPreferences(sharedPreferences);
+        case "opa_enabled":
+        case "opa_assistant":
+        case "pref_bubbleSearchStyle":
+            loadPreferences(sharedPreferences);
         }
     }
 
@@ -617,7 +617,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     @Nullable
     protected String getClipboardText() {
         ClipboardManager clipboardManager = ContextCompat
-                .getSystemService(getContext(), ClipboardManager.class);
+                                            .getSystemService(getContext(), ClipboardManager.class);
         ClipData primaryClip = clipboardManager.getPrimaryClip();
         if (primaryClip != null) {
             for (int i = 0; i < primaryClip.getItemCount(); i++) {
@@ -645,8 +645,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     protected void fallbackSearch(String action) {
         try {
             getContext().startActivity(new Intent(action)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    .setPackage(GOOGLE_QSB));
+                                       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                       .setPackage(GOOGLE_QSB));
         } catch (ActivityNotFoundException e) {
             noGoogleAppSearch();
         }
@@ -657,6 +657,6 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     public boolean useTwoBubbles() {
         return mMicIconView.getVisibility() == View.VISIBLE && Utilities
-                .getZimPrefs(mActivity).getDualBubbleSearch();
+               .getZimPrefs(mActivity).getDualBubbleSearch();
     }
 }

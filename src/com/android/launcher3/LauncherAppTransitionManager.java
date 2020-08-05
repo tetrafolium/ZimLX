@@ -30,7 +30,7 @@ public class LauncherAppTransitionManager {
 
     public static LauncherAppTransitionManager newInstance(Context context) {
         return Utilities.getOverrideObject(LauncherAppTransitionManager.class,
-                context, R.string.app_transition_manager_class);
+                                           context, R.string.app_transition_manager_class);
     }
 
     public ActivityOptions getActivityLaunchOptions(Launcher launcher, View v) {

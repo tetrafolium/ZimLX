@@ -39,7 +39,7 @@ import com.android.launcher3.views.TopRoundedCornerView;
  * Popup for showing the full list of available widgets
  */
 public class WidgetsFullSheet extends BaseWidgetSheet
-        implements Insettable, ProviderChangedListener {
+    implements Insettable, ProviderChangedListener {
 
     private static final long DEFAULT_OPEN_DURATION = 267;
     private static final long FADE_IN_DURATION = 150;
@@ -55,8 +55,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         super(context, attrs, defStyleAttr);
         LauncherAppState apps = LauncherAppState.getInstance(context);
         mAdapter = new WidgetsListAdapter(context,
-                LayoutInflater.from(context), apps.getWidgetCache(), apps.getIconCache(),
-                this, this);
+                                          LayoutInflater.from(context), apps.getWidgetCache(), apps.getIconCache(),
+                                          this, this);
 
     }
 
@@ -82,7 +82,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     protected Pair<View, String> getAccessibilityTarget() {
         return Pair.create(mRecyclerView, getContext().getString(
-                mIsOpen ? R.string.widgets_list : R.string.widgets_list_closed));
+                               mIsOpen ? R.string.widgets_list : R.string.widgets_list_closed));
     }
 
     @Override
@@ -103,8 +103,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mInsets.set(insets);
 
         mRecyclerView.setPadding(
-                mRecyclerView.getPaddingLeft(), mRecyclerView.getPaddingTop(),
-                mRecyclerView.getPaddingRight(), insets.bottom);
+            mRecyclerView.getPaddingLeft(), mRecyclerView.getPaddingTop(),
+            mRecyclerView.getPaddingRight(), insets.bottom);
         if (insets.bottom > 0) {
             setupNavBarColor();
         } else {
@@ -123,14 +123,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         } else {
             Rect padding = mLauncher.getDeviceProfile().workspacePadding;
             widthUsed = Math.max(padding.left + padding.right,
-                    2 * (mInsets.left + mInsets.right));
+                                 2 * (mInsets.left + mInsets.right));
         }
 
         int heightUsed = mInsets.top + mLauncher.getDeviceProfile().edgeMarginPx;
         measureChildWithMargins(mContent, widthMeasureSpec,
-                widthUsed, heightMeasureSpec, heightUsed);
+                                widthUsed, heightMeasureSpec, heightUsed);
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
-                MeasureSpec.getSize(heightMeasureSpec));
+                             MeasureSpec.getSize(heightMeasureSpec));
     }
 
     @Override
@@ -142,7 +142,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         int contentWidth = mContent.getMeasuredWidth();
         int contentLeft = (width - contentWidth) / 2;
         mContent.layout(contentLeft, height - mContent.getMeasuredHeight(),
-                contentLeft + contentWidth, height);
+                        contentLeft + contentWidth, height);
 
         setTranslationShift(mTranslationShift);
     }
@@ -164,11 +164,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 setTranslationShift(VERTICAL_START_POSITION);
             }
             mOpenCloseAnimator.setValues(
-                    PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
+                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
             mOpenCloseAnimator
-                    .setDuration(DEFAULT_OPEN_DURATION)
-                    .setInterpolator(AnimationUtils.loadInterpolator(
-                            getContext(), android.R.interpolator.linear_out_slow_in));
+            .setDuration(DEFAULT_OPEN_DURATION)
+            .setInterpolator(AnimationUtils.loadInterpolator(
+                                 getContext(), android.R.interpolator.linear_out_slow_in));
             mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -217,7 +217,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     public static WidgetsFullSheet show(Launcher launcher, boolean animate) {
         WidgetsFullSheet sheet = (WidgetsFullSheet) launcher.getLayoutInflater()
-                .inflate(R.layout.widgets_full_sheet, launcher.getDragLayer(), false);
+                                 .inflate(R.layout.widgets_full_sheet, launcher.getDragLayer(), false);
         sheet.mIsOpen = true;
         launcher.getDragLayer().addView(sheet);
         sheet.open(animate);

@@ -98,19 +98,19 @@ import java.util.regex.Pattern;
 public final class Utilities {
 
     public static final boolean ATLEAST_P =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
     public static final boolean ATLEAST_OREO_MR1 =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1;
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1;
     public static final boolean ATLEAST_OREO =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     public static final boolean ATLEAST_NOUGAT_MR1 =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
     public static final boolean ATLEAST_NOUGAT =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
     public static final boolean ATLEAST_MARSHMALLOW =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     public static final boolean ATLEAST_LOLLIPOP_MR1 =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
 
 
     //public static boolean HIDDEN_APIS_ALLOWED = !ATLEAST_P || HiddenApiCompat.tryAccess();
@@ -129,7 +129,7 @@ public final class Utilities {
     public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
     private static final String TAG = "Launcher.Utilities";
     private static final Pattern sTrimPattern =
-            Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
+        Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
     private static final float[] sPoint = new float[2];
@@ -144,8 +144,8 @@ public final class Utilities {
      * An {@link Executor} to be used with async task with no limit on the queue size.
      */
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
-            CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
-            TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
+        TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
@@ -153,7 +153,7 @@ public final class Utilities {
 
     public static boolean isAllowRotationPrefEnabled(Context context) {
         return getPrefs(context).getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
-                getAllowRotationDefaultValue(context));
+                                            getAllowRotationDefaultValue(context));
     }
 
     public static boolean getAllowRotationDefaultValue(Context context) {
@@ -162,7 +162,7 @@ public final class Utilities {
             // is allowed of not.
             Resources res = context.getResources();
             int originalSmallestWidth = res.getConfiguration().smallestScreenWidthDp
-                    * res.getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEVICE_STABLE;
+                                        * res.getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEVICE_STABLE;
             return originalSmallestWidth >= 600;
         }
         return false;
@@ -182,7 +182,7 @@ public final class Utilities {
      * assumption fails, we will need to return a pair of scale factors.
      */
     public static float getDescendantCoordRelativeToAncestor(
-            View descendant, View ancestor, int[] coord, boolean includeRootScroll) {
+        View descendant, View ancestor, int[] coord, boolean includeRootScroll) {
         sPoint[0] = coord[0];
         sPoint[1] = coord[1];
 
@@ -239,7 +239,7 @@ public final class Utilities {
      */
     public static boolean pointInView(View v, float localX, float localY, float slop) {
         return localX >= -slop && localY >= -slop && localX < (v.getWidth() + slop) &&
-                localY < (v.getHeight() + slop);
+               localY < (v.getHeight() + slop);
     }
 
     public static int[] getCenterDeltaInScreenSpace(View v0, View v1) {
@@ -250,7 +250,7 @@ public final class Utilities {
         sLoc0[1] += (v0.getMeasuredHeight() * v0.getScaleY()) / 2;
         sLoc1[0] += (v1.getMeasuredWidth() * v1.getScaleX()) / 2;
         sLoc1[1] += (v1.getMeasuredHeight() * v1.getScaleY()) / 2;
-        return new int[]{sLoc1[0] - sLoc0[0], sLoc1[1] - sLoc0[1]};
+        return new int[] {sLoc1[0] - sLoc0[0], sLoc1[1] - sLoc0[1]};
     }
 
     public static void scaleRectFAboutCenter(RectF r, float scale) {
@@ -312,7 +312,7 @@ public final class Utilities {
             try {
                 PackageInfo info = pm.getPackageInfo(packageName, 0);
                 return (info != null) && (info.applicationInfo != null) &&
-                        ((info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
+                       ((info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
             } catch (NameNotFoundException e) {
                 return false;
             }
@@ -427,12 +427,12 @@ public final class Utilities {
 
     public static int pxFromDp(float size, DisplayMetrics metrics) {
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                size, metrics));
+                          size, metrics));
     }
 
     public static int pxFromSp(float size, DisplayMetrics metrics) {
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                size, metrics));
+                          size, metrics));
     }
 
     public static String createDbSelectionQuery(String columnName, Iterable<?> values) {
@@ -489,7 +489,7 @@ public final class Utilities {
     public static CharSequence wrapForTts(CharSequence msg, String ttsMsg) {
         SpannableString spanned = new SpannableString(msg);
         spanned.setSpan(new TtsSpan.TextBuilder(ttsMsg).build(),
-                0, spanned.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                        0, spanned.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return spanned;
     }
 
@@ -506,12 +506,12 @@ public final class Utilities {
 
     public static SharedPreferences getDevicePrefs(Context context) {
         return context.getSharedPreferences(
-                LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
+                   LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     public static SharedPreferences getReflectionPrefs(Context context) {
         return context.getSharedPreferences(
-                LauncherFiles.REFLECTION_PREFERENCES_KEY, Context.MODE_PRIVATE);
+                   LauncherFiles.REFLECTION_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     public static boolean isPowerSaverPreventingAnimation(Context context) {
@@ -528,7 +528,7 @@ public final class Utilities {
             try {
                 WallpaperManager wm = context.getSystemService(WallpaperManager.class);
                 return (Boolean) wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
-                        .invoke(wm);
+                       .invoke(wm);
             } catch (Exception e) {
             }
         }
@@ -556,7 +556,7 @@ public final class Utilities {
 
     public static boolean isBinderSizeError(Exception e) {
         return e.getCause() instanceof TransactionTooLargeException
-                || e.getCause() instanceof DeadObjectException;
+               || e.getCause() instanceof DeadObjectException;
     }
 
     public static <T> T getOverrideObject(Class<T> clazz, Context context, int resId) {
@@ -566,7 +566,7 @@ public final class Utilities {
                 Class<?> cls = Class.forName(className);
                 return (T) cls.getDeclaredConstructor(Context.class).newInstance(context);
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-                    | ClassCastException | NoSuchMethodException | InvocationTargetException e) {
+                         | ClassCastException | NoSuchMethodException | InvocationTargetException e) {
                 Log.e(TAG, "Bad overriden class", e);
             }
         }
@@ -667,7 +667,7 @@ public final class Utilities {
         if (prefs.getRestoreSuccess()) {
             prefs.setRestoreSuccess(false);
             context.startActivity(new Intent(context, RestoreBackupActivity.class)
-                    .putExtra(RestoreBackupActivity.EXTRA_SUCCESS, true));
+                                  .putExtra(RestoreBackupActivity.EXTRA_SUCCESS, true));
         }
     }
 
@@ -681,9 +681,9 @@ public final class Utilities {
         }
 
         Bitmap bitmap = Bitmap.createBitmap(
-                drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(),
-                Bitmap.Config.ARGB_8888);
+                            drawable.getIntrinsicWidth(),
+                            drawable.getIntrinsicHeight(),
+                            Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -701,9 +701,9 @@ public final class Utilities {
         }
 
         Bitmap bitmap = Bitmap.createBitmap(
-                drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(),
-                Bitmap.Config.ARGB_8888);
+                            drawable.getIntrinsicWidth(),
+                            drawable.getIntrinsicHeight(),
+                            Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -729,11 +729,11 @@ public final class Utilities {
 
     public static boolean hasPermission(Context context, String permission) {
         return ContextCompat.checkSelfPermission(context, permission)
-                == PackageManager.PERMISSION_GRANTED;
+               == PackageManager.PERMISSION_GRANTED;
     }
 
     public static void requestStoragePermission(Activity activity) {
-        ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, ZimLauncher.REQUEST_PERMISSION_STORAGE_ACCESS);
+        ActivityCompat.requestPermissions(activity, new String[] {android.Manifest.permission.READ_EXTERNAL_STORAGE}, ZimLauncher.REQUEST_PERMISSION_STORAGE_ACCESS);
     }
 
     public static void setupPirateLocale(Activity activity) {
@@ -779,7 +779,7 @@ public final class Utilities {
 
     public static Boolean isOnePlusStock() {
         return !TextUtils.isEmpty(getSystemProperty("ro.oxygen.version", "")) || !TextUtils
-                .isEmpty(getSystemProperty("ro.hydrogen.version", ""));
+               .isEmpty(getSystemProperty("ro.hydrogen.version", ""));
     }
 
     /**
@@ -953,11 +953,11 @@ public final class Utilities {
             AudioDeviceInfo[] devices = manager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
             for (AudioDeviceInfo device : devices) {
                 switch (device.getType()) {
-                    case AudioDeviceInfo.TYPE_BLUETOOTH_A2DP:
-                    case AudioDeviceInfo.TYPE_USB_HEADSET:
-                    case AudioDeviceInfo.TYPE_WIRED_HEADPHONES:
-                    case AudioDeviceInfo.TYPE_WIRED_HEADSET:
-                        return true;
+                case AudioDeviceInfo.TYPE_BLUETOOTH_A2DP:
+                case AudioDeviceInfo.TYPE_USB_HEADSET:
+                case AudioDeviceInfo.TYPE_WIRED_HEADPHONES:
+                case AudioDeviceInfo.TYPE_WIRED_HEADSET:
+                    return true;
                 }
             }
         }
@@ -967,7 +967,7 @@ public final class Utilities {
 
     public static Boolean isMiui() {
         return !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.code", "")) ||
-                !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.name", ""));
+               !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.name", ""));
     }
 
     private static final int SUGGESTIONS_DAY_START = 5;

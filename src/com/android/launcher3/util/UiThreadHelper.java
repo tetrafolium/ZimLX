@@ -37,7 +37,7 @@ public class UiThreadHelper {
     public static Looper getBackgroundLooper() {
         if (sHandlerThread == null) {
             sHandlerThread =
-                    new HandlerThread("UiThreadHelper", Process.THREAD_PRIORITY_FOREGROUND);
+                new HandlerThread("UiThreadHelper", Process.THREAD_PRIORITY_FOREGROUND);
             sHandlerThread.start();
         }
         return sHandlerThread.getLooper();
@@ -46,7 +46,7 @@ public class UiThreadHelper {
     private static Handler getHandler(Context context) {
         if (sHandler == null) {
             sHandler = new Handler(getBackgroundLooper(),
-                    new UiCallbacks(context.getApplicationContext()));
+                                   new UiCallbacks(context.getApplicationContext()));
         }
         return sHandler;
     }
@@ -66,9 +66,9 @@ public class UiThreadHelper {
         @Override
         public boolean handleMessage(Message message) {
             switch (message.what) {
-                case MSG_HIDE_KEYBOARD:
-                    mIMM.hideSoftInputFromWindow((IBinder) message.obj, 0);
-                    return true;
+            case MSG_HIDE_KEYBOARD:
+                mIMM.hideSoftInputFromWindow((IBinder) message.obj, 0);
+                return true;
             }
             return false;
         }

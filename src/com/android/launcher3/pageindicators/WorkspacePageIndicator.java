@@ -62,7 +62,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     private int mLineHeight;
 
     private static final Property<WorkspacePageIndicator, Integer> PAINT_ALPHA
-            = new Property<WorkspacePageIndicator, Integer>(Integer.class, "paint_alpha") {
+    = new Property<WorkspacePageIndicator, Integer>(Integer.class, "paint_alpha") {
         @Override
         public Integer get(WorkspacePageIndicator obj) {
             return obj.mLinePaint.getAlpha();
@@ -76,7 +76,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     };
 
     private static final Property<WorkspacePageIndicator, Float> NUM_PAGES
-            = new Property<WorkspacePageIndicator, Float>(Float.class, "num_pages") {
+    = new Property<WorkspacePageIndicator, Float>(Float.class, "num_pages") {
         @Override
         public Float get(WorkspacePageIndicator obj) {
             return obj.mNumPagesFloat;
@@ -90,7 +90,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     };
 
     private static final Property<WorkspacePageIndicator, Integer> TOTAL_SCROLL
-            = new Property<WorkspacePageIndicator, Integer>(Integer.class, "total_scroll") {
+    = new Property<WorkspacePageIndicator, Integer>(Integer.class, "total_scroll") {
         @Override
         public Integer get(WorkspacePageIndicator obj) {
             return obj.mTotalScroll;
@@ -132,7 +132,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     public void updateLineHeight() {
         boolean show = Utilities.getZimPrefs(getContext()).getDockShowPageIndicator();
         mLineHeight = !show ? 0 : getResources()
-                .getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
+                      .getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
     }
 
     @Override
@@ -149,7 +149,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         int lineRight = lineLeft + lineWidth;
 
         canvas.drawRoundRect(lineLeft, getHeight() / 2 - mLineHeight / 2, lineRight,
-                getHeight() / 2 + mLineHeight / 2, mLineHeight, mLineHeight, mLinePaint);
+                             getHeight() / 2 + mLineHeight / 2, mLineHeight, mLineHeight, mLinePaint);
     }
 
     @Override
@@ -186,7 +186,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     public void setMarkersCount(int numMarkers) {
         if (Float.compare(numMarkers, mNumPagesFloat) != 0) {
             setupAndRunAnimation(ObjectAnimator.ofFloat(this, NUM_PAGES, numMarkers),
-                    NUM_PAGES_ANIMATOR_INDEX);
+                                 NUM_PAGES_ANIMATOR_INDEX);
         } else {
             if (mAnimators[NUM_PAGES_ANIMATOR_INDEX] != null) {
                 mAnimators[NUM_PAGES_ANIMATOR_INDEX].cancel();
@@ -211,12 +211,12 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         }
         mToAlpha = alpha;
         setupAndRunAnimation(ObjectAnimator.ofInt(this, PAINT_ALPHA, alpha),
-                LINE_ALPHA_ANIMATOR_INDEX);
+                             LINE_ALPHA_ANIMATOR_INDEX);
     }
 
     private void animateToTotalScroll(int totalScroll) {
         setupAndRunAnimation(ObjectAnimator.ofInt(this, TOTAL_SCROLL, totalScroll),
-                TOTAL_SCROLL_ANIMATOR_INDEX);
+                             TOTAL_SCROLL_ANIMATOR_INDEX);
     }
 
     /**

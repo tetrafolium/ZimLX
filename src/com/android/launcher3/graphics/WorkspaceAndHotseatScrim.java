@@ -54,47 +54,47 @@ import static android.content.Intent.ACTION_USER_PRESENT;
  * View scrim which draws behind hotseat and workspace
  */
 public class WorkspaceAndHotseatScrim implements
-        View.OnAttachStateChangeListener, WallpaperColorInfo.OnChangeListener {
+    View.OnAttachStateChangeListener, WallpaperColorInfo.OnChangeListener {
 
     public static Property<WorkspaceAndHotseatScrim, Float> SCRIM_PROGRESS =
-            new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "scrimProgress") {
-                @Override
-                public Float get(WorkspaceAndHotseatScrim scrim) {
-                    return scrim.mScrimProgress;
-                }
+    new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "scrimProgress") {
+        @Override
+        public Float get(WorkspaceAndHotseatScrim scrim) {
+            return scrim.mScrimProgress;
+        }
 
-                @Override
-                public void set(WorkspaceAndHotseatScrim scrim, Float value) {
-                    scrim.setScrimProgress(value);
-                }
-            };
+        @Override
+        public void set(WorkspaceAndHotseatScrim scrim, Float value) {
+            scrim.setScrimProgress(value);
+        }
+    };
 
     public static Property<WorkspaceAndHotseatScrim, Float> SYSUI_PROGRESS =
-            new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "sysUiProgress") {
-                @Override
-                public Float get(WorkspaceAndHotseatScrim scrim) {
-                    return scrim.mSysUiProgress;
-                }
+    new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "sysUiProgress") {
+        @Override
+        public Float get(WorkspaceAndHotseatScrim scrim) {
+            return scrim.mSysUiProgress;
+        }
 
-                @Override
-                public void set(WorkspaceAndHotseatScrim scrim, Float value) {
-                    scrim.setSysUiProgress(value);
-                }
-            };
+        @Override
+        public void set(WorkspaceAndHotseatScrim scrim, Float value) {
+            scrim.setSysUiProgress(value);
+        }
+    };
 
     private static Property<WorkspaceAndHotseatScrim, Float> SYSUI_ANIM_MULTIPLIER =
-            new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "sysUiAnimMultiplier") {
-                @Override
-                public Float get(WorkspaceAndHotseatScrim scrim) {
-                    return scrim.mSysUiAnimMultiplier;
-                }
+    new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "sysUiAnimMultiplier") {
+        @Override
+        public Float get(WorkspaceAndHotseatScrim scrim) {
+            return scrim.mSysUiAnimMultiplier;
+        }
 
-                @Override
-                public void set(WorkspaceAndHotseatScrim scrim, Float value) {
-                    scrim.mSysUiAnimMultiplier = value;
-                    scrim.reapplySysUiAlpha();
-                }
-            };
+        @Override
+        public void set(WorkspaceAndHotseatScrim scrim, Float value) {
+            scrim.mSysUiAnimMultiplier = value;
+            scrim.reapplySysUiAlpha();
+        }
+    };
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -150,10 +150,10 @@ public class WorkspaceAndHotseatScrim implements
         mWallpaperColorInfo = WallpaperColorInfo.getInstance(mLauncher);
 
         mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_BITMAP_DP,
-                view.getResources().getDisplayMetrics());
+                                         view.getResources().getDisplayMetrics());
 
         mHasSysUiScrim = !ThemeManager.Companion.getInstance(mLauncher).getSupportsDarkText()
-                && Utilities.getZimPrefs(mLauncher).getShowTopShadow();
+                         && Utilities.getZimPrefs(mLauncher).getShowTopShadow();
         if (mHasSysUiScrim) {
             mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
             mBottomMask = createDitheredAlphaMask();
@@ -180,7 +180,7 @@ public class WorkspaceAndHotseatScrim implements
             if (currCellLayout != null && currCellLayout != mLauncher.getHotseat().getLayout()) {
                 // Cut a hole in the darkening scrim on the page that should be highlighted, if any.
                 mLauncher.getDragLayer()
-                        .getDescendantRectRelativeToSelf(currCellLayout, mHighlightRect);
+                .getDescendantRectRelativeToSelf(currCellLayout, mHighlightRect);
                 canvas.clipRect(mHighlightRect, Region.Op.DIFFERENCE);
             }
 
@@ -253,7 +253,7 @@ public class WorkspaceAndHotseatScrim implements
         // for super light wallpaper it needs to be darken for contrast to workspace
         // for dark wallpapers the text is white so darkening works as well
         mBottomMaskPaint.setColor(ColorUtils.compositeColors(DARK_SCRIM_COLOR,
-                wallpaperColorInfo.getMainColor()));
+                                  wallpaperColorInfo.getMainColor()));
         reapplySysUiAlpha();
         mFullScrimColor = wallpaperColorInfo.getMainColor();
         if (mScrimAlpha > 0) {
@@ -310,12 +310,13 @@ public class WorkspaceAndHotseatScrim implements
         Canvas c = new Canvas(dst);
         Paint paint = new Paint(Paint.DITHER_FLAG);
         LinearGradient lg = new LinearGradient(0, 0, 0, gradientHeight,
-                new int[]{
-                        0x00FFFFFF,
-                        ColorUtils.setAlphaComponent(Color.WHITE, (int) (0xFF * 0.95)),
-                        0xFFFFFFFF},
-                new float[]{0f, 0.8f, 1f},
-                Shader.TileMode.CLAMP);
+                                               new int[] {
+                                                   0x00FFFFFF,
+                                                   ColorUtils.setAlphaComponent(Color.WHITE, (int) (0xFF * 0.95)),
+                                                   0xFFFFFFFF
+                                               },
+                                               new float[] {0f, 0.8f, 1f},
+                                               Shader.TileMode.CLAMP);
         paint.setShader(lg);
         c.drawRect(0, 0, width, gradientHeight, paint);
         return dst;

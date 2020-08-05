@@ -99,7 +99,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mStateAnnouncer = DragViewStateAnnouncer.createFor(this);
 
         mBackgroundPadding = getResources()
-                .getDimensionPixelSize(R.dimen.resize_frame_background_padding);
+                             .getDimensionPixelSize(R.dimen.resize_frame_background_padding);
         mTouchTargetWidth = 2 * mBackgroundPadding;
     }
 
@@ -119,7 +119,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         DragLayer dl = launcher.getDragLayer();
         AppWidgetResizeFrame frame = (AppWidgetResizeFrame) launcher.getLayoutInflater()
-                .inflate(R.layout.app_widget_resize_frame, dl, false);
+                                     .inflate(R.layout.app_widget_resize_frame, dl, false);
         frame.setupForWidget(widget, cellLayout, dl);
         ((DragLayer.LayoutParams) frame.getLayoutParams()).customPosition = true;
 
@@ -133,7 +133,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mCellLayout = cellLayout;
         mWidgetView = widgetView;
         LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo)
-                widgetView.getAppWidgetInfo();
+                                             widgetView.getAppWidgetInfo();
         mResizeMode = info.resizeMode;
         mDragLayer = dragLayer;
 
@@ -141,7 +141,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mMinVSpan = info.minSpanY;
 
         mWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(getContext(),
-                widgetView.getAppWidgetInfo().provider, null);
+                         widgetView.getAppWidgetInfo().provider, null);
 
         if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {
             mDragHandles[INDEX_TOP].setVisibility(GONE);
@@ -167,10 +167,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mRightBorderActive = (x > getWidth() - mTouchTargetWidth) && horizontalActive;
         mTopBorderActive = (y < mTouchTargetWidth + mTopTouchRegionAdjustment) && verticalActive;
         mBottomBorderActive = (y > getHeight() - mTouchTargetWidth + mBottomTouchRegionAdjustment)
-                && verticalActive;
+                              && verticalActive;
 
         boolean anyBordersActive = mLeftBorderActive || mRightBorderActive
-                || mTopBorderActive || mBottomBorderActive;
+                                   || mTopBorderActive || mBottomBorderActive;
 
         if (anyBordersActive) {
             mDragHandles[INDEX_LEFT].setAlpha(mLeftBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
@@ -269,7 +269,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         // expandability.
         mTempRange1.set(cellX, spanX + cellX);
         int hSpanDelta = mTempRange1.applyDeltaAndBound(mLeftBorderActive, mRightBorderActive,
-                hSpanInc, mMinHSpan, mCellLayout.getCountX(), mTempRange2);
+                         hSpanInc, mMinHSpan, mCellLayout.getCountX(), mTempRange2);
         cellX = mTempRange2.start;
         spanX = mTempRange2.size();
         if (hSpanDelta != 0) {
@@ -278,7 +278,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         mTempRange1.set(cellY, spanY + cellY);
         int vSpanDelta = mTempRange1.applyDeltaAndBound(mTopBorderActive, mBottomBorderActive,
-                vSpanInc, mMinVSpan, mCellLayout.getCountY(), mTempRange2);
+                         vSpanInc, mMinVSpan, mCellLayout.getCountY(), mTempRange2);
         cellY = mTempRange2.start;
         spanY = mTempRange2.size();
         if (vSpanDelta != 0) {
@@ -298,10 +298,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         }
 
         if (mCellLayout.createAreaForResize(cellX, cellY, spanX, spanY, mWidgetView,
-                mDirectionVector, onDismiss)) {
+                                            mDirectionVector, onDismiss)) {
             if (mStateAnnouncer != null && (lp.cellHSpan != spanX || lp.cellVSpan != spanY)) {
                 mStateAnnouncer.announce(
-                        mLauncher.getString(R.string.widget_resized, spanX, spanY));
+                    mLauncher.getString(R.string.widget_resized, spanX, spanY));
             }
 
             lp.tmpCellX = cellX;
@@ -322,7 +322,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                                        int spanX, int spanY) {
         getWidgetSizeRanges(launcher, spanX, spanY, sTmpRect);
         widgetView.updateAppWidgetSize(null, sTmpRect.left, sTmpRect.top,
-                sTmpRect.right, sTmpRect.bottom);
+                                       sTmpRect.right, sTmpRect.bottom);
     }
 
     public static Rect getWidgetSizeRanges(Context context, int spanX, int spanY, Rect rect) {
@@ -386,9 +386,9 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mDragLayer.getViewRectRelativeToSelf(mWidgetView, out);
 
         int width = 2 * mBackgroundPadding
-                + (int) (scale * (out.width() - mWidgetPadding.left - mWidgetPadding.right));
+                    + (int) (scale * (out.width() - mWidgetPadding.left - mWidgetPadding.right));
         int height = 2 * mBackgroundPadding
-                + (int) (scale * (out.height() - mWidgetPadding.top - mWidgetPadding.bottom));
+                     + (int) (scale * (out.height() - mWidgetPadding.top - mWidgetPadding.bottom));
 
         int x = (int) (out.left - mBackgroundPadding + scale * mWidgetPadding.left);
         int y = (int) (out.top - mBackgroundPadding + scale * mWidgetPadding.top);
@@ -435,11 +435,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         } else {
             PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", lp.width, newWidth);
             PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", lp.height,
-                    newHeight);
+                                          newHeight);
             PropertyValuesHolder x = PropertyValuesHolder.ofInt("x", lp.x, newX);
             PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", lp.y, newY);
             ObjectAnimator oa =
-                    LauncherAnimUtils.ofPropertyValuesHolder(lp, this, width, height, x, y);
+                LauncherAnimUtils.ofPropertyValuesHolder(lp, this, width, height, x, y);
             oa.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     requestLayout();
@@ -493,17 +493,17 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         int y = (int) ev.getY();
 
         switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                return handleTouchDown(ev);
-            case MotionEvent.ACTION_MOVE:
-                visualizeResizeForDelta(x - mXDown, y - mYDown);
-                break;
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                visualizeResizeForDelta(x - mXDown, y - mYDown);
-                onTouchUp();
-                mXDown = mYDown = 0;
-                break;
+        case MotionEvent.ACTION_DOWN:
+            return handleTouchDown(ev);
+        case MotionEvent.ACTION_MOVE:
+            visualizeResizeForDelta(x - mXDown, y - mYDown);
+            break;
+        case MotionEvent.ACTION_CANCEL:
+        case MotionEvent.ACTION_UP:
+            visualizeResizeForDelta(x - mXDown, y - mYDown);
+            onTouchUp();
+            mXDown = mYDown = 0;
+            break;
         }
         return true;
     }

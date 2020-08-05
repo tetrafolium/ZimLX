@@ -68,7 +68,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
         mActivityMonitor.startLauncher();
 
         final LauncherAppWidgetProviderInfo widgetInfo =
-                findWidgetProvider(false /* hasConfigureScreen */);
+            findWidgetProvider(false /* hasConfigureScreen */);
 
         // Open widget tray and wait for load complete.
         final UiObject2 widgetContainer = openWidgetsTray();
@@ -76,14 +76,14 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
 
         // Drag widget to homescreen
         UiObject2 widget = scrollAndFind(widgetContainer, By.clazz(WidgetCell.class)
-                .hasDescendant(By.text(widgetInfo.getLabel(mTargetContext.getPackageManager()))));
+                                         .hasDescendant(By.text(widgetInfo.getLabel(mTargetContext.getPackageManager()))));
         dragToWorkspace(widget, false);
 
         assertTrue(mActivityMonitor.itemExists(new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View view) {
                 return info instanceof LauncherAppWidgetInfo &&
-                        ((LauncherAppWidgetInfo) info).providerName.equals(widgetInfo.provider);
+                       ((LauncherAppWidgetInfo) info).providerName.equals(widgetInfo.provider);
             }
         }).call());
     }

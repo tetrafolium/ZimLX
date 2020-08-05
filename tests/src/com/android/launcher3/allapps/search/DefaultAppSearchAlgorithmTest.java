@@ -34,7 +34,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class DefaultAppSearchAlgorithmTest {
     private static final DefaultAppSearchAlgorithm.StringMatcher MATCHER =
-            DefaultAppSearchAlgorithm.StringMatcher.getInstance();
+        DefaultAppSearchAlgorithm.StringMatcher.getInstance();
 
     @Test
     public void testMatches() {

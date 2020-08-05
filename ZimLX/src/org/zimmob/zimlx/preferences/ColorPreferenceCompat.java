@@ -72,10 +72,10 @@ public class ColorPreferenceCompat extends Preference implements ColorPickerDial
         }
         if (colorShape == ColorShape.CIRCLE) {
             setWidgetLayoutResource(
-                    previewSize == SIZE_LARGE ? R.layout.cpv_preference_circle_large : R.layout.cpv_preference_circle);
+                previewSize == SIZE_LARGE ? R.layout.cpv_preference_circle_large : R.layout.cpv_preference_circle);
         } else {
             setWidgetLayoutResource(
-                    previewSize == SIZE_LARGE ? R.layout.cpv_preference_square_large : R.layout.cpv_preference_square
+                previewSize == SIZE_LARGE ? R.layout.cpv_preference_square_large : R.layout.cpv_preference_square
             );
         }
         a.recycle();
@@ -83,16 +83,16 @@ public class ColorPreferenceCompat extends Preference implements ColorPickerDial
 
     public ColorPickerDialog getDialog() {
         return ColorPickerDialog.newBuilder()
-                .setDialogType(dialogType)
-                .setDialogTitle(dialogTitle)
-                .setColorShape(colorShape)
-                .setPresets(presets)
-                .setAllowPresets(allowPresets)
-                .setAllowCustom(allowCustom)
-                .setShowAlphaSlider(showAlphaSlider)
-                .setShowColorShades(showColorShades)
-                .setColor(color)
-                .create();
+               .setDialogType(dialogType)
+               .setDialogTitle(dialogTitle)
+               .setColorShape(colorShape)
+               .setPresets(presets)
+               .setAllowPresets(allowPresets)
+               .setAllowCustom(allowCustom)
+               .setShowAlphaSlider(showAlphaSlider)
+               .setShowColorShades(showColorShades)
+               .setColor(color)
+               .create();
     }
 
     @Override

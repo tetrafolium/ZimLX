@@ -83,10 +83,10 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     public PopupDataProvider(Launcher launcher) {
         mLauncher = launcher;
-        mSystemShortcuts = new SystemShortcut[]{
-                new SystemShortcut.AppInfo(),
-                new SystemShortcut.Widgets(),
-                new SystemShortcut.Install()
+        mSystemShortcuts = new SystemShortcut[] {
+            new SystemShortcut.AppInfo(),
+            new SystemShortcut.Widgets(),
+            new SystemShortcut.Install()
         };
     }
 
@@ -106,8 +106,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             }
         } else {
             badgeShouldBeRefreshed = shouldBeFilteredOut
-                    ? badgeInfo.removeNotificationKey(notificationKey)
-                    : badgeInfo.addOrUpdateNotificationKey(notificationKey);
+                                     ? badgeInfo.removeNotificationKey(notificationKey)
+                                     : badgeInfo.addOrUpdateNotificationKey(notificationKey);
             if (badgeInfo.getNotificationKeys().size() == 0) {
                 mPackageUserToBadgeInfos.remove(postedPackageUserKey);
             }
@@ -144,7 +144,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                 mPackageUserToBadgeInfos.put(packageUserKey, badgeInfo);
             }
             badgeInfo.addOrUpdateNotificationKey(NotificationKeyData
-                    .fromNotification(notification));
+                                                 .fromNotification(notification));
         }
 
         // Add and remove from updatedBadges so it contains the PackageUserKeys of updated badges.
@@ -221,10 +221,10 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
      */
     public @NonNull
     List<StatusBarNotification> getStatusBarNotificationsForKeys(
-            List<NotificationKeyData> notificationKeys) {
+        List<NotificationKeyData> notificationKeys) {
         NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
         return notificationListener == null ? Collections.EMPTY_LIST
-                : notificationListener.getNotificationsForKeys(notificationKeys);
+               : notificationListener.getNotificationsForKeys(notificationKeys);
     }
 
     public @NonNull

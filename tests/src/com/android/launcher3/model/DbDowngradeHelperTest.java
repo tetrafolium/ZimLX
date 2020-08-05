@@ -66,7 +66,7 @@ public class DbDowngradeHelperTest {
     public void testUpdateSchemaFile() throws Exception {
         Context myContext = InstrumentationRegistry.getContext();
         int testResId = myContext.getResources().getIdentifier(
-                "db_schema_v10", "raw", myContext.getPackageName());
+                            "db_schema_v10", "raw", myContext.getPackageName());
         mSchemaFile.delete();
         assertFalse(mSchemaFile.exists());
 
@@ -107,7 +107,7 @@ public class DbDowngradeHelperTest {
 
         // Check column does not exist
         try (Cursor c = helper.getWritableDatabase().query(Favorites.TABLE_NAME,
-                null, null, null, null, null, null)) {
+                            null, null, null, null, null, null)) {
             assertEquals(-1, c.getColumnIndex(Favorites.OPTIONS));
 
             // Check data is present
@@ -123,7 +123,7 @@ public class DbDowngradeHelperTest {
         assertEquals(LauncherProvider.SCHEMA_VERSION, helper.getWritableDatabase().getVersion());
 
         try (Cursor c = helper.getWritableDatabase().query(Favorites.TABLE_NAME,
-                null, null, null, null, null, null)) {
+                            null, null, null, null, null, null)) {
             // Check column exists
             assertNotSame(-1, c.getColumnIndex(Favorites.OPTIONS));
 
@@ -146,7 +146,7 @@ public class DbDowngradeHelperTest {
         mDbFile.delete();
 
         DbDowngradeHelper.updateSchemaFile(mSchemaFile, LauncherProvider.SCHEMA_VERSION, mContext,
-                R.raw.downgrade_schema);
+                                           R.raw.downgrade_schema);
 
         DatabaseHelper dbHelper = new DatabaseHelper(mContext, null, DB_FILE) {
             @Override

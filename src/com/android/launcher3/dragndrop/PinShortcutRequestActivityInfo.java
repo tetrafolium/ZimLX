@@ -53,7 +53,7 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
 
     public PinShortcutRequestActivityInfo(PinItemRequest request, Context context) {
         super(new ComponentName(request.getShortcutInfo().getPackage(), DUMMY_COMPONENT_CLASS),
-                request.getShortcutInfo().getUserHandle());
+              request.getShortcutInfo().getUserHandle());
         mRequest = request;
         mInfo = request.getShortcutInfo();
         mContext = context;
@@ -72,7 +72,7 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
     @Override
     public Drawable getFullResIcon(IconCache cache) {
         Drawable d = mContext.getSystemService(LauncherApps.class)
-                .getShortcutIconDrawable(mInfo, LauncherAppState.getIDP(mContext).fillResIconDpi);
+                     .getShortcutIconDrawable(mInfo, LauncherAppState.getIDP(mContext).fillResIconDpi);
         if (d == null) {
             d = new FastBitmapDrawable(cache.getDefaultIcon(Process.myUserHandle()));
         }
@@ -83,11 +83,11 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
     public com.android.launcher3.ShortcutInfo createShortcutInfo() {
         // Total duration for the drop animation to complete.
         long duration = mContext.getResources().getInteger(R.integer.config_dropAnimMaxDuration) +
-                Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT +
-                mContext.getResources().getInteger(R.integer.config_overlayTransitionTime) / 2;
+                        Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT +
+                        mContext.getResources().getInteger(R.integer.config_overlayTransitionTime) / 2;
         // Delay the actual accept() call until the drop animation is complete.
         return LauncherAppsCompatVO.createShortcutInfoFromPinItemRequest(
-                mContext, mRequest, duration);
+                   mContext, mRequest, duration);
     }
 
     @Override

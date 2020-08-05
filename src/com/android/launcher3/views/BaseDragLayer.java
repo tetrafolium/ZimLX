@@ -101,7 +101,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
         // Shortcuts can appear above folder
         View topView = AbstractFloatingView.getTopOpenViewWithType(mActivity,
-                AbstractFloatingView.TYPE_ACCESSIBLE);
+                       AbstractFloatingView.TYPE_ACCESSIBLE);
         if (topView != null) {
             if (child == topView) {
                 return super.onRequestSendAccessibilityEvent(child, event);
@@ -116,7 +116,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
     @Override
     public void addChildrenForAccessibility(ArrayList<View> childrenForAccessibility) {
         View topView = AbstractFloatingView.getTopOpenViewWithType(mActivity,
-                AbstractFloatingView.TYPE_ACCESSIBLE);
+                       AbstractFloatingView.TYPE_ACCESSIBLE);
         if (topView != null) {
             // Only add the top view as a child for accessibility when it is open
             addAccessibleChildToList(topView, childrenForAccessibility);
@@ -179,8 +179,8 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
         float scale = getDescendantCoordRelativeToSelf(descendant, mTmpXY);
 
         r.set(mTmpXY[0], mTmpXY[1],
-                (int) (mTmpXY[0] + scale * descendant.getMeasuredWidth()),
-                (int) (mTmpXY[1] + scale * descendant.getMeasuredHeight()));
+              (int) (mTmpXY[0] + scale * descendant.getMeasuredWidth()),
+              (int) (mTmpXY[1] + scale * descendant.getMeasuredHeight()));
         return scale;
     }
 
@@ -207,7 +207,7 @@ public abstract class BaseDragLayer<T extends BaseDraggingActivity> extends Inse
      * assumption fails, we will need to return a pair of scale factors.
      */
     public float getDescendantCoordRelativeToSelf(View descendant, int[] coord,
-                                                  boolean includeRootScroll) {
+            boolean includeRootScroll) {
         return Utilities.getDescendantCoordRelativeToAncestor(descendant, this,
                 coord, includeRootScroll);
     }

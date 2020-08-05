@@ -188,7 +188,7 @@ public class TouchEventGenerator {
     private void checkFingerExistence(int id, boolean shouldExist) {
         if (shouldExist != mFingers.containsKey(id)) {
             throw new IllegalArgumentException(
-                    shouldExist ? "Finger does not exist" : "Finger already exists");
+                shouldExist ? "Finger does not exist" : "Finger already exists");
         }
     }
 
@@ -196,20 +196,20 @@ public class TouchEventGenerator {
         mTime = mLastEventTime + ms;
         Pair<PointerProperties[], PointerCoords[]> state = getFingerState();
         MotionEvent event = MotionEvent.obtain(
-                mInitialTime,
-                mTime,
-                action,
-                state.first.length,
-                state.first,
-                state.second,
-                0 /* metaState */,
-                0 /* buttonState */,
-                1.0f /* xPrecision */,
-                1.0f /* yPrecision */,
-                DEVICE_ID,
-                0 /* edgeFlags */,
-                InputDevice.SOURCE_TOUCHSCREEN,
-                0 /* flags */);
+                                mInitialTime,
+                                mTime,
+                                action,
+                                state.first.length,
+                                state.first,
+                                state.second,
+                                0 /* metaState */,
+                                0 /* buttonState */,
+                                1.0f /* xPrecision */,
+                                1.0f /* yPrecision */,
+                                DEVICE_ID,
+                                0 /* edgeFlags */,
+                                InputDevice.SOURCE_TOUCHSCREEN,
+                                0 /* flags */);
         mListener.onTouchEvent(event);
         if (action == MotionEvent.ACTION_UP) {
             resetTime();
@@ -246,7 +246,7 @@ public class TouchEventGenerator {
         }
 
         return new Pair<MotionEvent.PointerProperties[], MotionEvent.PointerCoords[]>(
-                properties, coordinates);
+                   properties, coordinates);
     }
 
     /**

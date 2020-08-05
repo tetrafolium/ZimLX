@@ -58,28 +58,28 @@ public class ExtractedColors {
     static {
         if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
             VERSION = 3;
-            DEFAULT_VALUES = new int[]{
-                    VERSION,            // VERSION_INDEX
-                    0x40FFFFFF,         // HOTSEAT_INDEX: White with 25% alpha
-                    DEFAULT_DARK,       // STATUS_BAR_INDEX
-                    0xFFCCCCCC,         // WALLPAPER_VIBRANT_INDEX
-                    0xFF000000,         // ALLAPPS_GRADIENT_MAIN_INDEX
-                    0xFF000000          // ALLAPPS_GRADIENT_SECONDARY_INDEX
+            DEFAULT_VALUES = new int[] {
+                VERSION,            // VERSION_INDEX
+                0x40FFFFFF,         // HOTSEAT_INDEX: White with 25% alpha
+                DEFAULT_DARK,       // STATUS_BAR_INDEX
+                0xFFCCCCCC,         // WALLPAPER_VIBRANT_INDEX
+                0xFF000000,         // ALLAPPS_GRADIENT_MAIN_INDEX
+                0xFF000000          // ALLAPPS_GRADIENT_SECONDARY_INDEX
             };
         } else if (FeatureFlags.QSB_IN_HOTSEAT) {
             VERSION = 2;
-            DEFAULT_VALUES = new int[]{
-                    VERSION,            // VERSION_INDEX
-                    0x40FFFFFF,         // HOTSEAT_INDEX: White with 25% alpha
-                    DEFAULT_DARK,       // STATUS_BAR_INDEX
-                    0xFFCCCCCC,         // WALLPAPER_VIBRANT_INDEX
+            DEFAULT_VALUES = new int[] {
+                VERSION,            // VERSION_INDEX
+                0x40FFFFFF,         // HOTSEAT_INDEX: White with 25% alpha
+                DEFAULT_DARK,       // STATUS_BAR_INDEX
+                0xFFCCCCCC,         // WALLPAPER_VIBRANT_INDEX
             };
         } else {
             VERSION = 1;
-            DEFAULT_VALUES = new int[]{
-                    VERSION,            // VERSION_INDEX
-                    0x40FFFFFF,         // HOTSEAT_INDEX: White with 25% alpha
-                    DEFAULT_DARK,       // STATUS_BAR_INDEX
+            DEFAULT_VALUES = new int[] {
+                VERSION,            // VERSION_INDEX
+                0x40FFFFFF,         // HOTSEAT_INDEX: White with 25% alpha
+                DEFAULT_DARK,       // STATUS_BAR_INDEX
             };
         }
     }
@@ -117,7 +117,7 @@ public class ExtractedColors {
      */
     public void load(Context context) {
         String encodedString = Utilities.getPrefs(context).getString(
-                ExtractionUtils.EXTRACTED_COLORS_PREFERENCE_KEY, VERSION + "");
+                                   ExtractionUtils.EXTRACTED_COLORS_PREFERENCE_KEY, VERSION + "");
 
         String[] splitColorsString = encodedString.split(COLOR_SEPARATOR);
         if (splitColorsString.length == DEFAULT_VALUES.length &&
@@ -169,13 +169,13 @@ public class ExtractedColors {
 
     public void updateStatusBarPalette(Palette statusBarPalette) {
         setColorAtIndex(STATUS_BAR_INDEX, ExtractionUtils.isSuperLight(statusBarPalette) ?
-                DEFAULT_LIGHT : DEFAULT_DARK);
+                        DEFAULT_LIGHT : DEFAULT_DARK);
     }
 
     public void updateWallpaperThemePalette(@Nullable Palette wallpaperPalette) {
         int defaultColor = DEFAULT_VALUES[WALLPAPER_VIBRANT_INDEX];
         setColorAtIndex(WALLPAPER_VIBRANT_INDEX, wallpaperPalette == null
-                ? defaultColor : wallpaperPalette.getVibrantColor(defaultColor));
+                        ? defaultColor : wallpaperPalette.getVibrantColor(defaultColor));
     }
 
     public void addOnChangeListener(OnChangeListener listener) {
@@ -229,7 +229,7 @@ public class ExtractedColors {
         }
         return hotseatColor;
     }
-*/
+    */
     /**
      * Interface for listening for extracted color changes
      */

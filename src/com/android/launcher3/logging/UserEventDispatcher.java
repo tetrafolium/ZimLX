@@ -69,11 +69,11 @@ public class UserEventDispatcher {
 
     private static final String TAG = "UserEvent";
     private static final boolean IS_VERBOSE =
-            FeatureFlags.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
+        FeatureFlags.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
     private static final String UUID_STORAGE = "uuid";
 
     public static UserEventDispatcher newInstance(Context context, DeviceProfile dp,
-                                                  UserEventDelegate delegate) {
+            UserEventDelegate delegate) {
         SharedPreferences sharedPrefs = Utilities.getDevicePrefs(context);
         String uuidStr = sharedPrefs.getString(UUID_STORAGE, null);
         if (uuidStr == null) {
@@ -81,7 +81,7 @@ public class UserEventDispatcher {
             sharedPrefs.edit().putString(UUID_STORAGE, uuidStr).apply();
         }
         UserEventDispatcher ued = Utilities.getOverrideObject(UserEventDispatcher.class,
-                context.getApplicationContext(), R.string.user_event_dispatcher_class);
+                                  context.getApplicationContext(), R.string.user_event_dispatcher_class);
         ued.mDelegate = delegate;
         ued.mIsInLandscapeMode = dp.isVerticalBarLayout();
         ued.mIsInMultiWindowMode = dp.isMultiWindowMode;
@@ -180,7 +180,7 @@ public class UserEventDispatcher {
 
     public void logAppLaunch(View v, Intent intent) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
-                newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
+                                               newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
 
         if (fillInLogContainerData(event, v)) {
             if (mDelegate != null) {
@@ -194,7 +194,7 @@ public class UserEventDispatcher {
 
     public void logAppLaunch(View v, Intent intent, UserHandle user) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
-                newItemTarget(v), newTarget(Target.Type.CONTAINER));
+                                               newItemTarget(v), newTarget(Target.Type.CONTAINER));
 
         if (fillInLogContainerData(event, v)) {
             fillIntentInfo(event.srcTarget[0], intent);
@@ -208,7 +208,7 @@ public class UserEventDispatcher {
     public void logTaskLaunchOrDismiss(int action, int direction, int taskIndex,
                                        ComponentKey componentKey) {
         LauncherEvent event = newLauncherEvent(newTouchAction(action), // TAP or SWIPE or FLING
-                newTarget(Target.Type.ITEM));
+                                               newTarget(Target.Type.ITEM));
         if (action == Action.Touch.SWIPE || action == Action.Touch.FLING) {
             // Direction DOWN means the task was launched, UP means it was dismissed.
             event.action.dir = direction;
@@ -234,7 +234,7 @@ public class UserEventDispatcher {
 
     public void logNotificationLaunch(View v, PendingIntent intent) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
-                newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
+                                               newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
         if (fillInLogContainerData(event, v)) {
             event.srcTarget[0].packageNameHash = (mUuidStr + intent.getCreatorPackage()).hashCode();
         }
@@ -247,7 +247,7 @@ public class UserEventDispatcher {
 
     public void logActionCommand(int command, int srcContainerType, int dstContainerType) {
         logActionCommand(command, newContainerTarget(srcContainerType),
-                dstContainerType >= 0 ? newContainerTarget(dstContainerType) : null);
+                         dstContainerType >= 0 ? newContainerTarget(dstContainerType) : null);
     }
 
     public void logActionCommand(int command, Target srcTarget, Target dstTarget) {
@@ -272,7 +272,7 @@ public class UserEventDispatcher {
      */
     public void logActionCommand(int command, View itemView, int srcContainerType) {
         LauncherEvent event = newLauncherEvent(newCommandAction(command),
-                newItemTarget(itemView, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
+                                               newItemTarget(itemView, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
 
         if (fillInLogContainerData(event, itemView)) {
             // TODO: Remove the following two lines once fillInLogContainerData can take in a
@@ -298,18 +298,18 @@ public class UserEventDispatcher {
     public void logActionOnControl(int action, int controlType, int parentContainer,
                                    int grandParentContainer) {
         LauncherEvent event = newLauncherEvent(newTouchAction(action),
-                newControlTarget(controlType),
-                newContainerTarget(parentContainer),
-                newContainerTarget(grandParentContainer));
+                                               newControlTarget(controlType),
+                                               newContainerTarget(parentContainer),
+                                               newContainerTarget(grandParentContainer));
         dispatchUserEvent(event, null);
     }
 
     public void logActionOnControl(int action, int controlType, @Nullable View controlInContainer,
                                    int parentContainerType) {
         final LauncherEvent event = (controlInContainer == null && parentContainerType < 0)
-                ? newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL))
-                : newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL),
-                newTarget(Target.Type.CONTAINER));
+                                    ? newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL))
+                                    : newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL),
+                                            newTarget(Target.Type.CONTAINER));
         event.srcTarget[0].controlType = controlType;
         if (controlInContainer != null) {
             fillInLogContainerData(event, controlInContainer);
@@ -325,14 +325,14 @@ public class UserEventDispatcher {
 
     public void logActionTapOutside(Target target) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Type.TOUCH),
-                target);
+                                               target);
         event.action.isOutside = true;
         dispatchUserEvent(event, null);
     }
 
     public void logActionBounceTip(int containerType) {
         LauncherEvent event = newLauncherEvent(newAction(Action.Type.TIP),
-                newContainerTarget(containerType));
+                                               newContainerTarget(containerType));
         event.srcTarget[0].tipType = LauncherLogProto.TipType.BOUNCE;
         dispatchUserEvent(event, null);
     }
@@ -343,7 +343,7 @@ public class UserEventDispatcher {
 
     public void logActionOnContainer(int action, int dir, int containerType, int pageIndex) {
         LauncherEvent event = newLauncherEvent(newTouchAction(action),
-                newContainerTarget(containerType));
+                                               newContainerTarget(containerType));
         event.action.dir = dir;
         event.srcTarget[0].pageIndex = pageIndex;
         dispatchUserEvent(event, null);
@@ -362,12 +362,12 @@ public class UserEventDispatcher {
         LauncherEvent event;
         if (srcChildTargetType == LauncherLogProto.ItemType.TASK) {
             event = newLauncherEvent(newTouchAction(action),
-                    newItemTarget(srcChildTargetType),
-                    newContainerTarget(srcParentContainerType));
+                                     newItemTarget(srcChildTargetType),
+                                     newContainerTarget(srcParentContainerType));
         } else {
             event = newLauncherEvent(newTouchAction(action),
-                    newContainerTarget(srcChildTargetType),
-                    newContainerTarget(srcParentContainerType));
+                                     newContainerTarget(srcChildTargetType),
+                                     newContainerTarget(srcParentContainerType));
         }
         event.destTarget = new Target[1];
         event.destTarget[0] = newContainerTarget(dstContainerType);
@@ -393,7 +393,7 @@ public class UserEventDispatcher {
         }
         ItemInfo info = (ItemInfo) icon.getTag();
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.LONGPRESS),
-                newItemTarget(info, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
+                                               newItemTarget(info, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
         provider.fillInLogContainerData(icon, info, event.srcTarget[0], event.srcTarget[1]);
         dispatchUserEvent(event, null);
 
@@ -404,18 +404,18 @@ public class UserEventDispatcher {
      * care about which screen moves to where. */
     public void logOverviewReorder() {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.DRAGDROP),
-                newContainerTarget(ContainerType.WORKSPACE),
-                newContainerTarget(ContainerType.OVERVIEW));
+                                               newContainerTarget(ContainerType.WORKSPACE),
+                                               newContainerTarget(ContainerType.OVERVIEW));
         dispatchUserEvent(event, null);
     }
 
     public void logDragNDrop(DropTarget.DragObject dragObj, View dropTargetAsView) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.DRAGDROP),
-                newItemTarget(dragObj.originalDragInfo, mInstantAppResolver),
-                newTarget(Target.Type.CONTAINER));
-        event.destTarget = new Target[]{
-                newItemTarget(dragObj.originalDragInfo, mInstantAppResolver),
-                newDropTarget(dropTargetAsView)
+                                               newItemTarget(dragObj.originalDragInfo, mInstantAppResolver),
+                                               newTarget(Target.Type.CONTAINER));
+        event.destTarget = new Target[] {
+            newItemTarget(dragObj.originalDragInfo, mInstantAppResolver),
+            newDropTarget(dropTargetAsView)
         };
 
         dragObj.dragSource.fillInLogContainerData(null, dragObj.originalDragInfo,
@@ -464,7 +464,7 @@ public class UserEventDispatcher {
             return;
         }
         String log = "\n-----------------------------------------------------"
-                + "\naction:" + LoggerUtils.getActionStr(ev.action);
+                     + "\naction:" + LoggerUtils.getActionStr(ev.action);
         if (ev.srcTarget != null && ev.srcTarget.length > 0) {
             log += "\n Source " + getTargetsStr(ev.srcTarget);
         }
@@ -472,10 +472,10 @@ public class UserEventDispatcher {
             log += "\n Destination " + getTargetsStr(ev.destTarget);
         }
         log += String.format(Locale.US,
-                "\n Elapsed container %d ms, session %d ms, action %d ms",
-                ev.elapsedContainerMillis,
-                ev.elapsedSessionMillis,
-                ev.actionDurationMillis);
+                             "\n Elapsed container %d ms, session %d ms, action %d ms",
+                             ev.elapsedContainerMillis,
+                             ev.elapsedSessionMillis,
+                             ev.actionDurationMillis);
         log += "\n isInLandscapeMode " + ev.isInLandscapeMode;
         log += "\n isInMultiWindowMode " + ev.isInMultiWindowMode;
         log += "\n\n";

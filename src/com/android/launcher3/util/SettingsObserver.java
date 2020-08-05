@@ -47,10 +47,10 @@ public interface SettingsObserver {
         public void register(String keySetting, String... dependentSettings) {
             mKeySetting = keySetting;
             mResolver.registerContentObserver(
-                    Settings.Secure.getUriFor(mKeySetting), false, this);
+                Settings.Secure.getUriFor(mKeySetting), false, this);
             for (String setting : dependentSettings) {
                 mResolver.registerContentObserver(
-                        Settings.Secure.getUriFor(setting), false, this);
+                    Settings.Secure.getUriFor(setting), false, this);
             }
             onChange(true);
         }
@@ -80,10 +80,10 @@ public interface SettingsObserver {
         public void register(String keySetting, String... dependentSettings) {
             mKeySetting = keySetting;
             mResolver.registerContentObserver(
-                    Settings.System.getUriFor(mKeySetting), false, this);
+                Settings.System.getUriFor(mKeySetting), false, this);
             for (String setting : dependentSettings) {
                 mResolver.registerContentObserver(
-                        Settings.System.getUriFor(setting), false, this);
+                    Settings.System.getUriFor(setting), false, this);
             }
             onChange(true);
         }

@@ -48,13 +48,13 @@ public class AboutUtils {
         String pkgId = "details?id=" + activity.getPackageName();
         Intent goToMarket = new Intent(Intent.ACTION_VIEW, Uri.parse("market://" + pkgId));
         goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
-                (Build.VERSION.SDK_INT >= 25 ? Intent.FLAG_ACTIVITY_NEW_DOCUMENT : Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET) |
-                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                            (Build.VERSION.SDK_INT >= 25 ? Intent.FLAG_ACTIVITY_NEW_DOCUMENT : Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET) |
+                            Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         try {
             activity.startActivity(goToMarket);
         } catch (ActivityNotFoundException e) {
             activity.startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://play.google.com/store/apps/" + pkgId)));
+                                              Uri.parse("http://play.google.com/store/apps/" + pkgId)));
         }
     }
 
@@ -76,17 +76,17 @@ public class AboutUtils {
     public void showDialogWithHtmlTextView(@StringRes int resTitleId, String text, boolean isHtml, DialogInterface.OnDismissListener dismissedListener) {
         AppCompatTextView textView = new AppCompatTextView(context);
         int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16,
-                context.getResources().getDisplayMetrics());
+                      context.getResources().getDisplayMetrics());
         textView.setMovementMethod(new LinkMovementMethod());
         textView.setPadding(padding, 0, padding, 0);
 
         textView.setText(isHtml ? new SpannableString(Html.fromHtml(text)) : text);
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(context)
-                .setPositiveButton(android.R.string.ok, null)
-                .setOnDismissListener(dismissedListener)
-                .setTitle(resTitleId)
-                .setView(textView);
+        .setPositiveButton(android.R.string.ok, null)
+        .setOnDismissListener(dismissedListener)
+        .setTitle(resTitleId)
+        .setView(textView);
         dialog.show();
     }
 
@@ -208,20 +208,20 @@ public class AboutUtils {
             src = "Sideloaded";
         }
         switch (src) {
-            case "com.android.vending":
-            case "com.google.android.feedback": {
-                return "Google Play Store";
-            }
-            case "org.fdroid.fdroid.privileged":
-            case "org.fdroid.fdroid": {
-                return "F-Droid";
-            }
-            case "com.github.yeriomin.yalpstore": {
-                return "Yalp Store";
-            }
-            case "cm.aptoide.pt": {
-                return "Aptoide";
-            }
+        case "com.android.vending":
+        case "com.google.android.feedback": {
+            return "Google Play Store";
+        }
+        case "org.fdroid.fdroid.privileged":
+        case "org.fdroid.fdroid": {
+            return "F-Droid";
+        }
+        case "com.github.yeriomin.yalpstore": {
+            return "Yalp Store";
+        }
+        case "cm.aptoide.pt": {
+            return "Aptoide";
+        }
         }
         if (src.toLowerCase().contains(".amazon.")) {
             return "Amazon Appstore";

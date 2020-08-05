@@ -133,7 +133,7 @@ public class FolderInfo extends ItemInfo {
     public void onAddToDatabase(ContentWriter writer) {
         super.onAddToDatabase(writer);
         writer.put(LauncherSettings.Favorites.TITLE, title)
-                .put(LauncherSettings.Favorites.OPTIONS, options);
+        .put(LauncherSettings.Favorites.OPTIONS, options);
 
     }
 
@@ -308,7 +308,7 @@ public class FolderInfo extends ItemInfo {
         if (entry != null && entry.getIcon() != null) {
             if (!entry.getIcon().equals(cachedIcon)) {
                 IconPack pack = IconPackManager.Companion.getInstance(launcher)
-                        .getIconPack(entry.getPackPackageName(), false, true);
+                                .getIconPack(entry.getPackPackageName(), false, true);
                 if (pack != null) {
                     cached = pack.getIcon(entry, launcher.mDeviceProfile.inv.fillResIconDpi);
                     cachedIcon = entry.getIcon();

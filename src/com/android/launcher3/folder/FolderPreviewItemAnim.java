@@ -89,7 +89,7 @@ class FolderPreviewItemAnim {
 
     public boolean hasEqualFinalState(FolderPreviewItemAnim anim) {
         return finalTransY == anim.finalTransY && finalTransX == anim.finalTransX &&
-                finalScale == anim.finalScale;
+               finalScale == anim.finalScale;
 
     }
 }

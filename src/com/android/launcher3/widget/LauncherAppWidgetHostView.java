@@ -55,7 +55,7 @@ import java.util.ArrayList;
  * {@inheritDoc}
  */
 public class LauncherAppWidgetHostView extends AppWidgetHostView
-        implements TouchCompleteListener, View.OnLongClickListener {
+    implements TouchCompleteListener, View.OnLongClickListener {
 
     // Related to the auto-advancing of widgets
     private static final long ADVANCE_INTERVAL = 20000;
@@ -138,7 +138,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
 
     private boolean isSameOrientation() {
         return mLauncher.getResources().getConfiguration().orientation ==
-                mLauncher.getOrientation();
+               mLauncher.getOrientation();
     }
 
     private boolean checkScrollableRecursively(ViewGroup viewGroup) {
@@ -178,28 +178,28 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         }
 
         switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN: {
-                DragLayer dragLayer = Launcher.getLauncher(getContext()).getDragLayer();
+        case MotionEvent.ACTION_DOWN: {
+            DragLayer dragLayer = Launcher.getLauncher(getContext()).getDragLayer();
 
-                if (mIsScrollable) {
-                    dragLayer.requestDisallowInterceptTouchEvent(true);
-                }
-                if (!mStylusEventHelper.inStylusButtonPressed()) {
-                    mLongPressHelper.postCheckForLongPress();
-                }
-                dragLayer.setTouchCompleteListener(this);
-                break;
+            if (mIsScrollable) {
+                dragLayer.requestDisallowInterceptTouchEvent(true);
             }
+            if (!mStylusEventHelper.inStylusButtonPressed()) {
+                mLongPressHelper.postCheckForLongPress();
+            }
+            dragLayer.setTouchCompleteListener(this);
+            break;
+        }
 
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
+        case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_CANCEL:
+            mLongPressHelper.cancelLongPress();
+            break;
+        case MotionEvent.ACTION_MOVE:
+            if (!Utilities.pointInView(this, ev.getX(), ev.getY(), mSlop)) {
                 mLongPressHelper.cancelLongPress();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (!Utilities.pointInView(this, ev.getX(), ev.getY(), mSlop)) {
-                    mLongPressHelper.cancelLongPress();
-                }
-                break;
+            }
+            break;
         }
 
         // Otherwise continue letting touch events fall through to children
@@ -210,15 +210,15 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         // If the widget does not handle touch, then cancel
         // long press when we release the touch
         switch (ev.getAction()) {
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
+        case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_CANCEL:
+            mLongPressHelper.cancelLongPress();
+            break;
+        case MotionEvent.ACTION_MOVE:
+            if (!Utilities.pointInView(this, ev.getX(), ev.getY(), mSlop)) {
                 mLongPressHelper.cancelLongPress();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (!Utilities.pointInView(this, ev.getX(), ev.getY(), mSlop)) {
-                    mLongPressHelper.cancelLongPress();
-                }
-                break;
+            }
+            break;
         }
         return false;
     }
@@ -253,7 +253,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         AppWidgetProviderInfo info = super.getAppWidgetInfo();
         if (info != null && !(info instanceof LauncherAppWidgetProviderInfo)) {
             throw new IllegalStateException("Launcher widget must have"
-                    + " LauncherAppWidgetProviderInfo");
+                                            + " LauncherAppWidgetProviderInfo");
         }
         return info;
     }
@@ -270,7 +270,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     @Override
     public int getDescendantFocusability() {
         return mChildrenFocused ? ViewGroup.FOCUS_BEFORE_DESCENDANTS
-                : ViewGroup.FOCUS_BLOCK_DESCENDANTS;
+               : ViewGroup.FOCUS_BLOCK_DESCENDANTS;
     }
 
     @Override
@@ -302,23 +302,23 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
                 focusableChildren.remove(this);
                 int childrenCount = focusableChildren.size();
                 switch (childrenCount) {
-                    case 0:
-                        mChildrenFocused = false;
-                        break;
-                    case 1: {
-                        if (getTag() instanceof ItemInfo) {
-                            ItemInfo item = (ItemInfo) getTag();
-                            if (item.spanX == 1 && item.spanY == 1) {
-                                focusableChildren.get(0).performClick();
-                                mChildrenFocused = false;
-                                return true;
-                            }
+                case 0:
+                    mChildrenFocused = false;
+                    break;
+                case 1: {
+                    if (getTag() instanceof ItemInfo) {
+                        ItemInfo item = (ItemInfo) getTag();
+                        if (item.spanX == 1 && item.spanY == 1) {
+                            focusableChildren.get(0).performClick();
+                            mChildrenFocused = false;
+                            return true;
                         }
-                        // continue;
                     }
-                    default:
-                        focusableChildren.get(0).requestFocus();
-                        return true;
+                    // continue;
+                }
+                default:
+                    focusableChildren.get(0).requestFocus();
+                    return true;
                 }
             }
         }
@@ -423,7 +423,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     private void maybeRegisterAutoAdvance() {
         Handler handler = getHandler();
         boolean shouldRegisterAutoAdvance = getWindowVisibility() == VISIBLE && handler != null
-                && (sAutoAdvanceWidgetIds.indexOfKey(getAppWidgetId()) >= 0);
+                                            && (sAutoAdvanceWidgetIds.indexOfKey(getAppWidgetId()) >= 0);
         if (shouldRegisterAutoAdvance != mIsAutoAdvanceRegistered) {
             mIsAutoAdvanceRegistered = shouldRegisterAutoAdvance;
             if (mAutoAdvanceRunnable == null) {
@@ -446,7 +446,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         }
         long now = SystemClock.uptimeMillis();
         long advanceTime = now + (ADVANCE_INTERVAL - (now % ADVANCE_INTERVAL)) +
-                ADVANCE_STAGGER * sAutoAdvanceWidgetIds.indexOfKey(getAppWidgetId());
+                           ADVANCE_STAGGER * sAutoAdvanceWidgetIds.indexOfKey(getAppWidgetId());
         Handler handler = getHandler();
         if (handler != null) {
             handler.postAtTime(mAutoAdvanceRunnable, advanceTime);

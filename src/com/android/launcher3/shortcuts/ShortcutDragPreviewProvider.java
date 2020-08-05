@@ -45,9 +45,9 @@ public class ShortcutDragPreviewProvider extends DragPreviewProvider {
 
         int size = Launcher.getLauncher(mView.getContext()).getDeviceProfile().iconSizePx;
         final Bitmap b = Bitmap.createBitmap(
-                size + blurSizeOutline,
-                size + blurSizeOutline,
-                Bitmap.Config.ARGB_8888);
+                             size + blurSizeOutline,
+                             size + blurSizeOutline,
+                             Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(b);
         canvas.translate(blurSizeOutline / 2, blurSizeOutline / 2);
@@ -69,9 +69,9 @@ public class ShortcutDragPreviewProvider extends DragPreviewProvider {
         }
 
         outPos[0] += Math.round(scale * iconLeft + (scale * iconSize - preview.getWidth()) / 2 +
-                mPositionShift.x);
+                                mPositionShift.x);
         outPos[1] += Math.round((scale * mView.getHeight() - preview.getHeight()) / 2
-                + mPositionShift.y);
+                                + mPositionShift.y);
         float size = launcher.getDeviceProfile().iconSizePx;
         return scale * iconSize / size;
     }

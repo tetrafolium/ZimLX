@@ -21,7 +21,7 @@ import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.TouchController;
 
 public class PinchStateChangeTouchController extends AnimatorListenerAdapter implements
-        TouchController, ScaleGestureDetector.OnScaleGestureListener {
+    TouchController, ScaleGestureDetector.OnScaleGestureListener {
     private static final float FLING_VELOCITY = 0.003f;
     private static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
     private static final String TAG = "PinchStateChangeTouch";
@@ -112,7 +112,7 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
         int width = mWorkspace.getWidth() * 6;
         float f = LauncherState.OPTIONS.getWorkspaceScaleAndTranslation(mLauncher)[0];
         currentSpan = mInterpolator.getInterpolation((Math.max(f,
-                Math.min(mFromState.getWorkspaceScaleAndTranslation(mLauncher)[0] + currentSpan / width, 1)) - f) / (1 - f));
+                      Math.min(mFromState.getWorkspaceScaleAndTranslation(mLauncher)[0] + currentSpan / width, 1)) - f) / (1 - f));
         if (mToState == LauncherState.OPTIONS) {
             currentSpan = 1.0f - currentSpan;
         }
@@ -169,7 +169,7 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
         ValueAnimator animationPlayer = mCurrentAnimation.getAnimationPlayer();
         animationPlayer.setFloatValues(f, f3);
         animationPlayer
-                .setDuration(j).setInterpolator(Interpolators.scrollInterpolatorForVelocity(f2));
+        .setDuration(j).setInterpolator(Interpolators.scrollInterpolatorForVelocity(f2));
         animationPlayer.start();
         mPinchStarted = false;
     }

@@ -207,12 +207,12 @@ public class ShadowGenerator {
 
             // Key shadow
             p.setShadowLayer(shadowBlur, 0, keyShadowDistance,
-                    ColorUtils.setAlphaComponent(Color.BLACK, keyShadowAlpha));
+                             ColorUtils.setAlphaComponent(Color.BLACK, keyShadowAlpha));
             c.drawRoundRect(bounds, radius, radius, p);
 
             // Ambient shadow
             p.setShadowLayer(shadowBlur, 0, 0,
-                    ColorUtils.setAlphaComponent(Color.BLACK, ambientShadowAlpha));
+                             ColorUtils.setAlphaComponent(Color.BLACK, ambientShadowAlpha));
             c.drawRoundRect(bounds, radius, radius, p);
 
             if (Color.alpha(color) < 255) {

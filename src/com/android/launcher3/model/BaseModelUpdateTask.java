@@ -72,7 +72,7 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
      * Execute the actual task. Called on the worker thread.
      */
     public abstract void execute(
-            LauncherAppState app, BgDataModel dataModel, AllAppsList apps);
+        LauncherAppState app, BgDataModel dataModel, AllAppsList apps);
 
     /**
      * Schedules a {@param task} to be executed on the current callbacks.
@@ -95,7 +95,7 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
 
 
     public void bindUpdatedShortcuts(
-            final ArrayList<ShortcutInfo> updatedShortcuts, final UserHandle user) {
+        final ArrayList<ShortcutInfo> updatedShortcuts, final UserHandle user) {
         if (!updatedShortcuts.isEmpty()) {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
@@ -118,7 +118,7 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
 
     public void bindUpdatedWidgets(BgDataModel dataModel) {
         final ArrayList<WidgetListRowEntry> widgets =
-                dataModel.widgetsModel.getWidgetsList(mApp.getContext());
+            dataModel.widgetsModel.getWidgetsList(mApp.getContext());
         scheduleCallbackTask(new CallbackTask() {
             @Override
             public void execute(Callbacks callbacks) {

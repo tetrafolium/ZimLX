@@ -42,18 +42,18 @@ public class SpringRelativeLayout extends RelativeLayout {
     private static final float VELOCITY_MULTIPLIER = 0.3f;
 
     private static final FloatPropertyCompat<SpringRelativeLayout> DAMPED_SCROLL =
-            new FloatPropertyCompat<SpringRelativeLayout>("value") {
+    new FloatPropertyCompat<SpringRelativeLayout>("value") {
 
-                @Override
-                public float getValue(SpringRelativeLayout object) {
-                    return object.mDampedScrollShift;
-                }
+        @Override
+        public float getValue(SpringRelativeLayout object) {
+            return object.mDampedScrollShift;
+        }
 
-                @Override
-                public void setValue(SpringRelativeLayout object, float value) {
-                    object.setDampedScrollShift(value);
-                }
-            };
+        @Override
+        public void setValue(SpringRelativeLayout object, float value) {
+            object.setDampedScrollShift(value);
+        }
+    };
 
     protected final SparseBooleanArray mSpringViews = new SparseBooleanArray();
     private final SpringAnimation mSpring;
@@ -73,8 +73,8 @@ public class SpringRelativeLayout extends RelativeLayout {
         super(context, attrs, defStyleAttr);
         mSpring = new SpringAnimation(this, DAMPED_SCROLL, 0);
         mSpring.setSpring(new SpringForce(0)
-                .setStiffness(STIFFNESS)
-                .setDampingRatio(DAMPING_RATIO));
+                          .setStiffness(STIFFNESS)
+                          .setDampingRatio(DAMPING_RATIO));
     }
 
     public void addSpringView(int id) {
@@ -130,7 +130,7 @@ public class SpringRelativeLayout extends RelativeLayout {
     }
 
     protected void finishWithShiftAndVelocity(float shift, float velocity,
-                                              DynamicAnimation.OnAnimationEndListener listener) {
+            DynamicAnimation.OnAnimationEndListener listener) {
         setDampedScrollShift(shift);
         mSpring.addEndListener(listener);
         finishScrollWithVelocity(velocity);
@@ -146,10 +146,10 @@ public class SpringRelativeLayout extends RelativeLayout {
         @Override
         protected EdgeEffect createEdgeEffect(RecyclerView view, int direction) {
             switch (direction) {
-                case DIRECTION_TOP:
-                    return new SpringEdgeEffect(getContext(), +VELOCITY_MULTIPLIER);
-                case DIRECTION_BOTTOM:
-                    return new SpringEdgeEffect(getContext(), -VELOCITY_MULTIPLIER);
+            case DIRECTION_TOP:
+                return new SpringEdgeEffect(getContext(), +VELOCITY_MULTIPLIER);
+            case DIRECTION_BOTTOM:
+                return new SpringEdgeEffect(getContext(), -VELOCITY_MULTIPLIER);
             }
             return super.createEdgeEffect(view, direction);
         }

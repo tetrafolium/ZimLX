@@ -74,7 +74,7 @@ public abstract class InternalStateHandler extends Binder {
     }
 
     private static boolean handleIntent(
-            Launcher launcher, Intent intent, boolean alreadyOnHome, boolean explicitIntent) {
+        Launcher launcher, Intent intent, boolean alreadyOnHome, boolean explicitIntent) {
         boolean result = false;
         if (intent != null && intent.getExtras() != null) {
             IBinder stateBinder = intent.getExtras().getBinder(EXTRA_STATE_HANDLER);

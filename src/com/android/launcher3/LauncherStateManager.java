@@ -100,8 +100,8 @@ public class LauncherStateManager {
     // atomic components are not restricted to this purpose; they can be user-controlled alongside
     // non atomic components as well.
     @IntDef(flag = true, value = {
-            NON_ATOMIC_COMPONENT,
-            ATOMIC_COMPONENT
+        NON_ATOMIC_COMPONENT,
+        ATOMIC_COMPONENT
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AnimationComponents {
@@ -261,7 +261,7 @@ public class LauncherStateManager {
         AnimatorSetBuilder builder = new AnimatorSetBuilder();
         prepareForAtomicAnimation(fromState, state, builder);
         AnimatorSet animation = createAnimationToNewWorkspaceInternal(
-                state, builder, onCompleteRunnable);
+                                    state, builder, onCompleteRunnable);
         Runnable runnable = new StartAnimRunnable(animation);
         if (delay > 0) {
             mUiHandler.postDelayed(runnable, delay);
@@ -296,9 +296,9 @@ public class LauncherStateManager {
             boolean isWorkspaceVisible = workspace.getVisibility() == VISIBLE;
             if (isWorkspaceVisible) {
                 CellLayout currentChild = (CellLayout) workspace.getChildAt(
-                        workspace.getCurrentPage());
+                                              workspace.getCurrentPage());
                 isWorkspaceVisible = currentChild.getVisibility() == VISIBLE
-                        && currentChild.getShortcutsAndWidgets().getAlpha() > 0;
+                                     && currentChild.getShortcutsAndWidgets().getAlpha() > 0;
             }
             if (!isWorkspaceVisible) {
                 workspace.setScaleX(0.92f);
@@ -319,7 +319,7 @@ public class LauncherStateManager {
      *                  accuracy.
      */
     public AnimatorPlaybackController createAnimationToNewWorkspace(
-            LauncherState fromState, LauncherState state, long duration) {
+        LauncherState fromState, LauncherState state, long duration) {
         mConfig.reset();
         for (StateHandler handler : getStateHandlers()) {
             handler.setState(fromState);
@@ -337,31 +337,31 @@ public class LauncherStateManager {
      *                 accuracy.
      */
     public AnimatorPlaybackController createAnimationToNewWorkspace(
-            LauncherState state, long duration) {
+        LauncherState state, long duration) {
         return createAnimationToNewWorkspace(state, duration, LauncherStateManager.ANIM_ALL);
     }
 
     public AnimatorPlaybackController createAnimationToNewWorkspace(
-            LauncherState state, long duration, @AnimationComponents int animComponents) {
+        LauncherState state, long duration, @AnimationComponents int animComponents) {
         return createAnimationToNewWorkspace(state, new AnimatorSetBuilder(), duration, null,
-                animComponents);
+                                             animComponents);
     }
 
     public AnimatorPlaybackController createAnimationToNewWorkspace(LauncherState state,
-                                                                    AnimatorSetBuilder builder, long duration, Runnable onCancelRunnable,
-                                                                    @AnimationComponents int animComponents) {
+            AnimatorSetBuilder builder, long duration, Runnable onCancelRunnable,
+            @AnimationComponents int animComponents) {
         mConfig.reset();
         mConfig.userControlled = true;
         mConfig.animComponents = animComponents;
         mConfig.duration = duration;
         mConfig.playbackController = AnimatorPlaybackController.wrap(
-                createAnimationToNewWorkspaceInternal(state, builder, null), duration,
-                onCancelRunnable);
+                                         createAnimationToNewWorkspaceInternal(state, builder, null), duration,
+                                         onCancelRunnable);
         return mConfig.playbackController;
     }
 
     protected AnimatorSet createAnimationToNewWorkspaceInternal(final LauncherState state,
-                                                                AnimatorSetBuilder builder, final Runnable onCompleteRunnable) {
+            AnimatorSetBuilder builder, final Runnable onCompleteRunnable) {
 
         for (StateHandler handler : getStateHandlers()) {
             builder.startTag(handler);
@@ -562,7 +562,7 @@ public class LauncherStateManager {
         public PropertySetter getPropertySetter(AnimatorSetBuilder builder) {
             if (mPropertySetter == null) {
                 mPropertySetter = duration == 0 ? NO_ANIM_PROPERTY_SETTER
-                        : new AnimatedPropertySetter(duration, builder);
+                                  : new AnimatedPropertySetter(duration, builder);
             }
             return mPropertySetter;
         }

@@ -142,16 +142,16 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     public void onAddToDatabase(ContentWriter writer) {
         super.onAddToDatabase(writer);
         writer.put(LauncherSettings.BaseLauncherColumns.TITLE, title)
-                .put(LauncherSettings.BaseLauncherColumns.INTENT, getIntent())
-                .put(LauncherSettings.Favorites.RESTORED, status);
+        .put(LauncherSettings.BaseLauncherColumns.INTENT, getIntent())
+        .put(LauncherSettings.Favorites.RESTORED, status);
 
         if (!usingLowResIcon) {
             writer.putIcon(iconBitmap, user);
         }
         if (iconResource != null) {
             writer.put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE, iconResource.packageName)
-                    .put(LauncherSettings.BaseLauncherColumns.ICON_RESOURCE,
-                            iconResource.resourceName);
+            .put(LauncherSettings.BaseLauncherColumns.ICON_RESOURCE,
+                 iconResource.resourceName);
         }
     }
 
@@ -192,7 +192,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
             label = shortcutInfo.getShortLabel();
         }
         contentDescription = UserManagerCompat.getInstance(context)
-                .getBadgedLabelForUser(label, user);
+                             .getBadgedLabelForUser(label, user);
         if (shortcutInfo.isEnabled()) {
             runtimeStatusFlags &= ~FLAG_DISABLED_BY_PUBLISHER;
         } else {
@@ -204,14 +204,14 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     /** Returns the ShortcutInfo id associated with the deep shortcut. */
     public String getDeepShortcutId() {
         return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
-                getIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
+               getIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
     }
 
     @Override
     public ComponentName getTargetComponent() {
         ComponentName cn = super.getTargetComponent();
         if (cn == null && (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
-                || hasStatusFlag(FLAG_SUPPORTS_WEB_UI))) {
+                           || hasStatusFlag(FLAG_SUPPORTS_WEB_UI))) {
             // Legacy shortcuts and promise icons with web UI may not have a componentName but just
             // a packageName. In that case create a dummy componentName instead of adding additional
             // check everywhere.
@@ -224,10 +224,10 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     private void updateDatabase(Context context, boolean updateIcon, boolean reload) {
         if (updateIcon)
             ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, swipeUpAction
-                    , customIconEntry, customIcon, true, reload);
+                                             , customIconEntry, customIcon, true, reload);
         else
             ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, swipeUpAction
-                    , null, null, false, reload);
+                                             , null, null, false, reload);
     }
 
     public void onLoadCustomizations(String titleAlias, String swipeUpAction,

@@ -29,17 +29,17 @@ import com.android.launcher3.R;
 public abstract class ViewScrim<T extends View> {
 
     public static Property<ViewScrim, Float> PROGRESS =
-            new Property<ViewScrim, Float>(Float.TYPE, "progress") {
-                @Override
-                public Float get(ViewScrim viewScrim) {
-                    return viewScrim.mProgress;
-                }
+    new Property<ViewScrim, Float>(Float.TYPE, "progress") {
+        @Override
+        public Float get(ViewScrim viewScrim) {
+            return viewScrim.mProgress;
+        }
 
-                @Override
-                public void set(ViewScrim object, Float value) {
-                    object.setProgress(value);
-                }
-            };
+        @Override
+        public void set(ViewScrim object, Float value) {
+            object.setProgress(value);
+        }
+    };
 
     protected final T mView;
     protected float mProgress = 0;

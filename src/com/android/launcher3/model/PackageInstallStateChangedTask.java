@@ -54,7 +54,7 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
                 // For instant apps we do not get package-add. Use setting events to update
                 // any pinned icons.
                 ApplicationInfo ai = app.getContext()
-                        .getPackageManager().getApplicationInfo(mInstallInfo.packageName, 0);
+                                     .getPackageManager().getApplicationInfo(mInstallInfo.packageName, 0);
                 if (InstantAppResolver.newInstance(app.getContext()).isInstantApp(ai)) {
                     app.getModel().onPackageAdded(ai.packageName, Process.myUserHandle());
                 }

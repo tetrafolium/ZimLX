@@ -134,7 +134,7 @@ public class LanguagePreferenceCompat extends ListPreference {
         }
         entryval[0] = SYSTEM_LANGUAGE_CODE;
         entries[0] = _systemLanguageName + " » " + summarizeLocale(context.getResources()
-                .getConfiguration().locale, "");
+                     .getConfiguration().locale, "");
         entryval[1] = _defaultLanguageCode;
         entries[1] = summarizeLocale(contextUtils.getLocaleByAndroidCode(_defaultLanguageCode), _defaultLanguageCode);
 
@@ -148,9 +148,9 @@ public class LanguagePreferenceCompat extends ListPreference {
         String country = locale.getDisplayCountry(locale);
         String language = locale.getDisplayLanguage(locale);
         String ret = locale.getDisplayLanguage(Locale.ENGLISH)
-                + " (" + language.substring(0, 1).toUpperCase(Locale.getDefault()) + language.substring(1)
-                + ((!country.isEmpty() && !country.toLowerCase(Locale.getDefault()).equals(language.toLowerCase(Locale.getDefault()))) ? (", " + country) : "")
-                + ")";
+                     + " (" + language.substring(0, 1).toUpperCase(Locale.getDefault()) + language.substring(1)
+                     + ((!country.isEmpty() && !country.toLowerCase(Locale.getDefault()).equals(language.toLowerCase(Locale.getDefault()))) ? (", " + country) : "")
+                     + ")";
 
         if (localeAndroidCode.equals("zh-rCN")) {
             ret = ret.substring(0, ret.indexOf(" ") + 1) + "Simplified" + ret.substring(ret.indexOf(" "));
@@ -166,7 +166,7 @@ public class LanguagePreferenceCompat extends ListPreference {
     public CharSequence getSummary() {
         Locale locale = new ContextUtils(getContext()).getLocaleByAndroidCode(getValue());
         String prefix = TextUtils.isEmpty(super.getSummary())
-                ? "" : super.getSummary() + "\n\n";
+                        ? "" : super.getSummary() + "\n\n";
         return prefix + summarizeLocale(locale, getValue());
     }
 

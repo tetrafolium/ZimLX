@@ -30,15 +30,15 @@ import com.android.launcher3.widget.WidgetAddFlowHandler;
 public class PendingRequestArgs extends ItemInfo implements Parcelable {
 
     public static final Parcelable.Creator<PendingRequestArgs> CREATOR =
-            new Parcelable.Creator<PendingRequestArgs>() {
-                public PendingRequestArgs createFromParcel(Parcel source) {
-                    return new PendingRequestArgs(source);
-                }
+    new Parcelable.Creator<PendingRequestArgs>() {
+        public PendingRequestArgs createFromParcel(Parcel source) {
+            return new PendingRequestArgs(source);
+        }
 
-                public PendingRequestArgs[] newArray(int size) {
-                    return new PendingRequestArgs[size];
-                }
-            };
+        public PendingRequestArgs[] newArray(int size) {
+            return new PendingRequestArgs[size];
+        }
+    };
     private static final int TYPE_NONE = 0;
     private static final int TYPE_INTENT = 1;
     private static final int TYPE_APP_WIDGET = 2;
@@ -70,9 +70,9 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
     }
 
     public static PendingRequestArgs forWidgetInfo(
-            int appWidgetId, WidgetAddFlowHandler widgetHandler, ItemInfo info) {
+        int appWidgetId, WidgetAddFlowHandler widgetHandler, ItemInfo info) {
         PendingRequestArgs args =
-                new PendingRequestArgs(appWidgetId, TYPE_APP_WIDGET, widgetHandler);
+            new PendingRequestArgs(appWidgetId, TYPE_APP_WIDGET, widgetHandler);
         args.copyFrom(info);
         return args;
     }

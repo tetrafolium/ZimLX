@@ -73,9 +73,9 @@ public class InsettableFrameLayout extends FrameLayout implements Insettable {
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
             TypedArray a = c.obtainStyledAttributes(attrs,
-                    R.styleable.InsettableFrameLayout_Layout);
+                                                    R.styleable.InsettableFrameLayout_Layout);
             ignoreInsets = a.getBoolean(
-                    R.styleable.InsettableFrameLayout_Layout_layout_ignoreInsets, false);
+                               R.styleable.InsettableFrameLayout_Layout_layout_ignoreInsets, false);
             a.recycle();
         }
 

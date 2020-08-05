@@ -73,11 +73,11 @@ public class LoaderCursorTest {
     @Before
     public void setup() {
         mIDP = new InvariantDeviceProfile();
-        mCursor = new MatrixCursor(new String[]{
-                ICON, ICON_PACKAGE, ICON_RESOURCE, TITLE,
-                _ID, CONTAINER, ITEM_TYPE, PROFILE_ID,
-                SCREEN, CELLX, CELLY, RESTORED, INTENT
-        });
+        mCursor = new MatrixCursor(new String[] {
+                                       ICON, ICON_PACKAGE, ICON_RESOURCE, TITLE,
+                                       _ID, CONTAINER, ITEM_TYPE, PROFILE_ID,
+                                       SCREEN, CELLX, CELLY, RESTORED, INTENT
+                                   });
         mContext = InstrumentationRegistry.getTargetContext();
 
         mMockApp = mock(LauncherAppState.class);
@@ -93,11 +93,11 @@ public class LoaderCursorTest {
 
     private void initCursor(int itemType, String title) {
         mCursor.newRow()
-                .add(_ID, 1)
-                .add(PROFILE_ID, 0)
-                .add(ITEM_TYPE, itemType)
-                .add(TITLE, title)
-                .add(CONTAINER, CONTAINER_DESKTOP);
+        .add(_ID, 1)
+        .add(PROFILE_ID, 0)
+        .add(ITEM_TYPE, itemType)
+        .add(TITLE, title)
+        .add(CONTAINER, CONTAINER_DESKTOP);
     }
 
     @Test
@@ -106,7 +106,7 @@ public class LoaderCursorTest {
         assertTrue(mLoaderCursor.moveToNext());
         ComponentName cn = new ComponentName(mContext.getPackageName(), "dummy-do");
         assertNull(mLoaderCursor.getAppShortcutInfo(
-                new Intent().setComponent(cn), false /* allowMissingTarget */, true));
+                       new Intent().setComponent(cn), false /* allowMissingTarget */, true));
     }
 
     @Test
@@ -115,9 +115,9 @@ public class LoaderCursorTest {
         assertTrue(mLoaderCursor.moveToNext());
 
         ComponentName cn = mLauncherApps.getActivityList(null, mLoaderCursor.user)
-                .get(0).getComponentName();
+                           .get(0).getComponentName();
         ShortcutInfo info = mLoaderCursor.getAppShortcutInfo(
-                new Intent().setComponent(cn), false /* allowMissingTarget */, true);
+                                new Intent().setComponent(cn), false /* allowMissingTarget */, true);
         assertNotNull(info);
         assertTrue(Utilities.isLauncherAppTarget(info.intent));
     }
@@ -129,7 +129,7 @@ public class LoaderCursorTest {
 
         ComponentName cn = new ComponentName(mContext.getPackageName(), "dummy-do");
         ShortcutInfo info = mLoaderCursor.getAppShortcutInfo(
-                new Intent().setComponent(cn), true  /* allowMissingTarget */, true);
+                                new Intent().setComponent(cn), true  /* allowMissingTarget */, true);
         assertNotNull(info);
         assertTrue(Utilities.isLauncherAppTarget(info.intent));
     }
@@ -141,7 +141,7 @@ public class LoaderCursorTest {
 
         Bitmap icon = Bitmap.createBitmap(1, 1, Bitmap.Config.ALPHA_8);
         when(mMockIconCache.getDefaultIcon(eq(mLoaderCursor.user)))
-                .thenReturn(BitmapInfo.fromBitmap(icon));
+        .thenReturn(BitmapInfo.fromBitmap(icon));
         ShortcutInfo info = mLoaderCursor.loadSimpleShortcut();
         assertEquals(icon, info.iconBitmap);
         assertEquals("my-shortcut", info.title);
@@ -157,16 +157,16 @@ public class LoaderCursorTest {
 
         // Item on unknown screen are not placed
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 4L), workspaceScreens));
+                        newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 4L), workspaceScreens));
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 5L), workspaceScreens));
+                        newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 5L), workspaceScreens));
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2L), workspaceScreens));
+                        newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2L), workspaceScreens));
 
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
+                       newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 3L), workspaceScreens));
+                       newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 3L), workspaceScreens));
 
     }
 
@@ -179,7 +179,7 @@ public class LoaderCursorTest {
 
         // Item outside screen bounds are not placed
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(4, 4, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
+                        newItemInfo(4, 4, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
     }
 
     @Test
@@ -191,22 +191,22 @@ public class LoaderCursorTest {
 
         // Overlapping items are not placed
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
+                       newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
+                        newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
 
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2L), workspaceScreens));
+                       newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2L), workspaceScreens));
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2L), workspaceScreens));
+                        newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2L), workspaceScreens));
 
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(1, 1, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
+                       newItemInfo(1, 1, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(2, 2, 2, 2, CONTAINER_DESKTOP, 1L), workspaceScreens));
+                       newItemInfo(2, 2, 2, 2, CONTAINER_DESKTOP, 1L), workspaceScreens));
 
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 2, 1, 2, CONTAINER_DESKTOP, 1L), workspaceScreens));
+                        newItemInfo(3, 2, 1, 2, CONTAINER_DESKTOP, 1L), workspaceScreens));
     }
 
     @Test
@@ -218,12 +218,12 @@ public class LoaderCursorTest {
 
         // Hotseat items are only placed based on screenId
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 1L), workspaceScreens));
+                       newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 1L), workspaceScreens));
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 2L), workspaceScreens));
+                       newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 2L), workspaceScreens));
 
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 3L), workspaceScreens));
+                        newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 3L), workspaceScreens));
     }
 
     private ItemInfo newItemInfo(int cellX, int cellY, int spanX, int spanY,

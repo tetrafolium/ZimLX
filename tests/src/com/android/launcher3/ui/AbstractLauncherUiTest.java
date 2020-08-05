@@ -84,9 +84,9 @@ public abstract class AbstractLauncherUiTest {
 
     protected void lockRotation(boolean naturalOrientation) throws RemoteException {
         Utilities.getPrefs(mTargetContext)
-                .edit()
-                .putBoolean(Utilities.ALLOW_ROTATION_PREFERENCE_KEY, !naturalOrientation)
-                .commit();
+        .edit()
+        .putBoolean(Utilities.ALLOW_ROTATION_PREFERENCE_KEY, !naturalOrientation)
+        .commit();
 
         if (naturalOrientation) {
             try {
@@ -113,8 +113,8 @@ public abstract class AbstractLauncherUiTest {
             findViewById(R.id.page_indicator).click();
         } else {
             mDevice.wait(Until.findObject(
-                    By.desc(mTargetContext.getString(R.string.all_apps_button_label))),
-                    DEFAULT_UI_TIMEOUT).click();
+                             By.desc(mTargetContext.getString(R.string.all_apps_button_label))),
+                         DEFAULT_UI_TIMEOUT).click();
         }
         return findViewById(R.id.apps_list_view);
     }
@@ -125,8 +125,8 @@ public abstract class AbstractLauncherUiTest {
     protected UiObject2 openWidgetsTray() {
         mDevice.pressMenu(); // Enter overview mode.
         mDevice.wait(Until.findObject(
-                By.text(mTargetContext.getString(R.string.widget_button_text)
-                        .toUpperCase(Locale.getDefault()))), DEFAULT_UI_TIMEOUT).click();
+                         By.text(mTargetContext.getString(R.string.widget_button_text)
+                                 .toUpperCase(Locale.getDefault()))), DEFAULT_UI_TIMEOUT).click();
         return findViewById(R.id.widgets_list_view);
     }
 
@@ -162,7 +162,7 @@ public abstract class AbstractLauncherUiTest {
 
             Point moveLocation = new Point(center);
             int distanceToMove = mTargetContext.getResources().getDimensionPixelSize(
-                    R.dimen.deep_shortcuts_start_drag_threshold) + 50;
+                                     R.dimen.deep_shortcuts_start_drag_threshold) + 50;
             if (moveLocation.y - distanceToMove >= dragLayer.getVisibleBounds().top) {
                 moveLocation.y -= distanceToMove;
             } else {
@@ -206,7 +206,7 @@ public abstract class AbstractLauncherUiTest {
 
     protected void sendPointer(int action, Point point) {
         MotionEvent event = MotionEvent.obtain(SystemClock.uptimeMillis(),
-                SystemClock.uptimeMillis(), action, point.x, point.y, 0);
+                                               SystemClock.uptimeMillis(), action, point.x, point.y, 0);
         getInstrumentation().sendPointerSync(event);
         event.recycle();
     }
@@ -216,9 +216,9 @@ public abstract class AbstractLauncherUiTest {
      */
     public void clearHomescreen() {
         LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
+                                       LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
         LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
+                                       LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
         resetLoaderState();
     }
 
@@ -254,15 +254,15 @@ public abstract class AbstractLauncherUiTest {
      */
     protected LauncherAppWidgetProviderInfo findWidgetProvider(final boolean hasConfigureScreen) {
         LauncherAppWidgetProviderInfo info =
-                getOnUiThread(new Callable<LauncherAppWidgetProviderInfo>() {
-                    @Override
-                    public LauncherAppWidgetProviderInfo call() {
-                        ComponentName cn = new ComponentName(getInstrumentation().getContext(),
-                                hasConfigureScreen ? AppWidgetWithConfig.class : AppWidgetNoConfig.class);
-                        return AppWidgetManagerCompat.getInstance(mTargetContext)
-                                .findProvider(cn, Process.myUserHandle());
-                    }
-                });
+        getOnUiThread(new Callable<LauncherAppWidgetProviderInfo>() {
+            @Override
+            public LauncherAppWidgetProviderInfo call() {
+                ComponentName cn = new ComponentName(getInstrumentation().getContext(),
+                                                     hasConfigureScreen ? AppWidgetWithConfig.class : AppWidgetNoConfig.class);
+                return AppWidgetManagerCompat.getInstance(mTargetContext)
+                       .findProvider(cn, Process.myUserHandle());
+            }
+        });
         if (info == null) {
             throw new IllegalArgumentException("No valid widget provider");
         }
@@ -280,7 +280,7 @@ public abstract class AbstractLauncherUiTest {
 
     protected LauncherActivityInfo getSettingsApp() {
         return LauncherAppsCompat.getInstance(mTargetContext)
-                .getActivityList("com.android.settings", Process.myUserHandle()).get(0);
+               .getActivityList("com.android.settings", Process.myUserHandle()).get(0);
     }
 
     /**

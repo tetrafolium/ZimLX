@@ -30,10 +30,10 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
 
     private void dj(SearchResult componentList) {
         Uri uri = new Uri.Builder()
-                .scheme("content")
-                .authority(BuildConfig.APPLICATION_ID + ".appssearch")
-                .appendPath(componentList.mQuery)
-                .build();
+        .scheme("content")
+        .authority(BuildConfig.APPLICATION_ID + ".appssearch")
+        .appendPath(componentList.mQuery)
+        .build();
 
         Cursor cursor = null;
         try {
@@ -68,20 +68,20 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
 
     public boolean handleMessage(final Message message) {
         switch (message.what) {
-            default: {
-                return false;
+        default: {
+            return false;
+        }
+        case 100: {
+            dj((SearchResult) message.obj);
+            break;
+        }
+        case 200: {
+            if (!mInterruptActiveRequests) {
+                SearchResult searchResult = (SearchResult) message.obj;
+                searchResult.mCallbacks.onSearchResult(searchResult.mQuery, searchResult.mApps, searchResult.mSuggestions);
             }
-            case 100: {
-                dj((SearchResult) message.obj);
-                break;
-            }
-            case 200: {
-                if (!mInterruptActiveRequests) {
-                    SearchResult searchResult = (SearchResult) message.obj;
-                    searchResult.mCallbacks.onSearchResult(searchResult.mQuery, searchResult.mApps, searchResult.mSuggestions);
-                }
-                break;
-            }
+            break;
+        }
         }
         return true;
     }

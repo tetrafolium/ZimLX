@@ -60,16 +60,16 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
 
         // We enhance the shadow by drawing the shadow twice
         getPaint().setShadowLayer(mShadowInfo.ambientShadowBlur, 0, 0,
-                ColorUtils.setAlphaComponent(mShadowInfo.ambientShadowColor, alpha));
+                                  ColorUtils.setAlphaComponent(mShadowInfo.ambientShadowColor, alpha));
 
         drawWithoutBadge(canvas);
         canvas.save();
         canvas.clipRect(getScrollX(), getScrollY() + getExtendedPaddingTop(),
-                getScrollX() + getWidth(),
-                getScrollY() + getHeight());
+                        getScrollX() + getWidth(),
+                        getScrollY() + getHeight());
 
         getPaint().setShadowLayer(mShadowInfo.keyShadowBlur, 0.0f, mShadowInfo.keyShadowOffset,
-                ColorUtils.setAlphaComponent(mShadowInfo.keyShadowColor, alpha));
+                                  ColorUtils.setAlphaComponent(mShadowInfo.keyShadowColor, alpha));
         drawWithoutBadge(canvas);
         canvas.restore();
 
@@ -87,7 +87,7 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
         public ShadowInfo(Context c, AttributeSet attrs, int defStyle) {
 
             TypedArray a = c.obtainStyledAttributes(
-                    attrs, R.styleable.ShadowInfo, defStyle, 0);
+                               attrs, R.styleable.ShadowInfo, defStyle, 0);
 
             ambientShadowBlur = a.getDimension(R.styleable.ShadowInfo_ambientShadowBlur, 0);
             ambientShadowColor = a.getColor(R.styleable.ShadowInfo_ambientShadowColor, 0);
@@ -107,11 +107,11 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
                 return true;
             } else if (ambientShadowAlpha > 0) {
                 textView.getPaint().setShadowLayer(ambientShadowBlur, 0, 0,
-                        ColorUtils.setAlphaComponent(ambientShadowColor, textAlpha));
+                                                   ColorUtils.setAlphaComponent(ambientShadowColor, textAlpha));
                 return true;
             } else if (keyShadowAlpha > 0) {
                 textView.getPaint().setShadowLayer(keyShadowBlur, 0.0f, keyShadowOffset,
-                        ColorUtils.setAlphaComponent(keyShadowColor, textAlpha));
+                                                   ColorUtils.setAlphaComponent(keyShadowColor, textAlpha));
                 return true;
             } else {
                 return false;

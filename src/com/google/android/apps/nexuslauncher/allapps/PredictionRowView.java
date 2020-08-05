@@ -71,7 +71,7 @@ import java.util.List;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 public class PredictionRowView extends LinearLayout implements UserEventDispatcher.LogContainerProvider,
-        OnUpdateListener, OnDeviceProfileChangeListener {
+    OnUpdateListener, OnDeviceProfileChangeListener {
     private static final Interpolator ALPHA_FACTOR_INTERPOLATOR = input -> input < 0.8f ? 0.0f : (input - 0.8f) / 0.2f;
     private static final String TAG = "PredictionRowView";
 
@@ -235,7 +235,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         mAllAppsLabelTextPaint.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.all_apps_label_text_size));
         CharSequence text = getResources().getText(R.string.all_apps_label);
         mAllAppsLabelLayout = Builder.obtain(text, 0, text.length(), mAllAppsLabelTextPaint, Math.round(mAllAppsLabelTextPaint.measureText(text.toString()))).setAlignment(
-                Alignment.ALIGN_CENTER).setMaxLines(1).setIncludePad(true).build();
+                                  Alignment.ALIGN_CENTER).setMaxLines(1).setIncludePad(true).build();
     }
 
     public List<ItemInfoWithIcon> getPredictedApps() {

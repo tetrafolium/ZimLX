@@ -41,7 +41,7 @@ public class TopRoundedCornerView extends SpringRelativeLayout {
         super(context, attrs, defStyleAttr);
 
         int radius = getResources().getDimensionPixelSize(R.dimen.bg_round_rect_radius);
-        mRadii = new float[]{radius, radius, radius, radius, 0, 0, 0, 0};
+        mRadii = new float[] {radius, radius, radius, radius, 0, 0, 0, 0};
 
         mNavBarScrimPaint = new Paint();
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
@@ -67,7 +67,7 @@ public class TopRoundedCornerView extends SpringRelativeLayout {
 
         if (mNavBarScrimHeight > 0) {
             canvas.drawRect(0, getHeight() - mNavBarScrimHeight, getWidth(), getHeight(),
-                    mNavBarScrimPaint);
+                            mNavBarScrimPaint);
         }
     }
 

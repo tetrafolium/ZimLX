@@ -46,7 +46,7 @@ public class Partner {
      * Marker action used to discover partner
      */
     private static final String
-            ACTION_PARTNER_CUSTOMIZATION = "com.android.launcher3.action.PARTNER_CUSTOMIZATION";
+    ACTION_PARTNER_CUSTOMIZATION = "com.android.launcher3.action.PARTNER_CUSTOMIZATION";
     private static boolean sSearched = true;
     private static Partner sPartner;
     private final String mPackageName;
@@ -81,7 +81,7 @@ public class Partner {
 
     public boolean hasDefaultLayout() {
         int defaultLayout = getResources().getIdentifier(Partner.RES_DEFAULT_LAYOUT,
-                "xml", getPackageName());
+                            "xml", getPackageName());
         return defaultLayout != 0;
     }
 
@@ -109,7 +109,7 @@ public class Partner {
                 getPackageName());
         return resId != 0 && getResources().getBoolean(resId);
     }
-*/
+    */
     public void applyInvariantDeviceProfileOverrides(InvariantDeviceProfile inv, DisplayMetrics dm) {
         int numRows = -1;
         int numColumns = -1;
@@ -117,19 +117,19 @@ public class Partner {
 
         try {
             int resId = getResources().getIdentifier(RES_GRID_NUM_ROWS,
-                    "integer", getPackageName());
+                        "integer", getPackageName());
             if (resId > 0) {
                 numRows = getResources().getInteger(resId);
             }
 
             resId = getResources().getIdentifier(RES_GRID_NUM_COLUMNS,
-                    "integer", getPackageName());
+                                                 "integer", getPackageName());
             if (resId > 0) {
                 numColumns = getResources().getInteger(resId);
             }
 
             resId = getResources().getIdentifier(RES_GRID_ICON_SIZE_DP,
-                    "dimen", getPackageName());
+                                                 "dimen", getPackageName());
             if (resId > 0) {
                 int px = getResources().getDimensionPixelSize(resId);
                 iconSize = Utilities.dpiFromPx(px, dm);

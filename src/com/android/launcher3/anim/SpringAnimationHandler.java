@@ -122,10 +122,10 @@ public class SpringAnimationHandler<T> {
         int action = event.getActionMasked();
         if (DEBUG) Log.d(TAG, "addMovement#action=" + action);
         switch (action) {
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_DOWN:
-                reset();
-                break;
+        case MotionEvent.ACTION_CANCEL:
+        case MotionEvent.ACTION_DOWN:
+            reset();
+            break;
         }
 
         getVelocityTracker().addMovement(event);
@@ -171,7 +171,7 @@ public class SpringAnimationHandler<T> {
     public void animateToPositionWithVelocity(float position, int startValue, float velocity) {
         if (DEBUG) {
             Log.d(TAG, "animateToPosition#pos=" + position + ", start=" + startValue
-                    + ", velocity=" + velocity);
+                  + ", velocity=" + velocity);
         }
 
         mCurrentVelocity = velocity;
@@ -211,8 +211,8 @@ public class SpringAnimationHandler<T> {
         getVelocityTracker().computeCurrentVelocity(1000 /* millis */);
 
         float velocity = isVerticalDirection()
-                ? getVelocityTracker().getYVelocity()
-                : getVelocityTracker().getXVelocity();
+                         ? getVelocityTracker().getYVelocity()
+                         : getVelocityTracker().getXVelocity();
         velocity *= VELOCITY_DAMPING_FACTOR;
 
         if (DEBUG) Log.d(TAG, "computeVelocity=" + velocity);

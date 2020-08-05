@@ -78,9 +78,9 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
             setBackgroundColor(Color.TRANSPARENT);
         } else {
             mBackgroundColor = ColorUtils.setAlphaComponent(
-                    Utilities.resolveAttributeData(context, R.attr.allAppsContainerColor), 0);
+                                   Utilities.resolveAttributeData(context, R.attr.allAppsContainerColor), 0);
             mBackground = BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) ?
-                    mLauncher.getBlurWallpaperProvider().createDrawable() : new ColorDrawable(mBackgroundColor);
+                          mLauncher.getBlurWallpaperProvider().createDrawable() : new ColorDrawable(mBackgroundColor);
             setBackground(mBackground);
         }
     }
@@ -138,14 +138,14 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
 
             LayoutInflater inflater = LayoutInflater.from(context);
             TextView allAppsButton = (TextView)
-                    inflater.inflate(R.layout.all_apps_button, mContent, false);
+                                     inflater.inflate(R.layout.all_apps_button, mContent, false);
             Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
             d.setBounds(0, 0, grid.hotseatIconSizePx, grid.hotseatIconSizePx);
 
             int scaleDownPx = getResources().getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
             Rect bounds = d.getBounds();
             d.setBounds(bounds.left, bounds.top + scaleDownPx / 2, bounds.right - scaleDownPx,
-                    bounds.bottom - scaleDownPx / 2);
+                        bounds.bottom - scaleDownPx / 2);
             allAppsButton.setCompoundDrawables(null, d, null, null);
 
             allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
@@ -175,7 +175,7 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
         // We don't want any clicks to go through to the hotseat unless the workspace is in
         // the normal state or an accessible drag is in progress.
         return !mLauncher.getWorkspace().workspaceIconsCanBeDragged() &&
-                !mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
+               !mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
     }
 
     @Override

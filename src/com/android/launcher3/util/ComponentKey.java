@@ -37,7 +37,7 @@ public class ComponentKey {
         Preconditions.assertNotNull(user);
         this.componentName = componentName;
         this.user = user;
-        mHashCode = Arrays.hashCode(new Object[]{componentName, user});
+        mHashCode = Arrays.hashCode(new Object[] {componentName, user});
 
     }
 
@@ -53,7 +53,7 @@ public class ComponentKey {
             Long componentUser = Long.valueOf(componentKeyStr.substring(userDelimiterIndex + 1));
             componentName = ComponentName.unflattenFromString(componentStr);
             user = UserManagerCompat.getInstance(context)
-                    .getUserForSerialNumber(componentUser.longValue());
+                   .getUserForSerialNumber(componentUser.longValue());
         } else {
             // No user provided, default to the current user
             componentName = ComponentName.unflattenFromString(componentKeyStr);
@@ -61,7 +61,7 @@ public class ComponentKey {
         }
         Preconditions.assertNotNull(componentName);
         Preconditions.assertNotNull(user);
-        mHashCode = Arrays.hashCode(new Object[]{componentName, user});
+        mHashCode = Arrays.hashCode(new Object[] {componentName, user});
     }
 
     @Override

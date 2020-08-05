@@ -31,10 +31,10 @@ public class PromiseAppInfo extends AppInfo {
     public PromiseAppInfo(@NonNull PackageInstallerCompat.PackageInstallInfo installInfo) {
         componentName = installInfo.componentName;
         intent = new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_LAUNCHER)
-                .setComponent(componentName)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        .addCategory(Intent.CATEGORY_LAUNCHER)
+        .setComponent(componentName)
+        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                  | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
     }
 
     @Override

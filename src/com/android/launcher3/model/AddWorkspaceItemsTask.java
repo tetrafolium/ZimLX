@@ -93,7 +93,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
             for (ItemInfo item : filteredItems) {
                 // Find appropriate space for the item.
                 Pair<Long, int[]> coords = findSpaceForItem(app, dataModel, workspaceScreens,
-                        addedWorkspaceScreensFinal, item.spanX, item.spanY);
+                                           addedWorkspaceScreensFinal, item.spanX, item.spanY);
                 long screenId = coords.first;
                 int[] cordinates = coords.second;
 
@@ -109,8 +109,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
                 // Add the shortcut to the db
                 getModelWriter().addItemToDatabase(itemInfo,
-                        LauncherSettings.Favorites.CONTAINER_DESKTOP, screenId,
-                        cordinates[0], cordinates[1]);
+                                                   LauncherSettings.Favorites.CONTAINER_DESKTOP, screenId,
+                                                   cordinates[0], cordinates[1]);
 
                 // Save the ShortcutInfo for binding in the workspace
                 addedItemsFinal.add(itemInfo);
@@ -138,7 +138,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                         }
                     }
                     callbacks.bindAppsAdded(addedWorkspaceScreensFinal,
-                            addNotAnimated, addAnimated);
+                                            addNotAnimated, addAnimated);
                 }
             });
         }
@@ -209,10 +209,10 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
      * @return screenId and the coordinates for the item.
      */
     protected Pair<Long, int[]> findSpaceForItem(
-            LauncherAppState app, BgDataModel dataModel,
-            ArrayList<Long> workspaceScreens,
-            ArrayList<Long> addedWorkspaceScreensFinal,
-            int spanX, int spanY) {
+        LauncherAppState app, BgDataModel dataModel,
+        ArrayList<Long> workspaceScreens,
+        ArrayList<Long> addedWorkspaceScreensFinal,
+        int spanX, int spanY) {
         LongSparseArray<ArrayList<ItemInfo>> screenItems = new LongSparseArray<>();
 
         // Use sBgItemsIdMap as all the items are already loaded.
@@ -240,7 +240,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         if (preferredScreenIndex < screenCount) {
             screenId = workspaceScreens.get(preferredScreenIndex);
             found = findNextAvailableIconSpaceInScreen(
-                    app, screenItems.get(screenId), cordinates, spanX, spanY);
+                        app, screenItems.get(screenId), cordinates, spanX, spanY);
         }
 
         if (!found) {
@@ -248,7 +248,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
             for (int screen = 1; screen < screenCount; screen++) {
                 screenId = workspaceScreens.get(screen);
                 if (findNextAvailableIconSpaceInScreen(
-                        app, screenItems.get(screenId), cordinates, spanX, spanY)) {
+                            app, screenItems.get(screenId), cordinates, spanX, spanY)) {
                     // We found a space for it
                     found = true;
                     break;
@@ -259,8 +259,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         if (!found) {
             // Still no position found. Add a new screen to the end.
             screenId = LauncherSettings.Settings.call(app.getContext().getContentResolver(),
-                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
-                    .getLong(LauncherSettings.Settings.EXTRA_VALUE);
+                       LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
+                       .getLong(LauncherSettings.Settings.EXTRA_VALUE);
 
             // Save the screen id for binding in the workspace
             workspaceScreens.add(screenId);
@@ -268,7 +268,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
             // If we still can't find an empty space, then God help us all!!!
             if (!findNextAvailableIconSpaceInScreen(
-                    app, screenItems.get(screenId), cordinates, spanX, spanY)) {
+                        app, screenItems.get(screenId), cordinates, spanX, spanY)) {
                 throw new RuntimeException("Can't find space to add the item");
             }
         }
@@ -276,8 +276,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
     }
 
     private boolean findNextAvailableIconSpaceInScreen(
-            LauncherAppState app, ArrayList<ItemInfo> occupiedPos,
-            int[] xy, int spanX, int spanY) {
+        LauncherAppState app, ArrayList<ItemInfo> occupiedPos,
+        int[] xy, int spanX, int spanY) {
         InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
 
         GridOccupancy occupied = new GridOccupancy(profile.numColumns, profile.numRows);

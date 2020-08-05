@@ -67,10 +67,10 @@ public class ShortcutsLaunchTest extends AbstractLauncherUiTest {
         // Verify that launching a shortcut opens a page with the same text
         assertTrue(deepShortcutsContainer.getChildCount() > 0);
         UiObject2 shortcut = deepShortcutsContainer.getChildren().get(0)
-                .findObject(getSelectorForId(R.id.bubble_text));
+                             .findObject(getSelectorForId(R.id.bubble_text));
         shortcut.click();
         assertTrue(mDevice.wait(Until.hasObject(By.pkg(
                 settingsApp.getComponentName().getPackageName())
-                .text(shortcut.getText())), DEFAULT_UI_TIMEOUT));
+                                                .text(shortcut.getText())), DEFAULT_UI_TIMEOUT));
     }
 }

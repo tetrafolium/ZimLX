@@ -53,20 +53,20 @@ public class SmartspaceCard {
         if (iVar != null) {
             try {
                 Intent parseUri = TextUtils.isEmpty(iVar.de.cG.cZ) ?
-                        null :
-                        Intent.parseUri(iVar.de.cG.cZ, 0);
+                                  null :
+                                  Intent.parseUri(iVar.de.cG.cZ, 0);
 
                 Bitmap bitmap = iVar.dd == null ?
-                        null :
-                        BitmapFactory.decodeByteArray(iVar.dd, 0, iVar.dd.length, null);
+                                null :
+                                BitmapFactory.decodeByteArray(iVar.dd, 0, iVar.dd.length, null);
 
                 if (bitmap != null) {
                     bitmap = ShadowGenerator
-                            .getInstance(context)
-                            .recreateIcon(bitmap, true, new BlurMaskFilter(
-                                            (float) Utilities.pxFromDp(3.0f, context.getResources().getDisplayMetrics()),
-                                            BlurMaskFilter.Blur.NORMAL),
-                                    20, 55);
+                             .getInstance(context)
+                             .recreateIcon(bitmap, true, new BlurMaskFilter(
+                                               (float) Utilities.pxFromDp(3.0f, context.getResources().getDisplayMetrics()),
+                                               BlurMaskFilter.Blur.NORMAL),
+                                           20, 55);
                 }
 
                 return new SmartspaceCard(context, iVar.de, parseUri, z, bitmap, iVar.dc, iVar.df, iVar.dh, iVar.dg);
@@ -175,28 +175,28 @@ public class SmartspaceCard {
         String cr;
         for (i = 0, array2 = new String[array.length]; i < array2.length; ++i) {
             switch (array[i].cQ) {
-                default: {
-                    array2[i] = "";
+            default: {
+                array2[i] = "";
+                break;
+            }
+            case 3: {
+                if (s != null && array[i].cS != 0) {
+                    array2[i] = s;
                     break;
                 }
-                case 3: {
-                    if (s != null && array[i].cS != 0) {
-                        array2[i] = s;
-                        break;
-                    }
-                    if (array[i].cR != null) {
-                        cr = array[i].cR;
-                    } else {
-                        cr = "";
-                    }
-                    array2[i] = cr;
-                    break;
+                if (array[i].cR != null) {
+                    cr = array[i].cR;
+                } else {
+                    cr = "";
                 }
-                case 1:
-                case 2: {
-                    array2[i] = this.cE(array[i]);
-                    break;
-                }
+                array2[i] = cr;
+                break;
+            }
+            case 1:
+            case 2: {
+                array2[i] = this.cE(array[i]);
+                break;
+            }
             }
         }
         return array2;
@@ -277,30 +277,30 @@ public class SmartspaceCard {
         Intent intent = new Intent(this.getIntent());
         Launcher launcher = Launcher.getLauncher(view.getContext());
         switch (this.dI.cG.cY) {
-            default: {
-                Log.w("SmartspaceCard", "unrecognized tap action: " + this);
-                break;
-            }
-            case 1: {
-                if (!Utilities.ATLEAST_NOUGAT) {
-                    try {
-                        Intent internal = Intent.parseUri(intent.getExtras()
-                                .getString("com.google.android.apps.gsa.smartspace.extra.SMARTSPACE_INTENT"), Intent.URI_INTENT_SCHEME);
-                        launcher.startActivity(internal);
-                        return;
-                    } catch (URISyntaxException | NullPointerException | SecurityException e) {
-                        e.printStackTrace();
-                    }
+        default: {
+            Log.w("SmartspaceCard", "unrecognized tap action: " + this);
+            break;
+        }
+        case 1: {
+            if (!Utilities.ATLEAST_NOUGAT) {
+                try {
+                    Intent internal = Intent.parseUri(intent.getExtras()
+                                                      .getString("com.google.android.apps.gsa.smartspace.extra.SMARTSPACE_INTENT"), Intent.URI_INTENT_SCHEME);
+                    launcher.startActivity(internal);
+                    return;
+                } catch (URISyntaxException | NullPointerException | SecurityException e) {
+                    e.printStackTrace();
                 }
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setSourceBounds(launcher.getViewBounds(view));
-                view.getContext().sendBroadcast(intent);
-                break;
             }
-            case 2: {
-                launcher.startActivitySafely(view, intent, null);
-                break;
-            }
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setSourceBounds(launcher.getViewBounds(view));
+            view.getContext().sendBroadcast(intent);
+            break;
+        }
+        case 2: {
+            launcher.startActivitySafely(view, intent, null);
+            break;
+        }
         }
     }
 
@@ -333,12 +333,12 @@ public class SmartspaceCard {
                 n = ch.cM.cP;
             }
             switch (n) {
-                case 1: {
-                    return TextUtils.TruncateAt.START;
-                }
-                case 2: {
-                    return TextUtils.TruncateAt.MIDDLE;
-                }
+            case 1: {
+                return TextUtils.TruncateAt.START;
+            }
+            case 2: {
+                return TextUtils.TruncateAt.MIDDLE;
+            }
             }
         }
         return TextUtils.TruncateAt.END;

@@ -29,16 +29,18 @@ import java.io.PrintWriter;
 public class UiFactory {
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        return new TouchController[]{
-                launcher.getDragController(), new AllAppsSwipeController(launcher)};
+        return new TouchController[] {
+                   launcher.getDragController(), new AllAppsSwipeController(launcher)
+               };
     }
 
     public static void setOnTouchControllersChangedListener(Context context, Runnable listener) {
     }
 
     public static StateHandler[] getStateHandler(Launcher launcher) {
-        return new StateHandler[]{
-                launcher.getAllAppsController(), launcher.getWorkspace()};
+        return new StateHandler[] {
+                   launcher.getAllAppsController(), launcher.getWorkspace()
+               };
     }
 
     public static void resetOverview(Launcher launcher) {
@@ -63,7 +65,7 @@ public class UiFactory {
     }
 
     public static void useFadeOutAnimationForLauncherStart(Launcher launcher,
-                                                           CancellationSignal cancellationSignal) {
+            CancellationSignal cancellationSignal) {
     }
 
     public static boolean dumpActivity(Activity activity, PrintWriter writer) {

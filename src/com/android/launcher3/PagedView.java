@@ -164,7 +164,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         super(context, attrs, defStyle);
 
         TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.PagedView, defStyle, 0);
+                       R.styleable.PagedView, defStyle, 0);
         mPageIndicatorViewId = a.getResourceId(R.styleable.PagedView_pageIndicator, -1);
         a.recycle();
 
@@ -406,7 +406,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (isObservedEventType(getContext(), AccessibilityEvent.TYPE_VIEW_SCROLLED)) {
             if (mCurrentPage != getNextPage()) {
                 AccessibilityEvent ev =
-                        AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_SCROLLED);
+                    AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_SCROLLED);
                 ev.setScrollable(true);
                 ev.setScrollX(getScrollX());
                 ev.setScrollY(getScrollY());
@@ -474,7 +474,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     public int getNormalChildHeight() {
         return getExpectedHeight() - getPaddingTop() - getPaddingBottom()
-                - mInsets.top - mInsets.bottom;
+               - mInsets.top - mInsets.bottom;
     }
 
     public int getExpectedWidth() {
@@ -483,7 +483,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     public int getNormalChildWidth() {
         return getExpectedWidth() - getPaddingLeft() - getPaddingRight()
-                - mInsets.left - mInsets.right;
+               - mInsets.left - mInsets.right;
     }
 
     @Override
@@ -528,9 +528,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (DEBUG) Log.d(TAG, "PagedView.onMeasure(): " + widthSize + ", " + heightSize);
 
         int myWidthSpec = MeasureSpec.makeMeasureSpec(
-                widthSize - mInsets.left - mInsets.right, MeasureSpec.EXACTLY);
+                              widthSize - mInsets.left - mInsets.right, MeasureSpec.EXACTLY);
         int myHeightSpec = MeasureSpec.makeMeasureSpec(
-                heightSize - mInsets.top - mInsets.bottom, MeasureSpec.EXACTLY);
+                               heightSize - mInsets.top - mInsets.bottom, MeasureSpec.EXACTLY);
 
         // measureChildren takes accounts for content padding, we only need to care about extra
         // space due to insets.
@@ -607,7 +607,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         final int delta = mIsRtl ? -1 : 1;
 
         final int verticalCenter = (getPaddingTop() + getMeasuredHeight() + mInsets.top
-                - mInsets.bottom - getPaddingBottom()) / 2;
+                                    - mInsets.bottom - getPaddingBottom()) / 2;
 
         final int scrollOffsetLeft = mInsets.left + getPaddingLeft();
         final int scrollOffsetRight = getWidth() - getPaddingRight() - mInsets.right;
@@ -628,8 +628,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 // In case the pages are of different width, align the page to left or right edge
                 // based on the orientation.
                 final int pageScroll = mIsRtl
-                        ? (childLeft - scrollOffsetLeft)
-                        : Math.max(0, childRight - scrollOffsetRight);
+                                       ? (childLeft - scrollOffsetLeft)
+                                       : Math.max(0, childRight - scrollOffsetRight);
                 if (outPageScrolls[i] != pageScroll) {
                     pageScrollChanged = true;
                     outPageScrolls[i] = pageScroll;
@@ -842,67 +842,67 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
 
         switch (action & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_MOVE: {
-                /*
-                 * mIsBeingDragged == false, otherwise the shortcut would have caught it. Check
-                 * whether the user has moved far enough from his original down touch.
-                 */
-                if (mActivePointerId != INVALID_POINTER) {
-                    determineScrollingStart(ev);
-                }
-                // if mActivePointerId is INVALID_POINTER, then we must have missed an ACTION_DOWN
-                // event. in that case, treat the first occurence of a move event as a ACTION_DOWN
-                // i.e. fall through to the next case (don't break)
-                // (We sometimes miss ACTION_DOWN events in Workspace because it ignores all events
-                // while it's small- this was causing a crash before we checked for INVALID_POINTER)
-                break;
+        case MotionEvent.ACTION_MOVE: {
+            /*
+             * mIsBeingDragged == false, otherwise the shortcut would have caught it. Check
+             * whether the user has moved far enough from his original down touch.
+             */
+            if (mActivePointerId != INVALID_POINTER) {
+                determineScrollingStart(ev);
             }
+            // if mActivePointerId is INVALID_POINTER, then we must have missed an ACTION_DOWN
+            // event. in that case, treat the first occurence of a move event as a ACTION_DOWN
+            // i.e. fall through to the next case (don't break)
+            // (We sometimes miss ACTION_DOWN events in Workspace because it ignores all events
+            // while it's small- this was causing a crash before we checked for INVALID_POINTER)
+            break;
+        }
 
-            case MotionEvent.ACTION_DOWN: {
-                final float x = ev.getX();
-                final float y = ev.getY();
-                // Remember location of down touch
-                mDownMotionX = x;
-                mDownMotionY = y;
-                mLastMotionX = x;
-                mLastMotionXRemainder = 0;
-                mTotalMotionX = 0;
-                mActivePointerId = ev.getPointerId(0);
+        case MotionEvent.ACTION_DOWN: {
+            final float x = ev.getX();
+            final float y = ev.getY();
+            // Remember location of down touch
+            mDownMotionX = x;
+            mDownMotionY = y;
+            mLastMotionX = x;
+            mLastMotionXRemainder = 0;
+            mTotalMotionX = 0;
+            mActivePointerId = ev.getPointerId(0);
 
-                /*
-                 * If being flinged and user touches the screen, initiate drag;
-                 * otherwise don't.  mScroller.isFinished should be false when
-                 * being flinged.
-                 */
-                final int xDist = Math.abs(mScroller.getFinalX() - mScroller.getCurrX());
-                final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop / 3);
+            /*
+             * If being flinged and user touches the screen, initiate drag;
+             * otherwise don't.  mScroller.isFinished should be false when
+             * being flinged.
+             */
+            final int xDist = Math.abs(mScroller.getFinalX() - mScroller.getCurrX());
+            final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop / 3);
 
-                if (finishedScrolling) {
-                    mTouchState = TOUCH_STATE_REST;
-                    if (!mScroller.isFinished() && !mFreeScroll) {
-                        setCurrentPage(getNextPage());
-                        pageEndTransition();
-                    }
+            if (finishedScrolling) {
+                mTouchState = TOUCH_STATE_REST;
+                if (!mScroller.isFinished() && !mFreeScroll) {
+                    setCurrentPage(getNextPage());
+                    pageEndTransition();
+                }
+            } else {
+                if (isTouchPointInViewportWithBuffer((int) mDownMotionX, (int) mDownMotionY)) {
+                    mTouchState = TOUCH_STATE_SCROLLING;
                 } else {
-                    if (isTouchPointInViewportWithBuffer((int) mDownMotionX, (int) mDownMotionY)) {
-                        mTouchState = TOUCH_STATE_SCROLLING;
-                    } else {
-                        mTouchState = TOUCH_STATE_REST;
-                    }
+                    mTouchState = TOUCH_STATE_REST;
                 }
-
-                break;
             }
 
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                resetTouchState();
-                break;
+            break;
+        }
 
-            case MotionEvent.ACTION_POINTER_UP:
-                onSecondaryPointerUp(ev);
-                releaseVelocityTracker();
-                break;
+        case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_CANCEL:
+            resetTouchState();
+            break;
+
+        case MotionEvent.ACTION_POINTER_UP:
+            onSecondaryPointerUp(ev);
+            releaseVelocityTracker();
+            break;
         }
 
         /*
@@ -1062,176 +1062,176 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         final int action = ev.getAction();
 
         switch (action & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                /*
-                 * If being flinged and user touches, stop the fling. isFinished
-                 * will be false if being flinged.
-                 */
-                if (!mScroller.isFinished()) {
-                    abortScrollerAnimation(false);
+        case MotionEvent.ACTION_DOWN:
+            /*
+             * If being flinged and user touches, stop the fling. isFinished
+             * will be false if being flinged.
+             */
+            if (!mScroller.isFinished()) {
+                abortScrollerAnimation(false);
+            }
+
+            // Remember where the motion event started
+            mDownMotionX = mLastMotionX = ev.getX();
+            mDownMotionY = ev.getY();
+            mLastMotionXRemainder = 0;
+            mTotalMotionX = 0;
+            mActivePointerId = ev.getPointerId(0);
+
+            if (mTouchState == TOUCH_STATE_SCROLLING) {
+                onScrollInteractionBegin();
+                pageBeginTransition();
+            }
+            break;
+
+        case MotionEvent.ACTION_MOVE:
+            if (mTouchState == TOUCH_STATE_SCROLLING) {
+                // Scroll to follow the motion event
+                final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+
+                if (pointerIndex == -1) return true;
+
+                final float x = ev.getX(pointerIndex);
+                final float deltaX = mLastMotionX + mLastMotionXRemainder - x;
+
+                mTotalMotionX += Math.abs(deltaX);
+
+                // Only scroll and update mLastMotionX if we have moved some discrete amount.  We
+                // keep the remainder because we are actually testing if we've moved from the last
+                // scrolled position (which is discrete).
+                if (Math.abs(deltaX) >= 1.0f) {
+                    scrollBy((int) deltaX, 0);
+                    mLastMotionX = x;
+                    mLastMotionXRemainder = deltaX - (int) deltaX;
+                } else {
+                    awakenScrollBars();
                 }
+            } else {
+                determineScrollingStart(ev);
+            }
+            break;
 
-                // Remember where the motion event started
-                mDownMotionX = mLastMotionX = ev.getX();
-                mDownMotionY = ev.getY();
-                mLastMotionXRemainder = 0;
-                mTotalMotionX = 0;
-                mActivePointerId = ev.getPointerId(0);
+        case MotionEvent.ACTION_UP:
+            if (mTouchState == TOUCH_STATE_SCROLLING) {
+                final int activePointerId = mActivePointerId;
+                final int pointerIndex = ev.findPointerIndex(activePointerId);
+                final float x = ev.getX(pointerIndex);
+                final VelocityTracker velocityTracker = mVelocityTracker;
+                velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
+                int velocityX = (int) velocityTracker.getXVelocity(activePointerId);
+                final int deltaX = (int) (x - mDownMotionX);
+                final int pageWidth = getPageAt(mCurrentPage).getMeasuredWidth();
+                boolean isSignificantMove = Math.abs(deltaX) > pageWidth *
+                                            SIGNIFICANT_MOVE_THRESHOLD;
 
-                if (mTouchState == TOUCH_STATE_SCROLLING) {
-                    onScrollInteractionBegin();
-                    pageBeginTransition();
-                }
-                break;
+                mTotalMotionX += Math.abs(mLastMotionX + mLastMotionXRemainder - x);
+                boolean isFling = mTotalMotionX > mTouchSlop && shouldFlingForVelocity(velocityX);
 
-            case MotionEvent.ACTION_MOVE:
-                if (mTouchState == TOUCH_STATE_SCROLLING) {
-                    // Scroll to follow the motion event
-                    final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+                if (!mFreeScroll) {
+                    // In the case that the page is moved far to one direction and then is flung
+                    // in the opposite direction, we use a threshold to determine whether we should
+                    // just return to the starting page, or if we should skip one further.
+                    boolean returnToOriginalPage = false;
+                    if (Math.abs(deltaX) > pageWidth * RETURN_TO_ORIGINAL_PAGE_THRESHOLD &&
+                            Math.signum(velocityX) != Math.signum(deltaX) && isFling) {
+                        returnToOriginalPage = true;
+                    }
 
-                    if (pointerIndex == -1) return true;
-
-                    final float x = ev.getX(pointerIndex);
-                    final float deltaX = mLastMotionX + mLastMotionXRemainder - x;
-
-                    mTotalMotionX += Math.abs(deltaX);
-
-                    // Only scroll and update mLastMotionX if we have moved some discrete amount.  We
-                    // keep the remainder because we are actually testing if we've moved from the last
-                    // scrolled position (which is discrete).
-                    if (Math.abs(deltaX) >= 1.0f) {
-                        scrollBy((int) deltaX, 0);
-                        mLastMotionX = x;
-                        mLastMotionXRemainder = deltaX - (int) deltaX;
+                    int finalPage;
+                    // We give flings precedence over large moves, which is why we short-circuit our
+                    // test for a large move if a fling has been registered. That is, a large
+                    // move to the left and fling to the right will register as a fling to the right.
+                    boolean isDeltaXLeft = mIsRtl ? deltaX > 0 : deltaX < 0;
+                    boolean isVelocityXLeft = mIsRtl ? velocityX > 0 : velocityX < 0;
+                    if (((isSignificantMove && !isDeltaXLeft && !isFling) ||
+                            (isFling && !isVelocityXLeft)) && mCurrentPage > 0) {
+                        finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage - 1;
+                        snapToPageWithVelocity(finalPage, velocityX);
+                    } else if (((isSignificantMove && isDeltaXLeft && !isFling) ||
+                                (isFling && isVelocityXLeft)) &&
+                               mCurrentPage < getChildCount() - 1) {
+                        finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage + 1;
+                        snapToPageWithVelocity(finalPage, velocityX);
                     } else {
-                        awakenScrollBars();
+                        snapToDestination();
                     }
                 } else {
-                    determineScrollingStart(ev);
+                    if (!mScroller.isFinished()) {
+                        abortScrollerAnimation(true);
+                    }
+
+                    float scaleX = getScaleX();
+                    int vX = (int) (-velocityX * scaleX);
+                    int initialScrollX = (int) (getScrollX() * scaleX);
+
+                    mScroller.setInterpolator(mDefaultInterpolator);
+                    mScroller.fling(initialScrollX,
+                                    getScrollY(), vX, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
+                    int unscaledScrollX = (int) (mScroller.getFinalX() / scaleX);
+                    mNextPage = getPageNearestToCenterOfScreen(unscaledScrollX);
+                    int firstPageScroll = getScrollForPage(!mIsRtl ? 0 : getPageCount() - 1);
+                    int lastPageScroll = getScrollForPage(!mIsRtl ? getPageCount() - 1 : 0);
+                    if (mSettleOnPageInFreeScroll && unscaledScrollX > 0
+                            && unscaledScrollX < mMaxScrollX) {
+                        // If scrolling ends in the half of the added space that is closer to the
+                        // end, settle to the end. Otherwise snap to the nearest page.
+                        // If flinging past one of the ends, don't change the velocity as it will
+                        // get stopped at the end anyway.
+                        final int finalX = unscaledScrollX < firstPageScroll / 2 ?
+                                           0 :
+                                           unscaledScrollX > (lastPageScroll + mMaxScrollX) / 2 ?
+                                           mMaxScrollX :
+                                           getScrollForPage(mNextPage);
+
+                        mScroller.setFinalX((int) (finalX * getScaleX()));
+                        // Ensure the scroll/snap doesn't happen too fast;
+                        int extraScrollDuration = OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION
+                                                  - mScroller.getDuration();
+                        if (extraScrollDuration > 0) {
+                            mScroller.extendDuration(extraScrollDuration);
+                        }
+                    }
+                    invalidate();
                 }
-                break;
-
-            case MotionEvent.ACTION_UP:
-                if (mTouchState == TOUCH_STATE_SCROLLING) {
-                    final int activePointerId = mActivePointerId;
-                    final int pointerIndex = ev.findPointerIndex(activePointerId);
-                    final float x = ev.getX(pointerIndex);
-                    final VelocityTracker velocityTracker = mVelocityTracker;
-                    velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
-                    int velocityX = (int) velocityTracker.getXVelocity(activePointerId);
-                    final int deltaX = (int) (x - mDownMotionX);
-                    final int pageWidth = getPageAt(mCurrentPage).getMeasuredWidth();
-                    boolean isSignificantMove = Math.abs(deltaX) > pageWidth *
-                            SIGNIFICANT_MOVE_THRESHOLD;
-
-                    mTotalMotionX += Math.abs(mLastMotionX + mLastMotionXRemainder - x);
-                    boolean isFling = mTotalMotionX > mTouchSlop && shouldFlingForVelocity(velocityX);
-
-                    if (!mFreeScroll) {
-                        // In the case that the page is moved far to one direction and then is flung
-                        // in the opposite direction, we use a threshold to determine whether we should
-                        // just return to the starting page, or if we should skip one further.
-                        boolean returnToOriginalPage = false;
-                        if (Math.abs(deltaX) > pageWidth * RETURN_TO_ORIGINAL_PAGE_THRESHOLD &&
-                                Math.signum(velocityX) != Math.signum(deltaX) && isFling) {
-                            returnToOriginalPage = true;
-                        }
-
-                        int finalPage;
-                        // We give flings precedence over large moves, which is why we short-circuit our
-                        // test for a large move if a fling has been registered. That is, a large
-                        // move to the left and fling to the right will register as a fling to the right.
-                        boolean isDeltaXLeft = mIsRtl ? deltaX > 0 : deltaX < 0;
-                        boolean isVelocityXLeft = mIsRtl ? velocityX > 0 : velocityX < 0;
-                        if (((isSignificantMove && !isDeltaXLeft && !isFling) ||
-                                (isFling && !isVelocityXLeft)) && mCurrentPage > 0) {
-                            finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage - 1;
-                            snapToPageWithVelocity(finalPage, velocityX);
-                        } else if (((isSignificantMove && isDeltaXLeft && !isFling) ||
-                                (isFling && isVelocityXLeft)) &&
-                                mCurrentPage < getChildCount() - 1) {
-                            finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage + 1;
-                            snapToPageWithVelocity(finalPage, velocityX);
-                        } else {
-                            snapToDestination();
-                        }
-                    } else {
-                        if (!mScroller.isFinished()) {
-                            abortScrollerAnimation(true);
-                        }
-
-                        float scaleX = getScaleX();
-                        int vX = (int) (-velocityX * scaleX);
-                        int initialScrollX = (int) (getScrollX() * scaleX);
-
-                        mScroller.setInterpolator(mDefaultInterpolator);
-                        mScroller.fling(initialScrollX,
-                                getScrollY(), vX, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
-                        int unscaledScrollX = (int) (mScroller.getFinalX() / scaleX);
-                        mNextPage = getPageNearestToCenterOfScreen(unscaledScrollX);
-                        int firstPageScroll = getScrollForPage(!mIsRtl ? 0 : getPageCount() - 1);
-                        int lastPageScroll = getScrollForPage(!mIsRtl ? getPageCount() - 1 : 0);
-                        if (mSettleOnPageInFreeScroll && unscaledScrollX > 0
-                                && unscaledScrollX < mMaxScrollX) {
-                            // If scrolling ends in the half of the added space that is closer to the
-                            // end, settle to the end. Otherwise snap to the nearest page.
-                            // If flinging past one of the ends, don't change the velocity as it will
-                            // get stopped at the end anyway.
-                            final int finalX = unscaledScrollX < firstPageScroll / 2 ?
-                                    0 :
-                                    unscaledScrollX > (lastPageScroll + mMaxScrollX) / 2 ?
-                                            mMaxScrollX :
-                                            getScrollForPage(mNextPage);
-
-                            mScroller.setFinalX((int) (finalX * getScaleX()));
-                            // Ensure the scroll/snap doesn't happen too fast;
-                            int extraScrollDuration = OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION
-                                    - mScroller.getDuration();
-                            if (extraScrollDuration > 0) {
-                                mScroller.extendDuration(extraScrollDuration);
-                            }
-                        }
-                        invalidate();
-                    }
-                    onScrollInteractionEnd();
-                } else if (mTouchState == TOUCH_STATE_PREV_PAGE) {
-                    // at this point we have not moved beyond the touch slop
-                    // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
-                    // we can just page
-                    int nextPage = Math.max(0, mCurrentPage - 1);
-                    if (nextPage != mCurrentPage) {
-                        snapToPage(nextPage);
-                    } else {
-                        snapToDestination();
-                    }
-                } else if (mTouchState == TOUCH_STATE_NEXT_PAGE) {
-                    // at this point we have not moved beyond the touch slop
-                    // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
-                    // we can just page
-                    int nextPage = Math.min(getChildCount() - 1, mCurrentPage + 1);
-                    if (nextPage != mCurrentPage) {
-                        snapToPage(nextPage);
-                    } else {
-                        snapToDestination();
-                    }
-                }
-
-                // End any intermediate reordering states
-                resetTouchState();
-                break;
-
-            case MotionEvent.ACTION_CANCEL:
-                if (mTouchState == TOUCH_STATE_SCROLLING) {
+                onScrollInteractionEnd();
+            } else if (mTouchState == TOUCH_STATE_PREV_PAGE) {
+                // at this point we have not moved beyond the touch slop
+                // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
+                // we can just page
+                int nextPage = Math.max(0, mCurrentPage - 1);
+                if (nextPage != mCurrentPage) {
+                    snapToPage(nextPage);
+                } else {
                     snapToDestination();
-                    onScrollInteractionEnd();
                 }
-                resetTouchState();
-                break;
+            } else if (mTouchState == TOUCH_STATE_NEXT_PAGE) {
+                // at this point we have not moved beyond the touch slop
+                // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
+                // we can just page
+                int nextPage = Math.min(getChildCount() - 1, mCurrentPage + 1);
+                if (nextPage != mCurrentPage) {
+                    snapToPage(nextPage);
+                } else {
+                    snapToDestination();
+                }
+            }
 
-            case MotionEvent.ACTION_POINTER_UP:
-                onSecondaryPointerUp(ev);
-                releaseVelocityTracker();
-                break;
+            // End any intermediate reordering states
+            resetTouchState();
+            break;
+
+        case MotionEvent.ACTION_CANCEL:
+            if (mTouchState == TOUCH_STATE_SCROLLING) {
+                snapToDestination();
+                onScrollInteractionEnd();
+            }
+            resetTouchState();
+            break;
+
+        case MotionEvent.ACTION_POINTER_UP:
+            onSecondaryPointerUp(ev);
+            releaseVelocityTracker();
+            break;
         }
 
         return true;
@@ -1260,28 +1260,28 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     public boolean onGenericMotionEvent(MotionEvent event) {
         if ((event.getSource() & InputDevice.SOURCE_CLASS_POINTER) != 0) {
             switch (event.getAction()) {
-                case MotionEvent.ACTION_SCROLL: {
-                    // Handle mouse (or ext. device) by shifting the page depending on the scroll
-                    final float vscroll;
-                    final float hscroll;
-                    if ((event.getMetaState() & KeyEvent.META_SHIFT_ON) != 0) {
-                        vscroll = 0;
-                        hscroll = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
-                    } else {
-                        vscroll = -event.getAxisValue(MotionEvent.AXIS_VSCROLL);
-                        hscroll = event.getAxisValue(MotionEvent.AXIS_HSCROLL);
-                    }
-                    if (hscroll != 0 || vscroll != 0) {
-                        boolean isForwardScroll = mIsRtl ? (hscroll < 0 || vscroll < 0)
-                                : (hscroll > 0 || vscroll > 0);
-                        if (isForwardScroll) {
-                            scrollRight();
-                        } else {
-                            scrollLeft();
-                        }
-                        return true;
-                    }
+            case MotionEvent.ACTION_SCROLL: {
+                // Handle mouse (or ext. device) by shifting the page depending on the scroll
+                final float vscroll;
+                final float hscroll;
+                if ((event.getMetaState() & KeyEvent.META_SHIFT_ON) != 0) {
+                    vscroll = 0;
+                    hscroll = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
+                } else {
+                    vscroll = -event.getAxisValue(MotionEvent.AXIS_VSCROLL);
+                    hscroll = event.getAxisValue(MotionEvent.AXIS_HSCROLL);
                 }
+                if (hscroll != 0 || vscroll != 0) {
+                    boolean isForwardScroll = mIsRtl ? (hscroll < 0 || vscroll < 0)
+                                              : (hscroll > 0 || vscroll > 0);
+                    if (isForwardScroll) {
+                        scrollRight();
+                    } else {
+                        scrollLeft();
+                    }
+                    return true;
+                }
+            }
             }
         }
         return super.onGenericMotionEvent(event);
@@ -1304,7 +1304,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     private void onSecondaryPointerUp(MotionEvent ev) {
         final int pointerIndex = (ev.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >>
-                MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+                                 MotionEvent.ACTION_POINTER_INDEX_SHIFT;
         final int pointerId = ev.getPointerId(pointerIndex);
         if (pointerId == mActivePointerId) {
             // This was our active pointer going up. Choose a new
@@ -1397,7 +1397,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         // duration as a function of the distance the page needs to travel.
         float distanceRatio = Math.min(1f, 1.0f * Math.abs(delta) / (2 * halfScreenSize));
         float distance = halfScreenSize + halfScreenSize *
-                distanceInfluenceForSnapDuration(distanceRatio);
+                         distanceInfluenceForSnapDuration(distanceRatio);
 
         velocity = Math.abs(velocity);
         velocity = Math.max(mMinSnapVelocity, velocity);
@@ -1448,7 +1448,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         if (FeatureFlags.IS_DOGFOOD_BUILD) {
             duration *= Settings.System.getFloat(getContext().getContentResolver(),
-                    Settings.System.WINDOW_ANIMATION_SCALE, 1);
+                                                 Settings.System.WINDOW_ANIMATION_SCALE, 1);
         }
 
         whichPage = validateNewPage(whichPage);
@@ -1526,11 +1526,11 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         info.setScrollable(getPageCount() > 1);
         if (getCurrentPage() < getPageCount() - 1) {
             info.addAction(pagesFlipped ? AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD
-                    : AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+                           : AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
         }
         if (getCurrentPage() > 0) {
             info.addAction(pagesFlipped ? AccessibilityNodeInfo.ACTION_SCROLL_FORWARD
-                    : AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+                           : AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
         }
 
         // Accessibility-wise, PagedView doesn't support long click, so disabling it.
@@ -1561,18 +1561,18 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
         final boolean pagesFlipped = isPageOrderFlipped();
         switch (action) {
-            case AccessibilityNodeInfo.ACTION_SCROLL_FORWARD: {
-                if (pagesFlipped ? scrollLeft() : scrollRight()) {
-                    return true;
-                }
+        case AccessibilityNodeInfo.ACTION_SCROLL_FORWARD: {
+            if (pagesFlipped ? scrollLeft() : scrollRight()) {
+                return true;
             }
-            break;
-            case AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD: {
-                if (pagesFlipped ? scrollRight() : scrollLeft()) {
-                    return true;
-                }
+        }
+        break;
+        case AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD: {
+            if (pagesFlipped ? scrollRight() : scrollLeft()) {
+                return true;
             }
-            break;
+        }
+        break;
         }
         return false;
     }
@@ -1583,7 +1583,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     protected String getCurrentPageDescription() {
         return getContext().getString(R.string.default_scroll_format,
-                getNextPage() + 1, getChildCount());
+                                      getNextPage() + 1, getChildCount());
     }
 
     protected float getDownMotionX() {

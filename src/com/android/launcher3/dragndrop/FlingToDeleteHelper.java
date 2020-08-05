@@ -45,7 +45,7 @@ public class FlingToDeleteHelper {
     public FlingToDeleteHelper(Launcher launcher) {
         mLauncher = launcher;
         mFlingToDeleteThresholdVelocity = launcher.getResources()
-                .getDimensionPixelSize(R.dimen.drag_flingToDeleteMinVelocity);
+                                          .getDimensionPixelSize(R.dimen.drag_flingToDeleteMinVelocity);
     }
 
     public void recordMotionEvent(MotionEvent ev) {
@@ -62,20 +62,20 @@ public class FlingToDeleteHelper {
     public void recordDragEvent(long dragStartTime, DragEvent event) {
         final int motionAction;
         switch (event.getAction()) {
-            case DragEvent.ACTION_DRAG_STARTED:
-                motionAction = MotionEvent.ACTION_DOWN;
-                break;
-            case DragEvent.ACTION_DRAG_LOCATION:
-                motionAction = MotionEvent.ACTION_MOVE;
-                break;
-            case DragEvent.ACTION_DRAG_ENDED:
-                motionAction = MotionEvent.ACTION_UP;
-                break;
-            default:
-                return;
+        case DragEvent.ACTION_DRAG_STARTED:
+            motionAction = MotionEvent.ACTION_DOWN;
+            break;
+        case DragEvent.ACTION_DRAG_LOCATION:
+            motionAction = MotionEvent.ACTION_MOVE;
+            break;
+        case DragEvent.ACTION_DRAG_ENDED:
+            motionAction = MotionEvent.ACTION_UP;
+            break;
+        default:
+            return;
         }
         MotionEvent emulatedEvent = MotionEvent.obtain(dragStartTime, SystemClock.uptimeMillis(),
-                motionAction, event.getX(), event.getY(), 0);
+                                    motionAction, event.getX(), event.getY(), 0);
         recordMotionEvent(emulatedEvent);
         emulatedEvent.recycle();
     }
@@ -118,7 +118,7 @@ public class FlingToDeleteHelper {
             PointF upVec = new PointF(0f, -1f);
             theta = getAngleBetweenVectors(vel, upVec);
         } else if (mLauncher.getDeviceProfile().isVerticalBarLayout() &&
-                mVelocityTracker.getXVelocity() < mFlingToDeleteThresholdVelocity) {
+                   mVelocityTracker.getXVelocity() < mFlingToDeleteThresholdVelocity) {
             // Remove icon is on left side instead of top, so check if we are flinging to the left.
             PointF leftVec = new PointF(-1f, 0f);
             theta = getAngleBetweenVectors(vel, leftVec);
@@ -131,6 +131,6 @@ public class FlingToDeleteHelper {
 
     private float getAngleBetweenVectors(PointF vec1, PointF vec2) {
         return (float) Math.acos(((vec1.x * vec2.x) + (vec1.y * vec2.y)) /
-                (vec1.length() * vec2.length()));
+                                 (vec1.length() * vec2.length()));
     }
 }

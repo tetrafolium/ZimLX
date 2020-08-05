@@ -116,21 +116,21 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                     .asRecord(event);
             record.setItemCount(mApps.getNumFilteredApps());
             record.setFromIndex(Math.max(0,
-                    record.getFromIndex() - getRowsNotForAccessibility(record.getFromIndex())));
+                                         record.getFromIndex() - getRowsNotForAccessibility(record.getFromIndex())));
             record.setToIndex(Math.max(0,
-                    record.getToIndex() - getRowsNotForAccessibility(record.getToIndex())));
+                                       record.getToIndex() - getRowsNotForAccessibility(record.getToIndex())));
         }
 
         @Override
         public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
                                                RecyclerView.State state) {
             return super.getRowCountForAccessibility(recycler, state) -
-                    getRowsNotForAccessibility(mApps.getAdapterItems().size() - 1);
+                   getRowsNotForAccessibility(mApps.getAdapterItems().size() - 1);
         }
 
         @Override
         public void onInitializeAccessibilityNodeInfoForItem(RecyclerView.Recycler recycler,
-                                                             RecyclerView.State state, View host, AccessibilityNodeInfoCompat info) {
+                RecyclerView.State state, View host, AccessibilityNodeInfoCompat info) {
             super.onInitializeAccessibilityNodeInfoForItem(recycler, state, host, info);
 
             ViewGroup.LayoutParams lp = host.getLayoutParams();
@@ -140,12 +140,12 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             }
             LayoutParams glp = (LayoutParams) lp;
             info.setCollectionItemInfo(AccessibilityNodeInfoCompat.CollectionItemInfoCompat.obtain(
-                    cic.getRowIndex() - getRowsNotForAccessibility(glp.getViewAdapterPosition()),
-                    cic.getRowSpan(),
-                    cic.getColumnIndex(),
-                    cic.getColumnSpan(),
-                    cic.isHeading(),
-                    cic.isSelected()));
+                                           cic.getRowIndex() - getRowsNotForAccessibility(glp.getViewAdapterPosition()),
+                                           cic.getRowSpan(),
+                                           cic.getColumnIndex(),
+                                           cic.getColumnSpan(),
+                                           cic.isHeading(),
+                                           cic.isSelected()));
         }
 
         /**
@@ -259,113 +259,113 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case VIEW_TYPE_ICON:
-                BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
-                        R.layout.all_apps_icon, parent, false);
-                icon.setOnClickListener(ItemClickHandler.INSTANCE);
-                icon.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
-                icon.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
-                icon.setOnFocusChangeListener(mIconFocusListener);
+        case VIEW_TYPE_ICON:
+            BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
+                                      R.layout.all_apps_icon, parent, false);
+            icon.setOnClickListener(ItemClickHandler.INSTANCE);
+            icon.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
+            icon.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
+            icon.setOnFocusChangeListener(mIconFocusListener);
 
-                // Ensure the all apps icon height matches the workspace icons in portrait mode.
-                icon.getLayoutParams().height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
-                return new ViewHolder(icon);
+            // Ensure the all apps icon height matches the workspace icons in portrait mode.
+            icon.getLayoutParams().height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
+            return new ViewHolder(icon);
 
-            case VIEW_TYPE_EMPTY_SEARCH:
-                return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
-                        parent, false));
+        case VIEW_TYPE_EMPTY_SEARCH:
+            return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
+                                  parent, false));
 
-            case VIEW_TYPE_SEARCH_MARKET:
-                View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
-                        parent, false);
-                searchMarketView.setOnClickListener(v -> mLauncher.startActivitySafely(v, mMarketSearchIntent, null));
-                return new ViewHolder(searchMarketView);
+        case VIEW_TYPE_SEARCH_MARKET:
+            View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
+                                    parent, false);
+            searchMarketView.setOnClickListener(v -> mLauncher.startActivitySafely(v, mMarketSearchIntent, null));
+            return new ViewHolder(searchMarketView);
 
-            case VIEW_TYPE_ALL_APPS_DIVIDER:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.all_apps_divider, parent, false));
+        case VIEW_TYPE_ALL_APPS_DIVIDER:
+            return new ViewHolder(mLayoutInflater.inflate(
+                                      R.layout.all_apps_divider, parent, false));
 
-            case VIEW_TYPE_WORK_TAB_FOOTER:
-                View footer = mLayoutInflater.inflate(R.layout.work_tab_footer, parent, false);
-                return new ViewHolder(footer);
-            case VIEW_TYPE_FOLDER:
-                FrameLayout layout = new FrameLayout(mLauncher);
+        case VIEW_TYPE_WORK_TAB_FOOTER:
+            View footer = mLayoutInflater.inflate(R.layout.work_tab_footer, parent, false);
+            return new ViewHolder(footer);
+        case VIEW_TYPE_FOLDER:
+            FrameLayout layout = new FrameLayout(mLauncher);
 
-                ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        mLauncher.getDeviceProfile().allAppsCellHeightPx);
-                layout.setLayoutParams(lp);
-                return new ViewHolder(layout);
-            case VIEW_TYPE_SEARCH_SUGGESTION:
-                return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_search_suggestion, parent, false));
+            ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                mLauncher.getDeviceProfile().allAppsCellHeightPx);
+            layout.setLayoutParams(lp);
+            return new ViewHolder(layout);
+        case VIEW_TYPE_SEARCH_SUGGESTION:
+            return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_search_suggestion, parent, false));
 
-            default:
-                throw new RuntimeException("Unexpected view type");
+        default:
+            throw new RuntimeException("Unexpected view type");
         }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
-            case VIEW_TYPE_ICON:
-                AppInfo info = mApps.getAdapterItems().get(position).appInfo;
-                BubbleTextView icon = (BubbleTextView) holder.itemView;
-                icon.reset();
-                icon.applyFromApplicationInfo(info);
-                break;
+        case VIEW_TYPE_ICON:
+            AppInfo info = mApps.getAdapterItems().get(position).appInfo;
+            BubbleTextView icon = (BubbleTextView) holder.itemView;
+            icon.reset();
+            icon.applyFromApplicationInfo(info);
+            break;
 
-            case VIEW_TYPE_EMPTY_SEARCH:
-                TextView emptyViewText = (TextView) holder.itemView;
-                emptyViewText.setText(mEmptySearchMessage);
-                emptyViewText.setGravity(mApps.hasNoFilteredResults() ? Gravity.CENTER :
-                        Gravity.START | Gravity.CENTER_VERTICAL);
-                break;
-            case VIEW_TYPE_SEARCH_MARKET:
-                TextView searchView = (TextView) holder.itemView;
-                if (mMarketSearchIntent != null) {
-                    searchView.setVisibility(View.VISIBLE);
-                } else {
-                    searchView.setVisibility(View.GONE);
+        case VIEW_TYPE_EMPTY_SEARCH:
+            TextView emptyViewText = (TextView) holder.itemView;
+            emptyViewText.setText(mEmptySearchMessage);
+            emptyViewText.setGravity(mApps.hasNoFilteredResults() ? Gravity.CENTER :
+                                     Gravity.START | Gravity.CENTER_VERTICAL);
+            break;
+        case VIEW_TYPE_SEARCH_MARKET:
+            TextView searchView = (TextView) holder.itemView;
+            if (mMarketSearchIntent != null) {
+                searchView.setVisibility(View.VISIBLE);
+            } else {
+                searchView.setVisibility(View.GONE);
+            }
+            break;
+
+        case VIEW_TYPE_ALL_APPS_DIVIDER:
+            // nothing to do
+            break;
+        case VIEW_TYPE_WORK_TAB_FOOTER:
+            WorkModeSwitch workModeToggle = holder.itemView.findViewById(R.id.work_mode_toggle);
+            workModeToggle.refresh();
+            TextView managedByLabel = holder.itemView.findViewById(R.id.managed_by_label);
+            boolean anyProfileQuietModeEnabled = UserManagerCompat.getInstance(
+                    managedByLabel.getContext()).isAnyProfileQuietModeEnabled();
+            managedByLabel.setText(anyProfileQuietModeEnabled
+                                   ? R.string.work_mode_off_label : R.string.work_mode_on_label);
+            break;
+        case VIEW_TYPE_FOLDER:
+            ViewGroup container = (ViewGroup) holder.itemView;
+            FolderIcon folderIcon = mApps.getAdapterItems().get(position)
+                                    .folderItem.getFolderIcon(mLauncher, container);
+
+            container.removeAllViews();
+            container.addView(folderIcon);
+
+            folderIcon.verifyHighRes();
+            break;
+        case VIEW_TYPE_SEARCH_SUGGESTION:
+            int color = getDrawerTextColor();
+            ViewGroup group = (ViewGroup) holder.itemView;
+            TextView textView = group.findViewById(R.id.suggestion);
+            String suggestion = mApps.getAdapterItems().get(position).suggestion;
+            textView.setText(suggestion);
+            textView.setTextColor(color);
+            ((ImageView) group.findViewById(android.R.id.icon)).getDrawable().setTint(color);
+            group.setOnClickListener(v -> {
+                SearchProvider provider = getSearchProvider();
+                if (provider instanceof WebSearchProvider) {
+                    ((WebSearchProvider) provider).openResults(suggestion);
                 }
-                break;
-
-            case VIEW_TYPE_ALL_APPS_DIVIDER:
-                // nothing to do
-                break;
-            case VIEW_TYPE_WORK_TAB_FOOTER:
-                WorkModeSwitch workModeToggle = holder.itemView.findViewById(R.id.work_mode_toggle);
-                workModeToggle.refresh();
-                TextView managedByLabel = holder.itemView.findViewById(R.id.managed_by_label);
-                boolean anyProfileQuietModeEnabled = UserManagerCompat.getInstance(
-                        managedByLabel.getContext()).isAnyProfileQuietModeEnabled();
-                managedByLabel.setText(anyProfileQuietModeEnabled
-                        ? R.string.work_mode_off_label : R.string.work_mode_on_label);
-                break;
-            case VIEW_TYPE_FOLDER:
-                ViewGroup container = (ViewGroup) holder.itemView;
-                FolderIcon folderIcon = mApps.getAdapterItems().get(position)
-                        .folderItem.getFolderIcon(mLauncher, container);
-
-                container.removeAllViews();
-                container.addView(folderIcon);
-
-                folderIcon.verifyHighRes();
-                break;
-            case VIEW_TYPE_SEARCH_SUGGESTION:
-                int color = getDrawerTextColor();
-                ViewGroup group = (ViewGroup) holder.itemView;
-                TextView textView = group.findViewById(R.id.suggestion);
-                String suggestion = mApps.getAdapterItems().get(position).suggestion;
-                textView.setText(suggestion);
-                textView.setTextColor(color);
-                ((ImageView) group.findViewById(android.R.id.icon)).getDrawable().setTint(color);
-                group.setOnClickListener(v -> {
-                    SearchProvider provider = getSearchProvider();
-                    if (provider instanceof WebSearchProvider) {
-                        ((WebSearchProvider) provider).openResults(suggestion);
-                    }
-                });
-                break;
+            });
+            break;
         }
         if (mBindViewCallback != null) {
             mBindViewCallback.onBindView(holder);

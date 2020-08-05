@@ -48,7 +48,7 @@ public class LauncherDbUtils {
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             // Get the existing screens
             ArrayList<Long> screenIds = getScreenIdsFromCursor(db.query(WorkspaceScreens.TABLE_NAME,
-                    null, null, null, null, null, WorkspaceScreens.SCREEN_RANK));
+                                        null, null, null, null, null, WorkspaceScreens.SCREEN_RANK));
 
             if (screenIds.isEmpty()) {
                 // No update needed
@@ -70,14 +70,14 @@ public class LauncherDbUtils {
 
             // Check if the first row is empty
             if (DatabaseUtils.queryNumEntries(db, Favorites.TABLE_NAME,
-                    "container = -100 and screen = 0 and cellY = 0") == 0) {
+                                              "container = -100 and screen = 0 and cellY = 0") == 0) {
                 // First row is empty, no need to migrate.
                 t.commit();
                 return true;
             }
 
             new LossyScreenMigrationTask(context, LauncherAppState.getIDP(context), db)
-                    .migrateScreen0();
+            .migrateScreen0();
             t.commit();
             return true;
         } catch (Exception e) {
@@ -87,7 +87,7 @@ public class LauncherDbUtils {
     }
 
     private static void renameScreen(SQLiteDatabase db, long oldScreen, long newScreen) {
-        String[] whereParams = new String[]{Long.toString(oldScreen)};
+        String[] whereParams = new String[] {Long.toString(oldScreen)};
 
         ContentValues values = new ContentValues();
         values.put(WorkspaceScreens._ID, newScreen);
@@ -104,8 +104,8 @@ public class LauncherDbUtils {
     public static ArrayList<Long> getScreenIdsFromCursor(Cursor sc) {
         try {
             return iterateCursor(sc,
-                    sc.getColumnIndexOrThrow(WorkspaceScreens._ID),
-                    new ArrayList<Long>());
+                                 sc.getColumnIndexOrThrow(WorkspaceScreens._ID),
+                                 new ArrayList<Long>());
         } finally {
             sc.close();
         }

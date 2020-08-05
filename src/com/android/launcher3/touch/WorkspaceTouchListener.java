@@ -90,7 +90,7 @@ public class WorkspaceTouchListener extends GestureTouchListener implements OnTo
                 Rect insets = dp.getInsets();
 
                 mTempRect.set(insets.left, insets.top, dl.getWidth() - insets.right,
-                        dl.getHeight() - insets.bottom);
+                              dl.getHeight() - insets.bottom);
                 mTempRect.inset(dp.edgeMarginPx, dp.edgeMarginPx);
                 handleLongPress = mTempRect.contains((int) ev.getX(), (int) ev.getY());
             }
@@ -134,7 +134,7 @@ public class WorkspaceTouchListener extends GestureTouchListener implements OnTo
         if (action == ACTION_UP || action == ACTION_POINTER_UP) {
             if (!mWorkspace.isTouchActive()) {
                 final CellLayout currentPage =
-                        (CellLayout) mWorkspace.getChildAt(mWorkspace.getCurrentPage());
+                    (CellLayout) mWorkspace.getChildAt(mWorkspace.getCurrentPage());
                 if (currentPage != null) {
                     mWorkspace.onWallpaperTap(ev);
                 }
@@ -149,7 +149,7 @@ public class WorkspaceTouchListener extends GestureTouchListener implements OnTo
 
     private boolean canHandleLongPress() {
         return AbstractFloatingView.getTopOpenView(mLauncher) == null
-                && mLauncher.isInState(NORMAL) || mLauncher.isInState(LauncherState.OPTIONS);
+               && mLauncher.isInState(NORMAL) || mLauncher.isInState(LauncherState.OPTIONS);
     }
 
     private void cancelLongPress() {
@@ -165,7 +165,7 @@ public class WorkspaceTouchListener extends GestureTouchListener implements OnTo
                 mWorkspace.getParent().requestDisallowInterceptTouchEvent(true);
 
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                                                 HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                 mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                         Action.Direction.NONE, ContainerType.WORKSPACE,
                         mWorkspace.getCurrentPage());

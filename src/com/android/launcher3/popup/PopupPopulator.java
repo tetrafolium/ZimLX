@@ -56,7 +56,7 @@ public class PopupPopulator {
      * Sorts shortcuts in rank order, with manifest shortcuts coming before dynamic shortcuts.
      */
     private static final Comparator<ShortcutInfoCompat> SHORTCUT_RANK_COMPARATOR
-            = new Comparator<ShortcutInfoCompat>() {
+    = new Comparator<ShortcutInfoCompat>() {
         @Override
         public int compare(ShortcutInfoCompat a, ShortcutInfoCompat b) {
             if (a.isDeclaredInManifest() && !b.isDeclaredInManifest()) {
@@ -78,7 +78,7 @@ public class PopupPopulator {
      * @return a subset of shortcuts, in sorted order, with size <= MAX_SHORTCUTS.
      */
     public static List<ShortcutInfoCompat> sortAndFilterShortcuts(
-            List<ShortcutInfoCompat> shortcuts, @Nullable String shortcutIdToRemoveFirst) {
+        List<ShortcutInfoCompat> shortcuts, @Nullable String shortcutIdToRemoveFirst) {
         // Remove up to one specific shortcut before sorting and doing somewhat fancy filtering.
         if (shortcutIdToRemoveFirst != null) {
             Iterator<ShortcutInfoCompat> shortcutIterator = shortcuts.iterator();
@@ -124,15 +124,15 @@ public class PopupPopulator {
     }
 
     public static Runnable createUpdateRunnable(final Launcher launcher, final ItemInfo originalInfo,
-                                                final Handler uiHandler, final PopupContainerWithArrow container,
-                                                final List<String> shortcutIds, final List<DeepShortcutView> shortcutViews,
-                                                final List<NotificationKeyData> notificationKeys) {
+            final Handler uiHandler, final PopupContainerWithArrow container,
+            final List<String> shortcutIds, final List<DeepShortcutView> shortcutViews,
+            final List<NotificationKeyData> notificationKeys) {
         final ComponentName activity = originalInfo.getTargetComponent();
         final UserHandle user = originalInfo.user;
         return () -> {
             if (!notificationKeys.isEmpty()) {
                 List<StatusBarNotification> notifications = launcher.getPopupDataProvider()
-                        .getStatusBarNotificationsForKeys(notificationKeys);
+                .getStatusBarNotificationsForKeys(notificationKeys);
                 List<NotificationInfo> infos = new ArrayList<>(notifications.size());
                 for (int i = 0; i < notifications.size(); i++) {
                     StatusBarNotification notification = notifications.get(i);
@@ -142,9 +142,9 @@ public class PopupPopulator {
             }
 
             List<ShortcutInfoCompat> shortcuts = DeepShortcutManager.getInstance(launcher)
-                    .queryForShortcutsContainer(activity, shortcutIds, user);
+                                                 .queryForShortcutsContainer(activity, shortcutIds, user);
             String shortcutIdToDeDupe = notificationKeys.isEmpty() ? null
-                    : notificationKeys.get(0).shortcutId;
+                                        : notificationKeys.get(0).shortcutId;
             shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, shortcutIdToDeDupe);
             for (int i = 0; i < shortcuts.size() && i < shortcutViews.size(); i++) {
                 final ShortcutInfoCompat shortcut = shortcuts.get(i);
@@ -162,7 +162,7 @@ public class PopupPopulator {
             // This ensures that mLauncher.getWidgetsForPackageUser()
             // doesn't return null (it puts all the widgets in memory).
             uiHandler.post(() -> launcher.refreshAndBindWidgetsForPackageUser(
-                    PackageUserKey.fromItemInfo(originalInfo)));
+                               PackageUserKey.fromItemInfo(originalInfo)));
         };
     }
 }

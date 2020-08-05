@@ -59,9 +59,9 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
 
         @Override
         public View.OnClickListener getOnClickListener(final Launcher launcher,
-                                                       final ItemInfo itemInfo) {
+                final ItemInfo itemInfo) {
             final List<WidgetItem> widgets =
-                    launcher.getPopupDataProvider().getWidgetsForPackageUser(new PackageUserKey(
+                launcher.getPopupDataProvider().getWidgetsForPackageUser(new PackageUserKey(
                             itemInfo.getTargetComponent().getPackageName(), itemInfo.user));
             if (widgets == null) {
                 return null;
@@ -69,8 +69,8 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
             return (view) -> {
                 AbstractFloatingView.closeAllOpenViews(launcher);
                 WidgetsBottomSheet widgetsBottomSheet =
-                        (WidgetsBottomSheet) launcher.getLayoutInflater().inflate(
-                                R.layout.widgets_bottom_sheet, launcher.getDragLayer(), false);
+                (WidgetsBottomSheet) launcher.getLayoutInflater().inflate(
+                    R.layout.widgets_bottom_sheet, launcher.getDragLayer(), false);
                 widgetsBottomSheet.populateAndShow(itemInfo);
                 launcher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                         ControlType.WIDGETS_BUTTON, view);
@@ -85,13 +85,13 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
 
         @Override
         public View.OnClickListener getOnClickListener(
-                BaseDraggingActivity activity, ItemInfo itemInfo) {
+            BaseDraggingActivity activity, ItemInfo itemInfo) {
             return (view) -> {
                 dismissTaskMenuView(activity);
                 Rect sourceBounds = activity.getViewBounds(view);
                 Bundle opts = activity.getActivityLaunchOptionsAsBundle(view);
                 new PackageManagerHelper(activity).startDetailsActivityForInfo(
-                        itemInfo, sourceBounds, opts);
+                    itemInfo, sourceBounds, opts);
                 activity.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                         ControlType.APPINFO_TARGET, view);
             };
@@ -105,9 +105,9 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
 
         @Override
         public View.OnClickListener getOnClickListener(
-                BaseDraggingActivity activity, ItemInfo itemInfo) {
+            BaseDraggingActivity activity, ItemInfo itemInfo) {
             boolean supportsWebUI = (itemInfo instanceof ShortcutInfo) &&
-                    ((ShortcutInfo) itemInfo).hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI);
+                                    ((ShortcutInfo) itemInfo).hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI);
             boolean isInstantApp = false;
             if (itemInfo instanceof com.android.launcher3.AppInfo) {
                 com.android.launcher3.AppInfo appInfo = (com.android.launcher3.AppInfo) itemInfo;
@@ -121,10 +121,10 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         }
 
         public View.OnClickListener createOnClickListener(
-                BaseDraggingActivity activity, ItemInfo itemInfo) {
+            BaseDraggingActivity activity, ItemInfo itemInfo) {
             return view -> {
                 Intent intent = new PackageManagerHelper(view.getContext()).getMarketIntent(
-                        itemInfo.getTargetComponent().getPackageName());
+                    itemInfo.getTargetComponent().getPackageName());
                 activity.startActivitySafely(view, intent, itemInfo);
                 AbstractFloatingView.closeAllOpenViews(activity);
             };
@@ -133,6 +133,6 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
 
     protected static void dismissTaskMenuView(BaseDraggingActivity activity) {
         AbstractFloatingView.closeOpenViews(activity, true,
-                AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
+                                            AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
     }
 }

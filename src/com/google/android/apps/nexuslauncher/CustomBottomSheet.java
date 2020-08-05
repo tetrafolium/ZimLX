@@ -114,7 +114,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                         editItem = mItemInfo;
                     }
                     CustomInfoProvider editProvider
-                            = CustomInfoProvider.Companion.forItem(getContext(), editItem);
+                    = CustomInfoProvider.Companion.forItem(getContext(), editItem);
                     if (editProvider != null) {
                         launcher.startEditIcon(editItem, editProvider);
                     }
@@ -267,7 +267,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             }
 
             mPrefHidePredictions = (SwitchPreference) getPreferenceScreen()
-                    .findPreference(PREF_HIDE_FROM_PREDICTIONS);
+                                   .findPreference(PREF_HIDE_FROM_PREDICTIONS);
             if ((!prefs.getShowPredictions() || HIDE_PREDICTION_OPTION)
                     && mPrefHidePredictions != null) {
                 getPreferenceScreen().removePreference(mPrefHidePredictions);
@@ -359,11 +359,11 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             boolean enabled = (boolean) newValue;
             Launcher launcher = Launcher.getLauncher(getActivity());
             switch (preference.getKey()) {
-                case PREF_HIDE:
-                    CustomAppFilter.setComponentNameState(launcher, mKey, enabled);
-                    break;
-                case PREF_HIDE_FROM_PREDICTIONS:
-                    CustomAppPredictor.setComponentNameState(launcher, mKey, enabled);
+            case PREF_HIDE:
+                CustomAppFilter.setComponentNameState(launcher, mKey, enabled);
+                break;
+            case PREF_HIDE_FROM_PREDICTIONS:
+                CustomAppPredictor.setComponentNameState(launcher, mKey, enabled);
             }
             return true;
         }
@@ -371,15 +371,15 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         @Override
         public boolean onPreferenceClick(Preference preference) {
             switch (preference.getKey()) {
-                case "componentName":
-                case "versionName":
-                    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText(getString(R.string.debug_component_name), preference.getSummary());
-                    clipboard.setPrimaryClip(clip);
-                    Toast.makeText(getActivity(), R.string.debug_component_name_copied, Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    break;
+            case "componentName":
+            case "versionName":
+                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(getString(R.string.debug_component_name), preference.getSummary());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getActivity(), R.string.debug_component_name_copied, Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
             }
             return true;
         }
@@ -387,7 +387,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
     public static void show(Launcher launcher, ItemInfo itemInfo) {
         CustomBottomSheet cbs = (CustomBottomSheet) launcher.getLayoutInflater()
-                .inflate(R.layout.app_edit_bottom_sheet, launcher.getDragLayer(), false);
+                                .inflate(R.layout.app_edit_bottom_sheet, launcher.getDragLayer(), false);
         cbs.populateAndShow(itemInfo);
     }
 }

@@ -119,8 +119,8 @@ public class NotificationItemView {
         if (Color.alpha(iconColor) > 0) {
             if (mNotificationHeaderTextColor == Notification.COLOR_DEFAULT) {
                 mNotificationHeaderTextColor =
-                        IconPalette.resolveContrastColor(mContext, iconColor,
-                                Themes.getAttrColor(mContext, R.attr.popupColorPrimary));
+                    IconPalette.resolveContrastColor(mContext, iconColor,
+                                                     Themes.getAttrColor(mContext, R.attr.popupColorPrimary));
             }
             mHeaderText.setTextColor(mNotificationHeaderTextColor);
             mHeaderCount.setTextColor(mNotificationHeaderTextColor);
@@ -130,7 +130,7 @@ public class NotificationItemView {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             sTempRect.set(mMainView.getLeft(), mMainView.getTop(),
-                    mMainView.getRight(), mMainView.getBottom());
+                          mMainView.getRight(), mMainView.getBottom());
             mIgnoreTouch = !sTempRect.contains((int) ev.getX(), (int) ev.getY());
             if (!mIgnoreTouch) {
                 mContainer.getParent().requestDisallowInterceptTouchEvent(true);
@@ -175,7 +175,7 @@ public class NotificationItemView {
 
     public void trimNotifications(final List<String> notificationKeys) {
         boolean dismissedMainNotification = !notificationKeys.contains(
-                mMainView.getNotificationInfo().notificationKey);
+                                                mMainView.getNotificationInfo().notificationKey);
         if (dismissedMainNotification && !mAnimatingNextIcon) {
             // Animate the next icon into place as the new main notification.
             mAnimatingNextIcon = true;

@@ -44,7 +44,7 @@ public class ColorScrim extends ViewScrim {
     @Override
     protected void onProgressChanged() {
         mCurrentColor = ColorUtils.setAlphaComponent(mColor,
-                Math.round(mInterpolator.getInterpolation(mProgress) * Color.alpha(mColor)));
+                        Math.round(mInterpolator.getInterpolation(mProgress) * Color.alpha(mColor)));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ColorScrim extends ViewScrim {
         WallpaperColorInfo colors = WallpaperColorInfo.getInstance(view.getContext());
         int alpha = view.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
         ColorScrim scrim = new ColorScrim(view, ColorUtils.setAlphaComponent(
-                colors.getSecondaryColor(), alpha), Interpolators.LINEAR);
+                                              colors.getSecondaryColor(), alpha), Interpolators.LINEAR);
         scrim.attach();
         return scrim;
     }

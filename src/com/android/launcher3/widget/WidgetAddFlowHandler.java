@@ -32,15 +32,15 @@ import com.android.launcher3.util.PendingRequestArgs;
 public class WidgetAddFlowHandler implements Parcelable {
 
     public static final Parcelable.Creator<WidgetAddFlowHandler> CREATOR =
-            new Parcelable.Creator<WidgetAddFlowHandler>() {
-                public WidgetAddFlowHandler createFromParcel(Parcel source) {
-                    return new WidgetAddFlowHandler(source);
-                }
+    new Parcelable.Creator<WidgetAddFlowHandler>() {
+        public WidgetAddFlowHandler createFromParcel(Parcel source) {
+            return new WidgetAddFlowHandler(source);
+        }
 
-                public WidgetAddFlowHandler[] newArray(int size) {
-                    return new WidgetAddFlowHandler[size];
-                }
-            };
+        public WidgetAddFlowHandler[] newArray(int size) {
+            return new WidgetAddFlowHandler[size];
+        }
+    };
     private final AppWidgetProviderInfo mProviderInfo;
 
     public WidgetAddFlowHandler(AppWidgetProviderInfo providerInfo) {
@@ -64,7 +64,7 @@ public class WidgetAddFlowHandler implements Parcelable {
     public void startBindFlow(Launcher launcher, int appWidgetId, ItemInfo info, int requestCode) {
         launcher.setWaitingForResult(PendingRequestArgs.forWidgetInfo(appWidgetId, this, info));
         launcher.getAppWidgetHost()
-                .startBindFlow(launcher, appWidgetId, mProviderInfo, requestCode);
+        .startBindFlow(launcher, appWidgetId, mProviderInfo, requestCode);
     }
 
     /**

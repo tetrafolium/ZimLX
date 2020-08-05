@@ -15,7 +15,7 @@ public class IconProvider {
 
     public static IconProvider newInstance(Context context) {
         IconProvider provider = Utilities.getOverrideObject(
-                IconProvider.class, context, R.string.icon_provider_class);
+                                    IconProvider.class, context, R.string.icon_provider_class);
         provider.updateSystemStateString(context);
         return provider;
     }

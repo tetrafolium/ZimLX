@@ -49,7 +49,7 @@ public class FirstScreenBroadcast {
     private static final boolean DEBUG = false;
 
     private static final String ACTION_FIRST_SCREEN_ACTIVE_INSTALLS
-            = "com.android.launcher3.action.FIRST_SCREEN_ACTIVE_INSTALLS";
+        = "com.android.launcher3.action.FIRST_SCREEN_ACTIVE_INSTALLS";
 
     private static final String FOLDER_ITEM_EXTRA = "folderItem";
     private static final String WORKSPACE_ITEM_EXTRA = "workspaceItem";
@@ -69,11 +69,11 @@ public class FirstScreenBroadcast {
      * of packages with active sessions for that installer.
      */
     private MultiHashMap<String, String> getPackagesForInstaller(
-            HashMap<String, SessionInfo> sessionInfoForPackage) {
+        HashMap<String, SessionInfo> sessionInfoForPackage) {
         MultiHashMap<String, String> packagesForInstaller = new MultiHashMap<>();
         for (Map.Entry<String, SessionInfo> entry : sessionInfoForPackage.entrySet()) {
             packagesForInstaller.addToList(entry.getValue().getInstallerPackageName(),
-                    entry.getKey());
+                                           entry.getKey());
         }
         return packagesForInstaller;
     }
@@ -134,13 +134,13 @@ public class FirstScreenBroadcast {
         }
 
         context.sendBroadcast(new Intent(ACTION_FIRST_SCREEN_ACTIVE_INSTALLS)
-                .setPackage(installerPackageName)
-                .putStringArrayListExtra(FOLDER_ITEM_EXTRA, new ArrayList<>(folderItems))
-                .putStringArrayListExtra(WORKSPACE_ITEM_EXTRA, new ArrayList<>(workspaceItems))
-                .putStringArrayListExtra(HOTSEAT_ITEM_EXTRA, new ArrayList<>(hotseatItems))
-                .putStringArrayListExtra(WIDGET_ITEM_EXTRA, new ArrayList<>(widgetItems))
-                .putExtra(VERIFICATION_TOKEN_EXTRA, PendingIntent.getActivity(context, 0,
-                        new Intent(), PendingIntent.FLAG_ONE_SHOT)));
+                              .setPackage(installerPackageName)
+                              .putStringArrayListExtra(FOLDER_ITEM_EXTRA, new ArrayList<>(folderItems))
+                              .putStringArrayListExtra(WORKSPACE_ITEM_EXTRA, new ArrayList<>(workspaceItems))
+                              .putStringArrayListExtra(HOTSEAT_ITEM_EXTRA, new ArrayList<>(hotseatItems))
+                              .putStringArrayListExtra(WIDGET_ITEM_EXTRA, new ArrayList<>(widgetItems))
+                              .putExtra(VERIFICATION_TOKEN_EXTRA, PendingIntent.getActivity(context, 0,
+                                        new Intent(), PendingIntent.FLAG_ONE_SHOT)));
     }
 
     private static String getPackageName(ItemInfo info) {

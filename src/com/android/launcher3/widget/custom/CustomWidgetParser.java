@@ -86,7 +86,7 @@ public class CustomWidgetParser {
         SparseArray<ComponentName> idMap = new SparseArray<>();
 
         List<AppWidgetProviderInfo> providers = AppWidgetManager.getInstance(context)
-                .getInstalledProvidersForProfile(Process.myUserHandle());
+                                                .getInstalledProvidersForProfile(Process.myUserHandle());
         if (providers.isEmpty()) {
             sCustomWidgets = widgets;
             sWidgetsIdMap = idMap;
@@ -104,7 +104,7 @@ public class CustomWidgetParser {
                     parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
                 if ((type == XmlPullParser.START_TAG) && "widget".equals(parser.getName())) {
                     TypedArray a = context.obtainStyledAttributes(
-                            Xml.asAttributeSet(parser), R.styleable.CustomAppWidgetProviderInfo);
+                                       Xml.asAttributeSet(parser), R.styleable.CustomAppWidgetProviderInfo);
 
                     parcel.setDataPosition(0);
                     CustomAppWidgetProviderInfo info = newInfo(a, parcel, context);

@@ -72,7 +72,7 @@ public class PackageManagerHelper {
      */
     public boolean isAppOnSdcard(String packageName, UserHandle user) {
         ApplicationInfo info = mLauncherApps.getApplicationInfo(
-                packageName, PackageManager.MATCH_UNINSTALLED_PACKAGES, user);
+                                   packageName, PackageManager.MATCH_UNINSTALLED_PACKAGES, user);
         return info != null && (info.flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0;
     }
 
@@ -119,7 +119,7 @@ public class PackageManagerHelper {
     public Intent getAppLaunchIntent(String pkg, UserHandle user) {
         List<LauncherActivityInfo> activities = mLauncherApps.getActivityList(pkg, user);
         return activities.isEmpty() ? null :
-                AppInfo.makeLaunchIntent(activities.get(0));
+               AppInfo.makeLaunchIntent(activities.get(0));
     }
 
     /**
@@ -187,13 +187,13 @@ public class PackageManagerHelper {
 
     public Intent getMarketIntent(String packageName) {
         return new Intent(Intent.ACTION_VIEW)
-                .setData(new Uri.Builder()
+               .setData(new Uri.Builder()
                         .scheme("market")
                         .authority("details")
                         .appendQueryParameter("id", packageName)
                         .build())
-                .putExtra(Intent.EXTRA_REFERRER, new Uri.Builder().scheme("android-app")
-                        .authority(mContext.getPackageName()).build());
+               .putExtra(Intent.EXTRA_REFERRER, new Uri.Builder().scheme("android-app")
+                         .authority(mContext.getPackageName()).build());
     }
 
     /**
@@ -204,7 +204,7 @@ public class PackageManagerHelper {
             Intent intent = Intent.parseUri(context.getString(R.string.market_search_intent), 0);
             if (!TextUtils.isEmpty(query)) {
                 intent.setData(
-                        intent.getData().buildUpon().appendQueryParameter("q", query).build());
+                    intent.getData().buildUpon().appendQueryParameter("q", query).build());
             }
             return intent;
         } catch (URISyntaxException e) {
@@ -235,7 +235,7 @@ public class PackageManagerHelper {
         if (componentName != null) {
             try {
                 mLauncherApps.showAppDetailsForProfile(
-                        componentName, info.user, sourceBounds, opts);
+                    componentName, info.user, sourceBounds, opts);
             } catch (SecurityException | ActivityNotFoundException e) {
                 Toast.makeText(mContext, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Unable to launch settings", e);

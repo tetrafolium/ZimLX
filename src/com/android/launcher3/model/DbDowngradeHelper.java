@@ -79,7 +79,7 @@ public class DbDowngradeHelper {
 
         // Write the updated schema
         try (FileOutputStream fos = new FileOutputStream(schemaFile);
-             InputStream in = context.getResources().openRawResource(schemaResId)) {
+                    InputStream in = context.getResources().openRawResource(schemaResId)) {
             IOUtils.copy(in, fos);
         } catch (IOException e) {
             Log.e(TAG, "Error writing schema file", e);

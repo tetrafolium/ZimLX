@@ -52,17 +52,17 @@ import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelo
 public class NotificationMainView extends FrameLayout implements SwipeDetector.Listener {
 
     private static FloatProperty<NotificationMainView> CONTENT_TRANSLATION =
-            new FloatProperty<NotificationMainView>("contentTranslation") {
-                @Override
-                public void setValue(NotificationMainView view, float v) {
-                    view.setContentTranslation(v);
-                }
+    new FloatProperty<NotificationMainView>("contentTranslation") {
+        @Override
+        public void setValue(NotificationMainView view, float v) {
+            view.setContentTranslation(v);
+        }
 
-                @Override
-                public Float get(NotificationMainView view) {
-                    return view.mTextAndBackground.getTranslationX();
-                }
-            };
+        @Override
+        public Float get(NotificationMainView view) {
+            return view.mTextAndBackground.getTranslationX();
+        }
+    };
 
     // This is used only to track the notification view, so that it can be properly logged.
     public static final ItemInfo NOTIFICATION_ITEM_INFO = new ItemInfo();
@@ -100,7 +100,7 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
         ColorDrawable colorBackground = (ColorDrawable) mTextAndBackground.getBackground();
         mBackgroundColor = Color.RED;//colorBackground.getColor();
         RippleDrawable rippleBackground = new RippleDrawable(ColorStateList.valueOf(
-                Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight)),
+                    Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight)),
                 colorBackground, null);
         mTextAndBackground.setBackground(rippleBackground);
         mTitleView = mTextAndBackground.findViewById(R.id.title);
@@ -119,7 +119,7 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
         mNotificationInfo = mainNotification;
         NotificationListener listener = NotificationListener.getInstanceIfConnected();
         if (listener != null) {
-            listener.setNotificationsShown(new String[]{mNotificationInfo.notificationKey});
+            listener.setNotificationsShown(new String[] {mNotificationInfo.notificationKey});
         }
         CharSequence title = mNotificationInfo.title;
         CharSequence text = mNotificationInfo.text;
@@ -132,7 +132,7 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
             mTextView.setVisibility(GONE);
         }
         mIconView.setBackground(mNotificationInfo.getIconForBackground(getContext(),
-                mBackgroundColor));
+                                mBackgroundColor));
         if (mNotificationInfo.intent != null) {
             setOnClickListener(mNotificationInfo);
         }
@@ -167,11 +167,11 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
     public void onChildDismissed() {
         Launcher launcher = Launcher.getLauncher(getContext());
         launcher.getPopupDataProvider().cancelNotification(
-                mNotificationInfo.notificationKey);
+            mNotificationInfo.notificationKey);
         launcher.getUserEventDispatcher().logActionOnItem(
-                LauncherLogProto.Action.Touch.SWIPE,
-                LauncherLogProto.Action.Direction.RIGHT, // Assume all swipes are right for logging.
-                LauncherLogProto.ItemType.NOTIFICATION);
+            LauncherLogProto.Action.Touch.SWIPE,
+            LauncherLogProto.Action.Direction.RIGHT, // Assume all swipes are right for logging.
+            LauncherLogProto.ItemType.NOTIFICATION);
     }
 
     // SwipeDetector.Listener's
@@ -183,7 +183,7 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
     @Override
     public boolean onDrag(float displacement, float velocity) {
         setContentTranslation(canChildBeDismissed()
-                ? displacement : OverScroll.dampedScroll(displacement, getWidth()));
+                              ? displacement : OverScroll.dampedScroll(displacement, getWidth()));
         mContentTranslateAnimator.cancel();
         return true;
     }
@@ -209,11 +209,11 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
         }
 
         long duration = SwipeDetector.calculateDuration(velocity,
-                (endTranslation - startTranslation) / getWidth());
+                        (endTranslation - startTranslation) / getWidth());
 
         mContentTranslateAnimator.removeAllListeners();
         mContentTranslateAnimator.setDuration(duration)
-                .setInterpolator(scrollInterpolatorForVelocity(velocity));
+        .setInterpolator(scrollInterpolatorForVelocity(velocity));
         mContentTranslateAnimator.setFloatValues(startTranslation, endTranslation);
         mContentTranslateAnimator.addListener(new AnimationSuccessListener() {
             @Override

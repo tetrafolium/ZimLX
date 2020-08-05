@@ -85,10 +85,10 @@ public class NotificationFooterLayout extends FrameLayout {
         // and the ellipsis are evenly spaced out.
         int paddingEnd = res.getDimensionPixelSize(R.dimen.notification_footer_icon_row_padding);
         int ellipsisSpace = res.getDimensionPixelSize(R.dimen.horizontal_ellipsis_offset)
-                + res.getDimensionPixelSize(R.dimen.horizontal_ellipsis_size);
+                            + res.getDimensionPixelSize(R.dimen.horizontal_ellipsis_size);
         int footerWidth = res.getDimensionPixelSize(R.dimen.bg_popup_item_width);
         int availableIconRowSpace = footerWidth - paddingEnd - ellipsisSpace
-                - iconSize * MAX_FOOTER_NOTIFICATIONS;
+                                    - iconSize * MAX_FOOTER_NOTIFICATIONS;
         mIconLayoutParams.setMarginStart(availableIconRowSpace / MAX_FOOTER_NOTIFICATIONS);
 
         mBackgroundColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
@@ -158,8 +158,8 @@ public class NotificationFooterLayout extends FrameLayout {
         firstNotification.getGlobalVisibleRect(fromBounds);
         float scale = (float) toBounds.height() / fromBounds.height();
         Animator moveAndScaleIcon = LauncherAnimUtils.ofPropertyValuesHolder(firstNotification,
-                new PropertyListBuilder().scale(scale).translationY(toBounds.top - fromBounds.top
-                        + (fromBounds.height() * scale - fromBounds.height()) / 2).build());
+                                    new PropertyListBuilder().scale(scale).translationY(toBounds.top - fromBounds.top
+                                            + (fromBounds.height() * scale - fromBounds.height()) / 2).build());
         moveAndScaleIcon.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -184,7 +184,7 @@ public class NotificationFooterLayout extends FrameLayout {
         // We have to reset the translation X to 0 when the new main notification
         // is removed from the footer.
         PropertyResetListener<View, Float> propertyResetListener
-                = new PropertyResetListener<>(TRANSLATION_X, 0f);
+            = new PropertyResetListener<>(TRANSLATION_X, 0f);
         for (int i = 0; i < numIcons; i++) {
             final View child = mIconRow.getChildAt(i);
             Animator shiftChild = ObjectAnimator.ofFloat(child, TRANSLATION_X, gapWidth);

@@ -69,16 +69,16 @@ public class LoggerUtils {
     public static String getActionStr(Action action) {
         String str = "";
         switch (action.type) {
-            case Action.Type.TOUCH:
-                str += getFieldName(action.touch, Action.Touch.class);
-                if (action.touch == Action.Touch.SWIPE || action.touch == Action.Touch.FLING) {
-                    str += " direction=" + getFieldName(action.dir, Action.Direction.class);
-                }
-                return str;
-            case Action.Type.COMMAND:
-                return getFieldName(action.command, Action.Command.class);
-            default:
-                return getFieldName(action.type, Action.Type.class);
+        case Action.Type.TOUCH:
+            str += getFieldName(action.touch, Action.Touch.class);
+            if (action.touch == Action.Touch.SWIPE || action.touch == Action.Touch.FLING) {
+                str += " direction=" + getFieldName(action.dir, Action.Direction.class);
+            }
+            return str;
+        case Action.Type.COMMAND:
+            return getFieldName(action.command, Action.Command.class);
+        default:
+            return getFieldName(action.type, Action.Type.class);
         }
     }
 
@@ -88,23 +88,23 @@ public class LoggerUtils {
         }
         String str = "";
         switch (t.type) {
-            case Target.Type.ITEM:
-                str = getItemStr(t);
-                break;
-            case Target.Type.CONTROL:
-                str = getFieldName(t.controlType, ControlType.class);
-                break;
-            case Target.Type.CONTAINER:
-                str = getFieldName(t.containerType, ContainerType.class);
-                if (t.containerType == ContainerType.WORKSPACE ||
-                        t.containerType == ContainerType.HOTSEAT) {
-                    str += " id=" + t.pageIndex;
-                } else if (t.containerType == ContainerType.FOLDER) {
-                    str += " grid(" + t.gridX + "," + t.gridY + ")";
-                }
-                break;
-            default:
-                str += "UNKNOWN TARGET TYPE";
+        case Target.Type.ITEM:
+            str = getItemStr(t);
+            break;
+        case Target.Type.CONTROL:
+            str = getFieldName(t.controlType, ControlType.class);
+            break;
+        case Target.Type.CONTAINER:
+            str = getFieldName(t.containerType, ContainerType.class);
+            if (t.containerType == ContainerType.WORKSPACE ||
+                    t.containerType == ContainerType.HOTSEAT) {
+                str += " id=" + t.pageIndex;
+            } else if (t.containerType == ContainerType.FOLDER) {
+                str += " grid(" + t.gridX + "," + t.gridY + ")";
+            }
+            break;
+        default:
+            str += "UNKNOWN TARGET TYPE";
         }
 
         if (t.tipType != TipType.DEFAULT_NONE) {
@@ -128,8 +128,8 @@ public class LoggerUtils {
         if ((t.packageNameHash != 0 || t.componentHash != 0 || t.intentHash != 0) &&
                 t.itemType != ItemType.TASK) {
             typeStr += ", predictiveRank=" + t.predictedRank + ", grid(" + t.gridX + "," + t.gridY
-                    + "), span(" + t.spanX + "," + t.spanY
-                    + "), pageIdx=" + t.pageIndex;
+                       + "), span(" + t.spanX + "," + t.spanY
+                       + "), pageIdx=" + t.pageIndex;
 
         }
         if (t.itemType == ItemType.TASK) {
@@ -146,39 +146,39 @@ public class LoggerUtils {
 
     public static Target newItemTarget(View v) {
         return (v.getTag() instanceof ItemInfo)
-                ? newItemTarget((ItemInfo) v.getTag(), null)
-                : newTarget(Target.Type.ITEM);
+               ? newItemTarget((ItemInfo) v.getTag(), null)
+               : newTarget(Target.Type.ITEM);
     }
 
     public static Target newItemTarget(View v, InstantAppResolver instantAppResolver) {
         return (v.getTag() instanceof ItemInfo)
-                ? newItemTarget((ItemInfo) v.getTag(), instantAppResolver)
-                : newTarget(Target.Type.ITEM);
+               ? newItemTarget((ItemInfo) v.getTag(), instantAppResolver)
+               : newTarget(Target.Type.ITEM);
     }
 
     public static Target newItemTarget(ItemInfo info, InstantAppResolver instantAppResolver) {
         Target t = newTarget(Target.Type.ITEM);
 
         switch (info.itemType) {
-            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                t.itemType = (instantAppResolver != null && info instanceof AppInfo
-                        && instantAppResolver.isInstantApp(((AppInfo) info)))
-                        ? ItemType.WEB_APP
-                        : ItemType.APP_ICON;
-                t.predictedRank = -100; // Never assigned
-                break;
-            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                t.itemType = ItemType.SHORTCUT;
-                break;
-            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                t.itemType = ItemType.FOLDER_ICON;
-                break;
-            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                t.itemType = ItemType.WIDGET;
-                break;
-            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                t.itemType = ItemType.DEEPSHORTCUT;
-                break;
+        case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+            t.itemType = (instantAppResolver != null && info instanceof AppInfo
+                          && instantAppResolver.isInstantApp(((AppInfo) info)))
+                         ? ItemType.WEB_APP
+                         : ItemType.APP_ICON;
+            t.predictedRank = -100; // Never assigned
+            break;
+        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+            t.itemType = ItemType.SHORTCUT;
+            break;
+        case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+            t.itemType = ItemType.FOLDER_ICON;
+            break;
+        case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+            t.itemType = ItemType.WIDGET;
+            break;
+        case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+            t.itemType = ItemType.DEEPSHORTCUT;
+            break;
         }
         return t;
     }

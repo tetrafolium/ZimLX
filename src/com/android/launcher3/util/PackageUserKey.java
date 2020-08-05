@@ -32,7 +32,7 @@ public class PackageUserKey {
     private void update(String packageName, UserHandle user) {
         mPackageName = packageName;
         mUser = user;
-        mHashCode = Arrays.hashCode(new Object[]{packageName, user});
+        mHashCode = Arrays.hashCode(new Object[] {packageName, user});
     }
 
     /**

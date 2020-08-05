@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class AppSearchProvider extends ContentProvider {
-    private static final String[] eK = new String[]{"_id", "suggest_text_1", "suggest_icon_1", "suggest_intent_action", "suggest_intent_data"};
+    private static final String[] eK = new String[] {"_id", "suggest_text_1", "suggest_icon_1", "suggest_intent_action", "suggest_intent_data"};
     private final PipeDataWriter<Future> mPipeDataWriter;
     private LooperExecutor mLooper;
     private LauncherAppState mApp;
@@ -70,16 +70,16 @@ public class AppSearchProvider extends ContentProvider {
 
     public static ComponentKey uriToComponent(final Uri uri, final Context context) {
         return new ComponentKey(ComponentName.unflattenFromString(uri.getQueryParameter("component")),
-                UserManagerCompat.getInstance(context).getUserForSerialNumber(Long.parseLong(uri.getQueryParameter("user"))));
+                                UserManagerCompat.getInstance(context).getUserForSerialNumber(Long.parseLong(uri.getQueryParameter("user"))));
     }
 
     public static Uri buildUri(final AppInfo appInfo, final UserManagerCompat userManagerCompat) {
         return new Uri.Builder()
-                .scheme("content")
-                .authority(BuildConfig.APPLICATION_ID + ".appssearch")
-                .appendQueryParameter("component", appInfo.componentName.flattenToShortString())
-                .appendQueryParameter("user", Long.toString(userManagerCompat.getSerialNumberForUser(appInfo.user)))
-                .build();
+               .scheme("content")
+               .authority(BuildConfig.APPLICATION_ID + ".appssearch")
+               .appendQueryParameter("component", appInfo.componentName.flattenToShortString())
+               .appendQueryParameter("user", Long.toString(userManagerCompat.getSerialNumberForUser(appInfo.user)))
+               .build();
     }
 
     private Cursor listToCursor(final List<AppInfo> list) {
@@ -102,20 +102,20 @@ public class AppSearchProvider extends ContentProvider {
             return null;
         }
         if ("loadIcon".equals(s)) try {
-            final Uri parse = Uri.parse(s2);
-            final ComponentKey dl = uriToComponent(parse, this.getContext());
-            final Callable<Bitmap> g = () -> {
-                final AppItemInfoWithIcon d = new AppItemInfoWithIcon(dl);
-                mApp.getIconCache().getTitleAndIcon(d, false);
-                return d.iconBitmap;
-            };
-            final Bundle bundle2 = new Bundle();
-            bundle2.putParcelable("suggest_icon_1", mLooper.submit(g).get());
-            return bundle2;
-        } catch (Exception ex) {
-            Log.e("AppSearchProvider", "Unable to load icon " + ex);
-            return null;
-        }
+                final Uri parse = Uri.parse(s2);
+                final ComponentKey dl = uriToComponent(parse, this.getContext());
+                final Callable<Bitmap> g = () -> {
+                    final AppItemInfoWithIcon d = new AppItemInfoWithIcon(dl);
+                    mApp.getIconCache().getTitleAndIcon(d, false);
+                    return d.iconBitmap;
+                };
+                final Bundle bundle2 = new Bundle();
+                bundle2.putParcelable("suggest_icon_1", mLooper.submit(g).get());
+                return bundle2;
+            } catch (Exception ex) {
+                Log.e("AppSearchProvider", "Unable to load icon " + ex);
+                return null;
+            }
         return super.call(s, s2, bundle);
     }
 

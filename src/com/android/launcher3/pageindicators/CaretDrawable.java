@@ -136,7 +136,7 @@ public class CaretDrawable extends Drawable {
      */
     public float getNormalizedCaretProgress() {
         return (mCaretProgress - PROGRESS_CARET_POINTING_UP) /
-                (PROGRESS_CARET_POINTING_DOWN - PROGRESS_CARET_POINTING_UP);
+               (PROGRESS_CARET_POINTING_DOWN - PROGRESS_CARET_POINTING_UP);
     }
 
     @Override

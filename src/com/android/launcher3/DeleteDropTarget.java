@@ -64,8 +64,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
     @Override
     public boolean supportsAccessibilityDrop(ItemInfo info, View view) {
         return (info instanceof ShortcutInfo)
-                || (info instanceof LauncherAppWidgetInfo)
-                || (info instanceof FolderInfo);
+               || (info instanceof LauncherAppWidgetInfo)
+               || (info instanceof FolderInfo);
     }
 
     @Override
@@ -84,8 +84,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
     private void setTextBasedOnDragSource(ItemInfo item) {
         if (!TextUtils.isEmpty(mText)) {
             mText = getResources().getString(item.id != ItemInfo.NO_ID
-                    ? R.string.remove_drop_target_label
-                    : android.R.string.cancel);
+                                             ? R.string.remove_drop_target_label
+                                             : android.R.string.cancel);
             requestLayout();
         }
     }
@@ -95,7 +95,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
      */
     private void setControlTypeBasedOnDragSource(ItemInfo item) {
         mControlType = item.id != ItemInfo.NO_ID ? ControlType.REMOVE_TARGET
-                : ControlType.CANCEL_TARGET;
+                       : ControlType.CANCEL_TARGET;
     }
 
     @Override
@@ -108,8 +108,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
             int currentPage = this.mLauncher.getWorkspace().getCurrentPage();
             Snackbar.show(mLauncher, R.string.item_removed, R.string.undo,
-                    () -> mLauncher.getModelWriter().commitDelete(),
-                    () -> mLauncher.getModelWriter().undoDelete(currentPage));
+                          () -> mLauncher.getModelWriter().commitDelete(),
+                          () -> mLauncher.getModelWriter().undoDelete(currentPage));
         }
     }
 
@@ -124,7 +124,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         mLauncher.removeItem(view, item, true /* deleteFromDb */);
         mLauncher.getWorkspace().stripEmptyScreens();
         mLauncher.getDragLayer()
-                .announceForAccessibility(getContext().getString(R.string.item_removed));
+        .announceForAccessibility(getContext().getString(R.string.item_removed));
     }
 
     @Override

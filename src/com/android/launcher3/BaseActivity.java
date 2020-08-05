@@ -52,23 +52,24 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
     public static final int PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION = 1 << 3;
 
     private static final int INVISIBLE_FLAGS =
-            INVISIBLE_BY_STATE_HANDLER | INVISIBLE_BY_APP_TRANSITIONS | INVISIBLE_BY_PENDING_FLAGS;
+        INVISIBLE_BY_STATE_HANDLER | INVISIBLE_BY_APP_TRANSITIONS | INVISIBLE_BY_PENDING_FLAGS;
     public static final int STATE_HANDLER_INVISIBILITY_FLAGS =
-            INVISIBLE_BY_STATE_HANDLER | PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
+        INVISIBLE_BY_STATE_HANDLER | PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
     public static final int INVISIBLE_ALL =
-            INVISIBLE_FLAGS | PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
+        INVISIBLE_FLAGS | PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
 
     @Retention(SOURCE)
     @IntDef(
-            flag = true,
-            value = {INVISIBLE_BY_STATE_HANDLER, INVISIBLE_BY_APP_TRANSITIONS,
-                    INVISIBLE_BY_PENDING_FLAGS, PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION})
+        flag = true,
+        value = {INVISIBLE_BY_STATE_HANDLER, INVISIBLE_BY_APP_TRANSITIONS,
+                 INVISIBLE_BY_PENDING_FLAGS, PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION
+                })
     public @interface InvisibilityFlags {
     }
 
     private final ArrayList<OnDeviceProfileChangeListener> mDPChangeListeners = new ArrayList<>();
     private final ArrayList<MultiWindowModeChangedListener> mMultiWindowModeChangedListeners =
-            new ArrayList<>();
+        new ArrayList<>();
 
     public DeviceProfile mDeviceProfile;
     protected UserEventDispatcher mUserEventDispatcher;
@@ -86,8 +87,8 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
 
     @Retention(SOURCE)
     @IntDef(
-            flag = true,
-            value = {ACTIVITY_STATE_STARTED, ACTIVITY_STATE_RESUMED, ACTIVITY_STATE_USER_ACTIVE})
+        flag = true,
+        value = {ACTIVITY_STATE_STARTED, ACTIVITY_STATE_RESUMED, ACTIVITY_STATE_USER_ACTIVE})
     public @interface ActivityFlags {
     }
 

@@ -116,7 +116,7 @@ public class NexusLauncher {
             SharedPreferences prefs = Utilities.getPrefs(mLauncher);
             mOverlay = new NexusLauncherOverlay(mLauncher);
             mClient = new LauncherClient(mLauncher, mOverlay, new StaticInteger(
-                    (prefs.getBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, true) ? 1 : 0) | 2 | 4 | 8));
+                                             (prefs.getBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, true) ? 1 : 0) | 2 | 4 | 8));
             mOverlay.setClient(mClient);
 
 
@@ -212,11 +212,11 @@ public class NexusLauncher {
                 smartspace.onResume();
             }
 
-           /* Handler handler = mLauncher.getDragLayer().getHandler();
-            if (handler != null) {
-                handler.removeCallbacks(mUpdatePredictionsIfResumed);
-                Utilities.postAsyncCallback(handler, mUpdatePredictionsIfResumed);
-            }*/
+            /* Handler handler = mLauncher.getDragLayer().getHandler();
+             if (handler != null) {
+                 handler.removeCallbacks(mUpdatePredictionsIfResumed);
+                 Utilities.postAsyncCallback(handler, mUpdatePredictionsIfResumed);
+             }*/
         }
 
         public void onSaveInstanceState(final Bundle bundle) {
@@ -260,20 +260,20 @@ public class NexusLauncher {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             switch (key) {
-                case SettingsActivity.ENABLE_MINUS_ONE_PREF:
-                    LauncherClient launcherClient = mClient;
-                    StaticInteger i = new StaticInteger(
-                            (sharedPreferences.getBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, true) ? 1 : 0) | 2 | 4 | 8);
-                    if (i.mData != launcherClient.mFlags) {
-                        launcherClient.mFlags = i.mData;
-                        if (launcherClient.mLayoutParams != null) {
-                            launcherClient.exchangeConfig();
-                        }
+            case SettingsActivity.ENABLE_MINUS_ONE_PREF:
+                LauncherClient launcherClient = mClient;
+                StaticInteger i = new StaticInteger(
+                    (sharedPreferences.getBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, true) ? 1 : 0) | 2 | 4 | 8);
+                if (i.mData != launcherClient.mFlags) {
+                    launcherClient.mFlags = i.mData;
+                    if (launcherClient.mLayoutParams != null) {
+                        launcherClient.exchangeConfig();
                     }
-                    break;
-                case SettingsActivity.FEED_THEME_PREF:
-                    applyFeedTheme(true);
-                    break;
+                }
+                break;
+            case SettingsActivity.FEED_THEME_PREF:
+                applyFeedTheme(true);
+                break;
             }
         }
 

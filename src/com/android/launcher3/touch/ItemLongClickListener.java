@@ -39,10 +39,10 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 public class ItemLongClickListener {
 
     public static OnLongClickListener INSTANCE_WORKSPACE =
-            ItemLongClickListener::onWorkspaceItemLongClick;
+        ItemLongClickListener::onWorkspaceItemLongClick;
 
     public static OnLongClickListener INSTANCE_ALL_APPS =
-            ItemLongClickListener::onAllAppsItemLongClick;
+        ItemLongClickListener::onAllAppsItemLongClick;
 
     private static boolean onWorkspaceItemLongClick(View v) {
         Launcher launcher = Launcher.getLauncher(v.getContext());

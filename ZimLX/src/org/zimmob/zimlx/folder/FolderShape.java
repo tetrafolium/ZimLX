@@ -62,7 +62,7 @@ public abstract class FolderShape {
             AnimatorUpdateListener newUpdateListener = newUpdateListener(startRect, endRect,
                     endRadius, path);
             ValueAnimator ofFloat = ValueAnimator.ofFloat(
-                    isReversed ? new float[]{1, 0} : new float[]{0, 1});
+                                        isReversed ? new float[] {1, 0} : new float[] {0, 1});
             ofFloat.addListener(new AnimatorListenerAdapter() {
                 public ViewOutlineProvider mOldOutlineProvider;
 
@@ -117,17 +117,17 @@ public abstract class FolderShape {
 
         @Override
         public AnimatorUpdateListener newUpdateListener(Rect startRect, Rect endRect,
-                                                        float endRadius, Path path) {
+                float endRadius, Path path) {
             float startRadius = startRect.width() / 2f;
-            float[] start = new float[]{startRect.left, startRect.top, startRect.right, startRect.bottom};
-            float[] end = new float[]{endRect.left, endRect.top, endRect.right, endRect.bottom};
+            float[] start = new float[] {startRect.left, startRect.top, startRect.right, startRect.bottom};
+            float[] end = new float[] {endRect.left, endRect.top, endRect.right, endRect.bottom};
             FloatArrayEvaluator evaluator = new FloatArrayEvaluator();
             return animation -> {
                 float progress = (float) animation.getAnimatedValue();
                 float[] values = evaluator.evaluate(progress, start, end);
                 mIconShape.addToPath(path,
-                        values[0], values[1], values[2], values[3],
-                        startRadius, endRadius, progress);
+                                     values[0], values[1], values[2], values[3],
+                                     startRadius, endRadius, progress);
             };
         }
     }
@@ -136,11 +136,11 @@ public abstract class FolderShape {
 
         public final Animator createRevealAnimator(Folder folder, Rect startRect, Rect endRect, float endRadius, boolean isReversed) {
             return new RoundedRectRevealOutlineProvider(getStartRadius(startRect), endRadius, startRect,
-                    endRect) {
+            endRect) {
                 public boolean shouldRemoveElevationDuringAnimation() {
                     return true;
                 }
-            }.createRevealAnimator(folder, isReversed);
+            } .createRevealAnimator(folder, isReversed);
         }
 
         public abstract float getStartRadius(Rect rect);
@@ -163,10 +163,10 @@ public abstract class FolderShape {
 
     public static FolderShape getShapeDefinition(String shape, float radiusRatio) {
         switch (shape) {
-            case "Circle":
-                return new Circle();
-            default:
-                throw new IllegalArgumentException("Invalid shape type: " + shape);
+        case "Circle":
+            return new Circle();
+        default:
+            throw new IllegalArgumentException("Invalid shape type: " + shape);
         }
     }
 
@@ -185,7 +185,7 @@ public abstract class FolderShape {
                     if ("shapes".equals(name)) continue;
 
                     AttributeSet attrs = Xml.asAttributeSet(parser);
-                    TypedArray ta = context.obtainStyledAttributes(attrs, new int[]{R.attr.folderIconRadius});
+                    TypedArray ta = context.obtainStyledAttributes(attrs, new int[] {R.attr.folderIconRadius});
                     float radius = ta.getFloat(0, 1);
                     ta.recycle();
 

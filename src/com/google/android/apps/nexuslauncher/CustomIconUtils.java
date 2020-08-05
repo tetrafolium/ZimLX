@@ -14,15 +14,15 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CustomIconUtils {
-    private final static String[] ICON_INTENTS = new String[]{
-            "com.novalauncher.THEME",
-            "org.adw.launcher.THEMES",
-            "org.adw.launcher.icons.ACTION_PICK_ICON",
-            "com.anddoes.launcher.THEME",
-            "com.teslacoilsw.launcher.THEME",
-            "com.fede.launcher.THEME_ICONPACK",
-            "com.gau.go.launcherex.theme",
-            "com.dlto.atom.launcher.THEME"
+    private final static String[] ICON_INTENTS = new String[] {
+        "com.novalauncher.THEME",
+        "org.adw.launcher.THEMES",
+        "org.adw.launcher.icons.ACTION_PICK_ICON",
+        "com.anddoes.launcher.THEME",
+        "com.teslacoilsw.launcher.THEME",
+        "com.fede.launcher.THEME_ICONPACK",
+        "com.gau.go.launcherex.theme",
+        "com.dlto.atom.launcher.THEME"
 
     };
 

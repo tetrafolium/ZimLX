@@ -43,7 +43,7 @@ public abstract class ItemInfoMatcher {
     }
 
     public static ItemInfoMatcher ofComponents(
-            final HashSet<ComponentName> components, final UserHandle user) {
+        final HashSet<ComponentName> components, final UserHandle user) {
         return new ItemInfoMatcher() {
             @Override
             public boolean matches(ItemInfo info, ComponentName cn) {
@@ -53,7 +53,7 @@ public abstract class ItemInfoMatcher {
     }
 
     public static ItemInfoMatcher ofPackages(
-            final HashSet<String> packageNames, final UserHandle user) {
+        final HashSet<String> packageNames, final UserHandle user) {
         return new ItemInfoMatcher() {
             @Override
             public boolean matches(ItemInfo info, ComponentName cn) {
@@ -67,13 +67,13 @@ public abstract class ItemInfoMatcher {
             @Override
             public boolean matches(ItemInfo info, ComponentName cn) {
                 return info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
-                        keys.contains(ShortcutKey.fromItemInfo(info));
+                       keys.contains(ShortcutKey.fromItemInfo(info));
             }
         };
     }
 
     public static ItemInfoMatcher ofItemIds(
-            final LongArrayMap<Boolean> ids, final Boolean matchDefault) {
+        final LongArrayMap<Boolean> ids, final Boolean matchDefault) {
         return new ItemInfoMatcher() {
             @Override
             public boolean matches(ItemInfo info, ComponentName cn) {

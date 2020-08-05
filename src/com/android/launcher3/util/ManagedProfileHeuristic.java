@@ -85,7 +85,7 @@ public class ManagedProfileHeuristic {
             @Override
             public void run() {
                 InstallShortcutReceiver.disableAndFlushInstallQueue(
-                        InstallShortcutReceiver.FLAG_BULK_ADD, context);
+                    InstallShortcutReceiver.FLAG_BULK_ADD, context);
             }
         });
     }
@@ -135,7 +135,7 @@ public class ManagedProfileHeuristic {
 
     public static SharedPreferences prefs(Context context) {
         return context.getSharedPreferences(
-                LauncherFiles.MANAGED_USER_PREFERENCES_KEY, Context.MODE_PRIVATE);
+                   LauncherFiles.MANAGED_USER_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     /**
@@ -190,7 +190,7 @@ public class ManagedProfileHeuristic {
          * {@link ShortcutInfo} or a wrapped {@link FolderInfo} or null.
          */
         public ItemInfo convertToWorkspaceItem(
-                ShortcutInfo shortcut, LauncherActivityInfo activityInfo) {
+            ShortcutInfo shortcut, LauncherActivityInfo activityInfo) {
             if (activityInfo.getFirstInstallTime() >= addIconToFolderTime) {
                 return shortcut;
             }

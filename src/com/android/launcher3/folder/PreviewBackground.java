@@ -52,7 +52,7 @@ public class PreviewBackground {
     private static final int CONSUMPTION_ANIMATION_DURATION = 100;
 
     private final PorterDuffXfermode mShadowPorterDuffXfermode
-            = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
+        = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
     private RadialGradient mShadowShader = null;
 
     private final Matrix mShaderMatrix = new Matrix();
@@ -104,32 +104,32 @@ public class PreviewBackground {
     }
 
     private static final Property<PreviewBackground, Integer> STROKE_ALPHA =
-            new Property<PreviewBackground, Integer>(Integer.class, "strokeAlpha") {
-                @Override
-                public Integer get(PreviewBackground previewBackground) {
-                    return previewBackground.mStrokeAlpha;
-                }
+    new Property<PreviewBackground, Integer>(Integer.class, "strokeAlpha") {
+        @Override
+        public Integer get(PreviewBackground previewBackground) {
+            return previewBackground.mStrokeAlpha;
+        }
 
-                @Override
-                public void set(PreviewBackground previewBackground, Integer alpha) {
-                    previewBackground.mStrokeAlpha = alpha;
-                    previewBackground.invalidate();
-                }
-            };
+        @Override
+        public void set(PreviewBackground previewBackground, Integer alpha) {
+            previewBackground.mStrokeAlpha = alpha;
+            previewBackground.invalidate();
+        }
+    };
 
     private static final Property<PreviewBackground, Integer> SHADOW_ALPHA =
-            new Property<PreviewBackground, Integer>(Integer.class, "shadowAlpha") {
-                @Override
-                public Integer get(PreviewBackground previewBackground) {
-                    return previewBackground.mShadowAlpha;
-                }
+    new Property<PreviewBackground, Integer>(Integer.class, "shadowAlpha") {
+        @Override
+        public Integer get(PreviewBackground previewBackground) {
+            return previewBackground.mShadowAlpha;
+        }
 
-                @Override
-                public void set(PreviewBackground previewBackground, Integer alpha) {
-                    previewBackground.mShadowAlpha = alpha;
-                    previewBackground.invalidate();
-                }
-            };
+        @Override
+        public void set(PreviewBackground previewBackground, Integer alpha) {
+            previewBackground.mShadowAlpha = alpha;
+            previewBackground.invalidate();
+        }
+    };
 
     public void setup(Launcher launcher, View invalidateDelegate,
                       int availableSpaceX, int topPadding) {
@@ -142,7 +142,7 @@ public class PreviewBackground {
 
         basePreviewOffsetX = (availableSpaceX - previewSize) / 2;
         basePreviewOffsetY = topPadding +
-                (isInDrawer ? grid.allAppsFolderIconOffsetYPx : grid.folderIconOffsetYPx);
+                             (isInDrawer ? grid.allAppsFolderIconOffsetYPx : grid.folderIconOffsetYPx);
 
         // Stroke width is 1dp
         mStrokeWidth = launcher.getResources().getDisplayMetrics().density;
@@ -151,9 +151,9 @@ public class PreviewBackground {
         float shadowRadius = radius + mStrokeWidth;
         int shadowColor = Color.argb(SHADOW_OPACITY, 0, 0, 0);
         mShadowShader = new RadialGradient(0, 0, 1,
-                new int[]{shadowColor, Color.TRANSPARENT},
-                new float[]{radius / shadowRadius, 1},
-                Shader.TileMode.CLAMP);
+                                           new int[] {shadowColor, Color.TRANSPARENT},
+                                           new float[] {radius / shadowRadius, 1},
+                                           Shader.TileMode.CLAMP);
 
         invalidate();
     }
@@ -229,7 +229,7 @@ public class PreviewBackground {
         final int saveCount;
         if (canvas.isHardwareAccelerated()) {
             saveCount = canvas.saveLayer(offsetX - mStrokeWidth, offsetY,
-                    offsetX + radius + shadowRadius, offsetY + shadowRadius + shadowRadius, null);
+                                         offsetX + radius + shadowRadius, offsetY + shadowRadius + shadowRadius, null);
 
         } else {
             saveCount = canvas.save();
@@ -258,8 +258,8 @@ public class PreviewBackground {
             mShadowAnimator.cancel();
         }
         mShadowAnimator = ObjectAnimator
-                .ofInt(this, SHADOW_ALPHA, 0, 255)
-                .setDuration(100);
+                          .ofInt(this, SHADOW_ALPHA, 0, 255)
+                          .setDuration(100);
         mShadowAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -274,8 +274,8 @@ public class PreviewBackground {
             mStrokeAlphaAnimator.cancel();
         }
         mStrokeAlphaAnimator = ObjectAnimator
-                .ofInt(this, STROKE_ALPHA, MAX_BG_OPACITY / 2, MAX_BG_OPACITY)
-                .setDuration(100);
+                               .ofInt(this, STROKE_ALPHA, MAX_BG_OPACITY / 2, MAX_BG_OPACITY)
+                               .setDuration(100);
         mStrokeAlphaAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

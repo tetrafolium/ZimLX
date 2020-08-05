@@ -150,19 +150,19 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
                 img.getBitmap().getWidth(), img.getWidth());
 
         Intent homeIntent = listener.addToIntent(
-                new Intent(Intent.ACTION_MAIN)
-                        .addCategory(Intent.CATEGORY_HOME)
-                        .setPackage(getPackageName())
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                new Intent(Intent.ACTION_MAIN)
+                                .addCategory(Intent.CATEGORY_HOME)
+                                .setPackage(getPackageName())
+                                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 
         listener.initWhenReady();
         startActivity(homeIntent,
-                ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out).toBundle());
+                      ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out).toBundle());
         mFinishOnPause = true;
 
         // Start a system drag and drop. We use a transparent bitmap as preview for system drag
         // as the preview is handled internally by launcher.
-        ClipDescription description = new ClipDescription("", new String[]{listener.getMimeType()});
+        ClipDescription description = new ClipDescription("", new String[] {listener.getMimeType()});
         ClipData data = new ClipData(description, new ClipData.Item(""));
         view.startDragAndDrop(data, new DragShadowBuilder(view) {
 
@@ -189,7 +189,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
     private void setupShortcut() {
         PinShortcutRequestActivityInfo shortcutInfo =
-                new PinShortcutRequestActivityInfo(mRequest, this);
+            new PinShortcutRequestActivityInfo(mRequest, this);
         WidgetItem item = new WidgetItem(shortcutInfo);
         mWidgetCell.getWidgetView().setTag(new PendingAddShortcutInfo(shortcutInfo));
         mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
@@ -234,7 +234,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     public void onPlaceAutomaticallyClick(View v) {
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
             InstallShortcutReceiver.queueShortcut(
-                    new ShortcutInfoCompat(mRequest.getShortcutInfo()), this);
+                new ShortcutInfoCompat(mRequest.getShortcutInfo()), this);
             logCommand(Action.Command.CONFIRM);
             mRequest.accept();
             finish();
@@ -243,7 +243,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
         mPendingBindWidgetId = mAppWidgetHost.allocateAppWidgetId();
         boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
-                mPendingBindWidgetId, mRequest.getAppWidgetProviderInfo(this), mWidgetOptions);
+                              mPendingBindWidgetId, mRequest.getAppWidgetProviderInfo(this), mWidgetOptions);
         if (success) {
             acceptWidget(mPendingBindWidgetId);
             return;
@@ -251,7 +251,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
         // request bind widget
         mAppWidgetHost.startBindFlow(this, mPendingBindWidgetId,
-                mRequest.getAppWidgetProviderInfo(this), REQUEST_BIND_APPWIDGET);
+                                     mRequest.getAppWidgetProviderInfo(this), REQUEST_BIND_APPWIDGET);
     }
 
     private void acceptWidget(int widgetId) {
@@ -272,8 +272,8 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_BIND_APPWIDGET) {
             int widgetId = data != null
-                    ? data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mPendingBindWidgetId)
-                    : mPendingBindWidgetId;
+                           ? data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mPendingBindWidgetId)
+                           : mPendingBindWidgetId;
             if (resultCode == RESULT_OK) {
                 acceptWidget(widgetId);
             } else {
@@ -296,13 +296,13 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mPendingBindWidgetId = savedInstanceState
-                .getInt(STATE_EXTRA_WIDGET_ID, mPendingBindWidgetId);
+                               .getInt(STATE_EXTRA_WIDGET_ID, mPendingBindWidgetId);
     }
 
     private void logCommand(int command) {
         getUserEventDispatcher().dispatchUserEvent(newLauncherEvent(
-                newCommandAction(command),
-                newItemTarget(mWidgetCell.getWidgetView(), mInstantAppResolver),
-                newContainerTarget(ContainerType.PINITEM)), null);
+                    newCommandAction(command),
+                    newItemTarget(mWidgetCell.getWidgetView(), mInstantAppResolver),
+                    newContainerTarget(ContainerType.PINITEM)), null);
     }
 }

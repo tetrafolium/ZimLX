@@ -58,7 +58,7 @@ public class WorkspaceStateTransitionAnimation {
 
     public void setState(LauncherState toState) {
         setWorkspaceProperty(toState, NO_ANIM_PROPERTY_SETTER, new AnimatorSetBuilder(),
-                new AnimationConfig());
+                             new AnimationConfig());
     }
 
     public void setStateWithAnimation(LauncherState toState, AnimatorSetBuilder builder,
@@ -81,21 +81,21 @@ public class WorkspaceStateTransitionAnimation {
         final int childCount = mWorkspace.getChildCount();
         for (int i = 0; i < childCount; i++) {
             applyChildState(state, (CellLayout) mWorkspace.getChildAt(i), i, pageAlphaProvider,
-                    propertySetter, builder, config);
+                            propertySetter, builder, config);
         }
 
         int elements = state.getVisibleElements(mLauncher);
         Interpolator fadeInterpolator = builder.getInterpolator(ANIM_WORKSPACE_FADE,
-                pageAlphaProvider.interpolator);
+                                        pageAlphaProvider.interpolator);
         boolean playAtomicComponent = config.playAtomicComponent();
         if (playAtomicComponent) {
             Interpolator scaleInterpolator = builder.getInterpolator(ANIM_WORKSPACE_SCALE, ZOOM_OUT);
             propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, scaleInterpolator);
             float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
             propertySetter.setViewAlpha(mLauncher.getHotseat().getLayout(), hotseatIconsAlpha,
-                    fadeInterpolator);
+                                        fadeInterpolator);
             propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
-                    hotseatIconsAlpha, fadeInterpolator);
+                                        hotseatIconsAlpha, fadeInterpolator);
         }
 
         // Set options view
@@ -109,23 +109,23 @@ public class WorkspaceStateTransitionAnimation {
 
         Interpolator translationInterpolator = !playAtomicComponent ? LINEAR : ZOOM_OUT;
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_X,
-                scaleAndTranslation[1], translationInterpolator);
+                                scaleAndTranslation[1], translationInterpolator);
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
-                scaleAndTranslation[2], translationInterpolator);
+                                scaleAndTranslation[2], translationInterpolator);
 
         propertySetter.setViewAlpha(mLauncher.getHotseatSearchBox(),
-                (elements & HOTSEAT_SEARCH_BOX) != 0 ? 1 : 0, fadeInterpolator);
+                                    (elements & HOTSEAT_SEARCH_BOX) != 0 ? 1 : 0, fadeInterpolator);
 
         // Set scrim
         WorkspaceAndHotseatScrim scrim = mLauncher.getDragLayer().getScrim();
         propertySetter.setFloat(scrim, SCRIM_PROGRESS, state.getWorkspaceScrimAlpha(mLauncher),
-                LINEAR);
+                                LINEAR);
         propertySetter.setFloat(scrim, SYSUI_PROGRESS, state.hasSysUiScrim ? 1 : 0, LINEAR);
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {
         applyChildState(state, cl, childIndex, state.getWorkspacePageAlphaProvider(mLauncher),
-                NO_ANIM_PROPERTY_SETTER, new AnimatorSetBuilder(), new AnimationConfig());
+                        NO_ANIM_PROPERTY_SETTER, new AnimatorSetBuilder(), new AnimationConfig());
     }
 
     private void applyChildState(LauncherState state, CellLayout cl, int childIndex,
@@ -136,13 +136,13 @@ public class WorkspaceStateTransitionAnimation {
 
         if (config.playNonAtomicComponent()) {
             propertySetter.setInt(cl.getScrimBackground(),
-                    DRAWABLE_ALPHA, drawableAlpha, ZOOM_OUT);
+                                  DRAWABLE_ALPHA, drawableAlpha, ZOOM_OUT);
         }
         if (config.playAtomicComponent()) {
             Interpolator fadeInterpolator = builder.getInterpolator(ANIM_WORKSPACE_FADE,
-                    pageAlphaProvider.interpolator);
+                                            pageAlphaProvider.interpolator);
             propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
-                    pageAlpha, fadeInterpolator);
+                                    pageAlpha, fadeInterpolator);
         }
     }
 }

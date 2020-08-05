@@ -32,7 +32,7 @@ public class FixedScaleDrawable extends DrawableWrapper {
         //int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
         int saveCount = canvas.save();
         canvas.scale(mScaleX, mScaleY,
-                getBounds().exactCenterX(), getBounds().exactCenterY());
+                     getBounds().exactCenterX(), getBounds().exactCenterY());
         super.draw(canvas);
         canvas.restoreToCount(saveCount);
     }

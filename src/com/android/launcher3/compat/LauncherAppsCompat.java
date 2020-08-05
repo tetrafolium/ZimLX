@@ -55,19 +55,19 @@ public abstract class LauncherAppsCompat {
     }
 
     public abstract List<LauncherActivityInfo> getActivityList(String packageName,
-                                                               UserHandle user);
+            UserHandle user);
 
     public abstract LauncherActivityInfo resolveActivity(Intent intent,
-                                                         UserHandle user);
+            UserHandle user);
 
     public abstract void startActivityForProfile(ComponentName component, UserHandle user,
-                                                 Rect sourceBounds, Bundle opts);
+            Rect sourceBounds, Bundle opts);
 
     public abstract ApplicationInfo getApplicationInfo(
-            String packageName, int flags, UserHandle user);
+        String packageName, int flags, UserHandle user);
 
     public abstract void showAppDetailsForProfile(ComponentName component, UserHandle user,
-                                                  Rect sourceBounds, Bundle opts);
+            Rect sourceBounds, Bundle opts);
 
     public abstract void addOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
 
@@ -76,10 +76,10 @@ public abstract class LauncherAppsCompat {
     public abstract boolean isPackageEnabledForProfile(String packageName, UserHandle user);
 
     public abstract boolean isActivityEnabledForProfile(ComponentName component,
-                                                        UserHandle user);
+            UserHandle user);
 
     public abstract List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(
-            @Nullable PackageUserKey packageUser);
+        @Nullable PackageUserKey packageUser);
 
     public void showAppDetailsForProfile(ComponentName component, UserHandle user) {
         showAppDetailsForProfile(component, user, null, null);

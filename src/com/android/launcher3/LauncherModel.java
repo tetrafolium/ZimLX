@@ -81,7 +81,7 @@ import static com.android.launcher3.config.BaseFlags.IS_DOGFOOD_BUILD;
  * for the Launcher.
  */
 public class LauncherModel extends BroadcastReceiver
-        implements LauncherAppsCompat.OnAppsChangedCallbackCompat {
+    implements LauncherAppsCompat.OnAppsChangedCallbackCompat {
     private static final boolean DEBUG_RECEIVER = false;
 
     static final String TAG = "Launcher.Model";
@@ -147,7 +147,7 @@ public class LauncherModel extends BroadcastReceiver
         public void run() {
             if (mModelLoaded) {
                 boolean hasShortcutHostPermission =
-                        DeepShortcutManager.getInstance(mApp.getContext()).hasHostPermission();
+                    DeepShortcutManager.getInstance(mApp.getContext()).hasHostPermission();
                 if (hasShortcutHostPermission != sBgDataModel.hasShortcutHostPermission) {
                     forceReload();
                 }
@@ -230,7 +230,7 @@ public class LauncherModel extends BroadcastReceiver
         HashSet<String> packages = new HashSet<>();
         packages.add(packageName);
         enqueueModelUpdateTask(new CacheDataUpdatedTask(
-                CacheDataUpdatedTask.OP_SESSION_UPDATE, Process.myUserHandle(), packages));
+                                   CacheDataUpdatedTask.OP_SESSION_UPDATE, Process.myUserHandle(), packages));
     }
 
     /**
@@ -242,11 +242,11 @@ public class LauncherModel extends BroadcastReceiver
 
     public ModelWriter getWriter(boolean hasVerticalHotseat, boolean verifyChanges) {
         return new ModelWriter(mApp.getContext(), this, sBgDataModel,
-                hasVerticalHotseat, verifyChanges);
+                               hasVerticalHotseat, verifyChanges);
     }
 
     static void checkItemInfoLocked(
-            final long itemId, final ItemInfo item, StackTraceElement[] stackTrace) {
+        final long itemId, final ItemInfo item, StackTraceElement[] stackTrace) {
         ItemInfo modelItem = sBgDataModel.itemsIdMap.get(itemId);
         if (modelItem != null && item != modelItem) {
             // check all the data is consistent
@@ -272,9 +272,9 @@ public class LauncherModel extends BroadcastReceiver
             // to be consistent with the database-- for now, just require
             // modelItem == item or the equality check above
             String msg = "item: " + ((item != null) ? item.toString() : "null") +
-                    "modelItem: " +
-                    ((modelItem != null) ? modelItem.toString() : "null") +
-                    "Error: ItemInfo passed to checkItemInfo doesn't match original";
+                         "modelItem: " +
+                         ((modelItem != null) ? modelItem.toString() : "null") +
+                         "Error: ItemInfo passed to checkItemInfo doesn't match original";
             RuntimeException e = new RuntimeException(msg);
             if (stackTrace != null) {
                 e.setStackTrace(stackTrace);
@@ -381,7 +381,7 @@ public class LauncherModel extends BroadcastReceiver
     public void onPackagesAvailable(String[] packageNames, UserHandle user,
                                     boolean replacing) {
         enqueueModelUpdateTask(
-                new PackageUpdatedTask(PackageUpdatedTask.OP_UPDATE, user, packageNames));
+            new PackageUpdatedTask(PackageUpdatedTask.OP_UPDATE, user, packageNames));
     }
 
     @Override
@@ -389,20 +389,20 @@ public class LauncherModel extends BroadcastReceiver
                                       boolean replacing) {
         if (!replacing) {
             enqueueModelUpdateTask(new PackageUpdatedTask(
-                    PackageUpdatedTask.OP_UNAVAILABLE, user, packageNames));
+                                       PackageUpdatedTask.OP_UNAVAILABLE, user, packageNames));
         }
     }
 
     @Override
     public void onPackagesSuspended(String[] packageNames, UserHandle user) {
         enqueueModelUpdateTask(new PackageUpdatedTask(
-                PackageUpdatedTask.OP_SUSPEND, user, packageNames));
+                                   PackageUpdatedTask.OP_SUSPEND, user, packageNames));
     }
 
     @Override
     public void onPackagesUnsuspended(String[] packageNames, UserHandle user) {
         enqueueModelUpdateTask(new PackageUpdatedTask(
-                PackageUpdatedTask.OP_UNSUSPEND, user, packageNames));
+                                   PackageUpdatedTask.OP_UNSUSPEND, user, packageNames));
     }
 
     @Override
@@ -429,18 +429,18 @@ public class LauncherModel extends BroadcastReceiver
             // If we have changed locale we need to clear out the labels in all apps/workspace.
             forceReload();
         } else if (Intent.ACTION_MANAGED_PROFILE_ADDED.equals(action)
-                || Intent.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
+                   || Intent.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
             UserManagerCompat.getInstance(context).enableAndResetCache();
             forceReload();
         } else if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
-                Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action) ||
-                Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
+                   Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action) ||
+                   Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
             UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
             if (user != null) {
                 if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
                         Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)) {
                     enqueueModelUpdateTask(new PackageUpdatedTask(
-                            PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE, user));
+                                               PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE, user));
                 }
 
                 // ACTION_MANAGED_PROFILE_UNAVAILABLE sends the profile back to locked mode, so
@@ -564,7 +564,7 @@ public class LauncherModel extends BroadcastReceiver
 
         // Get screens ordered by rank.
         return LauncherDbUtils.getScreenIdsFromCursor(contentResolver.query(
-                screensUri, null, null, null, LauncherSettings.WorkspaceScreens.SCREEN_RANK));
+                    screensUri, null, null, null, LauncherSettings.WorkspaceScreens.SCREEN_RANK));
     }
 
     public void onInstallSessionCreated(final PackageInstallInfo sessionInfo) {
@@ -643,7 +643,7 @@ public class LauncherModel extends BroadcastReceiver
         // If any package icon has changed (app was updated while launcher was dead),
         // update the corresponding shortcuts.
         enqueueModelUpdateTask(new CacheDataUpdatedTask(
-                CacheDataUpdatedTask.OP_CACHE_UPDATE, user, updatedPackages));
+                                   CacheDataUpdatedTask.OP_CACHE_UPDATE, user, updatedPackages));
     }
 
     public void enqueueModelUpdateTask(ModelUpdateTask task) {
@@ -723,7 +723,7 @@ public class LauncherModel extends BroadcastReceiver
             writer.println(prefix + "All apps list: size=" + mBgAllAppsList.data.size());
             for (AppInfo info : mBgAllAppsList.data) {
                 writer.println(prefix + "   title=\"" + info.title + "\" iconBitmap=" + info.iconBitmap
-                        + " componentName=" + info.componentName.getPackageName());
+                               + " componentName=" + info.componentName.getPackageName());
             }
         }
         sBgDataModel.dump(prefix, fd, writer, args);

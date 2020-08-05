@@ -83,13 +83,13 @@ public class ImportDataTask {
     private ImportDataTask(Context context, String sourceAuthority) {
         mContext = context;
         mOtherScreensUri = Uri.parse("content://" +
-                sourceAuthority + "/" + WorkspaceScreens.TABLE_NAME);
+                                     sourceAuthority + "/" + WorkspaceScreens.TABLE_NAME);
         mOtherFavoritesUri = Uri.parse("content://" + sourceAuthority + "/" + Favorites.TABLE_NAME);
     }
 
     private static String getPackage(Intent intent) {
         return intent.getComponent() != null ? intent.getComponent().getPackageName()
-                : intent.getPackage();
+               : intent.getPackage();
     }
 
     /**
@@ -118,7 +118,7 @@ public class ImportDataTask {
         }
 
         for (ProviderInfo info : context.getPackageManager().queryContentProviders(
-                null, context.getApplicationInfo().uid, 0)) {
+                    null, context.getApplicationInfo().uid, 0)) {
 
             if (sourcePackage.equals(info.packageName)) {
                 if ((info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
@@ -130,7 +130,7 @@ public class ImportDataTask {
                 if (sourceAuthority.equals(info.authority)) {
                     if (TextUtils.isEmpty(info.readPermission) ||
                             context.checkPermission(info.readPermission, Process.myPid(),
-                                    Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
+                                                    Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
                         // All checks passed, run the import task.
                         return new ImportDataTask(context, sourceAuthority).importWorkspace();
                     }
@@ -142,14 +142,14 @@ public class ImportDataTask {
 
     private static int getMyHotseatLayoutId(Context context) {
         return LauncherAppState.getIDP(context).numHotseatIcons <= 5
-                ? R.xml.dw_phone_hotseat
-                : R.xml.dw_tablet_hotseat;
+               ? R.xml.dw_phone_hotseat
+               : R.xml.dw_tablet_hotseat;
     }
 
     public boolean importWorkspace() throws Exception {
         ArrayList<Long> allScreens = LauncherDbUtils.getScreenIdsFromCursor(
-                mContext.getContentResolver().query(mOtherScreensUri, null, null, null,
-                        LauncherSettings.WorkspaceScreens.SCREEN_RANK));
+                                         mContext.getContentResolver().query(mOtherScreensUri, null, null, null,
+                                                 LauncherSettings.WorkspaceScreens.SCREEN_RANK));
         FileLog.d(TAG, "Importing DB from " + mOtherFavoritesUri);
 
         // During import we reset the screen IDs to 0-indexed values.
@@ -171,7 +171,7 @@ public class ImportDataTask {
             v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
             screenIdMap.put(allScreens.get(i), (long) i);
             screenOps.add(ContentProviderOperation.newInsert(
-                    LauncherSettings.WorkspaceScreens.CONTENT_URI).withValues(v).build());
+                              LauncherSettings.WorkspaceScreens.CONTENT_URI).withValues(v).build());
         }
         mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY, screenOps);
         importWorkspaceItems(allScreens.get(0), screenIdMap);
@@ -180,7 +180,7 @@ public class ImportDataTask {
 
         // Create empty DB flag.
         LauncherSettings.Settings.call(mContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
+                                       LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
         return true;
     }
 
@@ -190,17 +190,17 @@ public class ImportDataTask {
      * 3) In the end fills any holes in hotseat with items from default hotseat layout.
      */
     private void importWorkspaceItems(
-            long firsetScreenId, LongSparseArray<Long> screenIdMap) throws Exception {
+        long firsetScreenId, LongSparseArray<Long> screenIdMap) throws Exception {
         String profileId = Long.toString(UserManagerCompat.getInstance(mContext)
-                .getSerialNumberForUser(Process.myUserHandle()));
+                                         .getSerialNumberForUser(Process.myUserHandle()));
 
         boolean createEmptyRowOnFirstScreen = false;
         if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
             try (Cursor c = mContext.getContentResolver().query(mOtherFavoritesUri, null,
-                    // get items on the first row of the first screen
-                    "profileId = ? AND container = -100 AND screen = ? AND cellY = 0",
-                    new String[]{profileId, Long.toString(firsetScreenId)},
-                    null)) {
+                                // get items on the first row of the first screen
+                                "profileId = ? AND container = -100 AND screen = ? AND cellY = 0",
+                                new String[] {profileId, Long.toString(firsetScreenId)},
+                                null)) {
                 // First row of first screen is not empty
                 createEmptyRowOnFirstScreen = c.moveToNext();
             }
@@ -216,12 +216,12 @@ public class ImportDataTask {
         int totalItemsOnWorkspace = 0;
 
         try (Cursor c = mContext.getContentResolver()
-                .query(mOtherFavoritesUri, null,
-                        // Only migrate the primary user
-                        Favorites.PROFILE_ID + " = ?", new String[]{profileId},
-                        // Get the items sorted by container, so that the folders are loaded
-                        // before the corresponding items.
-                        Favorites.CONTAINER)) {
+                            .query(mOtherFavoritesUri, null,
+                                   // Only migrate the primary user
+                                   Favorites.PROFILE_ID + " = ?", new String[] {profileId},
+                                   // Get the items sorted by container, so that the folders are loaded
+                                   // before the corresponding items.
+                                   Favorites.CONTAINER)) {
 
             // various columns we expect to exist.
             final int idIndex = c.getColumnIndexOrThrow(Favorites._ID);
@@ -258,69 +258,69 @@ public class ImportDataTask {
                 int spanY = c.getInt(spanYIndex);
 
                 switch (container) {
-                    case Favorites.CONTAINER_DESKTOP: {
-                        Long newScreenId = screenIdMap.get(screen);
-                        if (newScreenId == null) {
-                            FileLog.d(TAG, String.format("Skipping item %d, type %d not on a valid screen %d", id, type, screen));
-                            continue;
-                        }
-                        // Reset the screen to 0-index value
-                        screen = newScreenId;
-                        if (createEmptyRowOnFirstScreen && screen == Workspace.FIRST_SCREEN_ID) {
-                            // Shift items by 1.
-                            cellY++;
-                        }
+                case Favorites.CONTAINER_DESKTOP: {
+                    Long newScreenId = screenIdMap.get(screen);
+                    if (newScreenId == null) {
+                        FileLog.d(TAG, String.format("Skipping item %d, type %d not on a valid screen %d", id, type, screen));
+                        continue;
+                    }
+                    // Reset the screen to 0-index value
+                    screen = newScreenId;
+                    if (createEmptyRowOnFirstScreen && screen == Workspace.FIRST_SCREEN_ID) {
+                        // Shift items by 1.
+                        cellY++;
+                    }
 
-                        mMaxGridSizeX = Math.max(mMaxGridSizeX, cellX + spanX);
-                        mMaxGridSizeY = Math.max(mMaxGridSizeY, cellY + spanY);
-                        break;
+                    mMaxGridSizeX = Math.max(mMaxGridSizeX, cellX + spanX);
+                    mMaxGridSizeY = Math.max(mMaxGridSizeY, cellY + spanY);
+                    break;
+                }
+                case Favorites.CONTAINER_HOTSEAT: {
+                    mHotseatSize = Math.max(mHotseatSize, (int) screen + 1);
+                    break;
+                }
+                default:
+                    if (!mValidFolders.get(container)) {
+                        FileLog.d(TAG, String.format("Skipping item %d, type %d not in a valid folder %d", id, type, container));
+                        continue;
                     }
-                    case Favorites.CONTAINER_HOTSEAT: {
-                        mHotseatSize = Math.max(mHotseatSize, (int) screen + 1);
-                        break;
-                    }
-                    default:
-                        if (!mValidFolders.get(container)) {
-                            FileLog.d(TAG, String.format("Skipping item %d, type %d not in a valid folder %d", id, type, container));
-                            continue;
-                        }
                 }
 
                 Intent intent = null;
                 switch (type) {
-                    case Favorites.ITEM_TYPE_FOLDER: {
-                        mValidFolders.put(id, true);
-                        // Use a empty intent to indicate a folder.
-                        intent = new Intent();
-                        break;
+                case Favorites.ITEM_TYPE_FOLDER: {
+                    mValidFolders.put(id, true);
+                    // Use a empty intent to indicate a folder.
+                    intent = new Intent();
+                    break;
+                }
+                case Favorites.ITEM_TYPE_APPWIDGET: {
+                    values.put(Favorites.RESTORED,
+                               LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
+                               LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
+                               LauncherAppWidgetInfo.FLAG_UI_NOT_READY);
+                    values.put(Favorites.APPWIDGET_PROVIDER, c.getString(widgetProviderIndex));
+                    break;
+                }
+                case Favorites.ITEM_TYPE_SHORTCUT:
+                case Favorites.ITEM_TYPE_APPLICATION: {
+                    intent = Intent.parseUri(c.getString(intentIndex), 0);
+                    if (Utilities.isLauncherAppTarget(intent)) {
+                        type = Favorites.ITEM_TYPE_APPLICATION;
+                    } else {
+                        values.put(Favorites.ICON_PACKAGE, c.getString(iconPackageIndex));
+                        values.put(Favorites.ICON_RESOURCE, c.getString(iconResourceIndex));
                     }
-                    case Favorites.ITEM_TYPE_APPWIDGET: {
-                        values.put(Favorites.RESTORED,
-                                LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
-                                        LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
-                                        LauncherAppWidgetInfo.FLAG_UI_NOT_READY);
-                        values.put(Favorites.APPWIDGET_PROVIDER, c.getString(widgetProviderIndex));
-                        break;
-                    }
-                    case Favorites.ITEM_TYPE_SHORTCUT:
-                    case Favorites.ITEM_TYPE_APPLICATION: {
-                        intent = Intent.parseUri(c.getString(intentIndex), 0);
-                        if (Utilities.isLauncherAppTarget(intent)) {
-                            type = Favorites.ITEM_TYPE_APPLICATION;
-                        } else {
-                            values.put(Favorites.ICON_PACKAGE, c.getString(iconPackageIndex));
-                            values.put(Favorites.ICON_RESOURCE, c.getString(iconResourceIndex));
-                        }
-                        values.put(Favorites.ICON, c.getBlob(iconIndex));
-                        values.put(Favorites.INTENT, intent.toUri(0));
-                        values.put(Favorites.RANK, c.getInt(rankIndex));
+                    values.put(Favorites.ICON, c.getBlob(iconIndex));
+                    values.put(Favorites.INTENT, intent.toUri(0));
+                    values.put(Favorites.RANK, c.getInt(rankIndex));
 
-                        values.put(Favorites.RESTORED, 1);
-                        break;
-                    }
-                    default:
-                        FileLog.d(TAG, String.format("Skipping item %d, not a valid type %d", id, type));
-                        continue;
+                    values.put(Favorites.RESTORED, 1);
+                    break;
+                }
+                default:
+                    FileLog.d(TAG, String.format("Skipping item %d, not a valid type %d", id, type));
+                    continue;
                 }
 
                 if (container == Favorites.CONTAINER_HOTSEAT) {
@@ -344,7 +344,7 @@ public class ImportDataTask {
                 values.put(Favorites.SPANY, spanY);
                 values.put(Favorites.TITLE, c.getString(titleIndex));
                 insertOperations.add(ContentProviderOperation
-                        .newInsert(Favorites.CONTENT_URI).withValues(values).build());
+                                     .newInsert(Favorites.CONTENT_URI).withValues(values).build());
                 if (container < 0) {
                     totalItemsOnWorkspace++;
                 }
@@ -377,9 +377,9 @@ public class ImportDataTask {
         if (hotseatItems.size() < myHotseatCount) {
             // Insufficient hotseat items. Add a few more.
             HotseatParserCallback parserCallback = new HotseatParserCallback(
-                    hotseatTargetApps, hotseatItems, insertOperations, maxId + 1, myHotseatCount);
+                hotseatTargetApps, hotseatItems, insertOperations, maxId + 1, myHotseatCount);
             new HotseatLayoutParser(mContext,
-                    parserCallback).loadLayout(null, new ArrayList<Long>());
+                                    parserCallback).loadLayout(null, new ArrayList<Long>());
             mHotseatSize = (int) hotseatItems.keyAt(hotseatItems.size() - 1) + 1;
 
             if (!insertOperations.isEmpty()) {
@@ -419,8 +419,8 @@ public class ImportDataTask {
         private int mStartItemId;
 
         HotseatParserCallback(
-                HashSet<String> existingApps, LongArrayMap<Object> existingItems,
-                ArrayList<ContentProviderOperation> outOps, int startItemId, int requiredSize) {
+            HashSet<String> existingApps, LongArrayMap<Object> existingItems,
+            ArrayList<ContentProviderOperation> outOps, int startItemId, int requiredSize) {
             mExistingApps = existingApps;
             mExistingItems = existingItems;
             mOutOps = outOps;

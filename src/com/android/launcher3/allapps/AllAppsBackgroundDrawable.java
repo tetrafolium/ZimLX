@@ -49,11 +49,11 @@ public class AllAppsBackgroundDrawable extends Drawable {
         mHeight = res.getDimensionPixelSize(R.dimen.all_apps_background_canvas_height);
 
         context = new ContextThemeWrapper(context,
-                Themes.getAttrBoolean(context, R.attr.isMainColorDark)
-                        ? R.style.AllAppsEmptySearchBackground_Dark
-                        : R.style.AllAppsEmptySearchBackground);
+                                          Themes.getAttrBoolean(context, R.attr.isMainColorDark)
+                                          ? R.style.AllAppsEmptySearchBackground_Dark
+                                          : R.style.AllAppsEmptySearchBackground);
         mHand = new TransformedImageDrawable(context, R.drawable.ic_all_apps_bg_hand,
-                0.575f, 0.f, Gravity.CENTER_HORIZONTAL);
+                                             0.575f, 0.f, Gravity.CENTER_HORIZONTAL);
         mIcons = new TransformedImageDrawable[4];
         mIcons[0] = new TransformedImageDrawable(context, R.drawable.ic_all_apps_bg_icon_1,
                 0.375f, 0, Gravity.CENTER_HORIZONTAL);
@@ -73,7 +73,7 @@ public class AllAppsBackgroundDrawable extends Drawable {
         if (getAlpha() != finalAlphaI) {
             mBackgroundAnim = cancelAnimator(mBackgroundAnim);
             mBackgroundAnim = ObjectAnimator.ofInt(this, LauncherAnimUtils.DRAWABLE_ALPHA,
-                    finalAlphaI);
+                                                   finalAlphaI);
             mBackgroundAnim.setDuration(duration);
             mBackgroundAnim.start();
         }

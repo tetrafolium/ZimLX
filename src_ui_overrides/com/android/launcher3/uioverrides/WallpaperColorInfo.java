@@ -94,9 +94,9 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
             mSecondaryColor = FALLBACK_COLOR;
         }
         mSupportsDarkText = wallpaperColors != null && (wallpaperColors.getColorHints()
-                & WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) > 0;
+                            & WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) > 0;
         mIsDark = wallpaperColors != null && (wallpaperColors.getColorHints()
-                & WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME) > 0;
+                                              & WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME) > 0;
     }
 
     public void addOnChangeListener(OnChangeListener listener) {
@@ -109,8 +109,8 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
 
     private void notifyChange() {
         OnChangeListener[] copy =
-                mTempListeners != null && mTempListeners.length == mListeners.size() ?
-                        mTempListeners : new OnChangeListener[mListeners.size()];
+            mTempListeners != null && mTempListeners.length == mListeners.size() ?
+            mTempListeners : new OnChangeListener[mListeners.size()];
 
         // Create a new array to avoid concurrent modification when the activity destroys itself.
         mTempListeners = mListeners.toArray(copy);

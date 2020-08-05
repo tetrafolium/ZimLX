@@ -47,7 +47,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
     protected final Context mContext;
 
     private final ArrayMap<OnAppsChangedCallbackCompat, WrappedCallback> mCallbacks =
-            new ArrayMap<>();
+        new ArrayMap<>();
 
     LauncherAppsCompatVL(Context context) {
         mContext = context;
@@ -77,12 +77,12 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
             // We are looking for an installed app on a secondary profile. Prior to O, the only
             // entry point for work profiles is through the LauncherActivity.
             List<LauncherActivityInfo> activityList =
-                    mLauncherApps.getActivityList(packageName, user);
+                mLauncherApps.getActivityList(packageName, user);
             return activityList.size() > 0 ? activityList.get(0).getApplicationInfo() : null;
         }
         try {
             ApplicationInfo info =
-                    mContext.getPackageManager().getApplicationInfo(packageName, flags);
+                mContext.getPackageManager().getApplicationInfo(packageName, flags);
             // There is no way to check if the app is installed for managed profile. But for
             // primary profile, we can still have this check.
             if (isPrimaryUser && ((info.flags & ApplicationInfo.FLAG_INSTALLED) == 0)
@@ -134,7 +134,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     @Override
     public List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(
-            @Nullable PackageUserKey packageUser) {
+        @Nullable PackageUserKey packageUser) {
         List<ShortcutConfigActivityInfo> result = new ArrayList<>();
         if (packageUser != null && !packageUser.mUser.equals(Process.myUserHandle())) {
             return result;

@@ -30,7 +30,7 @@ import com.android.launcher3.Utilities;
  * by allowing custom code and views.
  */
 public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
-        implements Parcelable {
+    implements Parcelable {
 
     public final int providerId;
     public final boolean noPadding;
@@ -99,7 +99,7 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
     }
 
     public static final Parcelable.Creator<CustomAppWidgetProviderInfo> CREATOR
-            = new Parcelable.Creator<CustomAppWidgetProviderInfo>() {
+    = new Parcelable.Creator<CustomAppWidgetProviderInfo>() {
 
         @Override
         public CustomAppWidgetProviderInfo createFromParcel(Parcel parcel) {

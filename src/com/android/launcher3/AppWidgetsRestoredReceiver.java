@@ -59,17 +59,17 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
                 state = LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
             }
 
-            String[] widgetIdParams = new String[]{Integer.toString(oldWidgetIds[i])};
+            String[] widgetIdParams = new String[] {Integer.toString(oldWidgetIds[i])};
             int result = new ContentWriter(context, new ContentWriter.CommitParams(
-                    "appWidgetId=? and (restored & 1) = 1", widgetIdParams))
-                    .put(LauncherSettings.Favorites.APPWIDGET_ID, newWidgetIds[i])
-                    .put(LauncherSettings.Favorites.RESTORED, state)
-                    .commit();
+                                               "appWidgetId=? and (restored & 1) = 1", widgetIdParams))
+            .put(LauncherSettings.Favorites.APPWIDGET_ID, newWidgetIds[i])
+            .put(LauncherSettings.Favorites.RESTORED, state)
+            .commit();
 
             if (result == 0) {
                 Cursor cursor = cr.query(Favorites.CONTENT_URI,
-                        new String[]{Favorites.APPWIDGET_ID},
-                        "appWidgetId=?", widgetIdParams, null);
+                                         new String[] {Favorites.APPWIDGET_ID},
+                                         "appWidgetId=?", widgetIdParams, null);
                 try {
                     if (!cursor.moveToFirst()) {
                         // The widget no long exists.
@@ -101,13 +101,13 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             if (oldIds.length == newIds.length) {
                 final PendingResult asyncResult = goAsync();
                 new Handler(LauncherModel.getWorkerLooper())
-                        .postAtFrontOfQueue(new Runnable() {
-                            @Override
-                            public void run() {
-                                restoreAppWidgetIds(context, oldIds, newIds);
-                                asyncResult.finish();
-                            }
-                        });
+                .postAtFrontOfQueue(new Runnable() {
+                    @Override
+                    public void run() {
+                        restoreAppWidgetIds(context, oldIds, newIds);
+                        asyncResult.finish();
+                    }
+                });
             } else {
                 Log.e(TAG, "Invalid host restored received");
             }

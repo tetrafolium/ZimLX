@@ -79,7 +79,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         mForegroundColor = prefs.getAccentColor();
         boolean themeBlack = Companion.isBlack(Companion.getInstance(mContext).getCurrentFlags());
         boolean themeDark = Companion.isDark(Companion.getInstance(mContext).getCurrentFlags()) ||
-                Companion.isDarkText(Companion.getInstance(mContext).getCurrentFlags());
+                            Companion.isDarkText(Companion.getInstance(mContext).getCurrentFlags());
 
         mBackgroundColor = 0;
         int theme = prefs.getLauncherTheme();
@@ -89,20 +89,20 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             theme = 4;
 
         switch (theme) {
-            case 0: //light theme
-                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_default);
-                break;
+        case 0: //light theme
+            mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_default);
+            break;
 
-            case 4://dark theme
-                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_dark);
-                break;
+        case 4://dark theme
+            mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_dark);
+            break;
 
-            case 12://black theme
-                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_dark_bar);
-                break;
+        case 12://black theme
+            mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_dark_bar);
+            break;
 
-            default:
-                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_default);
+        default:
+            mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_default);
 
         }
 
@@ -190,7 +190,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     protected final int aA(int i) {
         if (this.mActivity.getDeviceProfile().isVerticalBarLayout()) {
             return (i - this.mAppsView.getActiveRecyclerView().getPaddingLeft()) - this.mAppsView
-                    .getActiveRecyclerView().getPaddingRight();
+                   .getActiveRecyclerView().getPaddingRight();
         }
         View view = this.mActivity.getHotseat().getLayout();
         return (i - view.getPaddingLeft()) - view.getPaddingRight();
@@ -240,7 +240,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     @Override
     public final void startSearch(String str, int i) {
         SearchProviderController controller = SearchProviderController.Companion
-                .getInstance(mActivity);
+                                              .getInstance(mActivity);
         SearchProvider provider = controller.getSearchProvider();
         if (shouldUseFallbackSearch(provider)) {
             searchFallback(str);
@@ -262,17 +262,17 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     private boolean shouldUseFallbackSearch() {
         SearchProviderController controller = SearchProviderController.Companion
-                .getInstance(mActivity);
+                                              .getInstance(mActivity);
         SearchProvider provider = controller.getSearchProvider();
         return shouldUseFallbackSearch(provider);
     }
 
     private boolean shouldUseFallbackSearch(SearchProvider provider) {
         return !Utilities
-                .getZimPrefs(getContext()).getAllAppsGlobalSearch()
-                || provider instanceof AppSearchSearchProvider
-                || provider instanceof WebSearchProvider
-                || (!Utilities.ATLEAST_NOUGAT && provider instanceof GoogleSearchProvider);
+               .getZimPrefs(getContext()).getAllAppsGlobalSearch()
+               || provider instanceof AppSearchSearchProvider
+               || provider instanceof WebSearchProvider
+               || (!Utilities.ATLEAST_NOUGAT && provider instanceof GoogleSearchProvider);
     }
 
     public void searchFallback(String query) {
@@ -293,13 +293,13 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private void ensureFallbackView() {
         setOnClickListener(null);
         mFallback = (FallbackAppsSearchView) this.mActivity.getLayoutInflater()
-                .inflate(R.layout.all_apps_google_search_fallback, this, false);
+                    .inflate(R.layout.all_apps_google_search_fallback, this, false);
         AllAppsContainerView allAppsContainerView = this.mAppsView;
         mFallback.DJ = this;
         mFallback.mApps = allAppsContainerView.getApps();
         mFallback.mAppsView = allAppsContainerView;
         mFallback.DI.initialize(new SearchThread(mFallback.getContext()), mFallback,
-                Launcher.getLauncher(mFallback.getContext()), mFallback);
+                                Launcher.getLauncher(mFallback.getContext()), mFallback);
         addView(this.mFallback);
         mFallback.setTextColor(mForegroundColor);
     }
@@ -324,17 +324,17 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         super.onLayout(z, i, i2, i3, i4);
         View view = (View) getParent();
         setTranslationX((float) ((view.getPaddingLeft() + (
-                (((view.getWidth() - view.getPaddingLeft()) - view.getPaddingRight()) - (i3 - i))
-                        / 2)) - i));
+                                      (((view.getWidth() - view.getPaddingLeft()) - view.getPaddingRight()) - (i3 - i))
+                                      / 2)) - i));
     }
 
     public void draw(Canvas canvas) {
         if (this.mShadowAlpha > 0) {
             if (this.Dv == null) {
                 this.Dv = c(
-                        getResources().getDimension(R.dimen.hotseat_qsb_scroll_shadow_blur_radius),
-                        getResources().getDimension(R.dimen.hotseat_qsb_scroll_key_shadow_offset),
-                        0, true);
+                              getResources().getDimension(R.dimen.hotseat_qsb_scroll_shadow_blur_radius),
+                              getResources().getDimension(R.dimen.hotseat_qsb_scroll_key_shadow_offset),
+                              0, true);
             }
             this.mShadowHelper.paint.setAlpha(this.mShadowAlpha);
             a(this.Dv, canvas);

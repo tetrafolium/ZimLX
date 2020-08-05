@@ -49,7 +49,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
     // Preference key for automatically adding icon to homescreen.
     public static final String ADD_ICON_PREFERENCE_KEY = "pref_add_icon_to_home";
     public static final String ADD_ICON_PREFERENCE_INITIALIZED_KEY =
-            "pref_add_icon_to_home_initialized";
+        "pref_add_icon_to_home_initialized";
     private static final String TAG = "SessionCommitReceiver";
     // The content provider for the add to home screen setting. It should be of the format:
     // <package name>.addtohomescreen
@@ -57,7 +57,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
 
     public static void queueAppIconAddition(Context context, String packageName, UserHandle user) {
         List<LauncherActivityInfo> activities = LauncherAppsCompat.getInstance(context)
-                .getActivityList(packageName, user);
+                                                .getActivityList(packageName, user);
         if (activities == null || activities.isEmpty()) {
             // no activity found
             return;
@@ -118,17 +118,17 @@ public class SessionCommitReceiver extends BroadcastReceiver {
         protected Void doInBackground(Void... voids) {
             boolean addIconToHomeScreenEnabled = readValueFromMarketApp();
             Utilities.getPrefs(mContext).edit()
-                    .putBoolean(ADD_ICON_PREFERENCE_KEY, addIconToHomeScreenEnabled)
-                    .putBoolean(ADD_ICON_PREFERENCE_INITIALIZED_KEY, true)
-                    .apply();
+            .putBoolean(ADD_ICON_PREFERENCE_KEY, addIconToHomeScreenEnabled)
+            .putBoolean(ADD_ICON_PREFERENCE_INITIALIZED_KEY, true)
+            .apply();
             return null;
         }
 
         public boolean readValueFromMarketApp() {
             // Get the marget package
             ResolveInfo ri = mContext.getPackageManager().resolveActivity(
-                    new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET),
-                    PackageManager.MATCH_DEFAULT_ONLY | PackageManager.MATCH_SYSTEM_ONLY);
+                                 new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET),
+                                 PackageManager.MATCH_DEFAULT_ONLY | PackageManager.MATCH_SYSTEM_ONLY);
             if (ri == null) {
                 return true;
             }
@@ -137,7 +137,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
             try {
                 c = mContext.getContentResolver().query(
                         Uri.parse("content://" + ri.activityInfo.packageName
-                                + MARKER_PROVIDER_PREFIX),
+                                  + MARKER_PROVIDER_PREFIX),
                         null, null, null, null);
                 if (c.moveToNext()) {
                     return c.getInt(c.getColumnIndexOrThrow(Settings.NameValueTable.VALUE)) != 0;

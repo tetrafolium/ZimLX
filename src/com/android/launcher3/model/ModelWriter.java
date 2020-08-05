@@ -82,7 +82,7 @@ public class ModelWriter {
     }
 
     private void updateItemInfoProps(
-            ItemInfo item, long container, long screenId, int cellX, int cellY) {
+        ItemInfo item, long container, long screenId, int cellX, int cellY) {
         item.container = container;
         item.cellX = cellX;
         item.cellY = cellY;
@@ -142,9 +142,9 @@ public class ModelWriter {
             // to be consistent with the database-- for now, just require
             // modelItem == item or the equality check above
             String msg = "item: " + ((item != null) ? item.toString() : "null") +
-                    "modelItem: " +
-                    ((modelItem != null) ? modelItem.toString() : "null") +
-                    "Error: ItemInfo passed to checkItemInfo doesn't match original";
+                         "modelItem: " +
+                         ((modelItem != null) ? modelItem.toString() : "null") +
+                         "Error: ItemInfo passed to checkItemInfo doesn't match original";
             RuntimeException e = new RuntimeException(msg);
             if (stackTrace != null) {
                 e.setStackTrace(stackTrace);
@@ -161,11 +161,11 @@ public class ModelWriter {
         updateItemInfoProps(item, container, screenId, cellX, cellY);
 
         final ContentWriter writer = new ContentWriter(mContext)
-                .put(Favorites.CONTAINER, item.container)
-                .put(Favorites.CELLX, item.cellX)
-                .put(Favorites.CELLY, item.cellY)
-                .put(Favorites.RANK, item.rank)
-                .put(Favorites.SCREEN, item.screenId);
+        .put(Favorites.CONTAINER, item.container)
+        .put(Favorites.CELLX, item.cellX)
+        .put(Favorites.CELLY, item.cellY)
+        .put(Favorites.RANK, item.rank)
+        .put(Favorites.SCREEN, item.screenId);
 
         mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
     }
@@ -204,13 +204,13 @@ public class ModelWriter {
         item.spanY = spanY;
 
         final ContentWriter writer = new ContentWriter(mContext)
-                .put(Favorites.CONTAINER, item.container)
-                .put(Favorites.CELLX, item.cellX)
-                .put(Favorites.CELLY, item.cellY)
-                .put(Favorites.RANK, item.rank)
-                .put(Favorites.SPANX, item.spanX)
-                .put(Favorites.SPANY, item.spanY)
-                .put(Favorites.SCREEN, item.screenId);
+        .put(Favorites.CONTAINER, item.container)
+        .put(Favorites.CELLX, item.cellX)
+        .put(Favorites.CELLY, item.cellY)
+        .put(Favorites.RANK, item.rank)
+        .put(Favorites.SPANX, item.spanX)
+        .put(Favorites.SPANY, item.spanY)
+        .put(Favorites.SCREEN, item.screenId);
 
         mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
     }
@@ -318,7 +318,7 @@ public class ModelWriter {
                 info.clearCustomIcon(mContext);
                 ContentResolver cr = mContext.getContentResolver();
                 cr.delete(LauncherSettings.Favorites.CONTENT_URI,
-                        LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
+                          LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
                 mBgDataModel.removeItem(mContext, info.contents);
                 info.contents.clear();
 
@@ -347,7 +347,7 @@ public class ModelWriter {
                         appWidgetHost.deleteAppWidgetId(widgetInfo.appWidgetId);
                         return null;
                     }
-                }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
+                } .executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
             }
             deleteItemFromDatabase(widgetInfo);
         });
@@ -443,7 +443,7 @@ public class ModelWriter {
                         // An items container is being set to a that of an item which is not in
                         // the list of Folders.
                         String msg = "item: " + item + " container being set to: " +
-                                item.container + ", not in the list of folders";
+                                     item.container + ", not in the list of folders";
                         Log.e(TAG, msg);
                     }
                 }
@@ -454,18 +454,18 @@ public class ModelWriter {
                 ItemInfo modelItem = mBgDataModel.itemsIdMap.get(itemId);
                 if (modelItem != null &&
                         (modelItem.container == Favorites.CONTAINER_DESKTOP ||
-                                modelItem.container == Favorites.CONTAINER_HOTSEAT)) {
+                         modelItem.container == Favorites.CONTAINER_HOTSEAT)) {
                     switch (modelItem.itemType) {
-                        case Favorites.ITEM_TYPE_APPLICATION:
-                        case Favorites.ITEM_TYPE_SHORTCUT:
-                        case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                        case Favorites.ITEM_TYPE_FOLDER:
-                            if (!mBgDataModel.workspaceItems.contains(modelItem)) {
-                                mBgDataModel.workspaceItems.add(modelItem);
-                            }
-                            break;
-                        default:
-                            break;
+                    case Favorites.ITEM_TYPE_APPLICATION:
+                    case Favorites.ITEM_TYPE_SHORTCUT:
+                    case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+                    case Favorites.ITEM_TYPE_FOLDER:
+                        if (!mBgDataModel.workspaceItems.contains(modelItem)) {
+                            mBgDataModel.workspaceItems.add(modelItem);
+                        }
+                        break;
+                    default:
+                        break;
                     }
                 } else {
                     mBgDataModel.workspaceItems.remove(modelItem);

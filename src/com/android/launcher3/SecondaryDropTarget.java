@@ -100,7 +100,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     public Target getDropTargetForLogging() {
         Target t = LoggerUtils.newTarget(Target.Type.CONTROL);
         t.controlType = mCurrentAccessibilityAction == UNINSTALL ? ControlType.UNINSTALL_TARGET
-                : ControlType.SETTINGS_BUTTON;
+                        : ControlType.SETTINGS_BUTTON;
         return t;
     }
 
@@ -123,10 +123,10 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         Boolean uninstallDisabled = mUninstallDisabledCache.get(info.user);
         if (uninstallDisabled == null) {
             UserManager userManager =
-                    (UserManager) getContext().getSystemService(Context.USER_SERVICE);
+                (UserManager) getContext().getSystemService(Context.USER_SERVICE);
             Bundle restrictions = userManager.getUserRestrictions(info.user);
             uninstallDisabled = restrictions.getBoolean(UserManager.DISALLOW_APPS_CONTROL, false)
-                    || restrictions.getBoolean(UserManager.DISALLOW_UNINSTALL_APPS, false);
+                                || restrictions.getBoolean(UserManager.DISALLOW_UNINSTALL_APPS, false);
             mUninstallDisabledCache.put(info.user, uninstallDisabled);
         }
         // Cancel any pending alarm and set cache expiry after some time
@@ -157,7 +157,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         }
         if (intent != null) {
             LauncherActivityInfo info = LauncherAppsCompat.getInstance(mLauncher)
-                    .resolveActivity(intent, user);
+                                        .resolveActivity(intent, user);
             if (info != null
                     && (info.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                 return info.getComponentName();
@@ -238,8 +238,8 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         }
         try {
             Intent i = Intent.parseUri(mLauncher.getString(R.string.delete_package_intent), 0)
-                    .setData(Uri.fromParts("package", cn.getPackageName(), cn.getClassName()))
-                    .putExtra(Intent.EXTRA_USER, info.user);
+                       .setData(Uri.fromParts("package", cn.getPackageName(), cn.getClassName()))
+                       .putExtra(Intent.EXTRA_USER, info.user);
             mLauncher.startActivity(i);
             return cn;
         } catch (URISyntaxException e) {
@@ -287,7 +287,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             // We use MATCH_UNINSTALLED_PACKAGES as the app can be on SD card as well.
             if (LauncherAppsCompat.getInstance(mContext)
                     .getApplicationInfo(mPackageName, PackageManager.MATCH_UNINSTALLED_PACKAGES,
-                            mDragObject.dragInfo.user) == null) {
+                                        mDragObject.dragInfo.user) == null) {
                 mDragObject.dragSource = mOriginal;
                 mOriginal.onDropCompleted(SecondaryDropTarget.this, mDragObject, true);
             } else {

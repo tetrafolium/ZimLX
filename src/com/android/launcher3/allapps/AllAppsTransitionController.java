@@ -55,35 +55,35 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
  * closer to top or closer to the page indicator.
  */
 public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener,
-        ColorEngine.OnColorChangeListener {
+    ColorEngine.OnColorChangeListener {
 
     public static final Property<AllAppsTransitionController, Float> ALL_APPS_PROGRESS =
-            new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
+    new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
 
-                @Override
-                public Float get(AllAppsTransitionController controller) {
-                    return controller.mProgress;
-                }
+        @Override
+        public Float get(AllAppsTransitionController controller) {
+            return controller.mProgress;
+        }
 
-                @Override
-                public void set(AllAppsTransitionController controller, Float progress) {
-                    controller.setProgress(progress);
-                }
-            };
+        @Override
+        public void set(AllAppsTransitionController controller, Float progress) {
+            controller.setProgress(progress);
+        }
+    };
 
     public static final Property<AllAppsTransitionController, Float> SCRIM_PROGRESS =
-            new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
+    new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
 
-                @Override
-                public Float get(AllAppsTransitionController controller) {
-                    return controller.mScrimProgress;
-                }
+        @Override
+        public Float get(AllAppsTransitionController controller) {
+            return controller.mScrimProgress;
+        }
 
-                @Override
-                public void set(AllAppsTransitionController controller, Float progress) {
-                    controller.setScrimProgress(progress);
-                }
-            };
+        @Override
+        public void set(AllAppsTransitionController controller, Float progress) {
+            controller.setScrimProgress(progress);
+        }
+    };
 
     private AllAppsContainerView mAppsView;
     private ScrimView mScrimView;
@@ -161,7 +161,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         // Use a light system UI (dark icons) if all apps is behind at least half of the
         // status bar.
         boolean forceChange = shiftCurrent - mScrimView.getDragHandleSize()
-                <= mLauncher.getDeviceProfile().getInsets().top / 2;
+                              <= mLauncher.getDeviceProfile().getInsets().top / 2;
         if (forceChange) {
             mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, !mIsDarkTheme);
         } else {
@@ -182,9 +182,9 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             }
             if (progress < overviewProgress) {
                 overviewShift = Utilities.mapToRange(progress, 0, overviewProgress,
-                        inverted ? prefs.getDockSearchBar() ? -overviewShift : 0 : 0,
-                        inverted ? 0 : overviewShift,
-                        Interpolators.LINEAR);
+                                                     inverted ? prefs.getDockSearchBar() ? -overviewShift : 0 : 0,
+                                                     inverted ? 0 : overviewShift,
+                                                     Interpolators.LINEAR);
             } else if (inverted) {
                 overviewShift = 0;
             }
@@ -247,10 +247,10 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         }
 
         Interpolator interpolator = config.userControlled ? LINEAR : toState == OVERVIEW
-                ? builder.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
-                : FAST_OUT_SLOW_IN;
+                                    ? builder.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
+                                    : FAST_OUT_SLOW_IN;
         ObjectAnimator anim =
-                ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS, mProgress, targetProgress);
+            ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS, mProgress, targetProgress);
         anim.setDuration(config.duration);
         anim.setInterpolator(builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
         anim.addListener(getProgressAnimatorListener());
@@ -258,7 +258,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         builder.play(anim);
 
         ObjectAnimator scrimAnim =
-                ObjectAnimator.ofFloat(this, SCRIM_PROGRESS, mScrimProgress, targetScrimProgress);
+            ObjectAnimator.ofFloat(this, SCRIM_PROGRESS, mScrimProgress, targetScrimProgress);
         scrimAnim.setDuration(config.duration);
         scrimAnim.setInterpolator(builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
         scrimAnim.addListener(getProgressAnimatorListener());
@@ -271,7 +271,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     private void setAlphas(LauncherState toState, AnimationConfig config,
                            AnimatorSetBuilder builder) {
         PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
-                : config.getPropertySetter(builder);
+                                : config.getPropertySetter(builder);
         int visibleElements = toState.getVisibleElements(mLauncher);
         ZimPreferences prefs = ZimPreferences.Companion.getInstanceNoCreate();
         boolean hasHeader = (visibleElements & ALL_APPS_HEADER) != 0 && prefs.getAllAppsSearch();
@@ -285,7 +285,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasContent, setter, allAppsFade);
 
         setter.setInt(mScrimView, ScrimView.DRAG_HANDLE_ALPHA,
-                (visibleElements & VERTICAL_SWIPE_INDICATOR) != 0 ? 255 : 0, LINEAR);
+                      (visibleElements & VERTICAL_SWIPE_INDICATOR) != 0 ? 255 : 0, LINEAR);
     }
 
     public AnimatorListenerAdapter getProgressAnimatorListener() {

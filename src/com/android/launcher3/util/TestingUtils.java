@@ -29,10 +29,10 @@ public class TestingUtils {
     public static void startTrackingMemory(Context context) {
         if (MEMORY_DUMP_ENABLED) {
             context.startService(new Intent()
-                    .setComponent(new ComponentName(context.getPackageName(), MEMORY_TRACKER))
-                    .setAction(ACTION_START_TRACKING)
-                    .putExtra("pid", android.os.Process.myPid())
-                    .putExtra("name", "L"));
+                                 .setComponent(new ComponentName(context.getPackageName(), MEMORY_TRACKER))
+                                 .setAction(ACTION_START_TRACKING)
+                                 .putExtra("pid", android.os.Process.myPid())
+                                 .putExtra("name", "L"));
         }
     }
 
@@ -41,15 +41,15 @@ public class TestingUtils {
             boolean show = Utilities.getPrefs(launcher).getBoolean(SHOW_WEIGHT_WATCHER, true);
 
             int id = launcher.getResources().getIdentifier("zzz_weight_watcher", "layout",
-                    launcher.getPackageName());
+                     launcher.getPackageName());
             View watcher = launcher.getLayoutInflater().inflate(id, null);
             watcher.setAlpha(0.5f);
             ((FrameLayout) launcher.findViewById(R.id.launcher)).addView(watcher,
                     new FrameLayout.LayoutParams(
-                            FrameLayout.LayoutParams.MATCH_PARENT,
-                            FrameLayout.LayoutParams.WRAP_CONTENT,
-                            Gravity.BOTTOM)
-            );
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        Gravity.BOTTOM)
+                                                                        );
 
             watcher.setVisibility(show ? View.VISIBLE : View.GONE);
             launcher.mWeightWatcher = watcher;

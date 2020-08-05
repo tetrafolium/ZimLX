@@ -75,7 +75,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         super(context, attrs, defStyleAttr);
         Resources res = getResources();
         mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(
-                R.dimen.all_apps_empty_search_bg_top_offset);
+                                              R.dimen.all_apps_empty_search_bg_top_offset);
         mNumAppsPerRow = LauncherAppState.getIDP(context).numColsDrawer;
     }
 
@@ -154,7 +154,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         if (mApps.hasNoFilteredResults()) {
             if (mEmptySearchBackground == null) {
                 mEmptySearchBackground = DrawableFactory.get(getContext())
-                        .getAllAppsBackground(getContext());
+                                         .getAllAppsBackground(getContext());
                 mEmptySearchBackground.setAlpha(0);
                 mEmptySearchBackground.setCallback(this);
                 updateEmptySearchBackgroundBounds();
@@ -192,7 +192,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
         // Find the fastscroll section that maps to this touch fraction
         List<AlphabeticalAppsList.FastScrollSectionInfo> fastScrollSections =
-                mApps.getFastScrollerSections();
+            mApps.getFastScrollerSections();
         AlphabeticalAppsList.FastScrollSectionInfo lastInfo = fastScrollSections.get(0);
         for (int i = 1; i < fastScrollSections.size(); i++) {
             AlphabeticalAppsList.FastScrollSectionInfo info = fastScrollSections.get(i);
@@ -279,7 +279,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
                 // for the view padding, while the scrollBarY is drawn right up to the background
                 // padding (ignoring padding)
                 int scrollBarY = (int)
-                        (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
+                                 (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
 
                 int thumbScrollY = mScrollbar.getThumbOffsetY();
                 int diffScrollY = scrollBarY - thumbScrollY;
@@ -294,7 +294,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
                         thumbScrollY += Math.max(offset, diffScrollY);
                     } else {
                         int offset = (int) ((dy * (availableScrollBarHeight - thumbScrollY)) /
-                                (float) (availableScrollBarHeight - scrollBarY));
+                                            (float) (availableScrollBarHeight - scrollBarY));
                         thumbScrollY += Math.min(offset, diffScrollY);
                     }
                     thumbScrollY = Math.max(0, Math.min(availableScrollBarHeight, thumbScrollY));
@@ -336,7 +336,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
             return -1;
         }
         return getPaddingTop() +
-                getCurrentScrollY(position, getLayoutManager().getDecoratedTop(child));
+               getCurrentScrollY(position, getLayoutManager().getDecoratedTop(child));
     }
 
     public int getCurrentScrollY(int position, int offset) {
@@ -390,7 +390,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     @Override
     protected int getAvailableScrollHeight() {
         return getPaddingTop() + getCurrentScrollY(getAdapter().getItemCount(), 0)
-                - getHeight() + getPaddingBottom();
+               - getHeight() + getPaddingBottom();
     }
 
     public int getScrollBarTop() {
@@ -413,8 +413,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         int x = (getMeasuredWidth() - mEmptySearchBackground.getIntrinsicWidth()) / 2;
         int y = mEmptySearchBackgroundTopOffset;
         mEmptySearchBackground.setBounds(x, y,
-                x + mEmptySearchBackground.getIntrinsicWidth(),
-                y + mEmptySearchBackground.getIntrinsicHeight());
+                                         x + mEmptySearchBackground.getIntrinsicWidth(),
+                                         y + mEmptySearchBackground.getIntrinsicHeight());
     }
 
     @Override

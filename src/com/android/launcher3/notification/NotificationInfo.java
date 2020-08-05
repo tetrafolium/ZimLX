@@ -82,8 +82,8 @@ public class NotificationInfo implements View.OnClickListener {
         }
         if (mIconDrawable == null) {
             mIconDrawable = new BitmapDrawable(context.getResources(), LauncherAppState
-                    .getInstance(context).getIconCache()
-                    .getDefaultIcon(statusBarNotification.getUser()).icon);
+                                               .getInstance(context).getIconCache()
+                                               .getDefaultIcon(statusBarNotification.getUser()).icon);
             mBadgeIcon = Notification.BADGE_ICON_NONE;
         }
         intent = notification.contentIntent;
@@ -98,7 +98,7 @@ public class NotificationInfo implements View.OnClickListener {
         }
         final Launcher launcher = Launcher.getLauncher(view.getContext());
         Bundle activityOptions = ActivityOptions.makeClipRevealAnimation(
-                view, 0, 0, view.getWidth(), view.getHeight()).toBundle();
+                                     view, 0, 0, view.getWidth(), view.getHeight()).toBundle();
         try {
             intent.send(null, 0, null, null, null, null, activityOptions);
             launcher.getUserEventDispatcher().logNotificationLaunch(view, intent);
@@ -109,7 +109,7 @@ public class NotificationInfo implements View.OnClickListener {
             launcher.getPopupDataProvider().cancelNotification(notificationKey);
         }
         AbstractFloatingView.closeOpenContainer(launcher, AbstractFloatingView
-                .TYPE_ACTION_POPUP);
+                                                .TYPE_ACTION_POPUP);
     }
 
     public Drawable getIconForBackground(Context context, int background) {
@@ -134,6 +134,6 @@ public class NotificationInfo implements View.OnClickListener {
         // If the icon we're using for this notification matches what the Notification
         // specified should show in the badge, then return true.
         return mIsIconLarge && mBadgeIcon == Notification.BADGE_ICON_LARGE
-                || !mIsIconLarge && mBadgeIcon == Notification.BADGE_ICON_SMALL;
+               || !mIsIconLarge && mBadgeIcon == Notification.BADGE_ICON_SMALL;
     }
 }

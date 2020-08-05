@@ -208,63 +208,63 @@ public class SwipeDetector {
 
         // Check if the client is interested in scroll in current direction.
         return ((mScrollConditions & DIRECTION_NEGATIVE) > 0 && mDisplacement > 0) ||
-                ((mScrollConditions & DIRECTION_POSITIVE) > 0 && mDisplacement < 0);
+               ((mScrollConditions & DIRECTION_POSITIVE) > 0 && mDisplacement < 0);
     }
 
     public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
-                mActivePointerId = ev.getPointerId(0);
-                mDownPos.set(ev.getX(), ev.getY());
-                mLastPos.set(mDownPos);
-                mLastDisplacement = 0;
-                mDisplacement = 0;
-                mVelocity = 0;
+        case MotionEvent.ACTION_DOWN:
+            mActivePointerId = ev.getPointerId(0);
+            mDownPos.set(ev.getX(), ev.getY());
+            mLastPos.set(mDownPos);
+            mLastDisplacement = 0;
+            mDisplacement = 0;
+            mVelocity = 0;
 
-                if (mState == ScrollState.SETTLING && mIgnoreSlopWhenSettling) {
-                    setState(ScrollState.DRAGGING);
-                }
+            if (mState == ScrollState.SETTLING && mIgnoreSlopWhenSettling) {
+                setState(ScrollState.DRAGGING);
+            }
+            break;
+        //case MotionEvent.ACTION_POINTER_DOWN:
+        case MotionEvent.ACTION_POINTER_UP:
+            int ptrIdx = ev.getActionIndex();
+            int ptrId = ev.getPointerId(ptrIdx);
+            if (ptrId == mActivePointerId) {
+                final int newPointerIdx = ptrIdx == 0 ? 1 : 0;
+                mDownPos.set(
+                    ev.getX(newPointerIdx) - (mLastPos.x - mDownPos.x),
+                    ev.getY(newPointerIdx) - (mLastPos.y - mDownPos.y));
+                mLastPos.set(ev.getX(newPointerIdx), ev.getY(newPointerIdx));
+                mActivePointerId = ev.getPointerId(newPointerIdx);
+            }
+            break;
+        case MotionEvent.ACTION_MOVE:
+            int pointerIndex = ev.findPointerIndex(mActivePointerId);
+            if (pointerIndex == INVALID_POINTER_ID) {
                 break;
-            //case MotionEvent.ACTION_POINTER_DOWN:
-            case MotionEvent.ACTION_POINTER_UP:
-                int ptrIdx = ev.getActionIndex();
-                int ptrId = ev.getPointerId(ptrIdx);
-                if (ptrId == mActivePointerId) {
-                    final int newPointerIdx = ptrIdx == 0 ? 1 : 0;
-                    mDownPos.set(
-                            ev.getX(newPointerIdx) - (mLastPos.x - mDownPos.x),
-                            ev.getY(newPointerIdx) - (mLastPos.y - mDownPos.y));
-                    mLastPos.set(ev.getX(newPointerIdx), ev.getY(newPointerIdx));
-                    mActivePointerId = ev.getPointerId(newPointerIdx);
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                int pointerIndex = ev.findPointerIndex(mActivePointerId);
-                if (pointerIndex == INVALID_POINTER_ID) {
-                    break;
-                }
-                mDisplacement = mDir.getDisplacement(ev, pointerIndex, mDownPos);
-                computeVelocity(mDir.getDisplacement(ev, pointerIndex, mLastPos),
-                        ev.getEventTime());
+            }
+            mDisplacement = mDir.getDisplacement(ev, pointerIndex, mDownPos);
+            computeVelocity(mDir.getDisplacement(ev, pointerIndex, mLastPos),
+                            ev.getEventTime());
 
-                // handle state and listener calls.
-                if (mState != ScrollState.DRAGGING && shouldScrollStart(ev, pointerIndex)) {
-                    setState(ScrollState.DRAGGING);
-                }
-                if (mState == ScrollState.DRAGGING) {
-                    reportDragging();
-                }
-                mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
-                break;
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                // These are synthetic events and there is no need to update internal values.
-                if (mState == ScrollState.DRAGGING) {
-                    setState(ScrollState.SETTLING);
-                }
-                break;
-            default:
-                break;
+            // handle state and listener calls.
+            if (mState != ScrollState.DRAGGING && shouldScrollStart(ev, pointerIndex)) {
+                setState(ScrollState.DRAGGING);
+            }
+            if (mState == ScrollState.DRAGGING) {
+                reportDragging();
+            }
+            mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
+            break;
+        case MotionEvent.ACTION_CANCEL:
+        case MotionEvent.ACTION_UP:
+            // These are synthetic events and there is no need to update internal values.
+            if (mState == ScrollState.DRAGGING) {
+                setState(ScrollState.SETTLING);
+            }
+            break;
+        default:
+            break;
         }
         return true;
     }
@@ -306,7 +306,7 @@ public class SwipeDetector {
         if (mDisplacement != mLastDisplacement) {
             if (DBG) {
                 Log.d(TAG, String.format("onDrag disp=%.1f, velocity=%.1f",
-                        mDisplacement, mVelocity));
+                                         mDisplacement, mVelocity));
             }
 
             mLastDisplacement = mDisplacement;
@@ -318,7 +318,7 @@ public class SwipeDetector {
     private void reportDragEnd() {
         if (DBG) {
             Log.d(TAG, String.format("onScrollEnd disp=%.1f, velocity=%.1f",
-                    mDisplacement, mVelocity));
+                                     mDisplacement, mVelocity));
         }
         mListener.onDragEnd(mVelocity, Math.abs(mVelocity) > RELEASE_VELOCITY_PX_MS);
 

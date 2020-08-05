@@ -55,12 +55,12 @@ public class WorkspaceOptionModeTouchHelper {
             return false;
         }
         switch (motionEvent.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                return handleTouchDown(motionEvent);
-            case MotionEvent.ACTION_MOVE:
-                return handleTouchMove(motionEvent);
-            default:
-                return handleTouchOther(motionEvent);
+        case MotionEvent.ACTION_DOWN:
+            return handleTouchDown(motionEvent);
+        case MotionEvent.ACTION_MOVE:
+            return handleTouchMove(motionEvent);
+        default:
+            return handleTouchOther(motionEvent);
         }
     }
 
@@ -84,7 +84,7 @@ public class WorkspaceOptionModeTouchHelper {
             return false;
         }
         mLauncher.getWorkspace().scrollTo(
-                (int) (mTouchDownX - motionEvent.getX() + mTouchDownWorkspaceScrollX), 0);
+            (int) (mTouchDownX - motionEvent.getX() + mTouchDownWorkspaceScrollX), 0);
         if (mIsStillPossibleClick) {
             mIsStillPossibleClick = isPossibleClick(motionEvent);
         }
@@ -107,7 +107,7 @@ public class WorkspaceOptionModeTouchHelper {
             } else {
                 if (mIsStillPossibleClick && isPossibleClick(motionEvent)) {
                     workspace.snapToPage(getNextPage(mTouchDownWorkspaceCurrentPage,
-                            mTouchDownX > mLauncher.getDeviceProfile().widthPx / 2));
+                                                     mTouchDownX > mLauncher.getDeviceProfile().widthPx / 2));
                     mLauncher.getStateManager().goToState(LauncherState.NORMAL, true);
                 } else {
                     workspace.snapToPage(mTouchDownWorkspaceCurrentPage);

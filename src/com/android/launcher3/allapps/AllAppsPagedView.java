@@ -72,7 +72,7 @@ public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
         } else if (theta > START_DAMPING_TOUCH_SLOP_ANGLE) {
             theta -= START_DAMPING_TOUCH_SLOP_ANGLE;
             float extraRatio = (float)
-                    Math.sqrt((theta / (MAX_SWIPE_ANGLE - START_DAMPING_TOUCH_SLOP_ANGLE)));
+                               Math.sqrt((theta / (MAX_SWIPE_ANGLE - START_DAMPING_TOUCH_SLOP_ANGLE)));
             super.determineScrollingStart(ev, 1 + TOUCH_SLOP_DAMPING_FACTOR * extraRatio);
         } else {
             super.determineScrollingStart(ev);

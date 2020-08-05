@@ -67,12 +67,12 @@ public class LauncherState {
     protected static final int FLAG_HAS_SYS_UI_SCRIM = 1 << 9;
 
     protected static final PageAlphaProvider DEFAULT_ALPHA_PROVIDER =
-            new PageAlphaProvider(ACCEL_2) {
-                @Override
-                public float getPageAlpha(int pageIndex) {
-                    return 1;
-                }
-            };
+    new PageAlphaProvider(ACCEL_2) {
+        @Override
+        public float getPageAlpha(int pageIndex) {
+            return 1;
+        }
+    };
 
     private static final LauncherState[] sAllStates = new LauncherState[6];
 
@@ -81,7 +81,7 @@ public class LauncherState {
      */
     public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE, 0,
             FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON |
-                    FLAG_HAS_SYS_UI_SCRIM);
+            FLAG_HAS_SYS_UI_SCRIM);
 
     /**
      * Various Launcher states arranged in the increasing order of UI layers
@@ -163,8 +163,8 @@ public class LauncherState {
         this.hasWorkspacePageBackground = (flags & FLAG_PAGE_BACKGROUNDS) != 0;
         this.hasMultipleVisiblePages = (flags & FLAG_MULTI_PAGE) != 0;
         this.workspaceAccessibilityFlag = (flags & FLAG_DISABLE_ACCESSIBILITY) != 0
-                ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
-                : IMPORTANT_FOR_ACCESSIBILITY_AUTO;
+                                          ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                                          : IMPORTANT_FOR_ACCESSIBILITY_AUTO;
         this.disableRestore = (flags & FLAG_DISABLE_RESTORE) != 0;
         this.workspaceIconsCanBeDragged = (flags & FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED) != 0;
         this.disablePageClipping = (flags & FLAG_DISABLE_PAGE_CLIPPING) != 0;
@@ -182,7 +182,7 @@ public class LauncherState {
     }
 
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
-        return new float[]{1, 0, 0};
+        return new float[] {1, 0, 0};
     }
 
     /**
@@ -191,7 +191,7 @@ public class LauncherState {
      * translationY factor where 0 is top aligned and 0.5 is centered vertically
      */
     public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
-        return new float[]{1.1f, 0f};
+        return new float[] {1.1f, 0f};
     }
 
     public void onStateEnabled(Launcher launcher) {

@@ -77,9 +77,9 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
             mSecondaryColor = FALLBACK_COLOR;
         }
         mSupportsDarkText = wallpaperColors != null && (wallpaperColors.getColorHints()
-                & WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) > 0;
+                            & WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) > 0;
         mIsDark = wallpaperColors != null && (wallpaperColors.getColorHints()
-                & WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME) > 0;
+                                              & WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME) > 0;
     }
 
     public void setOnThemeChangeListener(OnThemeChangeListener onThemeChangeListener) {

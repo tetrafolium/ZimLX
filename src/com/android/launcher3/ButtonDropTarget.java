@@ -52,7 +52,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
  * Implements a DropTarget.
  */
 public abstract class ButtonDropTarget extends TextView
-        implements DropTarget, DragController.DragListener, OnClickListener {
+    implements DropTarget, DragController.DragListener, OnClickListener {
 
     private static final int[] sTempCords = new int[2];
     private static final int DRAG_VIEW_DROP_DURATION = 285;
@@ -151,7 +151,7 @@ public abstract class ButtonDropTarget extends TextView
             hideTooltip();
 
             TextView message = (TextView) LayoutInflater.from(getContext()).inflate(
-                    R.layout.drop_target_tool_tip, null);
+                                   R.layout.drop_target_tool_tip, null);
             message.setText(mText);
 
             mToolTip = new PopupWindow(message, WRAP_CONTENT, WRAP_CONTENT);
@@ -204,8 +204,8 @@ public abstract class ButtonDropTarget extends TextView
         Themes.setColorChangeOnMatrix(defaultTextColor, targetColor, mDstFilter);
 
         ValueAnimator anim1 = ValueAnimator.ofObject(
-                new FloatArrayEvaluator(mCurrentFilter.getArray()),
-                mSrcFilter.getArray(), mDstFilter.getArray());
+                                  new FloatArrayEvaluator(mCurrentFilter.getArray()),
+                                  mSrcFilter.getArray(), mDstFilter.getArray());
         anim1.addUpdateListener((anim) -> {
             mDrawable.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
             invalidate();
@@ -256,7 +256,7 @@ public abstract class ButtonDropTarget extends TextView
     @Override
     public boolean isDropEnabled() {
         return mActive && (mAccessibleDrag ||
-                mLauncher.getDragController().getDistanceDragged() >= mDragDistanceThreshold);
+                           mLauncher.getDragController().getDistanceDragged() >= mDragDistanceThreshold);
     }
 
     @Override
@@ -285,9 +285,9 @@ public abstract class ButtonDropTarget extends TextView
         };
 
         dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,
-                DRAG_VIEW_DROP_DURATION,
-                Interpolators.DEACCEL_2, Interpolators.LINEAR, onAnimationEndRunnable,
-                DragLayer.ANIMATION_END_DISAPPEAR, null);
+                              DRAG_VIEW_DROP_DURATION,
+                              Interpolators.DEACCEL_2, Interpolators.LINEAR, onAnimationEndRunnable,
+                              DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 
     public abstract int getAccessibilityAction();
@@ -377,9 +377,9 @@ public abstract class ButtonDropTarget extends TextView
 
     public boolean isTextTruncated(int availableWidth) {
         availableWidth -= (getPaddingLeft() + getPaddingRight() + mDrawable.getIntrinsicWidth()
-                + getCompoundDrawablePadding());
+                           + getCompoundDrawablePadding());
         CharSequence displayedText = TextUtils.ellipsize(mText, getPaint(), availableWidth,
-                TextUtils.TruncateAt.END);
+                                     TextUtils.TruncateAt.END);
         return !mText.equals(displayedText);
     }
 

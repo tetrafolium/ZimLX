@@ -111,19 +111,19 @@ public class AppInfo extends ItemInfoWithIcon {
 
     public static Intent makeLaunchIntent(ComponentName cn) {
         return new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_LAUNCHER)
-                .setComponent(cn)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+               .addCategory(Intent.CATEGORY_LAUNCHER)
+               .setComponent(cn)
+               .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
     }
 
     public static void updateRuntimeFlagsForActivityTarget(
-            ItemInfoWithIcon info, LauncherActivityInfo lai) {
+        ItemInfoWithIcon info, LauncherActivityInfo lai) {
         ApplicationInfo appInfo = lai.getApplicationInfo();
         if (PackageManagerHelper.isAppSuspended(appInfo)) {
             info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;
         }
         info.runtimeStatusFlags |= (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0
-                ? FLAG_SYSTEM_NO : FLAG_SYSTEM_YES;
+                                   ? FLAG_SYSTEM_NO : FLAG_SYSTEM_YES;
 
         if (Utilities.ATLEAST_OREO
                 && appInfo.targetSdkVersion >= Build.VERSION_CODES.O

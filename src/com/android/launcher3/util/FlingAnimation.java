@@ -87,7 +87,7 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
                     mCount++;
                 } else if (mCount == 0) {
                     mOffset = Math.min(0.5f, (float) (AnimationUtils.currentAnimationTimeMillis() -
-                            startTime) / duration);
+                                                      startTime) / duration);
                     mCount++;
                 }
                 return Math.min(1f, mOffset + t);
@@ -100,7 +100,7 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
         };
 
         mDragLayer.animateView(mDragObject.dragView, this, duration, tInterpolator,
-                onAnimationEndRunnable, DragLayer.ANIMATION_END_DISAPPEAR, null);
+                               onAnimationEndRunnable, DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 
     /**

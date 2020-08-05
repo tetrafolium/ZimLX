@@ -77,21 +77,21 @@ public class TransformingTouchDelegate extends TouchDelegate {
     public boolean onTouchEvent(MotionEvent event) {
         boolean sendToDelegate = false;
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mDelegateTargeted = mTouchCheckBounds.contains(event.getX(), event.getY());
-                if (mDelegateTargeted) {
-                    mWasTouchOutsideBounds = !mBounds.contains(event.getX(), event.getY());
-                    sendToDelegate = true;
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                sendToDelegate = mDelegateTargeted;
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                sendToDelegate = mDelegateTargeted;
-                mDelegateTargeted = false;
-                break;
+        case MotionEvent.ACTION_DOWN:
+            mDelegateTargeted = mTouchCheckBounds.contains(event.getX(), event.getY());
+            if (mDelegateTargeted) {
+                mWasTouchOutsideBounds = !mBounds.contains(event.getX(), event.getY());
+                sendToDelegate = true;
+            }
+            break;
+        case MotionEvent.ACTION_MOVE:
+            sendToDelegate = mDelegateTargeted;
+            break;
+        case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_CANCEL:
+            sendToDelegate = mDelegateTargeted;
+            mDelegateTargeted = false;
+            break;
         }
         boolean handled = false;
         if (sendToDelegate) {

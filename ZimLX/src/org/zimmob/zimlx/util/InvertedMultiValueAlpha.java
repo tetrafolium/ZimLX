@@ -25,18 +25,18 @@ import java.util.function.Consumer;
 public class InvertedMultiValueAlpha {
 
     public static final Property<InvertedAlphaProperty, Float> VALUE =
-            new Property<InvertedAlphaProperty, Float>(Float.TYPE, "value") {
+    new Property<InvertedAlphaProperty, Float>(Float.TYPE, "value") {
 
-                @Override
-                public Float get(InvertedAlphaProperty alphaProperty) {
-                    return 1 - alphaProperty.mValue;
-                }
+        @Override
+        public Float get(InvertedAlphaProperty alphaProperty) {
+            return 1 - alphaProperty.mValue;
+        }
 
-                @Override
-                public void set(InvertedAlphaProperty object, Float value) {
-                    object.setValue(value);
-                }
-            };
+        @Override
+        public void set(InvertedAlphaProperty object, Float value) {
+            object.setValue(value);
+        }
+    };
 
     private final Consumer<Float> mConsumer;
     private final InvertedAlphaProperty[] mMyProperties;

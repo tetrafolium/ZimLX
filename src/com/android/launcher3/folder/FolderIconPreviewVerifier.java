@@ -43,7 +43,7 @@ public class FolderIconPreviewVerifier {
     public void setFolderInfo(FolderInfo info) {
         int numItemsInFolder = info.contents.size();
         FolderPagedView.calculateGridSize(numItemsInFolder, 0, 0, mMaxGridCountX,
-                mMaxGridCountY, mMaxItemsPerPage, mGridSize);
+                                          mMaxGridCountY, mMaxItemsPerPage, mGridSize);
         mGridCountX = mGridSize[0];
 
         mDisplayingUpperLeftQuadrant = numItemsInFolder > MAX_NUM_ITEMS_IN_PREVIEW;

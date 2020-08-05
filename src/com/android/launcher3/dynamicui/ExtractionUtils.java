@@ -71,10 +71,10 @@ public class ExtractionUtils {
             return;
         }
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(
-                Context.JOB_SCHEDULER_SERVICE);
+                                        Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(new JobInfo.Builder(Utilities.COLOR_EXTRACTION_JOB_ID,
-                new ComponentName(context, ColorExtractionService.class))
-                .setMinimumLatency(0).build());
+                              new ComponentName(context, ColorExtractionService.class))
+                              .setMinimumLatency(0).build());
     }
 
     private static boolean hasWallpaperIdChanged(Context context) {
@@ -91,7 +91,7 @@ public class ExtractionUtils {
     @TargetApi(Build.VERSION_CODES.N)
     public static int getWallpaperId(WallpaperManager wallpaperManager) {
         return Utilities.ATLEAST_NOUGAT ?
-                wallpaperManager.getWallpaperId(WallpaperManager.FLAG_SYSTEM) : -1;
+               wallpaperManager.getWallpaperId(WallpaperManager.FLAG_SYSTEM) : -1;
     }
 
     public static boolean isSuperLight(Palette p) {

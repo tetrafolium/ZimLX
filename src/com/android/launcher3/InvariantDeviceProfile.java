@@ -121,9 +121,9 @@ public class InvariantDeviceProfile {
 
     private InvariantDeviceProfile(InvariantDeviceProfile p) {
         this(p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns,
-                p.numFolderRows, p.numFolderColumns,
-                p.iconSize, p.landscapeIconSize, p.iconTextSize, p.numHotseatIcons,
-                p.defaultLayoutId, p.demoModeLayoutId);
+             p.numFolderRows, p.numFolderColumns,
+             p.iconSize, p.landscapeIconSize, p.iconTextSize, p.numHotseatIcons,
+             p.defaultLayoutId, p.demoModeLayoutId);
     }
 
     private InvariantDeviceProfile(String n, float w, float h, int r, int c, int fr, int fc,
@@ -159,9 +159,9 @@ public class InvariantDeviceProfile {
         minHeightDps = Utilities.dpiFromPx(Math.min(largestSize.x, largestSize.y), dm);
 
         ArrayList<InvariantDeviceProfile> closestProfiles = findClosestDeviceProfiles(
-                minWidthDps, minHeightDps, getPredefinedDeviceProfiles(context));
+                    minWidthDps, minHeightDps, getPredefinedDeviceProfiles(context));
         InvariantDeviceProfile interpolatedDeviceProfileOut =
-                invDistWeightedInterpolate(minWidthDps, minHeightDps, closestProfiles);
+            invDistWeightedInterpolate(minWidthDps, minHeightDps, closestProfiles);
 
         InvariantDeviceProfile closestProfile = closestProfiles.get(0);
         numRows = closestProfile.numRows;
@@ -214,16 +214,16 @@ public class InvariantDeviceProfile {
         int largeSide = max(realSize.x, realSize.y);
 
         landscapeProfile = new DeviceProfile(context, this, smallestSize, largestSize,
-                largeSide, smallSide, true /* isLandscape */, false /* isMultiWindowMode */);
+                                             largeSide, smallSide, true /* isLandscape */, false /* isMultiWindowMode */);
         portraitProfile = new DeviceProfile(context, this, smallestSize, largestSize,
-                smallSide, largeSide, false /* isLandscape */, false /* isMultiWindowMode */);
+                                            smallSide, largeSide, false /* isLandscape */, false /* isMultiWindowMode */);
 
         // We need to ensure that there is enough extra space in the wallpaper
         // for the intended parallax effects
         if (context.getResources().getConfiguration().smallestScreenWidthDp >= 720) {
             defaultWallpaperSize = new Point(
-                    (int) (largeSide * wallpaperTravelToScreenWidthRatio(largeSide, smallSide)),
-                    largeSide);
+                (int) (largeSide * wallpaperTravelToScreenWidthRatio(largeSide, smallSide)),
+                largeSide);
         } else {
             defaultWallpaperSize = new Point(max(smallSide * 2, largeSide), largeSide);
         }
@@ -258,24 +258,24 @@ public class InvariantDeviceProfile {
                     parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
                 if ((type == XmlPullParser.START_TAG) && "profile".equals(parser.getName())) {
                     TypedArray a = context.obtainStyledAttributes(
-                            Xml.asAttributeSet(parser), R.styleable.InvariantDeviceProfile);
+                                       Xml.asAttributeSet(parser), R.styleable.InvariantDeviceProfile);
                     int numRows = a.getInt(R.styleable.InvariantDeviceProfile_numRows, 0);
                     int numColumns = a.getInt(R.styleable.InvariantDeviceProfile_numColumns, 0);
                     float iconSize = a.getFloat(R.styleable.InvariantDeviceProfile_zIconSize, 0);
                     profiles.add(new InvariantDeviceProfile(
-                            a.getString(R.styleable.InvariantDeviceProfile_name),
-                            a.getFloat(R.styleable.InvariantDeviceProfile_minWidthDps, 0),
-                            a.getFloat(R.styleable.InvariantDeviceProfile_minHeightDps, 0),
-                            numRows,
-                            numColumns,
-                            a.getInt(R.styleable.InvariantDeviceProfile_numFolderRows, numRows),
-                            a.getInt(R.styleable.InvariantDeviceProfile_numFolderColumns, numColumns),
-                            iconSize,
-                            a.getFloat(R.styleable.InvariantDeviceProfile_landscapeIconSize, iconSize),
-                            a.getFloat(R.styleable.InvariantDeviceProfile_iconTextSize, 0),
-                            a.getInt(R.styleable.InvariantDeviceProfile_numHotseatIcons, numColumns),
-                            a.getResourceId(R.styleable.InvariantDeviceProfile_defaultLayoutId, 0),
-                            a.getResourceId(R.styleable.InvariantDeviceProfile_demoModeLayoutId, 0)));
+                                     a.getString(R.styleable.InvariantDeviceProfile_name),
+                                     a.getFloat(R.styleable.InvariantDeviceProfile_minWidthDps, 0),
+                                     a.getFloat(R.styleable.InvariantDeviceProfile_minHeightDps, 0),
+                                     numRows,
+                                     numColumns,
+                                     a.getInt(R.styleable.InvariantDeviceProfile_numFolderRows, numRows),
+                                     a.getInt(R.styleable.InvariantDeviceProfile_numFolderColumns, numColumns),
+                                     iconSize,
+                                     a.getFloat(R.styleable.InvariantDeviceProfile_landscapeIconSize, iconSize),
+                                     a.getFloat(R.styleable.InvariantDeviceProfile_iconTextSize, 0),
+                                     a.getInt(R.styleable.InvariantDeviceProfile_numHotseatIcons, numColumns),
+                                     a.getResourceId(R.styleable.InvariantDeviceProfile_defaultLayoutId, 0),
+                                     a.getResourceId(R.styleable.InvariantDeviceProfile_demoModeLayoutId, 0)));
                     a.recycle();
                 }
             }
@@ -287,20 +287,20 @@ public class InvariantDeviceProfile {
 
     private int getLauncherIconDensity(int requiredSize) {
         // Densities typically defined by an app.
-        int[] densityBuckets = new int[]{
-                DisplayMetrics.DENSITY_LOW,
-                DisplayMetrics.DENSITY_MEDIUM,
-                DisplayMetrics.DENSITY_TV,
-                DisplayMetrics.DENSITY_HIGH,
-                DisplayMetrics.DENSITY_XHIGH,
-                DisplayMetrics.DENSITY_XXHIGH,
-                DisplayMetrics.DENSITY_XXXHIGH
+        int[] densityBuckets = new int[] {
+            DisplayMetrics.DENSITY_LOW,
+            DisplayMetrics.DENSITY_MEDIUM,
+            DisplayMetrics.DENSITY_TV,
+            DisplayMetrics.DENSITY_HIGH,
+            DisplayMetrics.DENSITY_XHIGH,
+            DisplayMetrics.DENSITY_XXHIGH,
+            DisplayMetrics.DENSITY_XXXHIGH
         };
 
         int density = DisplayMetrics.DENSITY_XXXHIGH;
         for (int i = densityBuckets.length - 1; i >= 0; i--) {
             float expectedSize = ICON_SIZE_DEFINED_IN_APP_DP * densityBuckets[i]
-                    / DisplayMetrics.DENSITY_DEFAULT;
+                                 / DisplayMetrics.DENSITY_DEFAULT;
             if (expectedSize >= requiredSize) {
                 density = densityBuckets[i];
             }
@@ -331,19 +331,19 @@ public class InvariantDeviceProfile {
      */
     // Package private visibility for testing.
     ArrayList<InvariantDeviceProfile> findClosestDeviceProfiles(
-            final float width, final float height, ArrayList<InvariantDeviceProfile> points) {
+        final float width, final float height, ArrayList<InvariantDeviceProfile> points) {
 
         // Sort the profiles by their closeness to the dimensions
         ArrayList<InvariantDeviceProfile> pointsByNearness = points;
         Collections.sort(pointsByNearness, (a, b) -> Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
-                dist(width, height, b.minWidthDps, b.minHeightDps)));
+                         dist(width, height, b.minWidthDps, b.minHeightDps)));
 
         return pointsByNearness;
     }
 
     // Package private visibility for testing.
     InvariantDeviceProfile invDistWeightedInterpolate(float width, float height,
-                                                      ArrayList<InvariantDeviceProfile> points) {
+            ArrayList<InvariantDeviceProfile> points) {
         float weights = 0;
 
         InvariantDeviceProfile p = points.get(0);
@@ -387,7 +387,7 @@ public class InvariantDeviceProfile {
 
     public DeviceProfile getDeviceProfile(Context context) {
         return context.getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE ? landscapeProfile : portraitProfile;
+               == Configuration.ORIENTATION_LANDSCAPE ? landscapeProfile : portraitProfile;
     }
 
     private float weight(float x0, float y0, float x1, float y1, float pow) {
@@ -421,8 +421,8 @@ public class InvariantDeviceProfile {
         //   (10/16)x + y = 1.2
         // We solve for x and y and end up with a final formula:
         final float x =
-                (WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE - WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT) /
-                        (ASPECT_RATIO_LANDSCAPE - ASPECT_RATIO_PORTRAIT);
+            (WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE - WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT) /
+            (ASPECT_RATIO_LANDSCAPE - ASPECT_RATIO_PORTRAIT);
         final float y = WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT - x * ASPECT_RATIO_PORTRAIT;
         return x * aspectRatio + y;
     }

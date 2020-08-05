@@ -82,13 +82,13 @@ public abstract class AppWidgetManagerCompat {
     }
 
     public abstract List<AppWidgetProviderInfo> getAllProviders(
-            @Nullable PackageUserKey packageUser);
+        @Nullable PackageUserKey packageUser);
 
     public abstract boolean bindAppWidgetIdIfAllowed(
-            int appWidgetId, AppWidgetProviderInfo info, Bundle options);
+        int appWidgetId, AppWidgetProviderInfo info, Bundle options);
 
     public abstract LauncherAppWidgetProviderInfo findProvider(
-            ComponentName provider, UserHandle user);
+        ComponentName provider, UserHandle user);
 
     public abstract HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap();
 }

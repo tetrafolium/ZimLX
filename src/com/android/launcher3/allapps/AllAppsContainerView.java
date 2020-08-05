@@ -73,7 +73,7 @@ import static androidx.recyclerview.widget.RecyclerView.OnScrollListener;
  * The all apps view container.
  */
 public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
-        Insettable, OnDeviceProfileChangeListener {
+    Insettable, OnDeviceProfileChangeListener {
 
     private static final float FLING_VELOCITY_MULTIPLIER = 135f;
     // Starts the springs after at least 55% of the animation has passed.
@@ -233,9 +233,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         @StringRes int descriptionRes;
         if (mUsingTabs) {
             descriptionRes =
-                    mViewPager.getNextPage() == 0
-                            ? R.string.all_apps_button_personal_label
-                            : R.string.all_apps_button_work_label;
+                mViewPager.getNextPage() == 0
+                ? R.string.all_apps_button_personal_label
+                : R.string.all_apps_button_work_label;
         } else {
             descriptionRes = R.string.all_apps_button_label;
         }
@@ -315,7 +315,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     public void setInsets(Rect insets) {
         DeviceProfile grid = mLauncher.getDeviceProfile();
         int leftRightPadding = grid.desiredWorkspaceLeftRightMarginPx
-                + grid.cellLayoutPaddingLeftRightPx;
+                               + grid.cellLayoutPaddingLeftRightPx;
 
         mTabsController.setPadding(leftRightPadding, insets.bottom);
 
@@ -345,7 +345,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         if (mNavBarScrimHeight > 0) {
             canvas.drawRect(0, getHeight() - mNavBarScrimHeight, getWidth(), getHeight(),
-                    mNavBarScrimPaint);
+                            mNavBarScrimPaint);
         }
     }
 
@@ -388,7 +388,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             AllAppsRecyclerView recyclerView = mAH[AdapterHolder.MAIN].recyclerView;
             if (recyclerView != null) {
                 ZimUtilsKt.runOnAttached(recyclerView, () ->
-                        recyclerView.setScrollbarColor(Utilities.getZimPrefs(getContext()).getAccentColor()));
+                                         recyclerView.setScrollbarColor(Utilities.getZimPrefs(getContext()).getAccentColor()));
             }
         }
         setupHeader();
@@ -545,7 +545,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     addSpringView(searchViewId);
 
                     finishWithShiftAndVelocity(1, velocity * FLING_VELOCITY_MULTIPLIER,
-                            (animation, canceled, value, velocity1) -> removeSpringView(searchViewId));
+                                               (animation, canceled, value, velocity1) -> removeSpringView(searchViewId));
 
                     shouldSpring = false;
                 }

@@ -118,8 +118,8 @@ import static androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
  * Settings activity for Launcher.
  */
 public class SettingsActivity extends SettingsBaseActivity implements
-        PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, OnPreferenceDisplayDialogCallback,
-        OnBackStackChangedListener, OnClickListener {
+    PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, OnPreferenceDisplayDialogCallback,
+    OnBackStackChangedListener, OnClickListener {
 
     public static final String EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key";
 
@@ -166,8 +166,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
             Fragment fragment = createLaunchFragment(getIntent());
             // Display the fragment as the main content.
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content, fragment)
-                    .commit();
+            .replace(R.id.content, fragment)
+            .commit();
         }
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
@@ -202,8 +202,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
         int content = intent.getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
         return content != 0
-                ? SubSettingsFragment.newInstance(getIntent())
-                : new LauncherSettingsFragment();
+               ? SubSettingsFragment.newInstance(getIntent())
+               : new LauncherSettingsFragment();
     }
 
     protected boolean shouldShowSearch() {
@@ -233,14 +233,14 @@ public class SettingsActivity extends SettingsBaseActivity implements
             }
             toolbar.setOnMenuItemClickListener(menuItem -> {
                 switch (menuItem.getItemId()) {
-                    case R.id.action_change_default_home:
-                        FakeLauncherKt.changeDefaultHome(this);
-                        break;
-                    case R.id.action_restart_zim:
-                        Utilities.killLauncher();
-                        break;
-                    default:
-                        return false;
+                case R.id.action_change_default_home:
+                    FakeLauncherKt.changeDefaultHome(this);
+                    break;
+                case R.id.action_restart_zim:
+                    Utilities.killLauncher();
+                    break;
+                default:
+                    return false;
                 }
                 return true;
             });
@@ -249,9 +249,9 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
     private String resolveDefaultHome() {
         Intent homeIntent = new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME);
+        .addCategory(Intent.CATEGORY_HOME);
         ResolveInfo info = getPackageManager()
-                .resolveActivity(homeIntent, PackageManager.MATCH_DEFAULT_ONLY);
+                           .resolveActivity(homeIntent, PackageManager.MATCH_DEFAULT_ONLY);
         if (info != null && info.activityInfo != null) {
             return info.activityInfo.packageName;
         } else {
@@ -341,38 +341,38 @@ public class SettingsActivity extends SettingsBaseActivity implements
         private Adapter mCurrentRootAdapter;
         private boolean mIsDataSetObserverRegistered = false;
         private AdapterDataObserver mDataSetObserver =
-                new AdapterDataObserver() {
-                    @Override
-                    public void onChanged() {
-                        onDataSetChanged();
-                    }
+        new AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                onDataSetChanged();
+            }
 
-                    @Override
-                    public void onItemRangeChanged(int positionStart, int itemCount) {
-                        onDataSetChanged();
-                    }
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                onDataSetChanged();
+            }
 
-                    @Override
-                    public void onItemRangeChanged(int positionStart, int itemCount,
-                                                   Object payload) {
-                        onDataSetChanged();
-                    }
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount,
+                                           Object payload) {
+                onDataSetChanged();
+            }
 
-                    @Override
-                    public void onItemRangeInserted(int positionStart, int itemCount) {
-                        onDataSetChanged();
-                    }
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                onDataSetChanged();
+            }
 
-                    @Override
-                    public void onItemRangeRemoved(int positionStart, int itemCount) {
-                        onDataSetChanged();
-                    }
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                onDataSetChanged();
+            }
 
-                    @Override
-                    public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-                        onDataSetChanged();
-                    }
-                };
+            @Override
+            public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+                onDataSetChanged();
+            }
+        };
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -394,16 +394,16 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
         @SuppressLint("RestrictedApi")
         public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent,
-                                                 Bundle savedInstanceState) {
+                Bundle savedInstanceState) {
             RecyclerView recyclerView = (RecyclerView) inflater
-                    .inflate(getRecyclerViewLayoutRes(), parent, false);
+                                        .inflate(getRecyclerViewLayoutRes(), parent, false);
             if (recyclerView instanceof SpringRecyclerView) {
                 ((SpringRecyclerView) recyclerView).setShouldTranslateSelf(false);
             }
 
             recyclerView.setLayoutManager(onCreateLayoutManager());
             recyclerView.setAccessibilityDelegateCompat(
-                    new PreferenceRecyclerViewAccessibilityDelegate(recyclerView));
+                new PreferenceRecyclerViewAccessibilityDelegate(recyclerView));
 
             return recyclerView;
         }
@@ -425,7 +425,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             final Bundle arguments = getActivity().getIntent().getExtras();
             mAdapter = new HighlightablePreferenceGroupAdapter(preferenceScreen,
                     arguments == null
-                            ? null : arguments.getString(SettingsActivity.EXTRA_FRAGMENT_ARG_KEY),
+                    ? null : arguments.getString(SettingsActivity.EXTRA_FRAGMENT_ARG_KEY),
                     mPreferenceHighlighted);
             return mAdapter;
         }
@@ -508,7 +508,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
                 if (preference instanceof ControlledPreference) {
                     PreferenceController controller = ((ControlledPreference) preference)
-                            .getController();
+                                                      .getController();
                     if (controller != null) {
                         if (!controller.onPreferenceAdded(preference)) {
                             i--;
@@ -573,23 +573,23 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.action_change_default_home:
-                    FakeLauncherKt.changeDefaultHome(getContext());
-                    break;
-                case R.id.action_restart_zim:
-                    Utilities.killLauncher();
-                    break;
-                case R.id.action_dev_options:
-                    Intent intent = new Intent(getContext(), SettingsActivity.class);
-                    intent.putExtra(SettingsActivity.SubSettingsFragment.TITLE,
-                            getString(R.string.developer_options_title));
-                    intent.putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID,
-                            R.xml.zim_preferences_dev_options);
-                    intent.putExtra(SettingsBaseActivity.EXTRA_FROM_SETTINGS, true);
-                    startActivity(intent);
-                    break;
-                default:
-                    return false;
+            case R.id.action_change_default_home:
+                FakeLauncherKt.changeDefaultHome(getContext());
+                break;
+            case R.id.action_restart_zim:
+                Utilities.killLauncher();
+                break;
+            case R.id.action_dev_options:
+                Intent intent = new Intent(getContext(), SettingsActivity.class);
+                intent.putExtra(SettingsActivity.SubSettingsFragment.TITLE,
+                                getString(R.string.developer_options_title));
+                intent.putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID,
+                                R.xml.zim_preferences_dev_options);
+                intent.putExtra(SettingsBaseActivity.EXTRA_FROM_SETTINGS, true);
+                startActivity(intent);
+                break;
+            default:
+                return false;
             }
 
             return true;
@@ -602,7 +602,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     public static class SubSettingsFragment extends BaseFragment implements
-            Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
+        Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
         public static final String TITLE = "title";
         public static final String CONTENT_RES_ID = "content_res_id";
@@ -623,67 +623,67 @@ public class SettingsActivity extends SettingsBaseActivity implements
             int preference = getContent();
             ContentResolver resolver = mContext.getContentResolver();
             switch (preference) {
-                case R.xml.zim_preferences_desktop:
-                    if (!Utilities.ATLEAST_OREO) {
-                        getPreferenceScreen().removePreference(
-                                findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
-                    }
-                    // Setup allow rotation preference
-                    Preference rotationPref = findPreference(Utilities.ALLOW_ROTATION_PREFERENCE_KEY);
-                    if (getResources().getBoolean(R.bool.allow_rotation)) {
-                        // Launcher supports rotation by default. No need to show this setting.
-                        getPreferenceScreen().removePreference(rotationPref);
-                    } else {
-                        mRotationLockObserver = new SystemDisplayRotationLockObserver(rotationPref, resolver);
+            case R.xml.zim_preferences_desktop:
+                if (!Utilities.ATLEAST_OREO) {
+                    getPreferenceScreen().removePreference(
+                        findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
+                }
+                // Setup allow rotation preference
+                Preference rotationPref = findPreference(Utilities.ALLOW_ROTATION_PREFERENCE_KEY);
+                if (getResources().getBoolean(R.bool.allow_rotation)) {
+                    // Launcher supports rotation by default. No need to show this setting.
+                    getPreferenceScreen().removePreference(rotationPref);
+                } else {
+                    mRotationLockObserver = new SystemDisplayRotationLockObserver(rotationPref, resolver);
 
-                        // Register a content observer to listen for system setting changes while
-                        // this UI is active.
-                        mRotationLockObserver.register(Settings.System.ACCELEROMETER_ROTATION);
+                    // Register a content observer to listen for system setting changes while
+                    // this UI is active.
+                    mRotationLockObserver.register(Settings.System.ACCELEROMETER_ROTATION);
 
-                        // Initialize the UI once
-                        rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
-                    }
+                    // Initialize the UI once
+                    rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
+                }
 
-                    break;
+                break;
 
-                case R.xml.zim_preferences_app_drawer:
-                    findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
-                    break;
+            case R.xml.zim_preferences_app_drawer:
+                findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
+                break;
 
-                case R.xml.zim_preferences_theme:
-                    Preference resetIconsPreference = findPreference("pref_resetCustomIcons");
-                    resetIconsPreference.setOnPreferenceClickListener(pref -> {
-                        new SettingsActivity.ResetIconsConfirmation()
-                                .show(getFragmentManager(), "reset_icons");
-                        return true;
-                    });
+            case R.xml.zim_preferences_theme:
+                Preference resetIconsPreference = findPreference("pref_resetCustomIcons");
+                resetIconsPreference.setOnPreferenceClickListener(pref -> {
+                    new SettingsActivity.ResetIconsConfirmation()
+                    .show(getFragmentManager(), "reset_icons");
+                    return true;
+                });
 
-                    break;
+                break;
 
-                case R.xml.zim_preferences_notification:
-                    if (getResources().getBoolean(R.bool.notification_badging_enabled)) {
-                        ButtonPreference iconBadgingPref = (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
-                        // Listen to system notification badge settings while this UI is active.
-                        mIconBadgingObserver = new IconBadgingObserver(
-                                iconBadgingPref, getActivity().getContentResolver(), getFragmentManager());
-                        mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
+            case R.xml.zim_preferences_notification:
+                if (getResources().getBoolean(R.bool.notification_badging_enabled)) {
+                    ButtonPreference iconBadgingPref = (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
+                    // Listen to system notification badge settings while this UI is active.
+                    mIconBadgingObserver = new IconBadgingObserver(
+                        iconBadgingPref, getActivity().getContentResolver(), getFragmentManager());
+                    mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
 
-                    }
+                }
 
-                    break;
+                break;
 
-                case R.xml.zim_preferences_dev_options:
-                    findPreference("kill").setOnPreferenceClickListener(this);
-                    break;
+            case R.xml.zim_preferences_dev_options:
+                findPreference("kill").setOnPreferenceClickListener(this);
+                break;
 
-                case R.xml.zim_preferences_about:
-                    AboutUtils au = new AboutUtils(getActivity(), getContext());
-                    Preference app = findPreference("pref_key__about_app");
-                    Preference appInfo = findPreference("pref_key__about_copy_build_information");
-                    au.updateAppSummary(app);
-                    au.updateAppInfoSummary(appInfo);
-                    updateProjectTeam(au);
-                    break;
+            case R.xml.zim_preferences_about:
+                AboutUtils au = new AboutUtils(getActivity(), getContext());
+                Preference app = findPreference("pref_key__about_app");
+                Preference appInfo = findPreference("pref_key__about_copy_build_information");
+                au.updateAppSummary(app);
+                au.updateAppInfoSummary(appInfo);
+                updateProjectTeam(au);
+                break;
             }
         }
 
@@ -764,16 +764,16 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 f = GridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
             } else if (preference instanceof SingleDimensionGridSizePreference) {
                 f = SingleDimensionGridSizeDialogFragmentCompat.Companion
-                        .newInstance(preference.getKey());
+                    .newInstance(preference.getKey());
             } else if (preference instanceof GesturePreference) {
                 f = SelectGestureHandlerFragment.Companion
-                        .newInstance((GesturePreference) preference);
+                    .newInstance((GesturePreference) preference);
             } else if (preference instanceof SearchProviderPreference) {
                 f = SelectSearchProviderFragment.Companion
-                        .newInstance((SearchProviderPreference) preference);
+                    .newInstance((SearchProviderPreference) preference);
             } else if (preference instanceof PreferenceDialogPreference) {
                 f = PreferenceScreenDialogFragment.Companion
-                        .newInstance((PreferenceDialogPreference) preference);
+                    .newInstance((PreferenceDialogPreference) preference);
             } else if (preference instanceof IconShapePreference) {
                 f = ((IconShapePreference) preference).createDialogFragment();
             } else if (preference instanceof ListPreference) {
@@ -781,10 +781,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 f = ThemedListPreferenceDialogFragment.Companion.newInstance(preference.getKey());
             } else if (preference instanceof EditTextPreference) {
                 f = ThemedEditTextPreferenceDialogFragmentCompat.Companion
-                        .newInstance(preference.getKey());
+                    .newInstance(preference.getKey());
             } else if (preference instanceof AbstractMultiSelectListPreference) {
                 f = ThemedMultiSelectListPreferenceDialogFragmentCompat.Companion
-                        .newInstance(preference.getKey());
+                    .newInstance(preference.getKey());
             } else if (preference instanceof SmartspaceEventProvidersPreference) {
                 f = SmartspaceEventProvidersFragment.Companion.newInstance(preference.getKey());
             } else {
@@ -826,25 +826,25 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             switch (preference.getKey()) {
-                case SHOW_PREDICTIONS_PREF:
-                    if ((boolean) newValue) {
-                        return true;
-                    }
-                    SuggestionConfirmationFragment confirmationFragment = new SuggestionConfirmationFragment();
-                    confirmationFragment.setTargetFragment(this, 0);
-                    confirmationFragment.show(getFragmentManager(), preference.getKey());
-                    break;
+            case SHOW_PREDICTIONS_PREF:
+                if ((boolean) newValue) {
+                    return true;
+                }
+                SuggestionConfirmationFragment confirmationFragment = new SuggestionConfirmationFragment();
+                confirmationFragment.setTargetFragment(this, 0);
+                confirmationFragment.show(getFragmentManager(), preference.getKey());
+                break;
 
-                case ENABLE_MINUS_ONE_PREF:
-                    if (FeedBridge.Companion.getInstance(getActivity()).isInstalled()) {
-                        return true;
-                    }
-                    FragmentManager fm = getFragmentManager();
-                    if (fm.findFragmentByTag(BRIDGE_TAG) == null) {
-                        InstallFragment fragment = new InstallFragment();
-                        fragment.show(fm, BRIDGE_TAG);
-                    }
-                    break;
+            case ENABLE_MINUS_ONE_PREF:
+                if (FeedBridge.Companion.getInstance(getActivity()).isInstalled()) {
+                    return true;
+                }
+                FragmentManager fm = getFragmentManager();
+                if (fm.findFragmentByTag(BRIDGE_TAG) == null) {
+                    InstallFragment fragment = new InstallFragment();
+                    fragment.show(fm, BRIDGE_TAG);
+                }
+                break;
             }
             return false;
         }
@@ -852,9 +852,9 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public boolean onPreferenceClick(Preference preference) {
             switch (preference.getKey()) {
-                case "kill":
-                    Utilities.killLauncher();
-                    break;
+            case "kill":
+                Utilities.killLauncher();
+                break;
             }
             return false;
         }
@@ -864,78 +864,78 @@ public class SettingsActivity extends SettingsBaseActivity implements
             AboutUtils au = new AboutUtils(getActivity(), getContext());
             if (preference.getKey() != null) {
                 switch (preference.getKey()) {
-                    case "pref_key__about_rate_app":
-                        au.showGooglePlayEntryForThisApp();
-                        break;
+                case "pref_key__about_rate_app":
+                    au.showGooglePlayEntryForThisApp();
+                    break;
 
-                    case "pref_key__about_donate":
-                        au.openWebpageInExternalBrowser(getString(R.string.app_donate_url));
-                        break;
+                case "pref_key__about_donate":
+                    au.openWebpageInExternalBrowser(getString(R.string.app_donate_url));
+                    break;
 
-                    case "pref_key__about_bug_report":
-                        au.openWebpageInExternalBrowser(getString(R.string.app_bugreport_url));
-                        break;
+                case "pref_key__about_bug_report":
+                    au.openWebpageInExternalBrowser(getString(R.string.app_bugreport_url));
+                    break;
 
-                    case "pref_key__about_project_license":
-                        try {
-                            au.showDialogWithHtmlTextView(R.string.licenses, new SimpleMarkdownParser().parse(
-                                    getResources().openRawResource(R.raw.license),
-                                    "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW).getHtml());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        break;
+                case "pref_key__about_project_license":
+                    try {
+                        au.showDialogWithHtmlTextView(R.string.licenses, new SimpleMarkdownParser().parse(
+                                                          getResources().openRawResource(R.raw.license),
+                                                          "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW).getHtml());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
 
-                    case "pref_key__about_open_source_licenses":
-                        try {
-                            au.showDialogWithHtmlTextView(R.string.licenses, new SimpleMarkdownParser().parse(
-                                    getResources().openRawResource(R.raw.opensource),
-                                    "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW).getHtml());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        break;
+                case "pref_key__about_open_source_licenses":
+                    try {
+                        au.showDialogWithHtmlTextView(R.string.licenses, new SimpleMarkdownParser().parse(
+                                                          getResources().openRawResource(R.raw.opensource),
+                                                          "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW).getHtml());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
 
-                    case "pref_key__about_source_code":
-                        au.openWebpageInExternalBrowser(getString(R.string.app_source_code_url));
-                        break;
+                case "pref_key__about_source_code":
+                    au.openWebpageInExternalBrowser(getString(R.string.app_source_code_url));
+                    break;
 
-                    case "pref_key__about_contributors_public_info":
-                        try {
-                            au.showDialogWithHtmlTextView(R.string.contributors, new SimpleMarkdownParser().parse(
-                                    getResources().openRawResource(R.raw.contributors),
-                                    "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW).getHtml());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                    case "pref_key__about_copy_build_information":
-                        au.setClipboard(preference.getSummary());
-                        SimpleMarkdownParser smp = new SimpleMarkdownParser();
-                        try {
-                            String html = smp.parse(getResources().openRawResource(R.raw.changelog), "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW, SimpleMarkdownParser.FILTER_CHANGELOG).getHtml();
-                            au.showDialogWithHtmlTextView(R.string.changelog, html);
-                        } catch (Exception ignored) {
+                case "pref_key__about_contributors_public_info":
+                    try {
+                        au.showDialogWithHtmlTextView(R.string.contributors, new SimpleMarkdownParser().parse(
+                                                          getResources().openRawResource(R.raw.contributors),
+                                                          "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW).getHtml());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "pref_key__about_copy_build_information":
+                    au.setClipboard(preference.getSummary());
+                    SimpleMarkdownParser smp = new SimpleMarkdownParser();
+                    try {
+                        String html = smp.parse(getResources().openRawResource(R.raw.changelog), "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW, SimpleMarkdownParser.FILTER_CHANGELOG).getHtml();
+                        au.showDialogWithHtmlTextView(R.string.changelog, html);
+                    } catch (Exception ignored) {
 
-                        }
-                        break;
+                    }
+                    break;
 
-                    default:
-                        if (preference instanceof ColorPreferenceCompat) {
-                            ColorPickerDialog dialog = ((ColorPreferenceCompat) preference).getDialog();
-                            dialog.setColorPickerDialogListener(new ColorPickerDialogListener() {
-                                public void onColorSelected(int dialogId, int color) {
-                                    ((ColorPreferenceCompat) preference).saveValue(color);
-                                }
+                default:
+                    if (preference instanceof ColorPreferenceCompat) {
+                        ColorPickerDialog dialog = ((ColorPreferenceCompat) preference).getDialog();
+                        dialog.setColorPickerDialogListener(new ColorPickerDialogListener() {
+                            public void onColorSelected(int dialogId, int color) {
+                                ((ColorPreferenceCompat) preference).saveValue(color);
+                            }
 
-                                public void onDialogDismissed(int dialogId) {
-                                }
-                            });
-                            dialog.show((getActivity()).getSupportFragmentManager(), "color-picker-dialog");
-                        } else if (preference.getFragment() != null) {
-                            Log.d("Settings", "Opening Fragment: " + preference.getFragment());
-                            SettingsActivity.startFragment(getContext(), preference.getFragment(), null, preference.getTitle());
-                        }
+                            public void onDialogDismissed(int dialogId) {
+                            }
+                        });
+                        dialog.show((getActivity()).getSupportFragmentManager(), "color-picker-dialog");
+                    } else if (preference.getFragment() != null) {
+                        Log.d("Settings", "Opening Fragment: " + preference.getFragment());
+                        SettingsActivity.startFragment(getContext(), preference.getFragment(), null, preference.getTitle());
+                    }
                 }
             }
             return false;
@@ -969,12 +969,12 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     public static class SuggestionConfirmationFragment extends DialogFragment implements
-            DialogInterface.OnClickListener {
+        DialogInterface.OnClickListener {
 
         public void onClick(final DialogInterface dialogInterface, final int n) {
             if (getTargetFragment() instanceof PreferenceFragmentCompat) {
                 Preference preference = ((PreferenceFragmentCompat) getTargetFragment())
-                        .findPreference(SHOW_PREDICTIONS_PREF);
+                                        .findPreference(SHOW_PREDICTIONS_PREF);
                 if (preference instanceof TwoStatePreference) {
                     ((TwoStatePreference) preference).setChecked(false);
                 }
@@ -983,10 +983,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
         public Dialog onCreateDialog(final Bundle bundle) {
             return new AlertDialog.Builder(getActivity())
-                    .setTitle(R.string.title_disable_suggestions_prompt)
-                    .setMessage(R.string.msg_disable_suggestions_prompt)
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setPositiveButton(R.string.label_turn_off_suggestions, this).create();
+                   .setTitle(R.string.title_disable_suggestions_prompt)
+                   .setMessage(R.string.msg_disable_suggestions_prompt)
+                   .setNegativeButton(android.R.string.cancel, null)
+                   .setPositiveButton(R.string.label_turn_off_suggestions, this).create();
         }
 
         @Override
@@ -1005,7 +1005,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         private final Preference mRotationPref;
 
         public SystemDisplayRotationLockObserver(
-                Preference rotationPref, ContentResolver resolver) {
+            Preference rotationPref, ContentResolver resolver) {
             super(resolver);
             mRotationPref = rotationPref;
         }
@@ -1014,7 +1014,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         public void onSettingChanged(boolean enabled) {
             mRotationPref.setEnabled(enabled);
             mRotationPref.setSummary(enabled
-                    ? R.string.allow_rotation_desc : R.string.allow_rotation_blocked_desc);
+                                     ? R.string.allow_rotation_desc : R.string.allow_rotation_blocked_desc);
         }
     }
 
@@ -1023,7 +1023,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
      * badging setting subtext accordingly.
      */
     private static class IconBadgingObserver extends SettingsObserver.Secure
-            implements Preference.OnPreferenceClickListener {
+        implements Preference.OnPreferenceClickListener {
 
         private final ButtonPreference mBadgingPref;
         private final ContentResolver mResolver;
@@ -1045,19 +1045,19 @@ public class SettingsActivity extends SettingsBaseActivity implements
             if (enabled) {
                 // Check if the listener is enabled or not.
                 String enabledListeners =
-                        Settings.Secure.getString(mResolver, NOTIFICATION_ENABLED_LISTENERS);
+                    Settings.Secure.getString(mResolver, NOTIFICATION_ENABLED_LISTENERS);
                 ComponentName myListener =
-                        new ComponentName(mBadgingPref.getContext(), NotificationListener.class);
+                    new ComponentName(mBadgingPref.getContext(), NotificationListener.class);
                 serviceEnabled = enabledListeners != null &&
-                        (enabledListeners.contains(myListener.flattenToString()) ||
-                                enabledListeners.contains(myListener.flattenToShortString()));
+                                 (enabledListeners.contains(myListener.flattenToString()) ||
+                                  enabledListeners.contains(myListener.flattenToShortString()));
                 if (!serviceEnabled) {
                     summary = R.string.title_missing_notification_access;
                 }
             }
             mBadgingPref.setWidgetFrameVisible(!serviceEnabled);
             mBadgingPref.setOnPreferenceClickListener(
-                    serviceEnabled && Utilities.ATLEAST_OREO ? null : this);
+                serviceEnabled && Utilities.ATLEAST_OREO ? null : this);
             mBadgingPref.setSummary(summary);
 
         }
@@ -1066,33 +1066,33 @@ public class SettingsActivity extends SettingsBaseActivity implements
         public boolean onPreferenceClick(Preference preference) {
             if (!Utilities.ATLEAST_OREO && serviceEnabled) {
                 ComponentName cn = new ComponentName(preference.getContext(),
-                        NotificationListener.class);
+                                                     NotificationListener.class);
                 Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .putExtra(":settings:fragment_args_key", cn.flattenToString());
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(":settings:fragment_args_key", cn.flattenToString());
                 preference.getContext().startActivity(intent);
             } else {
                 new SettingsActivity.NotificationAccessConfirmation()
-                        .show(mFragmentManager, "notification_access");
+                .show(mFragmentManager, "notification_access");
             }
             return true;
         }
     }
 
     public static class NotificationAccessConfirmation
-            extends DialogFragment implements DialogInterface.OnClickListener {
+        extends DialogFragment implements DialogInterface.OnClickListener {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final Context context = getActivity();
             String msg = context.getString(R.string.msg_missing_notification_access,
-                    context.getString(R.string.derived_app_name));
+                                           context.getString(R.string.derived_app_name));
             return new AlertDialog.Builder(context)
-                    .setTitle(R.string.title_missing_notification_access)
-                    .setMessage(msg)
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setPositiveButton(R.string.title_change_settings, this)
-                    .create();
+                   .setTitle(R.string.title_missing_notification_access)
+                   .setMessage(msg)
+                   .setNegativeButton(android.R.string.cancel, null)
+                   .setPositiveButton(R.string.title_change_settings, this)
+                   .create();
         }
 
         @Override
@@ -1105,24 +1105,24 @@ public class SettingsActivity extends SettingsBaseActivity implements
         public void onClick(DialogInterface dialogInterface, int i) {
             ComponentName cn = new ComponentName(getActivity(), NotificationListener.class);
             Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    .putExtra(":settings:fragment_args_key", cn.flattenToString());
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            .putExtra(":settings:fragment_args_key", cn.flattenToString());
             getActivity().startActivity(intent);
         }
     }
 
     public static class ResetIconsConfirmation
-            extends DialogFragment implements DialogInterface.OnClickListener {
+        extends DialogFragment implements DialogInterface.OnClickListener {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final Context context = getActivity();
             return new AlertDialog.Builder(context)
-                    .setTitle(R.string.reset_custom_icons)
-                    .setMessage(R.string.reset_custom_icons_confirmation)
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setPositiveButton(android.R.string.ok, this)
-                    .create();
+                   .setTitle(R.string.reset_custom_icons)
+                   .setMessage(R.string.reset_custom_icons_confirmation)
+                   .setNegativeButton(android.R.string.cancel, null)
+                   .setPositiveButton(android.R.string.ok, this)
+                   .create();
         }
 
         @Override
@@ -1162,10 +1162,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public Dialog onCreateDialog(final Bundle bundle) {
             return new AlertDialog.Builder(getActivity())
-                    .setTitle(R.string.bridge_missing_title)
-                    .setMessage(R.string.bridge_missing_message)
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .create();
+                   .setTitle(R.string.bridge_missing_title)
+                   .setMessage(R.string.bridge_missing_message)
+                   .setNegativeButton(android.R.string.cancel, null)
+                   .create();
         }
 
         @Override
@@ -1190,7 +1190,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
     @NotNull
     private static Intent createFragmentIntent(Context context, String fragment,
-                                               @Nullable Bundle args, @Nullable CharSequence title) {
+            @Nullable Bundle args, @Nullable CharSequence title) {
         Intent intent = new Intent(context, SettingsActivity.class);
         intent.putExtra(EXTRA_FRAGMENT, fragment);
         intent.putExtra(EXTRA_FRAGMENT_ARGS, args);

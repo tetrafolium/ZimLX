@@ -51,7 +51,7 @@ public class WidgetItemComparator implements Comparator<WidgetItem> {
         int thisArea = a.spanX * a.spanY;
         int otherArea = b.spanX * b.spanY;
         return thisArea == otherArea
-                ? Integer.compare(a.spanY, b.spanY)
-                : Integer.compare(thisArea, otherArea);
+               ? Integer.compare(a.spanY, b.spanY)
+               : Integer.compare(thisArea, otherArea);
     }
 }

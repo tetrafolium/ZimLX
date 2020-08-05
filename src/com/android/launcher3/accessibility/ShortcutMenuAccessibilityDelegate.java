@@ -44,7 +44,7 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
     public ShortcutMenuAccessibilityDelegate(Launcher launcher) {
         super(launcher);
         mActions.put(DISMISS_NOTIFICATION, new AccessibilityAction(DISMISS_NOTIFICATION,
-                launcher.getText(R.string.action_dismiss_notification)));
+                     launcher.getText(R.string.action_dismiss_notification)));
     }
 
     @Override

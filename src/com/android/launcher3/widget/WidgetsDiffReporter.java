@@ -47,7 +47,7 @@ public class WidgetsDiffReporter {
                         ArrayList<WidgetListRowEntry> newEntries, WidgetListRowEntryComparator comparator) {
         if (DEBUG) {
             Log.d(TAG, "process oldEntries#=" + currentEntries.size()
-                    + " newEntries#=" + newEntries.size());
+                  + " newEntries#=" + newEntries.size());
         }
         // Early exit if either of the list is empty
         if (currentEntries.isEmpty() || newEntries.isEmpty()) {
@@ -63,7 +63,7 @@ public class WidgetsDiffReporter {
             return;
         }
         ArrayList<WidgetListRowEntry> orgEntries =
-                (ArrayList<WidgetListRowEntry>) currentEntries.clone();
+            (ArrayList<WidgetListRowEntry>) currentEntries.clone();
         Iterator<WidgetListRowEntry> orgIter = orgEntries.iterator();
         Iterator<WidgetListRowEntry> newIter = newEntries.iterator();
 
@@ -74,8 +74,8 @@ public class WidgetsDiffReporter {
             int diff = comparePackageName(orgRowEntry, newRowEntry, comparator);
             if (DEBUG) {
                 Log.d(TAG, String.format("diff=%d orgRowEntry (%s) newRowEntry (%s)",
-                        diff, orgRowEntry != null ? orgRowEntry.toString() : null,
-                        newRowEntry != null ? newRowEntry.toString() : null));
+                                         diff, orgRowEntry != null ? orgRowEntry.toString() : null,
+                                         newRowEntry != null ? newRowEntry.toString() : null));
             }
             int index = -1;
             if (diff < 0) {
@@ -83,7 +83,7 @@ public class WidgetsDiffReporter {
                 mListener.notifyItemRemoved(index);
                 if (DEBUG) {
                     Log.d(TAG, String.format("notifyItemRemoved called (%d)%s", index,
-                            orgRowEntry.titleSectionName));
+                                             orgRowEntry.titleSectionName));
                 }
                 currentEntries.remove(index);
                 orgRowEntry = orgIter.hasNext() ? orgIter.next() : null;
@@ -93,7 +93,7 @@ public class WidgetsDiffReporter {
                 currentEntries.add(index, newRowEntry);
                 if (DEBUG) {
                     Log.d(TAG, String.format("notifyItemInserted called (%d)%s", index,
-                            newRowEntry.titleSectionName));
+                                             newRowEntry.titleSectionName));
                 }
                 newRowEntry = newIter.hasNext() ? newIter.next() : null;
                 mListener.notifyItemInserted(index);
@@ -109,7 +109,7 @@ public class WidgetsDiffReporter {
                     mListener.notifyItemChanged(index);
                     if (DEBUG) {
                         Log.d(TAG, String.format("notifyItemChanged called (%d)%s", index,
-                                newRowEntry.titleSectionName));
+                                                 newRowEntry.titleSectionName));
                     }
                 }
                 orgRowEntry = orgIter.hasNext() ? orgIter.next() : null;
@@ -138,6 +138,6 @@ public class WidgetsDiffReporter {
 
     private boolean isSamePackageItemInfo(PackageItemInfo curInfo, PackageItemInfo newInfo) {
         return curInfo.iconBitmap.equals(newInfo.iconBitmap) &&
-                !mIconCache.isDefaultIcon(curInfo.iconBitmap, curInfo.user);
+               !mIconCache.isDefaultIcon(curInfo.iconBitmap, curInfo.user);
     }
 }

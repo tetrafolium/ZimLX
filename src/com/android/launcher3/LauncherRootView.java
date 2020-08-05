@@ -59,8 +59,8 @@ public class LauncherRootView extends InsettableFrameLayout {
             insets = new Rect(0, insets.top, 0, insets.bottom);
             drawInsetBar = true;
         } else if ((insets.right > 0 || insets.left > 0) &&
-                (!Utilities.ATLEAST_MARSHMALLOW ||
-                        getContext().getSystemService(ActivityManager.class).isLowRamDevice())) {
+                   (!Utilities.ATLEAST_MARSHMALLOW ||
+                    getContext().getSystemService(ActivityManager.class).isLowRamDevice())) {
             mConsumedInsets.left = insets.left;
             mConsumedInsets.right = insets.right;
             insets = new Rect(0, insets.top, 0, insets.bottom);
@@ -68,7 +68,7 @@ public class LauncherRootView extends InsettableFrameLayout {
         }
 
         mLauncher.getSystemUiController().updateUiState(
-                UI_STATE_ROOT_VIEW, drawInsetBar ? FLAG_DARK_NAV : 0);
+            UI_STATE_ROOT_VIEW, drawInsetBar ? FLAG_DARK_NAV : 0);
 
         // Update device profile before notifying th children.
         mLauncher.getDeviceProfile().updateInsets(insets);

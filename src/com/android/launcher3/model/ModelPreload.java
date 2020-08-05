@@ -51,7 +51,7 @@ public class ModelPreload implements ModelUpdateTask {
     @Override
     public final void run() {
         mModel.startLoaderForResultsIfNotLoaded(
-                new LoaderResults(mApp, mBgDataModel, mAllAppsList, 0, null));
+            new LoaderResults(mApp, mBgDataModel, mAllAppsList, 0, null));
         Log.d(TAG, "Preload completed : " + mModel.isModelLoaded());
         onComplete(mModel.isModelLoaded());
     }

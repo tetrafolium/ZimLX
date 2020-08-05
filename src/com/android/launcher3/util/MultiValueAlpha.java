@@ -25,18 +25,18 @@ import android.view.View;
 public class MultiValueAlpha {
 
     public static final Property<AlphaProperty, Float> VALUE =
-            new Property<AlphaProperty, Float>(Float.TYPE, "value") {
+    new Property<AlphaProperty, Float>(Float.TYPE, "value") {
 
-                @Override
-                public Float get(AlphaProperty alphaProperty) {
-                    return alphaProperty.mValue;
-                }
+        @Override
+        public Float get(AlphaProperty alphaProperty) {
+            return alphaProperty.mValue;
+        }
 
-                @Override
-                public void set(AlphaProperty object, Float value) {
-                    object.setValue(value);
-                }
-            };
+        @Override
+        public void set(AlphaProperty object, Float value) {
+            object.setValue(value);
+        }
+    };
 
     private final View mView;
     private final AlphaProperty[] mMyProperties;

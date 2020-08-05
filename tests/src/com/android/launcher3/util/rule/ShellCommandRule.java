@@ -41,7 +41,7 @@ public class ShellCommandRule implements TestRule {
 
     public static void runShellCommand(String command) throws IOException {
         ParcelFileDescriptor pfd = InstrumentationRegistry.getInstrumentation().getUiAutomation()
-                .executeShellCommand(command);
+                                   .executeShellCommand(command);
 
         // Read the input stream fully.
         FileInputStream fis = new ParcelFileDescriptor.AutoCloseInputStream(pfd);
@@ -54,7 +54,7 @@ public class ShellCommandRule implements TestRule {
      */
     public static ShellCommandRule grandWidgetBind() {
         return new ShellCommandRule("appwidget grantbind --package "
-                + InstrumentationRegistry.getTargetContext().getPackageName());
+                                    + InstrumentationRegistry.getTargetContext().getPackageName());
     }
 
     /**
@@ -62,10 +62,10 @@ public class ShellCommandRule implements TestRule {
      */
     public static ShellCommandRule setDefaultLauncher() {
         ActivityInfo launcher = InstrumentationRegistry.getTargetContext().getPackageManager()
-                .queryIntentActivities(LauncherActivityRule.getHomeIntent(), 0).get(0)
-                .activityInfo;
+                                .queryIntentActivities(LauncherActivityRule.getHomeIntent(), 0).get(0)
+                                .activityInfo;
         return new ShellCommandRule("cmd package set-home-activity " +
-                new ComponentName(launcher.packageName, launcher.name).flattenToString());
+                                    new ComponentName(launcher.packageName, launcher.name).flattenToString());
     }
 
     @Override

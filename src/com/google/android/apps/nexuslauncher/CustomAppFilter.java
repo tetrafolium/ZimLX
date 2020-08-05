@@ -48,6 +48,6 @@ public class CustomAppFilter extends ZimAppFilter {
     @Override
     public boolean shouldShowApp(ComponentName componentName, UserHandle user) {
         return super.shouldShowApp(componentName, user)
-                && (user == null || !isHiddenApp(mContext, new ComponentKey(componentName, user)));
+               && (user == null || !isHiddenApp(mContext, new ComponentKey(componentName, user)));
     }
 }

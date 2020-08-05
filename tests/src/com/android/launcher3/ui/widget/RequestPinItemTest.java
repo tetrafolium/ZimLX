@@ -88,9 +88,9 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
             @Override
             public boolean evaluate(ItemInfo info, View view) {
                 return info instanceof LauncherAppWidgetInfo &&
-                        ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
-                        ((LauncherAppWidgetInfo) info).providerName.getClassName()
-                                .equals(AppWidgetNoConfig.class.getName());
+                       ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
+                       ((LauncherAppWidgetInfo) info).providerName.getClassName()
+                       .equals(AppWidgetNoConfig.class.getName());
             }
         });
     }
@@ -99,16 +99,16 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
     public void testPinWidgetNoConfig_customPreview() throws Throwable {
         // Command to set custom preview
         Intent command = RequestPinItemActivity.getCommandIntent(
-                RequestPinItemActivity.class, "setRemoteViewColor").putExtra(
-                RequestPinItemActivity.EXTRA_PARAM + "0", Color.RED);
+                             RequestPinItemActivity.class, "setRemoteViewColor").putExtra(
+                             RequestPinItemActivity.EXTRA_PARAM + "0", Color.RED);
 
         runTest("pinWidgetNoConfig", true, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View view) {
                 return info instanceof LauncherAppWidgetInfo &&
-                        ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
-                        ((LauncherAppWidgetInfo) info).providerName.getClassName()
-                                .equals(AppWidgetNoConfig.class.getName());
+                       ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
+                       ((LauncherAppWidgetInfo) info).providerName.getClassName()
+                       .equals(AppWidgetNoConfig.class.getName());
             }
         }, command);
     }
@@ -119,9 +119,9 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
             @Override
             public boolean evaluate(ItemInfo info, View view) {
                 return info instanceof LauncherAppWidgetInfo &&
-                        ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
-                        ((LauncherAppWidgetInfo) info).providerName.getClassName()
-                                .equals(AppWidgetWithConfig.class.getName());
+                       ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
+                       ((LauncherAppWidgetInfo) info).providerName.getClassName()
+                       .equals(AppWidgetWithConfig.class.getName());
             }
         });
     }
@@ -130,15 +130,15 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
     public void testPinShortcut() throws Throwable {
         // Command to set the shortcut id
         Intent command = RequestPinItemActivity.getCommandIntent(
-                RequestPinItemActivity.class, "setShortcutId").putExtra(
-                RequestPinItemActivity.EXTRA_PARAM + "0", mShortcutId);
+                             RequestPinItemActivity.class, "setShortcutId").putExtra(
+                             RequestPinItemActivity.EXTRA_PARAM + "0", mShortcutId);
 
         runTest("pinShortcut", false, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View view) {
                 return info instanceof ShortcutInfo &&
-                        info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
-                        ShortcutKey.fromItemInfo(info).getId().equals(mShortcutId);
+                       info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
+                       ShortcutKey.fromItemInfo(info).getId().equals(mShortcutId);
             }
         }, command);
     }
@@ -159,16 +159,16 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         // Open Pin item activity
         BlockingBroadcastReceiver openMonitor = new BlockingBroadcastReceiver(
-                RequestPinItemActivity.class.getName());
+            RequestPinItemActivity.class.getName());
         scrollAndFind(appsContainer, By.text("Test Pin Item")).click();
         assertNotNull(openMonitor.blockingGetExtraIntent());
 
         // Set callback
         PendingIntent callback = PendingIntent.getBroadcast(mTargetContext, 0,
-                new Intent(mCallbackAction), PendingIntent.FLAG_ONE_SHOT);
+                                 new Intent(mCallbackAction), PendingIntent.FLAG_ONE_SHOT);
         mTargetContext.sendBroadcast(RequestPinItemActivity.getCommandIntent(
-                RequestPinItemActivity.class, "setCallback").putExtra(
-                RequestPinItemActivity.EXTRA_PARAM + "0", callback));
+                                         RequestPinItemActivity.class, "setCallback").putExtra(
+                                         RequestPinItemActivity.EXTRA_PARAM + "0", callback));
 
         for (Intent command : commandIntents) {
             mTargetContext.sendBroadcast(command);
@@ -176,9 +176,9 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         // call the requested method to start the flow
         mTargetContext.sendBroadcast(RequestPinItemActivity.getCommandIntent(
-                RequestPinItemActivity.class, activityMethod));
+                                         RequestPinItemActivity.class, activityMethod));
         UiObject2 widgetCell = mDevice.wait(
-                Until.findObject(By.clazz(WidgetCell.class)), DEFAULT_ACTIVITY_TIMEOUT);
+                                   Until.findObject(By.clazz(WidgetCell.class)), DEFAULT_ACTIVITY_TIMEOUT);
         assertNotNull(widgetCell);
 
         // Accept confirmation:

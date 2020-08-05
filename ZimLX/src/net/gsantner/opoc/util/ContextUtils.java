@@ -195,20 +195,20 @@ public class ContextUtils {
             src = "Sideloaded";
         }
         switch (src) {
-            case "com.android.vending":
-            case "com.google.android.feedback": {
-                return "Google Play Store";
-            }
-            case "org.fdroid.fdroid.privileged":
-            case "org.fdroid.fdroid": {
-                return "F-Droid";
-            }
-            case "com.github.yeriomin.yalpstore": {
-                return "Yalp Store";
-            }
-            case "cm.aptoide.pt": {
-                return "Aptoide";
-            }
+        case "com.android.vending":
+        case "com.google.android.feedback": {
+            return "Google Play Store";
+        }
+        case "org.fdroid.fdroid.privileged":
+        case "org.fdroid.fdroid": {
+            return "F-Droid";
+        }
+        case "com.github.yeriomin.yalpstore": {
+            return "Yalp Store";
+        }
+        case "cm.aptoide.pt": {
+            return "Aptoide";
+        }
         }
         if (src.toLowerCase().contains(".amazon.")) {
             return "Amazon Appstore";
@@ -313,8 +313,8 @@ public class ContextUtils {
     public void showDonateBitcoinRequest(@StringRes final int srBitcoinId, @StringRes final int srBitcoinAmount, @StringRes final int srBitcoinMessage, @StringRes final int srAlternativeDonateUrl) {
         if (!isGooglePlayBuild()) {
             String btcUri = String.format("bitcoin:%s?amount=%s&label=%s&message=%s",
-                    rstr(srBitcoinId), rstr(srBitcoinAmount),
-                    rstr(srBitcoinMessage), rstr(srBitcoinMessage));
+                                          rstr(srBitcoinId), rstr(srBitcoinAmount),
+                                          rstr(srBitcoinMessage), rstr(srBitcoinMessage));
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(btcUri));
             intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
@@ -363,7 +363,7 @@ public class ContextUtils {
         try {
             ConnectivityManager con = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
             @SuppressLint("MissingPermission") NetworkInfo activeNetInfo =
-                    con == null ? null : con.getActiveNetworkInfo();
+                con == null ? null : con.getActiveNetworkInfo();
             return activeNetInfo != null && activeNetInfo.isConnectedOrConnecting();
         } catch (Exception ignored) {
             throw new RuntimeException("Error: Developer forgot to declare a permission");
@@ -406,10 +406,10 @@ public class ContextUtils {
     public String loadMarkdownForTextViewFromRaw(@RawRes int rawMdFile, String prepend) {
         try {
             return new SimpleMarkdownParser()
-                    .parse(_context.getResources().openRawResource(rawMdFile),
-                            prepend, SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW)
-                    .replaceColor("#000001", rcolor(getResId(ResType.COLOR, "accent")))
-                    .removeMultiNewlines().replaceBulletCharacter("*").getHtml();
+                   .parse(_context.getResources().openRawResource(rawMdFile),
+                          prepend, SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW)
+                   .replaceColor("#000001", rcolor(getResId(ResType.COLOR, "accent")))
+                   .removeMultiNewlines().replaceBulletCharacter("*").getHtml();
         } catch (IOException e) {
             e.printStackTrace();
             return "";
@@ -452,8 +452,8 @@ public class ContextUtils {
     public Locale getLocaleByAndroidCode(String androidLC) {
         if (!TextUtils.isEmpty(androidLC)) {
             return androidLC.contains("-r")
-                    ? new Locale(androidLC.substring(0, 2), androidLC.substring(4, 6)) // de-rAt
-                    : new Locale(androidLC); // de
+                   ? new Locale(androidLC.substring(0, 2), androidLC.substring(4, 6)) // de-rAt
+                   : new Locale(androidLC); // de
         }
         return Resources.getSystem().getConfiguration().locale;
     }
@@ -467,7 +467,7 @@ public class ContextUtils {
         Locale locale = getLocaleByAndroidCode(androidLC);
         Configuration config = _context.getResources().getConfiguration();
         config.locale = (locale != null && !androidLC.isEmpty())
-                ? locale : Resources.getSystem().getConfiguration().locale;
+                        ? locale : Resources.getSystem().getConfiguration().locale;
         _context.getResources().updateConfiguration(config, null);
     }
 
@@ -477,8 +477,8 @@ public class ContextUtils {
      */
     public boolean shouldColorOnTopBeLight(@ColorInt int colorOnBottomInt) {
         return 186 > (((0.299 * Color.red(colorOnBottomInt))
-                + ((0.587 * Color.green(colorOnBottomInt))
-                + (0.114 * Color.blue(colorOnBottomInt)))));
+                       + ((0.587 * Color.green(colorOnBottomInt))
+                          + (0.114 * Color.blue(colorOnBottomInt)))));
     }
 
     /**
@@ -541,7 +541,7 @@ public class ContextUtils {
             }
 
             bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                                         drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
             drawable.draw(canvas);

@@ -69,7 +69,7 @@ public class ShortcutsToHomeTest extends AbstractLauncherUiTest {
         // Drag the first shortcut to the home screen.
         assertTrue(deepShortcutsContainer.getChildCount() > 0);
         UiObject2 shortcut = deepShortcutsContainer.getChildren().get(0)
-                .findObject(getSelectorForId(R.id.bubble_text));
+                             .findObject(getSelectorForId(R.id.bubble_text));
         String shortcutName = shortcut.getText();
         dragToWorkspace(shortcut, false);
 
@@ -78,6 +78,6 @@ public class ShortcutsToHomeTest extends AbstractLauncherUiTest {
         mDevice.findObject(By.text(shortcutName)).click();
         assertTrue(mDevice.wait(Until.hasObject(By.pkg(
                 settingsApp.getComponentName().getPackageName())
-                .text(shortcutName)), DEFAULT_UI_TIMEOUT));
+                                                .text(shortcutName)), DEFAULT_UI_TIMEOUT));
     }
 }

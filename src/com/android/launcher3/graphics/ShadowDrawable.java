@@ -113,7 +113,7 @@ public class ShadowDrawable extends Drawable {
 
     @Override
     public void applyTheme(Resources.Theme t) {
-        TypedArray ta = t.obtainStyledAttributes(new int[]{R.attr.isWorkspaceDarkText});
+        TypedArray ta = t.obtainStyledAttributes(new int[] {R.attr.isWorkspaceDarkText});
         boolean isDark = ta.getBoolean(0, false);
         ta.recycle();
         if (mState.mIsDark != isDark) {
@@ -125,14 +125,14 @@ public class ShadowDrawable extends Drawable {
 
     private void regenerateBitmapCache() {
         Bitmap bitmap = Bitmap.createBitmap(mState.mIntrinsicWidth, mState.mIntrinsicHeight,
-                Bitmap.Config.ARGB_8888);
+                                            Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
         // Call mutate, so that the pixel allocation by the underlying vector drawable is cleared.
         Drawable d = mState.mChildState.newDrawable().mutate();
         d.setBounds(mState.mShadowSize, mState.mShadowSize,
-                mState.mIntrinsicWidth - mState.mShadowSize,
-                mState.mIntrinsicHeight - mState.mShadowSize);
+                    mState.mIntrinsicWidth - mState.mShadowSize,
+                    mState.mIntrinsicHeight - mState.mShadowSize);
         d.setTint(mState.mIsDark ? mState.mDarkTintColor : Color.WHITE);
         d.draw(canvas);
 
@@ -182,19 +182,19 @@ public class ShadowDrawable extends Drawable {
         super.inflate(r, parser, attrs, theme);
 
         final TypedArray a = theme == null
-                ? r.obtainAttributes(attrs, R.styleable.ShadowDrawable)
-                : theme.obtainStyledAttributes(attrs, R.styleable.ShadowDrawable, 0, 0);
+                             ? r.obtainAttributes(attrs, R.styleable.ShadowDrawable)
+                             : theme.obtainStyledAttributes(attrs, R.styleable.ShadowDrawable, 0, 0);
         try {
             Drawable d = a.getDrawable(R.styleable.ShadowDrawable_android_src);
             if (d == null) {
                 throw new XmlPullParserException("missing src attribute");
             }
             mState.mShadowColor = a.getColor(
-                    R.styleable.ShadowDrawable_android_shadowColor, Color.BLACK);
+                                      R.styleable.ShadowDrawable_android_shadowColor, Color.BLACK);
             mState.mShadowSize = a.getDimensionPixelSize(
-                    R.styleable.ShadowDrawable_android_elevation, 0);
+                                     R.styleable.ShadowDrawable_android_elevation, 0);
             mState.mDarkTintColor = a.getColor(
-                    R.styleable.ShadowDrawable_darkTintColor, Color.BLACK);
+                                        R.styleable.ShadowDrawable_darkTintColor, Color.BLACK);
 
             mState.mIntrinsicHeight = d.getIntrinsicHeight() + 2 * mState.mShadowSize;
             mState.mIntrinsicWidth = d.getIntrinsicWidth() + 2 * mState.mShadowSize;

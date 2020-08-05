@@ -108,7 +108,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
                 Log.d(TAG, "Binding widget, id: " + mWidgetLoadingId);
             }
             if (AppWidgetManagerCompat.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
-                    mWidgetLoadingId, pInfo, options)) {
+                        mWidgetLoadingId, pInfo, options)) {
 
                 // Widget id bound. Inflate the widget.
                 mHandler.post(mInflateWidgetRunnable);
@@ -123,7 +123,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
                 return;
             }
             AppWidgetHostView hostView = mLauncher.getAppWidgetHost().createView(
-                    mLauncher, mWidgetLoadingId, pInfo);
+                mLauncher, mWidgetLoadingId, pInfo);
             mInfo.boundWidget = hostView;
 
             // We used up the widget Id in binding the above view.
@@ -156,7 +156,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
         Rect rect = new Rect();
         AppWidgetResizeFrame.getWidgetSizeRanges(context, info.spanX, info.spanY, rect);
         Rect padding = AppWidgetHostView.getDefaultPaddingForWidget(context,
-                info.componentName, null);
+                       info.componentName, null);
 
         float density = context.getResources().getDisplayMetrics().density;
         int xPaddingDips = (int) ((padding.left + padding.right) / density);
@@ -164,13 +164,13 @@ public class WidgetHostViewLoader implements DragController.DragListener {
 
         Bundle options = new Bundle();
         options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
-                rect.left - xPaddingDips);
+                       rect.left - xPaddingDips);
         options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
-                rect.top - yPaddingDips);
+                       rect.top - yPaddingDips);
         options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
-                rect.right - xPaddingDips);
+                       rect.right - xPaddingDips);
         options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
-                rect.bottom - yPaddingDips);
+                       rect.bottom - yPaddingDips);
         return options;
     }
 }

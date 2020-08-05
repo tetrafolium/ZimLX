@@ -75,7 +75,7 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
         int thisArea = spanX * spanY;
         int otherArea = another.spanX * another.spanY;
         return thisArea == otherArea
-                ? Integer.compare(spanY, another.spanY)
-                : Integer.compare(thisArea, otherArea);
+               ? Integer.compare(spanY, another.spanY)
+               : Integer.compare(thisArea, otherArea);
     }
 }

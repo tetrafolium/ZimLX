@@ -48,8 +48,8 @@ public class DeepShortcutTextView extends BubbleTextView {
 
         Resources resources = getResources();
         mDragHandleWidth = resources.getDimensionPixelSize(R.dimen.popup_padding_end)
-                + resources.getDimensionPixelSize(R.dimen.deep_shortcut_drag_handle_size)
-                + resources.getDimensionPixelSize(R.dimen.deep_shortcut_drawable_padding) / 2;
+                           + resources.getDimensionPixelSize(R.dimen.deep_shortcut_drag_handle_size)
+                           + resources.getDimensionPixelSize(R.dimen.deep_shortcut_drawable_padding) / 2;
     }
 
     @Override

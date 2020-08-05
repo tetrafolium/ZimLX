@@ -89,31 +89,31 @@ public class LauncherClient {
             }
 
             switch (message.what) {
-                case 2:
-                    if ((mClient.mServiceState & 1) != 0) {
-                        float floatValue = (float) message.obj;
-                        mClient.mScrollCallback.onOverlayScrollChanged(floatValue);
-                    }
-                    return true;
-                case 3:
-                    WindowManager.LayoutParams attributes = mWindow.getAttributes();
-                    if ((Boolean) message.obj) {
-                        attributes.x = mWindowShift;
-                        attributes.flags |= 512;
-                    } else {
-                        attributes.x = 0;
-                        attributes.flags &= -513;
-                    }
-                    mWindowManager.updateViewLayout(mWindow.getDecorView(), attributes);
-                    return true;
-                case 4:
-                    mClient.setServiceState(message.arg1);
-                    if (mClient.mScrollCallback instanceof ISerializableScrollCallback) {
-                        ((ISerializableScrollCallback) mClient.mScrollCallback).setPersistentFlags(message.arg1);
-                    }
-                    return true;
-                default:
-                    return false;
+            case 2:
+                if ((mClient.mServiceState & 1) != 0) {
+                    float floatValue = (float) message.obj;
+                    mClient.mScrollCallback.onOverlayScrollChanged(floatValue);
+                }
+                return true;
+            case 3:
+                WindowManager.LayoutParams attributes = mWindow.getAttributes();
+                if ((Boolean) message.obj) {
+                    attributes.x = mWindowShift;
+                    attributes.flags |= 512;
+                } else {
+                    attributes.x = 0;
+                    attributes.flags &= -513;
+                }
+                mWindowManager.updateViewLayout(mWindow.getDecorView(), attributes);
+                return true;
+            case 4:
+                mClient.setServiceState(message.arg1);
+                if (mClient.mScrollCallback instanceof ISerializableScrollCallback) {
+                    ((ISerializableScrollCallback) mClient.mScrollCallback).setPersistentFlags(message.arg1);
+                }
+                return true;
+            default:
+                return false;
             }
         }
     }
@@ -385,11 +385,11 @@ public class LauncherClient {
         FeedBridge.BridgeInfo bridgeInfo = proxy ? FeedBridge.Companion.getInstance(context).resolveBridge() : null;
         String pkg = context.getPackageName();
         return new Intent("com.android.launcher3.WINDOW_OVERLAY")
-                .setPackage(bridgeInfo != null ? bridgeInfo.getPackageName() : "com.google.android.googlequicksearchbox")
-                .setData(Uri.parse("app://" +
-                        pkg +
-                        ":" +
-                        Process.myUid())
+               .setPackage(bridgeInfo != null ? bridgeInfo.getPackageName() : "com.google.android.googlequicksearchbox")
+               .setData(Uri.parse("app://" +
+                                  pkg +
+                                  ":" +
+                                  Process.myUid())
                         .buildUpon()
                         .appendQueryParameter("v", Integer.toString(7))
                         .appendQueryParameter("cv", Integer.toString(9))
@@ -399,7 +399,7 @@ public class LauncherClient {
     private static void loadApiVersion(Context context) {
         ResolveInfo resolveService = context.getPackageManager().resolveService(getIntent(context, false), PackageManager.GET_META_DATA);
         apiVersion = resolveService == null || resolveService.serviceInfo.metaData == null ?
-                1 :
-                resolveService.serviceInfo.metaData.getInt("service.api.version", 1);
+                     1 :
+                     resolveService.serviceInfo.metaData.getInt("service.api.version", 1);
     }
 }

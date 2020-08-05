@@ -31,7 +31,7 @@ import java.util.concurrent.Executor;
  * An executor which runs all the tasks after the first onDraw is called on the target view.
  */
 public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
-        OnAttachStateChangeListener {
+    OnAttachStateChangeListener {
 
     private final ArrayList<Runnable> mTasks = new ArrayList<>();
 

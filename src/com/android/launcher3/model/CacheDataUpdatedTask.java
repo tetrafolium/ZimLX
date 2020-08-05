@@ -85,12 +85,12 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
 
     public boolean isValidShortcut(ShortcutInfo si) {
         switch (mOp) {
-            case OP_CACHE_UPDATE:
-                return true;
-            case OP_SESSION_UPDATE:
-                return si.hasPromiseIconUi();
-            default:
-                return false;
+        case OP_CACHE_UPDATE:
+            return true;
+        case OP_SESSION_UPDATE:
+            return si.hasPromiseIconUi();
+        default:
+            return false;
         }
     }
 }

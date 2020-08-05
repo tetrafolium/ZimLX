@@ -28,7 +28,7 @@ import java.util.List;
  * notifications. Without this information, it is impossible to hide on stop.
  */
 public class MediaListener extends MediaController.Callback
-        implements MediaSessionManager.OnActiveSessionsChangedListener, OnChangeListener {
+    implements MediaSessionManager.OnActiveSessionsChangedListener, OnChangeListener {
     private static final String TAG = "MediaListener";
 
     private final ComponentName mComponent;
@@ -226,9 +226,9 @@ public class MediaListener extends MediaController.Callback
 
         private boolean isPlaying() {
             return (!Utilities.ATLEAST_NOUGAT || hasNotification())
-                    && hasTitle()
-                    && controller.getPlaybackState() != null
-                    && controller.getPlaybackState().getState() == PlaybackState.STATE_PLAYING;
+                   && hasTitle()
+                   && controller.getPlaybackState() != null
+                   && controller.getPlaybackState().getState() == PlaybackState.STATE_PLAYING;
         }
 
         private boolean isPausedOrPlaying() {
@@ -238,7 +238,7 @@ public class MediaListener extends MediaController.Callback
                 }
                 int state = controller.getPlaybackState().getState();
                 return state == PlaybackState.STATE_PAUSED
-                        || state == PlaybackState.STATE_PLAYING;
+                       || state == PlaybackState.STATE_PLAYING;
             }
             return isPlaying();
         }

@@ -108,7 +108,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         // Drag widget to homescreen
         WidgetConfigStartupMonitor monitor = new WidgetConfigStartupMonitor();
         UiObject2 widget = scrollAndFind(widgetContainer, By.clazz(WidgetCell.class)
-                .hasDescendant(By.text(mWidgetInfo.getLabel(mTargetContext.getPackageManager()))));
+                                         .hasDescendant(By.text(mWidgetInfo.getLabel(mTargetContext.getPackageManager()))));
         dragToWorkspace(widget, false);
         // Widget id for which the config activity was opened
         mWidgetId = monitor.getWidgetId();
@@ -141,15 +141,15 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     private void setResult(boolean success) {
 
         getInstrumentation().getTargetContext().sendBroadcast(
-                WidgetConfigActivity.getCommandIntent(WidgetConfigActivity.class,
-                        success ? "clickOK" : "clickCancel"));
+            WidgetConfigActivity.getCommandIntent(WidgetConfigActivity.class,
+                    success ? "clickOK" : "clickCancel"));
     }
 
     /**
      * Condition for searching widget id
      */
     private class WidgetSearchCondition extends Condition
-            implements Workspace.ItemOperator {
+        implements Workspace.ItemOperator {
 
         @Override
         public boolean isTrue() throws Throwable {
@@ -159,8 +159,8 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         @Override
         public boolean evaluate(ItemInfo info, View view) {
             return info instanceof LauncherAppWidgetInfo &&
-                    ((LauncherAppWidgetInfo) info).providerName.equals(mWidgetInfo.provider) &&
-                    ((LauncherAppWidgetInfo) info).appWidgetId == mWidgetId;
+                   ((LauncherAppWidgetInfo) info).providerName.equals(mWidgetInfo.provider) &&
+                   ((LauncherAppWidgetInfo) info).appWidgetId == mWidgetId;
         }
     }
 
@@ -178,7 +178,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
             assertNotNull(intent);
             assertEquals(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE, intent.getAction());
             int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    LauncherAppWidgetInfo.NO_ID);
+                                              LauncherAppWidgetInfo.NO_ID);
             assertNotSame(widgetId, LauncherAppWidgetInfo.NO_ID);
             return widgetId;
         }

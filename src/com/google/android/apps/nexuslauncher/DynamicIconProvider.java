@@ -108,9 +108,9 @@ public class DynamicIconProvider extends IconProvider {
             } catch (NameNotFoundException ignored) {
             }
         } else if (!flattenDrawable &&
-                Utilities.ATLEAST_OREO &&
-                DynamicClock.DESK_CLOCK.equals(launcherActivityInfo.getComponentName()) &&
-                Process.myUserHandle().equals(launcherActivityInfo.getUser())) {
+                   Utilities.ATLEAST_OREO &&
+                   DynamicClock.DESK_CLOCK.equals(launcherActivityInfo.getComponentName()) &&
+                   Process.myUserHandle().equals(launcherActivityInfo.getUser())) {
             drawable = DynamicClock.getClock(mContext, iconDpi);
         }
         return drawable == null ? super.getIcon(launcherActivityInfo, iconDpi, flattenDrawable) : drawable;

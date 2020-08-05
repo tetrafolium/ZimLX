@@ -32,7 +32,7 @@ import com.android.launcher3.util.Thunk;
  *  prevent jank at the beginning of the animation
  */
 public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
-        implements ValueAnimator.AnimatorUpdateListener {
+    implements ValueAnimator.AnimatorUpdateListener {
     private static final String TAG = "FirstFrameAnimatorHlpr";
     private static final boolean DEBUG = false;
     private static final int MAX_DELAY = 1000;
@@ -118,9 +118,9 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
                 // adjust the start time and pretend it took only 16ms anyway. This
                 // prevents a large jump in the animation due to an expensive first frame
             } else if (frameNum == 1 && currentTime < mStartTime + MAX_DELAY &&
-                    !mAdjustedSecondFrameTime &&
-                    currentTime > mStartTime + IDEAL_FRAME_DURATION &&
-                    currentPlayTime > IDEAL_FRAME_DURATION) {
+                       !mAdjustedSecondFrameTime &&
+                       currentTime > mStartTime + IDEAL_FRAME_DURATION &&
+                       currentPlayTime > IDEAL_FRAME_DURATION) {
                 animation.setCurrentPlayTime(IDEAL_FRAME_DURATION);
                 mAdjustedSecondFrameTime = true;
             } else {
@@ -142,7 +142,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
     public void print(ValueAnimator animation) {
         float flatFraction = animation.getCurrentPlayTime() / (float) animation.getDuration();
         Log.d(TAG, sGlobalFrameCounter +
-                "(" + (sGlobalFrameCounter - mStartFrame) + ") " + mTarget + " dirty? " +
-                mTarget.isDirty() + " " + flatFraction + " " + this + " " + animation);
+              "(" + (sGlobalFrameCounter - mStartFrame) + ") " + mTarget + " dirty? " +
+              mTarget.isDirty() + " " + flatFraction + " " + this + " " + animation);
     }
 }

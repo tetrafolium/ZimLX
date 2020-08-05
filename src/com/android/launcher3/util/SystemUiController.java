@@ -49,7 +49,7 @@ public class SystemUiController {
 
     public void updateUiState(int uiState, boolean isLight) {
         updateUiState(uiState, isLight
-                ? (FLAG_LIGHT_NAV | FLAG_LIGHT_STATUS) : (FLAG_DARK_NAV | FLAG_DARK_STATUS));
+                      ? (FLAG_LIGHT_NAV | FLAG_LIGHT_STATUS) : (FLAG_DARK_NAV | FLAG_DARK_STATUS));
     }
 
     public void updateUiState(int uiState, int flags) {

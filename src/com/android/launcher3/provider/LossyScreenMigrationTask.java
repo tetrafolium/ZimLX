@@ -43,11 +43,11 @@ public class LossyScreenMigrationTask extends GridSizeMigrationTask {
     private final LongArrayMap<DbEntry> mUpdates;
 
     protected LossyScreenMigrationTask(
-            Context context, InvariantDeviceProfile idp, SQLiteDatabase db) {
+        Context context, InvariantDeviceProfile idp, SQLiteDatabase db) {
         // Decrease the rows count by 1
         super(context, idp, getValidPackages(context),
-                new Point(idp.numColumns, idp.numRows + 1),
-                new Point(idp.numColumns, idp.numRows));
+              new Point(idp.numColumns, idp.numRows + 1),
+              new Point(idp.numColumns, idp.numRows));
 
         mDb = db;
         mOriginalItems = new LongArrayMap<>();
@@ -90,7 +90,7 @@ public class LossyScreenMigrationTask extends GridSizeMigrationTask {
                 tempValues.clear();
                 update.addToContentValues(tempValues);
                 mDb.update(Favorites.TABLE_NAME, tempValues, "_id = ?",
-                        new String[]{Long.toString(update.id)});
+                           new String[] {Long.toString(update.id)});
             }
         }
 
@@ -101,7 +101,7 @@ public class LossyScreenMigrationTask extends GridSizeMigrationTask {
 
         if (!mEntryToRemove.isEmpty()) {
             mDb.delete(Favorites.TABLE_NAME,
-                    Utilities.createDbSelectionQuery(Favorites._ID, mEntryToRemove), null);
+                       Utilities.createDbSelectionQuery(Favorites._ID, mEntryToRemove), null);
         }
     }
 }

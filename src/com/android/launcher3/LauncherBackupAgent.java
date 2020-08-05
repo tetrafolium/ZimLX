@@ -19,13 +19,13 @@ public class LauncherBackupAgent extends BackupAgent {
 
     @Override
     public void onRestore(
-            BackupDataInput data, int appVersionCode, ParcelFileDescriptor newState) {
+        BackupDataInput data, int appVersionCode, ParcelFileDescriptor newState) {
         // Doesn't do incremental backup/restore
     }
 
     @Override
     public void onBackup(
-            ParcelFileDescriptor oldState, BackupDataOutput data, ParcelFileDescriptor newState) {
+        ParcelFileDescriptor oldState, BackupDataOutput data, ParcelFileDescriptor newState) {
         // Doesn't do incremental backup/restore
     }
 

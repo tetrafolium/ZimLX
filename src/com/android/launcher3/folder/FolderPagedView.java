@@ -160,7 +160,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     public void setupContentDimensions(int count) {
         mAllocatedContentSize = count;
         calculateGridSize(count, mGridCountX, mGridCountY, mMaxCountX, mMaxCountY, mMaxItemsPerPage,
-                sTmpArray);
+                          sTmpArray);
         mGridCountX = sTmpArray[0];
         mGridCountY = sTmpArray[1];
 
@@ -227,13 +227,13 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         lp.cellX = item.cellX;
         lp.cellY = item.cellY;
         getPageAt(pageNo).addViewToCellLayout(
-                view, -1, mFolder.mLauncher.getViewIdForItem(item), lp, true);
+            view, -1, mFolder.mLauncher.getViewIdForItem(item), lp, true);
     }
 
     @SuppressLint("InflateParams")
     public View createNewView(ShortcutInfo item) {
         int layout = mFolder.isInAppDrawer() ? R.layout.all_apps_folder_application
-                : R.layout.folder_application;
+                     : R.layout.folder_application;
         final BubbleTextView textView = (BubbleTextView) mInflater.inflate(layout, null, false);
         textView.applyFromShortcutInfo(item);
         textView.setHapticFeedbackEnabled(false);
@@ -242,7 +242,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         textView.setOnFocusChangeListener(mFocusIndicatorHelper);
 
         textView.setLayoutParams(new CellLayout.LayoutParams(
-                item.cellX, item.cellY, item.spanX, item.spanY));
+                                     item.cellX, item.cellY, item.spanX, item.spanY));
         return textView;
     }
 
@@ -327,7 +327,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         int newX, newY, rank;
 
         FolderIconPreviewVerifier verifier = new FolderIconPreviewVerifier(
-                Launcher.getLauncher(getContext()).getDeviceProfile().inv);
+            Launcher.getLauncher(getContext()).getDeviceProfile().inv);
         rank = 0;
         for (int i = 0; i < itemCount; i++) {
             View v = list.size() > i ? list.get(i) : null;
@@ -358,7 +358,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                 lp.cellX = info.cellX;
                 lp.cellY = info.cellY;
                 currentPage.addViewToCellLayout(
-                        v, -1, mFolder.mLauncher.getViewIdForItem(info), lp, true);
+                    v, -1, mFolder.mLauncher.getViewIdForItem(info), lp, true);
 
                 if (verifier.isItemInPreview(rank) && v instanceof BubbleTextView) {
                     ((BubbleTextView) v).verifyHighRes();
@@ -385,17 +385,17 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         mPageIndicator.setVisibility(getPageCount() > 1 ? View.VISIBLE : View.GONE);
         // Set the gravity as LEFT or RIGHT instead of START, as START depends on the actual text.
         mFolder.mFolderName.setGravity(getPageCount() > 1 ?
-                (mIsRtl ? Gravity.RIGHT : Gravity.LEFT) : Gravity.CENTER_HORIZONTAL);
+                                       (mIsRtl ? Gravity.RIGHT : Gravity.LEFT) : Gravity.CENTER_HORIZONTAL);
     }
 
     public int getDesiredWidth() {
         return getPageCount() > 0 ?
-                (getPageAt(0).getDesiredWidth() + getPaddingLeft() + getPaddingRight()) : 0;
+               (getPageAt(0).getDesiredWidth() + getPaddingLeft() + getPaddingRight()) : 0;
     }
 
     public int getDesiredHeight() {
         return getPageCount() > 0 ?
-                (getPageAt(0).getDesiredHeight() + getPaddingTop() + getPaddingBottom()) : 0;
+               (getPageAt(0).getDesiredHeight() + getPaddingTop() + getPaddingBottom()) : 0;
     }
 
     public int getItemCount() {
@@ -405,7 +405,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
             return 0;
         }
         return getPageAt(lastPageIndex).getShortcutsAndWidgets().getChildCount()
-                + lastPageIndex * mMaxItemsPerPage;
+               + lastPageIndex * mMaxItemsPerPage;
     }
 
     /**
@@ -419,7 +419,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
             sTmpArray[0] = page.getCountX() - sTmpArray[0] - 1;
         }
         return Math.min(mAllocatedContentSize - 1,
-                pageIndex * mMaxItemsPerPage + sTmpArray[1] * mGridCountX + sTmpArray[0]);
+                        pageIndex * mMaxItemsPerPage + sTmpArray[1] * mGridCountX + sTmpArray[0]);
     }
 
     public View getFirstItem() {
@@ -493,7 +493,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
      */
     public void showScrollHint(int direction) {
         float fraction = (direction == Folder.SCROLL_LEFT) ^ mIsRtl
-                ? -SCROLL_HINT_FRACTION : SCROLL_HINT_FRACTION;
+                         ? -SCROLL_HINT_FRACTION : SCROLL_HINT_FRACTION;
         int hint = (int) (fraction * getWidth());
         int scroll = getScrollForPage(getNextPage()) + hint;
         int delta = scroll - getScrollX();
@@ -655,10 +655,10 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                         }
                     };
                     v.animate()
-                            .translationXBy((direction > 0 ^ mIsRtl) ? -v.getWidth() : v.getWidth())
-                            .setDuration(REORDER_ANIMATION_DURATION)
-                            .setStartDelay(0)
-                            .withEndAction(endAction);
+                    .translationXBy((direction > 0 ^ mIsRtl) ? -v.getWidth() : v.getWidth())
+                    .setDuration(REORDER_ANIMATION_DURATION)
+                    .setStartDelay(0)
+                    .withEndAction(endAction);
                     mPendingAnimations.put(v, endAction);
                 }
             }
@@ -678,7 +678,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                 ((ItemInfo) v.getTag()).rank -= direction;
             }
             if (page.animateChildToPosition(v, i % mGridCountX, i / mGridCountX,
-                    REORDER_ANIMATION_DURATION, delay, true, true)) {
+                                            REORDER_ANIMATION_DURATION, delay, true, true)) {
                 delay += delayAmount;
                 delayAmount *= VIEW_REORDER_DELAY_FACTOR;
             }

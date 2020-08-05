@@ -39,15 +39,15 @@ import com.android.launcher3.widget.WidgetAddFlowHandler;
 public class PinWidgetFlowHandler extends WidgetAddFlowHandler implements Parcelable {
 
     public static final Parcelable.Creator<PinWidgetFlowHandler> CREATOR =
-            new Parcelable.Creator<PinWidgetFlowHandler>() {
-                public PinWidgetFlowHandler createFromParcel(Parcel source) {
-                    return new PinWidgetFlowHandler(source);
-                }
+    new Parcelable.Creator<PinWidgetFlowHandler>() {
+        public PinWidgetFlowHandler createFromParcel(Parcel source) {
+            return new PinWidgetFlowHandler(source);
+        }
 
-                public PinWidgetFlowHandler[] newArray(int size) {
-                    return new PinWidgetFlowHandler[size];
-                }
-            };
+        public PinWidgetFlowHandler[] newArray(int size) {
+            return new PinWidgetFlowHandler[size];
+        }
+    };
     private final PinItemRequest mRequest;
 
     public PinWidgetFlowHandler(AppWidgetProviderInfo providerInfo, PinItemRequest request) {

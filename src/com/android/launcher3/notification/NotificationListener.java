@@ -90,28 +90,28 @@ public class NotificationListener extends NotificationListenerService {
         @Override
         public boolean handleMessage(Message message) {
             switch (message.what) {
-                case MSG_NOTIFICATION_POSTED:
-                    mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
-                    break;
-                case MSG_NOTIFICATION_REMOVED:
-                    mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
-                    break;
-                case MSG_NOTIFICATION_FULL_REFRESH:
-                    List<StatusBarNotification> activeNotifications;
-                    if (sIsConnected) {
-                        try {
-                            activeNotifications = filterNotifications(getActiveNotifications());
-                        } catch (SecurityException ex) {
-                            Log.e(TAG, "SecurityException: failed to fetch notifications");
-                            activeNotifications = new ArrayList<StatusBarNotification>();
-
-                        }
-                    } else {
+            case MSG_NOTIFICATION_POSTED:
+                mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
+                break;
+            case MSG_NOTIFICATION_REMOVED:
+                mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
+                break;
+            case MSG_NOTIFICATION_FULL_REFRESH:
+                List<StatusBarNotification> activeNotifications;
+                if (sIsConnected) {
+                    try {
+                        activeNotifications = filterNotifications(getActiveNotifications());
+                    } catch (SecurityException ex) {
+                        Log.e(TAG, "SecurityException: failed to fetch notifications");
                         activeNotifications = new ArrayList<StatusBarNotification>();
-                    }
 
-                    mUiHandler.obtainMessage(message.what, activeNotifications).sendToTarget();
-                    break;
+                    }
+                } else {
+                    activeNotifications = new ArrayList<StatusBarNotification>();
+                }
+
+                mUiHandler.obtainMessage(message.what, activeNotifications).sendToTarget();
+                break;
             }
             return true;
         }
@@ -121,26 +121,26 @@ public class NotificationListener extends NotificationListenerService {
         @Override
         public boolean handleMessage(Message message) {
             switch (message.what) {
-                case MSG_NOTIFICATION_POSTED:
-                    if (sNotificationsChangedListener != null) {
-                        NotificationPostedMsg msg = (NotificationPostedMsg) message.obj;
-                        sNotificationsChangedListener.onNotificationPosted(msg.packageUserKey,
-                                msg.notificationKey, msg.shouldBeFilteredOut);
-                    }
-                    break;
-                case MSG_NOTIFICATION_REMOVED:
-                    if (sNotificationsChangedListener != null) {
-                        Pair<PackageUserKey, NotificationKeyData> pair
-                                = (Pair<PackageUserKey, NotificationKeyData>) message.obj;
-                        sNotificationsChangedListener.onNotificationRemoved(pair.first, pair.second);
-                    }
-                    break;
-                case MSG_NOTIFICATION_FULL_REFRESH:
-                    if (sNotificationsChangedListener != null) {
-                        sNotificationsChangedListener.onNotificationFullRefresh(
-                                (List<StatusBarNotification>) message.obj);
-                    }
-                    break;
+            case MSG_NOTIFICATION_POSTED:
+                if (sNotificationsChangedListener != null) {
+                    NotificationPostedMsg msg = (NotificationPostedMsg) message.obj;
+                    sNotificationsChangedListener.onNotificationPosted(msg.packageUserKey,
+                            msg.notificationKey, msg.shouldBeFilteredOut);
+                }
+                break;
+            case MSG_NOTIFICATION_REMOVED:
+                if (sNotificationsChangedListener != null) {
+                    Pair<PackageUserKey, NotificationKeyData> pair
+                        = (Pair<PackageUserKey, NotificationKeyData>) message.obj;
+                    sNotificationsChangedListener.onNotificationRemoved(pair.first, pair.second);
+                }
+                break;
+            case MSG_NOTIFICATION_FULL_REFRESH:
+                if (sNotificationsChangedListener != null) {
+                    sNotificationsChangedListener.onNotificationFullRefresh(
+                        (List<StatusBarNotification>) message.obj);
+                }
+                break;
             }
             return true;
         }
@@ -180,12 +180,12 @@ public class NotificationListener extends NotificationListenerService {
             // User turned off badging globally, so we unbound this service;
             // tell the listener that there are no notifications to remove dots.
             sNotificationsChangedListener.onNotificationFullRefresh(
-                    Collections.emptyList());
+                Collections.emptyList());
         }
     }
 
     public static void setStatusBarNotificationsChangedListener
-            (StatusBarNotificationsChangedListener listener) {
+    (StatusBarNotificationsChangedListener listener) {
         sStatusBarNotificationsChangedListener = listener;
     }
 
@@ -234,7 +234,7 @@ public class NotificationListener extends NotificationListenerService {
             return;
         }
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_POSTED, new NotificationPostedMsg(sbn))
-                .sendToTarget();
+        .sendToTarget();
         if (sStatusBarNotificationsChangedListener != null) {
             sStatusBarNotificationsChangedListener.onNotificationPosted(sbn);
         }
@@ -263,10 +263,10 @@ public class NotificationListener extends NotificationListenerService {
             return;
         }
         Pair<PackageUserKey, NotificationKeyData> packageUserKeyAndNotificationKey
-                = new Pair<>(PackageUserKey.fromNotification(sbn),
-                NotificationKeyData.fromNotification(sbn));
+            = new Pair<>(PackageUserKey.fromNotification(sbn),
+                         NotificationKeyData.fromNotification(sbn));
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_REMOVED, packageUserKeyAndNotificationKey)
-                .sendToTarget();
+        .sendToTarget();
         if (sStatusBarNotificationsChangedListener != null) {
             sStatusBarNotificationsChangedListener.onNotificationRemoved(sbn);
         }
@@ -326,7 +326,7 @@ public class NotificationListener extends NotificationListenerService {
                 mNotificationGroupMap.put(newGroupKey, notificationGroup);
             }
             boolean isGroupSummary = (sbn.getNotification().flags
-                    & Notification.FLAG_GROUP_SUMMARY) != 0;
+                                      & Notification.FLAG_GROUP_SUMMARY) != 0;
             if (isGroupSummary) {
                 notificationGroup.setGroupSummaryKey(childKey);
             } else {
@@ -338,10 +338,10 @@ public class NotificationListener extends NotificationListenerService {
     /** This makes a potentially expensive binder call and should be run on a background thread. */
     public List<StatusBarNotification> getNotificationsForKeys(List<NotificationKeyData> keys) {
         StatusBarNotification[] notifications = NotificationListener.this
-                .getActiveNotifications(NotificationKeyData.extractKeysOnly(keys)
-                        .toArray(new String[keys.size()]));
+                                                .getActiveNotifications(NotificationKeyData.extractKeysOnly(keys)
+                                                        .toArray(new String[keys.size()]));
         return notifications == null
-                ? Collections.emptyList() : Arrays.asList(notifications);
+               ? Collections.emptyList() : Arrays.asList(notifications);
     }
 
     /**
@@ -351,7 +351,7 @@ public class NotificationListener extends NotificationListenerService {
      * @see #shouldBeFilteredOut(StatusBarNotification)
      */
     private List<StatusBarNotification> filterNotifications(
-            StatusBarNotification[] notifications) {
+        StatusBarNotification[] notifications) {
         if (notifications == null) return null;
         Set<Integer> removedNotifications = new ArraySet<>();
         for (int i = 0; i < notifications.length; i++) {
@@ -360,7 +360,7 @@ public class NotificationListener extends NotificationListenerService {
             }
         }
         List<StatusBarNotification> filteredNotifications = new ArrayList<>(
-                notifications.length - removedNotifications.size());
+            notifications.length - removedNotifications.size());
         for (int i = 0; i < notifications.length; i++) {
             if (!removedNotifications.contains(i)) {
                 filteredNotifications.add(notifications[i]);

@@ -47,9 +47,9 @@ public abstract class NoLocaleSQLiteHelper extends SQLiteOpenHelper {
 
         @Override
         public SQLiteDatabase openOrCreateDatabase(
-                String name, int mode, CursorFactory factory, DatabaseErrorHandler errorHandler) {
+            String name, int mode, CursorFactory factory, DatabaseErrorHandler errorHandler) {
             return super.openOrCreateDatabase(
-                    name, mode | Context.MODE_NO_LOCALIZED_COLLATORS, factory, errorHandler);
+                       name, mode | Context.MODE_NO_LOCALIZED_COLLATORS, factory, errorHandler);
         }
     }
 }

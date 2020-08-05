@@ -58,7 +58,7 @@ public class IconNormalizer {
 
     // Slope used to calculate icon visible area to full icon size for any generic shaped icon.
     private static final float LINEAR_SCALE_SLOPE =
-            (MAX_CIRCLE_AREA_FACTOR - MAX_SQUARE_AREA_FACTOR) / (1 - CIRCLE_AREA_BY_RECT);
+        (MAX_CIRCLE_AREA_FACTOR - MAX_SQUARE_AREA_FACTOR) / (1 - CIRCLE_AREA_BY_RECT);
 
     private static final int MIN_VISIBLE_ALPHA = 40;
 
@@ -388,8 +388,8 @@ public class IconNormalizer {
 
         if (outBounds != null) {
             outBounds.set(((float) mBounds.left) / width, ((float) mBounds.top) / height,
-                    1 - ((float) mBounds.right) / width,
-                    1 - ((float) mBounds.bottom) / height);
+                          1 - ((float) mBounds.right) / width,
+                          1 - ((float) mBounds.bottom) / height);
         }
 
         if (outMaskShape != null && outMaskShape.length > 0) {
@@ -535,8 +535,8 @@ public class IconNormalizer {
 
         if (outBounds != null) {
             outBounds.set(((float) mBounds.left) / width, ((float) mBounds.top) / height,
-                    1 - ((float) mBounds.right) / width,
-                    1 - ((float) mBounds.bottom) / height);
+                          1 - ((float) mBounds.right) / width,
+                          1 - ((float) mBounds.bottom) / height);
         }
 
         if (outMaskShape != null && outMaskShape.length > 0) {
@@ -564,7 +564,7 @@ public class IconNormalizer {
      * @param bottomY      the last Y position (inclusive) with a valid value.
      */
     private static void convertToConvexArray(
-            float[] xCoordinates, int direction, int topY, int bottomY) {
+        float[] xCoordinates, int direction, int topY, int bottomY) {
         int total = xCoordinates.length;
         // The tangent at each pixel.
         float[] angles = new float[total - 1];

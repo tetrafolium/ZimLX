@@ -83,7 +83,7 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
         int bottomInset = insets.bottom - mInsets.bottom;
         mInsets.set(insets);
         setPadding(getPaddingLeft() + leftInset, getPaddingTop(),
-                getPaddingRight() + rightInset, getPaddingBottom() + bottomInset);
+                   getPaddingRight() + rightInset, getPaddingBottom() + bottomInset);
     }
 
     @Override
@@ -93,11 +93,11 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
             // We animate only when the user is visible, which is a proxy for an explicit
             // close action.
             mLauncher.getSharedPrefs().edit()
-                    .putBoolean(KEY_SHOWED_BOTTOM_USER_EDUCATION, true).apply();
+            .putBoolean(KEY_SHOWED_BOTTOM_USER_EDUCATION, true).apply();
             sendCustomAccessibilityEvent(
-                    BottomUserEducationView.this,
-                    AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
-                    getContext().getString(R.string.bottom_work_tab_user_education_closed));
+                BottomUserEducationView.this,
+                AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
+                getContext().getString(R.string.bottom_work_tab_user_education_closed));
         }
     }
 
@@ -108,7 +108,7 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
         mIsOpen = true;
         if (animate) {
             mOpenCloseAnimator.setValues(
-                    PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
+                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
             mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
             mOpenCloseAnimator.start();
         } else {
@@ -123,9 +123,9 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
 
         LayoutInflater layoutInflater = LayoutInflater.from(launcher);
         BottomUserEducationView bottomUserEducationView =
-                (BottomUserEducationView) layoutInflater.inflate(
-                        R.layout.work_tab_bottom_user_education_view, launcher.getDragLayer(),
-                        false);
+            (BottomUserEducationView) layoutInflater.inflate(
+                R.layout.work_tab_bottom_user_education_view, launcher.getDragLayer(),
+                false);
         launcher.getDragLayer().addView(bottomUserEducationView);
         bottomUserEducationView.open(true);
     }

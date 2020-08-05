@@ -79,7 +79,7 @@ public class ColorExtractionService extends JobService {
             @Override
             public void run() {
                 WallpaperManager wallpaperManager = WallpaperManager.getInstance(
-                        ColorExtractionService.this);
+                                                        ColorExtractionService.this);
                 int wallpaperId = ExtractionUtils.getWallpaperId(wallpaperManager);
 
                 ExtractedColors extractedColors = new ExtractedColors();
@@ -110,9 +110,9 @@ public class ColorExtractionService extends JobService {
                 extras.putInt(LauncherSettings.Settings.EXTRA_WALLPAPER_ID, wallpaperId);
                 extras.putString(LauncherSettings.Settings.EXTRA_EXTRACTED_COLORS, colorsString);
                 getContentResolver().call(
-                        LauncherSettings.Settings.CONTENT_URI,
-                        LauncherSettings.Settings.METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID,
-                        null, extras);
+                    LauncherSettings.Settings.CONTENT_URI,
+                    LauncherSettings.Settings.METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID,
+                    null, extras);
                 jobFinished(jobParameters, false /* needsReschedule */);
                 if (DEBUG) Log.d(TAG, "job finished!");
             }
@@ -132,12 +132,12 @@ public class ColorExtractionService extends JobService {
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         if (Utilities.ATLEAST_NOUGAT) {
             try (ParcelFileDescriptor fd = wallpaperManager
-                    .getWallpaperFile(WallpaperManager.FLAG_SYSTEM)) {
+                                               .getWallpaperFile(WallpaperManager.FLAG_SYSTEM)) {
                 BitmapRegionDecoder decoder = BitmapRegionDecoder
-                        .newInstance(fd.getFileDescriptor(), false);
+                                              .newInstance(fd.getFileDescriptor(), false);
                 int height = decoder.getHeight();
                 Rect decodeRegion = new Rect(0, (int) (height * (1f - HOTSEAT_FRACTION)),
-                        decoder.getWidth(), height);
+                                             decoder.getWidth(), height);
                 Bitmap bitmap = decoder.decodeRegion(decodeRegion, null);
                 decoder.recycle();
                 if (bitmap != null) {
@@ -150,25 +150,25 @@ public class ColorExtractionService extends JobService {
 
         Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
         return Palette.from(wallpaper)
-                .setRegion(0, (int) (wallpaper.getHeight() * (1f - HOTSEAT_FRACTION)),
-                        wallpaper.getWidth(), wallpaper.getHeight())
-                .clearFilters()
-                .generate();
+               .setRegion(0, (int) (wallpaper.getHeight() * (1f - HOTSEAT_FRACTION)),
+                          wallpaper.getWidth(), wallpaper.getHeight())
+               .clearFilters()
+               .generate();
     }
 
     @TargetApi(Build.VERSION_CODES.N)
     private Palette getStatusBarPalette() {
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         int statusBarHeight = getResources()
-                .getDimensionPixelSize(R.dimen.status_bar_height);
+                              .getDimensionPixelSize(R.dimen.status_bar_height);
 
         if (Utilities.ATLEAST_NOUGAT) {
             try (ParcelFileDescriptor fd = wallpaperManager
-                    .getWallpaperFile(WallpaperManager.FLAG_SYSTEM)) {
+                                               .getWallpaperFile(WallpaperManager.FLAG_SYSTEM)) {
                 BitmapRegionDecoder decoder = BitmapRegionDecoder
-                        .newInstance(fd.getFileDescriptor(), false);
+                                              .newInstance(fd.getFileDescriptor(), false);
                 Rect decodeRegion = new Rect(0, 0,
-                        decoder.getWidth(), statusBarHeight);
+                                             decoder.getWidth(), statusBarHeight);
                 Bitmap bitmap = decoder.decodeRegion(decodeRegion, null);
                 decoder.recycle();
                 if (bitmap != null) {
@@ -181,9 +181,9 @@ public class ColorExtractionService extends JobService {
 
         Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
         return Palette.from(wallpaper)
-                .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
-                .clearFilters()
-                .generate();
+               .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
+               .clearFilters()
+               .generate();
     }
 
     @TargetApi(Build.VERSION_CODES.N)
@@ -191,7 +191,7 @@ public class ColorExtractionService extends JobService {
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         if (Utilities.ATLEAST_NOUGAT) {
             try (ParcelFileDescriptor fd = wallpaperManager
-                    .getWallpaperFile(WallpaperManager.FLAG_SYSTEM)) {
+                                               .getWallpaperFile(WallpaperManager.FLAG_SYSTEM)) {
                 Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor());
                 if (bitmap != null) {
                     return Palette.from(bitmap).clearFilters().generate();

@@ -36,7 +36,7 @@ import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 public class OverviewState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
-            | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY;
+                                           | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY;
 
     public OverviewState(int id) {
         this(id, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
@@ -52,16 +52,16 @@ public class OverviewState extends LauncherState {
         Workspace workspace = launcher.getWorkspace();
         View workspacePage = workspace.getPageAt(workspace.getCurrentPage());
         float workspacePageWidth = workspacePage != null && workspacePage.getWidth() != 0
-                ? workspacePage.getWidth() : launcher.getDeviceProfile().availableWidthPx;
+                                   ? workspacePage.getWidth() : launcher.getDeviceProfile().availableWidthPx;
         //recentsView.getTaskSize(sTempRect);
         float scale = (float) sTempRect.width() / workspacePageWidth;
         float parallaxFactor = 0.5f;
-        return new float[]{scale, 0, -getDefaultSwipeHeight(launcher) * parallaxFactor};
+        return new float[] {scale, 0, -getDefaultSwipeHeight(launcher) * parallaxFactor};
     }
 
     @Override
     public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
-        return new float[]{1f, 0f};
+        return new float[] {1f, 0f};
     }
 
     @Override
@@ -99,8 +99,8 @@ public class OverviewState extends LauncherState {
             return VERTICAL_SWIPE_INDICATOR;
         } else {
             return HOTSEAT_SEARCH_BOX | VERTICAL_SWIPE_INDICATOR |
-                    (launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
-                            ? ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS);
+                   (launcher.getAppsView().getFloatingHeaderView().hasVisibleContent()
+                    ? ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS);
         }
     }
 
@@ -126,7 +126,7 @@ public class OverviewState extends LauncherState {
 
     public static float getNormalVerticalProgress(Launcher launcher) {
         return 1 - (getDefaultSwipeHeight(launcher)
-                / launcher.getAllAppsController().getShiftRange());
+                    / launcher.getAllAppsController().getShiftRange());
     }
 
     @Override

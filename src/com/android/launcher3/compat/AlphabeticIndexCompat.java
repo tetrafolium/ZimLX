@@ -127,7 +127,7 @@ public class AlphabeticIndexCompat {
 
             if (!curLocale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
                 clazz.getDeclaredMethod("addLabels", Locale.class)
-                        .invoke(mAlphabeticIndex, Locale.ENGLISH);
+                .invoke(mAlphabeticIndex, Locale.ENGLISH);
             }
         }
 

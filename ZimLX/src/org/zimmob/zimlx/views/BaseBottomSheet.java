@@ -83,14 +83,14 @@ public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
 
     protected void clearNavBarColor() {
         mLauncher.getSystemUiController().updateUiState(
-                SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
+            SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
     }
 
     protected void setupNavBarColor() {
         boolean isSheetDark = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
         mLauncher.getSystemUiController().updateUiState(
-                SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
-                isSheetDark ? SystemUiController.FLAG_DARK_NAV : SystemUiController.FLAG_LIGHT_NAV);
+            SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
+            isSheetDark ? SystemUiController.FLAG_DARK_NAV : SystemUiController.FLAG_LIGHT_NAV);
     }
 
     private void animateOpen(boolean animate) {
@@ -100,7 +100,7 @@ public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
         mIsOpen = true;
         setupNavBarColor();
         mOpenCloseAnimator.setValues(
-                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
+            PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
         mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
         if (!animate) {
             mOpenCloseAnimator.setDuration(0);
@@ -135,7 +135,7 @@ public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
         }
 
         setPadding(getPaddingLeft() + leftInset, getPaddingTop(),
-                getPaddingRight() + rightInset, getPaddingBottom() + bottomInset);
+                   getPaddingRight() + rightInset, getPaddingBottom() + bottomInset);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
 
     public static BaseBottomSheet inflate(Launcher launcher) {
         return (BaseBottomSheet) launcher.getLayoutInflater()
-                .inflate(R.layout.base_bottom_sheet, launcher.getDragLayer(), false);
+               .inflate(R.layout.base_bottom_sheet, launcher.getDragLayer(), false);
     }
 
 }

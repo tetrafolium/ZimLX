@@ -59,7 +59,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
     private static final RectF sTempRect = new RectF();
 
     private static final Property<PageIndicatorDots, Float> CURRENT_POSITION
-            = new Property<PageIndicatorDots, Float>(float.class, "current_position") {
+    = new Property<PageIndicatorDots, Float>(float.class, "current_position") {
         @Override
         public Float get(PageIndicatorDots obj) {
             return obj.mCurrentPosition;
@@ -151,7 +151,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
         }
         if (mAnimator == null && Float.compare(mCurrentPosition, mFinalPosition) != 0) {
             float positionForThisAnim = mCurrentPosition > mFinalPosition ?
-                    mCurrentPosition - SHIFT_PER_ANIMATION : mCurrentPosition + SHIFT_PER_ANIMATION;
+                                        mCurrentPosition - SHIFT_PER_ANIMATION : mCurrentPosition + SHIFT_PER_ANIMATION;
             mAnimator = ObjectAnimator.ofFloat(this, CURRENT_POSITION, positionForThisAnim);
             mAnimator.addListener(new AnimationCycleListener());
             mAnimator.setDuration(ANIMATION_DURATION);
@@ -231,9 +231,9 @@ public class PageIndicatorDots extends View implements PageIndicator {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // Add extra spacing of mDotRadius on all sides so than entry animation could be run.
         int width = MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY ?
-                MeasureSpec.getSize(widthMeasureSpec) : (int) ((mNumPages * 3 + 2) * mDotRadius);
+                    MeasureSpec.getSize(widthMeasureSpec) : (int) ((mNumPages * 3 + 2) * mDotRadius);
         int height = MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY ?
-                MeasureSpec.getSize(heightMeasureSpec) : (int) (4 * mDotRadius);
+                     MeasureSpec.getSize(heightMeasureSpec) : (int) (4 * mDotRadius);
         setMeasuredDimension(width, height);
     }
 
@@ -307,11 +307,11 @@ public class PageIndicatorDots extends View implements PageIndicator {
             if (mEntryAnimationRadiusFactors == null) {
                 RectF activeRect = getActiveRect();
                 outline.setRoundRect(
-                        (int) activeRect.left,
-                        (int) activeRect.top,
-                        (int) activeRect.right,
-                        (int) activeRect.bottom,
-                        mDotRadius
+                    (int) activeRect.left,
+                    (int) activeRect.top,
+                    (int) activeRect.right,
+                    (int) activeRect.bottom,
+                    mDotRadius
                 );
             }
         }

@@ -65,12 +65,12 @@ public class ConfigBuilder {
             intent.putExtra("source_mic_alpha", 0f);
         }
         return intent.putExtra("source_round_left", true)
-                .putExtra("source_round_right", true)
-                .putExtra("source_logo_offset", getCenter(gIcon, sourceBounds))
-                .putExtra("source_mic_offset", getCenter(micIcon, sourceBounds))
-                .putExtra("use_fade_animation", true)
-                .setPackage("com.google.android.googlequicksearchbox")
-                .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_NEW_TASK);
+               .putExtra("source_round_right", true)
+               .putExtra("source_logo_offset", getCenter(gIcon, sourceBounds))
+               .putExtra("source_mic_offset", getCenter(micIcon, sourceBounds))
+               .putExtra("use_fade_animation", true)
+               .setPackage("com.google.android.googlequicksearchbox")
+               .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     private void bW() {
@@ -92,7 +92,7 @@ public class ConfigBuilder {
 
     private int getBackgroundColor() {
         return ColorUtils.compositeColors(Themes.getAttrColor(mActivity, R.attr.allAppsScrimColor),
-                ColorUtils.setAlphaComponent(WallpaperColorInfo.getInstance(mActivity).getMainColor(), 255));
+                                          ColorUtils.setAlphaComponent(WallpaperColorInfo.getInstance(mActivity).getMainColor(), 255));
     }
 
     private b_search bZ(final AppInfo appInfo, final int n) {
@@ -106,8 +106,8 @@ public class ConfigBuilder {
         Uri uri = AppSearchProvider.buildUri(appInfo, mUserManager);
         b.el = uri.toString();
         b.ek = new Intent("com.google.android.apps.nexuslauncher.search.APP_LAUNCH",
-                uri.buildUpon().appendQueryParameter("predictionRank", Integer.toString(n)).build())
-                .toUri(0);
+                          uri.buildUpon().appendQueryParameter("predictionRank", Integer.toString(n)).build())
+        .toUri(0);
         return b;
     }
 
@@ -148,8 +148,8 @@ public class ConfigBuilder {
 
         final View gIcon = mQsbLayout.findViewById(R.id.g_icon);
         int horizontalPadding = mQsbLayout.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL ?
-                mQsbLayout.getWidth() - gIcon.getRight() :
-                gIcon.getLeft();
+                                mQsbLayout.getWidth() - gIcon.getRight() :
+                                gIcon.getLeft();
         remoteViews.setViewPadding(R.id.qsb_icon_container, horizontalPadding, 0, horizontalPadding, 0);
 
         return remoteViews;
@@ -169,8 +169,8 @@ public class ConfigBuilder {
         mBundle.putParcelable(mNano.ey, searchQsbTemplate());
         mNano.ew = R.id.g_icon;
         mNano.ex = mQsbLayout.mMicIconView.getVisibility() == View.VISIBLE ?
-                R.id.mic_icon :
-                0;
+                   R.id.mic_icon :
+                   0;
         final a_search viewBounds = getViewBounds(mActivity.getDragLayer());
         final int topShift = mNano.en.eg + (co ? 0 : mNano.en.ee);
         viewBounds.eg += topShift;
@@ -181,11 +181,11 @@ public class ConfigBuilder {
             mBundle.putParcelable(mNano.eu, bitmap);
         } else {
             String stringBuilder = "Invalid preview bitmap size. width: " +
-                    viewBounds.eh +
-                    "hight: " +
-                    viewBounds.ee +
-                    " top shift: " +
-                    topShift;
+                                   viewBounds.eh +
+                                   "hight: " +
+                                   viewBounds.ee +
+                                   " top shift: " +
+                                   topShift;
             Log.e("ConfigBuilder", stringBuilder);
             viewBounds.ee = 0;
             viewBounds.ef = 0;

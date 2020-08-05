@@ -40,13 +40,13 @@ import static com.android.launcher3.anim.AlphaUpdateListener.updateVisibility;
  * The top bar containing various drop targets: Delete/App Info/Uninstall.
  */
 public class DropTargetBar extends FrameLayout
-        implements DragListener, Insettable {
+    implements DragListener, Insettable {
 
     protected static final int DEFAULT_DRAG_FADE_DURATION = 175;
     protected static final TimeInterpolator DEFAULT_INTERPOLATOR = Interpolators.ACCEL;
 
     private final Runnable mFadeAnimationEndRunnable =
-            () -> updateVisibility(DropTargetBar.this);
+        () -> updateVisibility(DropTargetBar.this);
 
     @ViewDebug.ExportedProperty(category = "launcher")
     protected boolean mDeferOnDragEnd;
@@ -101,8 +101,8 @@ public class DropTargetBar extends FrameLayout
                 //      that into account here too.
                 gap = ((grid.widthPx - 2 * grid.edgeMarginPx
                         - (grid.inv.numColumns * grid.cellWidthPx))
-                        / (2 * (grid.inv.numColumns + 1)))
-                        + grid.edgeMarginPx;
+                       / (2 * (grid.inv.numColumns + 1)))
+                      + grid.edgeMarginPx;
             } else {
                 gap = grid.desiredWorkspaceLeftRightMarginPx - grid.defaultWidgetPadding.right;
             }
@@ -187,7 +187,7 @@ public class DropTargetBar extends FrameLayout
                 if (button.getVisibility() != GONE) {
                     halfWidth = button.getMeasuredWidth() / 2;
                     button.layout(start - halfWidth, 0,
-                            start + halfWidth, button.getMeasuredHeight());
+                                  start + halfWidth, button.getMeasuredHeight());
                     start = start + frameSize;
                 }
             }
@@ -218,9 +218,9 @@ public class DropTargetBar extends FrameLayout
             if (Float.compare(getAlpha(), finalAlpha) != 0) {
                 setVisibility(View.VISIBLE);
                 mCurrentAnimation = animate().alpha(finalAlpha)
-                        .setInterpolator(DEFAULT_INTERPOLATOR)
-                        .setDuration(DEFAULT_DRAG_FADE_DURATION)
-                        .withEndAction(mFadeAnimationEndRunnable);
+                                    .setInterpolator(DEFAULT_INTERPOLATOR)
+                                    .setDuration(DEFAULT_DRAG_FADE_DURATION)
+                                    .withEndAction(mFadeAnimationEndRunnable);
             }
 
         }

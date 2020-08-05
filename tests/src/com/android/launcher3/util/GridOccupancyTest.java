@@ -12,11 +12,11 @@ public class GridOccupancyTest extends TestCase {
 
     public void testFindVacantCell() {
         GridOccupancy grid = initGrid(4,
-                1, 1, 1, 0, 0,
-                0, 0, 1, 1, 0,
-                0, 0, 0, 0, 0,
-                1, 1, 0, 0, 0
-        );
+                                      1, 1, 1, 0, 0,
+                                      0, 0, 1, 1, 0,
+                                      0, 0, 0, 0, 0,
+                                      1, 1, 0, 0, 0
+                                     );
 
         int[] vacant = new int[2];
         assertTrue(grid.findVacantCell(vacant, 2, 2));
@@ -32,11 +32,11 @@ public class GridOccupancyTest extends TestCase {
 
     public void testIsRegionVacant() {
         GridOccupancy grid = initGrid(4,
-                1, 1, 1, 0, 0,
-                0, 0, 1, 1, 0,
-                0, 0, 0, 0, 0,
-                1, 1, 0, 0, 0
-        );
+                                      1, 1, 1, 0, 0,
+                                      0, 0, 1, 1, 0,
+                                      0, 0, 0, 0, 0,
+                                      1, 1, 0, 0, 0
+                                     );
 
         assertTrue(grid.isRegionVacant(4, 0, 1, 4));
         assertTrue(grid.isRegionVacant(0, 1, 2, 2));

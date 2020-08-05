@@ -89,6 +89,6 @@ public class WorkModeSwitch extends Switch {
                     setEnabled(true);
                 }
             }
-        }.execute();
+        } .execute();
     }
 }

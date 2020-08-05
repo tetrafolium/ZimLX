@@ -117,9 +117,9 @@ public class DeepShortcutView extends FrameLayout {
         // Use the long label as long as it exists and fits.
         CharSequence longLabel = mDetail.getLongLabel();
         int availableWidth = mBubbleText.getWidth() - mBubbleText.getTotalPaddingLeft()
-                - mBubbleText.getTotalPaddingRight();
+                             - mBubbleText.getTotalPaddingRight();
         boolean usingLongLabel = !TextUtils.isEmpty(longLabel)
-                && mBubbleText.getPaint().measureText(longLabel.toString()) <= availableWidth;
+                                 && mBubbleText.getPaint().measureText(longLabel.toString()) <= availableWidth;
         mBubbleText.setText(usingLongLabel ? longLabel : mDetail.getShortLabel());
 
         // TODO: Add the click handler to this view directly and not the child view.
@@ -136,7 +136,7 @@ public class DeepShortcutView extends FrameLayout {
         // Queue an update task on the worker thread. This ensures that the badged
         // shortcut eventually gets its icon updated.
         Launcher.getLauncher(getContext()).getModel()
-                .updateAndBindShortcutInfo(badged, mDetail);
+        .updateAndBindShortcutInfo(badged, mDetail);
         return badged;
     }
 

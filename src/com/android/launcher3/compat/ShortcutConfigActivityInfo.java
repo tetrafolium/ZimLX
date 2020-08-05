@@ -78,7 +78,7 @@ public abstract class ShortcutConfigActivityInfo {
 
     public boolean startConfigActivity(Activity activity, int requestCode) {
         Intent intent = new Intent(Intent.ACTION_CREATE_SHORTCUT)
-                .setComponent(getComponent());
+        .setComponent(getComponent());
         try {
             activity.startActivityForResult(intent, requestCode);
             return true;
@@ -87,8 +87,8 @@ public abstract class ShortcutConfigActivityInfo {
         } catch (SecurityException e) {
             Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Launcher does not have the permission to launch " + intent +
-                    ". Make sure to create a MAIN intent-filter for the corresponding activity " +
-                    "or use the exported attribute for this activity.", e);
+                  ". Make sure to create a MAIN intent-filter for the corresponding activity " +
+                  "or use the exported attribute for this activity.", e);
         }
         return false;
     }
@@ -150,7 +150,7 @@ public abstract class ShortcutConfigActivityInfo {
                 return super.startConfigActivity(activity, requestCode);
             }
             IntentSender is = activity.getSystemService(LauncherApps.class)
-                    .getShortcutConfigActivityIntent(mInfo);
+                              .getShortcutConfigActivityIntent(mInfo);
             try {
                 activity.startIntentSenderForResult(is, requestCode, null, 0, 0, 0);
                 return true;

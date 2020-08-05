@@ -120,7 +120,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
         if (child instanceof LauncherAppWidgetHostView) {
             DeviceProfile profile = mLauncher.getDeviceProfile();
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
-                    profile.appWidgetScale.x, profile.appWidgetScale.y);
+                     profile.appWidgetScale.x, profile.appWidgetScale.y);
         } else {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX);
         }
@@ -133,7 +133,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
 
     public int getCellContentHeight() {
         return Math.min(getMeasuredHeight(),
-                mLauncher.getDeviceProfile().getCellHeight(mContainerType));
+                        mLauncher.getDeviceProfile().getCellHeight(mContainerType));
     }
 
     public void measureChild(View child) {
@@ -142,7 +142,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
 
         if (child instanceof LauncherAppWidgetHostView) {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
-                    profile.appWidgetScale.x, profile.appWidgetScale.y);
+                     profile.appWidgetScale.x, profile.appWidgetScale.y);
             // Widgets have their own padding
         } else {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX);
@@ -150,8 +150,8 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
             int cHeight = getCellContentHeight();
             int cellPaddingY = (int) Math.max(0, ((lp.height - cHeight) / 2f));
             int cellPaddingX = mContainerType == CellLayout.WORKSPACE
-                    ? profile.workspaceCellPaddingXPx
-                    : (int) (profile.edgeMarginPx / 2f);
+                               ? profile.workspaceCellPaddingXPx
+                               : (int) (profile.edgeMarginPx / 2f);
             child.setPadding(cellPaddingX, cellPaddingY, cellPaddingX, 0);
         }
         int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
@@ -181,7 +181,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
 
                     lahv.setScaleToFit(Math.min(scaleX, scaleY));
                     lahv.setTranslationForCentering(-(lp.width - (lp.width * scaleX)) / 2.0f,
-                            -(lp.height - (lp.height * scaleY)) / 2.0f);
+                                                    -(lp.height - (lp.height * scaleY)) / 2.0f);
                 }
 
                 int childLeft = lp.x;
@@ -194,9 +194,9 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
                     final int[] cellXY = mTmpCellXY;
                     getLocationOnScreen(cellXY);
                     mWallpaperManager.sendWallpaperCommand(getWindowToken(),
-                            WallpaperManager.COMMAND_DROP,
-                            cellXY[0] + childLeft + lp.width / 2,
-                            cellXY[1] + childTop + lp.height / 2, 0, null);
+                                                           WallpaperManager.COMMAND_DROP,
+                                                           cellXY[0] + childLeft + lp.width / 2,
+                                                           cellXY[1] + childTop + lp.height / 2, 0, null);
                 }
             }
         }

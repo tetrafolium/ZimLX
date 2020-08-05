@@ -37,34 +37,34 @@ import com.android.launcher3.R;
  * A helper class to draw background of a focused view.
  */
 public abstract class FocusIndicatorHelper implements
-        OnFocusChangeListener, AnimatorUpdateListener {
+    OnFocusChangeListener, AnimatorUpdateListener {
 
     public static final Property<FocusIndicatorHelper, Float> ALPHA =
-            new Property<FocusIndicatorHelper, Float>(Float.TYPE, "alpha") {
-                @Override
-                public void set(FocusIndicatorHelper object, Float value) {
-                    object.setAlpha(value);
-                }
+    new Property<FocusIndicatorHelper, Float>(Float.TYPE, "alpha") {
+        @Override
+        public void set(FocusIndicatorHelper object, Float value) {
+            object.setAlpha(value);
+        }
 
-                @Override
-                public Float get(FocusIndicatorHelper object) {
-                    return object.mAlpha;
-                }
-            };
+        @Override
+        public Float get(FocusIndicatorHelper object) {
+            return object.mAlpha;
+        }
+    };
     public static final Property<FocusIndicatorHelper, Float> SHIFT =
-            new Property<FocusIndicatorHelper, Float>(
-                    Float.TYPE, "shift") {
+        new Property<FocusIndicatorHelper, Float>(
+    Float.TYPE, "shift") {
 
-                @Override
-                public void set(FocusIndicatorHelper object, Float value) {
-                    object.mShift = value;
-                }
+        @Override
+        public void set(FocusIndicatorHelper object, Float value) {
+            object.mShift = value;
+        }
 
-                @Override
-                public Float get(FocusIndicatorHelper object) {
-                    return object.mShift;
-                }
-            };
+        @Override
+        public Float get(FocusIndicatorHelper object) {
+            return object.mShift;
+        }
+    };
     private static final float MIN_VISIBLE_ALPHA = 0.2f;
     private static final long ANIM_DURATION = 150;
     private static final RectEvaluator RECT_EVALUATOR = new RectEvaluator(new Rect());
@@ -159,14 +159,14 @@ public abstract class FocusIndicatorHelper implements
                 mTargetView = v;
 
                 mCurrentAnimation = ObjectAnimator.ofPropertyValuesHolder(this,
-                        PropertyValuesHolder.ofFloat(ALPHA, 1),
-                        PropertyValuesHolder.ofFloat(SHIFT, 1));
+                                    PropertyValuesHolder.ofFloat(ALPHA, 1),
+                                    PropertyValuesHolder.ofFloat(SHIFT, 1));
                 mCurrentAnimation.addListener(new ViewSetListener(v, true));
             } else {
                 setCurrentView(v);
 
                 mCurrentAnimation = ObjectAnimator.ofPropertyValuesHolder(this,
-                        PropertyValuesHolder.ofFloat(ALPHA, 1));
+                                    PropertyValuesHolder.ofFloat(ALPHA, 1));
             }
 
             mLastFocusedView = v;
@@ -175,7 +175,7 @@ public abstract class FocusIndicatorHelper implements
                 mLastFocusedView = null;
                 endCurrentAnimation();
                 mCurrentAnimation = ObjectAnimator.ofPropertyValuesHolder(this,
-                        PropertyValuesHolder.ofFloat(ALPHA, 0));
+                                    PropertyValuesHolder.ofFloat(ALPHA, 0));
                 mCurrentAnimation.addListener(new ViewSetListener(null, false));
             }
         }

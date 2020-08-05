@@ -89,8 +89,8 @@ public class CustomClock {
 
     private void loadTimeZone(String timeZoneId) {
         TimeZone timeZone = timeZoneId == null ?
-                TimeZone.getDefault() :
-                TimeZone.getTimeZone(timeZoneId);
+                            TimeZone.getDefault() :
+                            TimeZone.getTimeZone(timeZoneId);
 
         for (AutoUpdateClock a : mUpdaters) {
             a.setTimeZone(timeZone);

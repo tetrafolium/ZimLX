@@ -142,7 +142,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     private boolean mChildRequestedInvalidation;
     private final Canvas mCanvas;
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG |
-            Paint.FILTER_BITMAP_FLAG);
+                                     Paint.FILTER_BITMAP_FLAG);
 
     private static Method methodExtractThemeAttrs;
     private static Method methodCreateFromXmlInnerForDensity;
@@ -218,7 +218,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         layer.mDrawable = drawable;
         layer.mDrawable.setCallback(this);
         mLayerState.mChildrenChangingConfigurations |=
-                layer.mDrawable.getChangingConfigurations();
+            layer.mDrawable.getChangingConfigurations();
         return layer;
     }
 
@@ -258,7 +258,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     @Override
     public void inflate(@NonNull Resources r, @NonNull XmlPullParser parser,
                         @NonNull AttributeSet attrs, @Nullable Theme theme)
-            throws XmlPullParserException, IOException {
+    throws XmlPullParserException, IOException {
         super.inflate(r, parser, attrs, theme);
 
         final LayerState state = mLayerState;
@@ -468,7 +468,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
      */
     private void inflateLayers(@NonNull Resources r, @NonNull XmlPullParser parser,
                                @NonNull AttributeSet attrs, @Nullable Theme theme)
-            throws XmlPullParserException, IOException {
+    throws XmlPullParserException, IOException {
         final LayerState state = mLayerState;
 
         final int innerDepth = parser.getDepth() + 1;
@@ -486,18 +486,18 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
             }
             String tagName = parser.getName();
             switch (tagName) {
-                case "background":
-                    childIndex = BACKGROUND_ID;
-                    break;
-                case "foreground":
-                    childIndex = FOREGROUND_ID;
-                    break;
-                default:
-                    continue;
+            case "background":
+                childIndex = BACKGROUND_ID;
+                break;
+            case "foreground":
+                childIndex = FOREGROUND_ID;
+                break;
+            default:
+                continue;
             }
 
             final ChildDrawable layer = new ChildDrawable(state.mDensity);
-            final TypedArray a = obtainAttributes(r, theme, attrs, new int[]{android.R.attr.drawable});
+            final TypedArray a = obtainAttributes(r, theme, attrs, new int[] {android.R.attr.drawable});
             updateLayerFromTypedArray(layer, a);
             a.recycle();
 
@@ -510,24 +510,24 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
                 }
                 if (type != XmlPullParser.START_TAG) {
                     throw new XmlPullParserException(parser.getPositionDescription()
-                            + ": <foreground> or <background> tag requires a 'drawable'"
-                            + "attribute or child tag defining a drawable");
+                                                     + ": <foreground> or <background> tag requires a 'drawable'"
+                                                     + "attribute or child tag defining a drawable");
                 }
 
                 // We found a child drawable. Take ownership.
                 layer.mDrawable = createFromXmlInnerForDensity(r, parser, attrs,
-                        mLayerState.mSrcDensityOverride, theme);
+                                  mLayerState.mSrcDensityOverride, theme);
                 layer.mDrawable.setCallback(this);
                 state.mChildrenChangingConfigurations |=
-                        layer.mDrawable.getChangingConfigurations();
+                    layer.mDrawable.getChangingConfigurations();
             }
             addLayer(childIndex, layer);
         }
     }
 
     private static Drawable createFromXmlInnerForDensity(@NonNull Resources r,
-                                                         @NonNull XmlPullParser parser, @NonNull AttributeSet attrs, int density,
-                                                         @Nullable Theme theme) {
+            @NonNull XmlPullParser parser, @NonNull AttributeSet attrs, int density,
+            @Nullable Theme theme) {
         try {
             return (Drawable) methodCreateFromXmlInnerForDensity.invoke(null,
                     r, parser, attrs, density, theme);
@@ -567,7 +567,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
             layer.mDrawable = dr;
             layer.mDrawable.setCallback(this);
             state.mChildrenChangingConfigurations |=
-                    layer.mDrawable.getChangingConfigurations();
+                layer.mDrawable.getChangingConfigurations();
         }
     }
 
@@ -934,7 +934,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
 
         public boolean canApplyTheme() {
             return mThemeAttrs != null
-                    || (mDrawable != null && mDrawable.canApplyTheme());
+                   || (mDrawable != null && mDrawable.canApplyTheme());
         }
 
         public final void setDensity(int targetDensity) {
@@ -1036,7 +1036,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         @Override
         public int getChangingConfigurations() {
             return mChangingConfigurations
-                    | mChildrenChangingConfigurations;
+                   | mChildrenChangingConfigurations;
         }
 
         public final int getOpacity() {

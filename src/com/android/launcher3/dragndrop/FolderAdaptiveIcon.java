@@ -66,14 +66,14 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
     }
 
     public static FolderAdaptiveIcon createFolderAdaptiveIcon(
-            Launcher launcher, long folderId, Point dragViewSize) {
+        Launcher launcher, long folderId, Point dragViewSize) {
         Preconditions.assertNonUiThread();
         int margin = launcher.getResources()
-                .getDimensionPixelSize(R.dimen.blur_size_medium_outline);
+                     .getDimensionPixelSize(R.dimen.blur_size_medium_outline);
 
         // Allocate various bitmaps on the background thread, because why not!
         final Bitmap badge = Bitmap.createBitmap(
-                dragViewSize.x - margin, dragViewSize.y - margin, Bitmap.Config.ARGB_8888);
+                                 dragViewSize.x - margin, dragViewSize.y - margin, Bitmap.Config.ARGB_8888);
 
         // Create the actual drawable on the UI thread to avoid race conditions with
         // FolderIcon draw pass
@@ -92,7 +92,7 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
      * Initializes various bitmaps on the UI thread and returns the final drawable.
      */
     private static FolderAdaptiveIcon createDrawableOnUiThread(FolderIcon icon,
-                                                               Bitmap badgeBitmap, Point dragViewSize) {
+            Bitmap badgeBitmap, Point dragViewSize) {
         Preconditions.assertUIThread();
         float margin = icon.getResources().getDimension(R.dimen.blur_size_medium_outline) / 2;
 
@@ -115,12 +115,12 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
         final float previewShiftY = shiftFactor * previewHeight;
 
         Bitmap previewBitmap = BitmapRenderer.createHardwareBitmap(previewWidth, previewHeight,
-                (canvas) -> {
-                    int count = canvas.save();
-                    canvas.translate(previewShiftX, previewShiftY);
-                    icon.getPreviewItemManager().draw(canvas);
-                    canvas.restoreToCount(count);
-                });
+        (canvas) -> {
+            int count = canvas.save();
+            canvas.translate(previewShiftX, previewShiftY);
+            icon.getPreviewItemManager().draw(canvas);
+            canvas.restoreToCount(count);
+        });
 
         // Initialize mask
         Path mask = new Path();

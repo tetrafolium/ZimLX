@@ -153,7 +153,7 @@ public class ItemClickHandler {
                     return;
                 }
                 addFlowHandler.startBindFlow(launcher, info.appWidgetId, info,
-                        REQUEST_BIND_PENDING_APPWIDGET);
+                                             REQUEST_BIND_PENDING_APPWIDGET);
             } else {
                 addFlowHandler.startConfigActivity(launcher, info, REQUEST_RECONFIGURE_APPWIDGET);
             }
@@ -164,21 +164,21 @@ public class ItemClickHandler {
     }
 
     private static void onClickPendingAppItem(View v, Launcher launcher, String packageName,
-                                              boolean downloadStarted) {
+            boolean downloadStarted) {
         if (downloadStarted) {
             // If the download has started, simply direct to the market app.
             startMarketIntentForPackage(v, launcher, packageName);
             return;
         }
         new AlertDialog.Builder(launcher)
-                .setTitle(R.string.abandoned_promises_title)
-                .setMessage(R.string.abandoned_promise_explanation)
-                .setPositiveButton(R.string.abandoned_search,
-                        (d, i) -> startMarketIntentForPackage(v, launcher, packageName))
-                .setNeutralButton(R.string.abandoned_clean_this,
-                        (d, i) -> launcher.getWorkspace()
-                                .removeAbandonedPromise(packageName, Process.myUserHandle()))
-                .create().show();
+        .setTitle(R.string.abandoned_promises_title)
+        .setMessage(R.string.abandoned_promise_explanation)
+        .setPositiveButton(R.string.abandoned_search,
+                           (d, i) -> startMarketIntentForPackage(v, launcher, packageName))
+        .setNeutralButton(R.string.abandoned_clean_this,
+                          (d, i) -> launcher.getWorkspace()
+                          .removeAbandonedPromise(packageName, Process.myUserHandle()))
+        .create().show();
     }
 
     private static void startMarketIntentForPackage(View v, Launcher launcher, String packageName) {
@@ -211,7 +211,7 @@ public class ItemClickHandler {
                 if ((shortcut.runtimeStatusFlags & FLAG_DISABLED_SAFEMODE) != 0) {
                     error = R.string.safemode_shortcut_error;
                 } else if ((shortcut.runtimeStatusFlags & FLAG_DISABLED_BY_PUBLISHER) != 0 ||
-                        (shortcut.runtimeStatusFlags & FLAG_DISABLED_LOCKED_USER) != 0) {
+                           (shortcut.runtimeStatusFlags & FLAG_DISABLED_LOCKED_USER) != 0) {
                     error = R.string.shortcut_not_available;
                 }
                 Toast.makeText(launcher, error, Toast.LENGTH_SHORT).show();
@@ -222,10 +222,10 @@ public class ItemClickHandler {
         // Check for abandoned promise
         if ((v instanceof BubbleTextView) && shortcut.hasPromiseIconUi()) {
             String packageName = shortcut.intent.getComponent() != null ?
-                    shortcut.intent.getComponent().getPackageName() : shortcut.intent.getPackage();
+                                 shortcut.intent.getComponent().getPackageName() : shortcut.intent.getPackage();
             if (!TextUtils.isEmpty(packageName)) {
                 onClickPendingAppItem(v, launcher, packageName,
-                        shortcut.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE));
+                                      shortcut.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE));
                 return;
             }
         }

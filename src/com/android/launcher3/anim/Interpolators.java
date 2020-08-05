@@ -76,7 +76,7 @@ public class Interpolators {
     public static final Interpolator OVERSHOOT_1_2 = new OvershootInterpolator(1.2f);
 
     public static final Interpolator TOUCH_RESPONSE_INTERPOLATOR =
-            new PathInterpolator(0.3f, 0f, 0.1f, 1f);
+        new PathInterpolator(0.3f, 0f, 0.1f, 1f);
 
     /**
      * Inversion of ZOOM_OUT, compounded with an ease-out.
@@ -105,7 +105,7 @@ public class Interpolators {
          */
         private float zInterpolate(float input) {
             return (1.0f - FOCAL_LENGTH / (FOCAL_LENGTH + input)) /
-                    (1.0f - FOCAL_LENGTH / (FOCAL_LENGTH + 1.0f));
+                   (1.0f - FOCAL_LENGTH / (FOCAL_LENGTH + 1.0f));
         }
     };
 
@@ -145,7 +145,7 @@ public class Interpolators {
      * That is, we set the interpolation to 0 until lowerBound and reach 1 by upperBound.
      */
     public static Interpolator clampToProgress(Interpolator interpolator, float lowerBound,
-                                               float upperBound) {
+            float upperBound) {
         if (upperBound <= lowerBound) {
             throw new IllegalArgumentException("lowerBound must be less than upperBound");
         }
@@ -166,7 +166,7 @@ public class Interpolators {
      * such as to take over a user-controlled animation when they let go.
      */
     public static Interpolator mapToProgress(Interpolator interpolator, float lowerBound,
-                                             float upperBound) {
+            float upperBound) {
         return t -> Utilities.mapRange(interpolator.getInterpolation(t), lowerBound, upperBound);
     }
 
@@ -197,7 +197,7 @@ public class Interpolators {
             int startPx = (int) (start * totalDistancePx);
             // Overshoot by about half a frame.
             float overshootBy = OVERSHOOT_FACTOR * velocityPxPerMs *
-                    SINGLE_FRAME_MS / totalDistancePx / 2;
+                                SINGLE_FRAME_MS / totalDistancePx / 2;
             overshootBy = Utilities.boundToRange(overshootBy, 0.02f, 0.15f);
             end = overshootPastProgress + overshootBy;
             int endPx = (int) (end * totalDistancePx);
@@ -235,10 +235,10 @@ public class Interpolators {
             // such that final progress is endProgress. For example, if we overshot to 1.1 but want
             // to end at 1, we need to map to 1/1.1.
             Interpolator settle = Interpolators.clampToProgress(Interpolators.mapToProgress(
-                    ACCEL_DEACCEL, 1, (endProgress - start) / (end - start)), overshootFraction, 1);
+                                      ACCEL_DEACCEL, 1, (endProgress - start) / (end - start)), overshootFraction, 1);
             interpolator = t -> t <= overshootFraction
-                    ? overshoot.getInterpolation(t)
-                    : settle.getInterpolation(t);
+                           ? overshoot.getInterpolation(t)
+                           : settle.getInterpolation(t);
         }
     }
 }

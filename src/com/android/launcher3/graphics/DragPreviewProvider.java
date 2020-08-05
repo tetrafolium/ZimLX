@@ -62,7 +62,7 @@ public class DragPreviewProvider {
     public DragPreviewProvider(View view, Context context) {
         mView = view;
         blurSizeOutline =
-                context.getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
+            context.getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
 
         if (mView instanceof BubbleTextView) {
             Drawable d = ((BubbleTextView) mView).getIcon();
@@ -84,7 +84,7 @@ public class DragPreviewProvider {
             Drawable d = ((BubbleTextView) mView).getIcon();
             Rect bounds = getDrawableBounds(d);
             destCanvas.translate(blurSizeOutline / 2 - bounds.left,
-                    blurSizeOutline / 2 - bounds.top);
+                                 blurSizeOutline / 2 - bounds.top);
             d.draw(destCanvas);
         } else {
             final Rect clipRect = mTempRect;
@@ -100,7 +100,7 @@ public class DragPreviewProvider {
                 }
             }
             destCanvas.translate(-mView.getScrollX() + blurSizeOutline / 2,
-                    -mView.getScrollY() + blurSizeOutline / 2);
+                                 -mView.getScrollY() + blurSizeOutline / 2);
             destCanvas.clipRect(clipRect);
             mView.draw(destCanvas);
 
@@ -161,7 +161,7 @@ public class DragPreviewProvider {
 
     public float getScaleAndPosition(Bitmap preview, int[] outPos) {
         float scale = Launcher.getLauncher(mView.getContext())
-                .getDragLayer().getLocationInDragLayer(mView, outPos);
+                      .getDragLayer().getLocationInDragLayer(mView, outPos);
         if (mView instanceof LauncherAppWidgetHostView) {
             // App widgets are technically scaled, but are drawn at their expected size -- so the
             // app widget scale should not affect the scale of the preview.
@@ -169,9 +169,9 @@ public class DragPreviewProvider {
         }
 
         outPos[0] = Math.round(outPos[0] -
-                (preview.getWidth() - scale * mView.getWidth() * mView.getScaleX()) / 2);
+                               (preview.getWidth() - scale * mView.getWidth() * mView.getScaleX()) / 2);
         outPos[1] = Math.round(outPos[1] - (1 - scale) * preview.getHeight() / 2
-                - previewPadding / 2);
+                               - previewPadding / 2);
         return scale;
     }
 
@@ -218,8 +218,8 @@ public class DragPreviewProvider {
             Bitmap thickOuterBlur = preview.extractAlpha(paint, outerBlurOffset);
 
             paint.setMaskFilter(new BlurMaskFilter(
-                    mContext.getResources().getDimension(R.dimen.blur_size_thin_outline),
-                    BlurMaskFilter.Blur.OUTER));
+                                    mContext.getResources().getDimension(R.dimen.blur_size_thin_outline),
+                                    BlurMaskFilter.Blur.OUTER));
             int[] brightOutlineOffset = new int[2];
             Bitmap brightOutline = preview.extractAlpha(paint, brightOutlineOffset);
 
@@ -235,7 +235,7 @@ public class DragPreviewProvider {
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
             canvas.setBitmap(thickInnerBlur);
             canvas.drawBitmap(preview, -thickInnerBlurOffset[0],
-                    -thickInnerBlurOffset[1], paint);
+                              -thickInnerBlurOffset[1], paint);
             canvas.drawRect(0, 0, -thickInnerBlurOffset[0], thickInnerBlur.getHeight(), paint);
             canvas.drawRect(0, 0, thickInnerBlur.getWidth(), -thickInnerBlurOffset[1], paint);
 
@@ -244,7 +244,7 @@ public class DragPreviewProvider {
             canvas.setBitmap(preview);
             canvas.drawColor(0, PorterDuff.Mode.CLEAR);
             canvas.drawBitmap(thickInnerBlur, thickInnerBlurOffset[0], thickInnerBlurOffset[1],
-                    paint);
+                              paint);
             canvas.drawBitmap(thickOuterBlur, outerBlurOffset[0], outerBlurOffset[1], paint);
 
             // draw the bright outline

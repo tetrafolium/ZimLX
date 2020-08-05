@@ -30,10 +30,10 @@ import java.util.concurrent.TimeUnit;
 public final class FileLog {
 
     protected static final boolean ENABLED =
-            FeatureFlags.IS_DOGFOOD_BUILD || Utilities.IS_DEBUG_DEVICE;
+        FeatureFlags.IS_DOGFOOD_BUILD || Utilities.IS_DEBUG_DEVICE;
     private static final String FILE_NAME_PREFIX = "log-";
     private static final DateFormat DATE_FORMAT =
-            DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+        DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
     private static final long MAX_LOG_FILE_SIZE = 4 << 20;  // 4 mb
 
@@ -110,7 +110,7 @@ public final class FileLog {
         }
         CountDownLatch latch = new CountDownLatch(1);
         Message.obtain(getHandler(), LogWriterCallback.MSG_FLUSH,
-                Pair.create(out, latch)).sendToTarget();
+                       Pair.create(out, latch)).sendToTarget();
 
         latch.await(2, TimeUnit.SECONDS);
     }
@@ -163,63 +163,63 @@ public final class FileLog {
                 return true;
             }
             switch (msg.what) {
-                case MSG_WRITE: {
-                    Calendar cal = Calendar.getInstance();
-                    // suffix with 0 or 1 based on the day of the year.
-                    String fileName = FILE_NAME_PREFIX + (cal.get(Calendar.DAY_OF_YEAR) & 1);
+            case MSG_WRITE: {
+                Calendar cal = Calendar.getInstance();
+                // suffix with 0 or 1 based on the day of the year.
+                String fileName = FILE_NAME_PREFIX + (cal.get(Calendar.DAY_OF_YEAR) & 1);
 
-                    if (!fileName.equals(mCurrentFileName)) {
-                        closeWriter();
-                    }
+                if (!fileName.equals(mCurrentFileName)) {
+                    closeWriter();
+                }
 
-                    try {
-                        if (mCurrentWriter == null) {
-                            mCurrentFileName = fileName;
+                try {
+                    if (mCurrentWriter == null) {
+                        mCurrentFileName = fileName;
 
-                            boolean append = false;
-                            File logFile = new File(sLogsDirectory, fileName);
-                            if (logFile.exists()) {
-                                Calendar modifiedTime = Calendar.getInstance();
-                                modifiedTime.setTimeInMillis(logFile.lastModified());
+                        boolean append = false;
+                        File logFile = new File(sLogsDirectory, fileName);
+                        if (logFile.exists()) {
+                            Calendar modifiedTime = Calendar.getInstance();
+                            modifiedTime.setTimeInMillis(logFile.lastModified());
 
-                                // If the file was modified more that 36 hours ago, purge the file.
-                                // We use instead of 24 to account for day-365 followed by day-1
-                                modifiedTime.add(Calendar.HOUR, 36);
-                                append = cal.before(modifiedTime)
-                                        && logFile.length() < MAX_LOG_FILE_SIZE;
-                            }
-                            mCurrentWriter = new PrintWriter(new FileWriter(logFile, append));
+                            // If the file was modified more that 36 hours ago, purge the file.
+                            // We use instead of 24 to account for day-365 followed by day-1
+                            modifiedTime.add(Calendar.HOUR, 36);
+                            append = cal.before(modifiedTime)
+                                     && logFile.length() < MAX_LOG_FILE_SIZE;
                         }
-
-                        mCurrentWriter.println((String) msg.obj);
-                        mCurrentWriter.flush();
-
-                        // Auto close file stream after some time.
-                        sHandler.removeMessages(MSG_CLOSE);
-                        sHandler.sendEmptyMessageDelayed(MSG_CLOSE, CLOSE_DELAY);
-                    } catch (Exception e) {
-                        Log.e("FileLog", "Error writing logs to file", e);
-                        // Close stream, will try reopening during next log
-                        closeWriter();
+                        mCurrentWriter = new PrintWriter(new FileWriter(logFile, append));
                     }
-                    return true;
-                }
-                case MSG_CLOSE: {
-                    closeWriter();
-                    return true;
-                }
-                case MSG_FLUSH: {
-                    closeWriter();
-                    Pair<PrintWriter, CountDownLatch> p =
-                            (Pair<PrintWriter, CountDownLatch>) msg.obj;
 
-                    if (p.first != null) {
-                        dumpFile(p.first, FILE_NAME_PREFIX + 0);
-                        dumpFile(p.first, FILE_NAME_PREFIX + 1);
-                    }
-                    p.second.countDown();
-                    return true;
+                    mCurrentWriter.println((String) msg.obj);
+                    mCurrentWriter.flush();
+
+                    // Auto close file stream after some time.
+                    sHandler.removeMessages(MSG_CLOSE);
+                    sHandler.sendEmptyMessageDelayed(MSG_CLOSE, CLOSE_DELAY);
+                } catch (Exception e) {
+                    Log.e("FileLog", "Error writing logs to file", e);
+                    // Close stream, will try reopening during next log
+                    closeWriter();
                 }
+                return true;
+            }
+            case MSG_CLOSE: {
+                closeWriter();
+                return true;
+            }
+            case MSG_FLUSH: {
+                closeWriter();
+                Pair<PrintWriter, CountDownLatch> p =
+                    (Pair<PrintWriter, CountDownLatch>) msg.obj;
+
+                if (p.first != null) {
+                    dumpFile(p.first, FILE_NAME_PREFIX + 0);
+                    dumpFile(p.first, FILE_NAME_PREFIX + 1);
+                }
+                p.second.countDown();
+                return true;
+            }
             }
             return true;
         }

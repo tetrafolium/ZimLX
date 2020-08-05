@@ -63,7 +63,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     @Override
     protected LauncherAppWidgetHostView onCreateView(Context context, int appWidgetId,
-                                                     AppWidgetProviderInfo appWidget) {
+            AppWidgetProviderInfo appWidget) {
         LauncherAppWidgetHostView view = new LauncherAppWidgetHostView(context);
         mViews.put(appWidgetId, view);
         return view;
@@ -184,7 +184,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         if (appWidget.isCustomWidget()) {
             LauncherAppWidgetHostView lahv = new LauncherAppWidgetHostView(context);
             LayoutInflater inflater = (LayoutInflater)
-                    context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                      context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(appWidget.initialLayout, lahv);
             lahv.setAppWidget(0, appWidget);
             return lahv;
@@ -249,9 +249,9 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         }
 
         Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
-                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.provider)
-                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE, info.getProfile());
+        .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+        .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.provider)
+        .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE, info.getProfile());
         // TODO: we need to make sure that this accounts for the options bundle.
         // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
         activity.startActivityForResult(intent, requestCode);

@@ -45,19 +45,19 @@ import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustom
 public abstract class AbstractFloatingView extends LinearLayout implements TouchController {
 
     @IntDef(flag = true, value = {
-            TYPE_FOLDER,
-            TYPE_ACTION_POPUP,
-            TYPE_WIDGETS_BOTTOM_SHEET,
-            TYPE_WIDGET_RESIZE_FRAME,
-            TYPE_WIDGETS_FULL_SHEET,
-            TYPE_ON_BOARD_POPUP,
-            TYPE_DISCOVERY_BOUNCE,
+        TYPE_FOLDER,
+        TYPE_ACTION_POPUP,
+        TYPE_WIDGETS_BOTTOM_SHEET,
+        TYPE_WIDGET_RESIZE_FRAME,
+        TYPE_WIDGETS_FULL_SHEET,
+        TYPE_ON_BOARD_POPUP,
+        TYPE_DISCOVERY_BOUNCE,
 
-            TYPE_QUICKSTEP_PREVIEW,
-            TYPE_TASK_MENU,
-            TYPE_OPTIONS_POPUP,
+        TYPE_QUICKSTEP_PREVIEW,
+        TYPE_TASK_MENU,
+        TYPE_OPTIONS_POPUP,
 
-            TYPE_SETTINGS_SHEET
+        TYPE_SETTINGS_SHEET
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FloatingViewType {
@@ -79,9 +79,9 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_SETTINGS_SHEET = 1 << 10;
 
     public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
-            | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
-            | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU
-            | TYPE_OPTIONS_POPUP | TYPE_SETTINGS_SHEET;
+                                       | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
+                                       | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU
+                                       | TYPE_OPTIONS_POPUP | TYPE_SETTINGS_SHEET;
 
     // Type of popups which should be kept open during launcher rebind
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
@@ -115,7 +115,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
         animate &= !Utilities.isPowerSaverPreventingAnimation(getContext());
         if (mIsOpen) {
             BaseActivity.fromContext(getContext()).getUserEventDispatcher()
-                    .resetElapsedContainerMillis("container closed");
+            .resetElapsedContainerMillis("container closed");
         }
         handleClose(animate);
         mIsOpen = false;
@@ -154,13 +154,13 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             return;
         }
         sendCustomAccessibilityEvent(
-                targetInfo.first, TYPE_WINDOW_STATE_CHANGED, targetInfo.second);
+            targetInfo.first, TYPE_WINDOW_STATE_CHANGED, targetInfo.second);
 
         if (mIsOpen) {
             sendAccessibilityEvent(TYPE_VIEW_FOCUSED);
         }
         BaseDraggingActivity.fromContext(getContext()).getDragLayer()
-                .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);
+        .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);
     }
 
     protected Pair<View, String> getAccessibilityTarget() {
@@ -168,7 +168,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     protected static <T extends AbstractFloatingView> T getOpenView(
-            BaseDraggingActivity activity, @FloatingViewType int type) {
+        BaseDraggingActivity activity, @FloatingViewType int type) {
         BaseDragLayer dragLayer = activity.getDragLayer();
         // Iterate in reverse order. AbstractFloatingView is added later to the dragLayer,
         // and will be one of the last views.
@@ -222,7 +222,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     public static AbstractFloatingView getTopOpenViewWithType(BaseDraggingActivity activity,
-                                                              @FloatingViewType int type) {
+            @FloatingViewType int type) {
         return getOpenView(activity, type);
     }
 }

@@ -121,20 +121,20 @@ public class LauncherAnimUtils {
     }
 
     public static ObjectAnimator ofViewAlphaAndScale(View target,
-                                                     float alpha, float scaleX, float scaleY) {
+            float alpha, float scaleX, float scaleY) {
         return ofPropertyValuesHolder(target,
-                PropertyValuesHolder.ofFloat(View.ALPHA, alpha),
-                PropertyValuesHolder.ofFloat(View.SCALE_X, scaleX),
-                PropertyValuesHolder.ofFloat(View.SCALE_Y, scaleY));
+                                      PropertyValuesHolder.ofFloat(View.ALPHA, alpha),
+                                      PropertyValuesHolder.ofFloat(View.SCALE_X, scaleX),
+                                      PropertyValuesHolder.ofFloat(View.SCALE_Y, scaleY));
     }
 
     public static ObjectAnimator ofPropertyValuesHolder(View target,
-                                                        PropertyValuesHolder... values) {
+            PropertyValuesHolder... values) {
         return ofPropertyValuesHolder(target, target, values);
     }
 
     public static ObjectAnimator ofPropertyValuesHolder(Object target,
-                                                        View view, PropertyValuesHolder... values) {
+            View view, PropertyValuesHolder... values) {
         ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(target, values);
         cancelOnDestroyActivity(anim);
         new FirstFrameAnimatorHelper(anim, view);
@@ -142,31 +142,31 @@ public class LauncherAnimUtils {
     }
 
     public static final Property<Drawable, Integer> DRAWABLE_ALPHA =
-            new Property<Drawable, Integer>(Integer.TYPE, "drawableAlpha") {
-                @Override
-                public Integer get(Drawable drawable) {
-                    return drawable.getAlpha();
-                }
+    new Property<Drawable, Integer>(Integer.TYPE, "drawableAlpha") {
+        @Override
+        public Integer get(Drawable drawable) {
+            return drawable.getAlpha();
+        }
 
-                @Override
-                public void set(Drawable drawable, Integer alpha) {
-                    drawable.setAlpha(alpha);
-                }
-            };
+        @Override
+        public void set(Drawable drawable, Integer alpha) {
+            drawable.setAlpha(alpha);
+        }
+    };
 
     public static final Property<View, Float> SCALE_PROPERTY =
-            new Property<View, Float>(Float.class, "scale") {
-                @Override
-                public Float get(View view) {
-                    return view.getScaleX();
-                }
+    new Property<View, Float>(Float.class, "scale") {
+        @Override
+        public Float get(View view) {
+            return view.getScaleX();
+        }
 
-                @Override
-                public void set(View view, Float scale) {
-                    view.setScaleX(scale);
-                    view.setScaleY(scale);
-                }
-            };
+        @Override
+        public void set(View view, Float scale) {
+            view.setScaleX(scale);
+            view.setScaleY(scale);
+        }
+    };
 
     /**
      * Increase the duration if we prevented the fling, as we are going against a high velocity.

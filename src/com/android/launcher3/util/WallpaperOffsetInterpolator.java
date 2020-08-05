@@ -74,7 +74,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
         // Distribute the wallpaper parallax over a minimum of MIN_PARALLAX_PAGE_SPAN workspace
         // screens, not including the custom screen, and empty screens (if > MIN_PARALLAX_PAGE_SPAN)
         int numPagesForWallpaperParallax = mWallpaperIsLiveWallpaper ? numScrollingPages :
-                Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages);
+                                           Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages);
 
         // Offset by the custom screen
         int leftPageIndex;
@@ -99,7 +99,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
         // Sometimes the left parameter of the pages is animated during a layout transition;
         // this parameter offsets it to keep the wallpaper from animating as well
         int adjustedScroll = scroll - leftPageScrollX -
-                mWorkspace.getLayoutTransitionOffsetForPage(0);
+                             mWorkspace.getLayoutTransitionOffsetForPage(0);
         adjustedScroll = Utilities.boundToRange(adjustedScroll, 0, scrollRange);
         out[1] = (numPagesForWallpaperParallax - 1) * scrollRange;
 
@@ -131,7 +131,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
         int numScreens = getNumScreensExcludingEmpty();
         wallpaperOffsetForScroll(mWorkspace.getScrollX(), numScreens, sTempInt);
         Message msg = Message.obtain(mHandler, MSG_UPDATE_OFFSET, sTempInt[0], sTempInt[1],
-                mWindowToken);
+                                     mWindowToken);
         if (numScreens != mNumScreens) {
             if (mNumScreens > 0) {
                 // Don't animate if we're going from 0 screens
@@ -151,7 +151,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
             numPagesForWallpaperParallax = Math.max(MIN_PARALLAX_PAGE_SPAN, mNumScreens);
         }
         Message.obtain(mHandler, MSG_SET_NUM_PARALLAX, numPagesForWallpaperParallax, 0,
-                mWindowToken).sendToTarget();
+                       mWindowToken).sendToTarget();
     }
 
     public void jumpToFinal() {
@@ -165,7 +165,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
             mRegistered = false;
         } else if (mWindowToken != null && !mRegistered) {
             mWorkspace.getContext()
-                    .registerReceiver(this, new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED));
+            .registerReceiver(this, new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED));
             onReceive(mWorkspace.getContext(), null);
             mRegistered = true;
         }
@@ -174,7 +174,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         mWallpaperIsLiveWallpaper =
-                WallpaperManager.getInstance(mWorkspace.getContext()).getWallpaperInfo() != null;
+            WallpaperManager.getInstance(mWorkspace.getContext()).getWallpaperInfo() != null;
         updateOffset();
     }
 
@@ -211,55 +211,55 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
             }
 
             switch (msg.what) {
-                case MSG_START_ANIMATION: {
-                    mAnimating = true;
-                    mAnimationStartOffset = mCurrentOffset;
-                    mAnimationStartTime = msg.getWhen();
-                    // Follow through
+            case MSG_START_ANIMATION: {
+                mAnimating = true;
+                mAnimationStartOffset = mCurrentOffset;
+                mAnimationStartTime = msg.getWhen();
+                // Follow through
+            }
+            case MSG_UPDATE_OFFSET:
+                mFinalOffset = ((float) msg.arg1) / msg.arg2;
+            // Follow through
+            case MSG_APPLY_OFFSET: {
+                float oldOffset = mCurrentOffset;
+                if (mAnimating) {
+                    long durationSinceAnimation = SystemClock.uptimeMillis()
+                                                  - mAnimationStartTime;
+                    float t0 = durationSinceAnimation / (float) ANIMATION_DURATION;
+                    float t1 = mInterpolator.getInterpolation(t0);
+                    mCurrentOffset = mAnimationStartOffset +
+                                     (mFinalOffset - mAnimationStartOffset) * t1;
+                    mAnimating = durationSinceAnimation < ANIMATION_DURATION;
+                } else {
+                    mCurrentOffset = mFinalOffset;
                 }
-                case MSG_UPDATE_OFFSET:
-                    mFinalOffset = ((float) msg.arg1) / msg.arg2;
-                    // Follow through
-                case MSG_APPLY_OFFSET: {
-                    float oldOffset = mCurrentOffset;
-                    if (mAnimating) {
-                        long durationSinceAnimation = SystemClock.uptimeMillis()
-                                - mAnimationStartTime;
-                        float t0 = durationSinceAnimation / (float) ANIMATION_DURATION;
-                        float t1 = mInterpolator.getInterpolation(t0);
-                        mCurrentOffset = mAnimationStartOffset +
-                                (mFinalOffset - mAnimationStartOffset) * t1;
-                        mAnimating = durationSinceAnimation < ANIMATION_DURATION;
-                    } else {
-                        mCurrentOffset = mFinalOffset;
-                    }
 
-                    if (Float.compare(mCurrentOffset, oldOffset) != 0) {
-                        setOffsetSafely(token);
-                        // Force the wallpaper offset steps to be set again, because another app
-                        // might have changed them
-                        mWM.setWallpaperOffsetSteps(mOffsetX, 1.0f);
-                    }
-                    if (mAnimating) {
-                        // If we are animating, keep updating the offset
-                        Message.obtain(this, MSG_APPLY_OFFSET, token).sendToTarget();
-                    }
-                    return;
-                }
-                case MSG_SET_NUM_PARALLAX: {
-                    // Set wallpaper offset steps (1 / (number of screens - 1))
-                    mOffsetX = 1.0f / (msg.arg1 - 1);
+                if (Float.compare(mCurrentOffset, oldOffset) != 0) {
+                    setOffsetSafely(token);
+                    // Force the wallpaper offset steps to be set again, because another app
+                    // might have changed them
                     mWM.setWallpaperOffsetSteps(mOffsetX, 1.0f);
-                    return;
                 }
-                case MSG_JUMP_TO_FINAL: {
-                    if (Float.compare(mCurrentOffset, mFinalOffset) != 0) {
-                        mCurrentOffset = mFinalOffset;
-                        setOffsetSafely(token);
-                    }
-                    mAnimating = false;
-                    return;
+                if (mAnimating) {
+                    // If we are animating, keep updating the offset
+                    Message.obtain(this, MSG_APPLY_OFFSET, token).sendToTarget();
                 }
+                return;
+            }
+            case MSG_SET_NUM_PARALLAX: {
+                // Set wallpaper offset steps (1 / (number of screens - 1))
+                mOffsetX = 1.0f / (msg.arg1 - 1);
+                mWM.setWallpaperOffsetSteps(mOffsetX, 1.0f);
+                return;
+            }
+            case MSG_JUMP_TO_FINAL: {
+                if (Float.compare(mCurrentOffset, mFinalOffset) != 0) {
+                    mCurrentOffset = mFinalOffset;
+                    setOffsetSafely(token);
+                }
+                mAnimating = false;
+                return;
+            }
             }
         }
 

@@ -52,16 +52,16 @@ public abstract class DragDriver {
         final int action = ev.getAction();
 
         switch (action) {
-            case MotionEvent.ACTION_MOVE:
-                mEventListener.onDriverDragMove(ev.getX(), ev.getY());
-                break;
-            case MotionEvent.ACTION_UP:
-                mEventListener.onDriverDragMove(ev.getX(), ev.getY());
-                mEventListener.onDriverDragEnd(ev.getX(), ev.getY());
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                mEventListener.onDriverDragCancel();
-                break;
+        case MotionEvent.ACTION_MOVE:
+            mEventListener.onDriverDragMove(ev.getX(), ev.getY());
+            break;
+        case MotionEvent.ACTION_UP:
+            mEventListener.onDriverDragMove(ev.getX(), ev.getY());
+            mEventListener.onDriverDragEnd(ev.getX(), ev.getY());
+            break;
+        case MotionEvent.ACTION_CANCEL:
+            mEventListener.onDriverDragCancel();
+            break;
         }
 
         return true;
@@ -74,12 +74,12 @@ public abstract class DragDriver {
         final int action = ev.getAction();
 
         switch (action) {
-            case MotionEvent.ACTION_UP:
-                mEventListener.onDriverDragEnd(ev.getX(), ev.getY());
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                mEventListener.onDriverDragCancel();
-                break;
+        case MotionEvent.ACTION_UP:
+            mEventListener.onDriverDragEnd(ev.getX(), ev.getY());
+            break;
+        case MotionEvent.ACTION_CANCEL:
+            mEventListener.onDriverDragCancel();
+            break;
         }
 
         return true;
@@ -123,36 +123,36 @@ class SystemDragDriver extends DragDriver {
         final int action = event.getAction();
 
         switch (action) {
-            case DragEvent.ACTION_DRAG_STARTED:
-                mLastX = event.getX();
-                mLastY = event.getY();
-                return true;
+        case DragEvent.ACTION_DRAG_STARTED:
+            mLastX = event.getX();
+            mLastY = event.getY();
+            return true;
 
-            case DragEvent.ACTION_DRAG_ENTERED:
-                return true;
+        case DragEvent.ACTION_DRAG_ENTERED:
+            return true;
 
-            case DragEvent.ACTION_DRAG_LOCATION:
-                mLastX = event.getX();
-                mLastY = event.getY();
-                mEventListener.onDriverDragMove(event.getX(), event.getY());
-                return true;
+        case DragEvent.ACTION_DRAG_LOCATION:
+            mLastX = event.getX();
+            mLastY = event.getY();
+            mEventListener.onDriverDragMove(event.getX(), event.getY());
+            return true;
 
-            case DragEvent.ACTION_DROP:
-                mLastX = event.getX();
-                mLastY = event.getY();
-                mEventListener.onDriverDragMove(event.getX(), event.getY());
-                mEventListener.onDriverDragEnd(mLastX, mLastY);
-                return true;
-            case DragEvent.ACTION_DRAG_EXITED:
-                mEventListener.onDriverDragExitWindow();
-                return true;
+        case DragEvent.ACTION_DROP:
+            mLastX = event.getX();
+            mLastY = event.getY();
+            mEventListener.onDriverDragMove(event.getX(), event.getY());
+            mEventListener.onDriverDragEnd(mLastX, mLastY);
+            return true;
+        case DragEvent.ACTION_DRAG_EXITED:
+            mEventListener.onDriverDragExitWindow();
+            return true;
 
-            case DragEvent.ACTION_DRAG_ENDED:
-                mEventListener.onDriverDragCancel();
-                return true;
+        case DragEvent.ACTION_DRAG_ENDED:
+            mEventListener.onDriverDragCancel();
+            return true;
 
-            default:
-                return false;
+        default:
+            return false;
         }
     }
 }

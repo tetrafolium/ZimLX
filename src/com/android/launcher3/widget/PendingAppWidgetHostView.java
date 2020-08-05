@@ -44,7 +44,7 @@ import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Themes;
 
 public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
-        implements OnClickListener, ItemInfoUpdateReceiver {
+    implements OnClickListener, ItemInfoUpdateReceiver {
     private static final float SETUP_ICON_SIZE_FACTOR = 2f / 5;
     private static final float MIN_SATUNATION = 0.7f;
 
@@ -74,7 +74,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         mPaint = new TextPaint();
         mPaint.setColor(Themes.getAttrColor(getContext(), android.R.attr.textColorPrimary));
         mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
-                mLauncher.getDeviceProfile().iconTextSizePx, getResources().getDisplayMetrics()));
+                           mLauncher.getDeviceProfile().iconTextSizePx, getResources().getDisplayMetrics()));
         setBackgroundResource(R.drawable.pending_widget_bg);
         setWillNotDraw(false);
 
@@ -145,7 +145,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
                 updateSettingColor(info.iconColor);
             } else {
                 mCenterDrawable = DrawableFactory.get(getContext())
-                        .newPendingIcon(info, getContext());
+                                  .newPendingIcon(info, getContext());
                 mSettingIconDrawable = null;
                 applyState();
             }
@@ -195,8 +195,8 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
      */
     public boolean isReadyForClickSetup() {
         return !mInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
-                && (mInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_UI_NOT_READY)
-                || mInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID));
+               && (mInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_UI_NOT_READY)
+                   || mInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID));
     }
 
     private void updateDrawableBounds() {
@@ -207,7 +207,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         int paddingRight = getPaddingRight();
 
         int minPadding = getResources()
-                .getDimensionPixelSize(R.dimen.pending_widget_min_padding);
+                         .getDimensionPixelSize(R.dimen.pending_widget_min_padding);
 
         int availableWidth = getWidth() - paddingLeft - paddingRight - 2 * minPadding;
         int availableHeight = getHeight() - paddingTop - paddingBottom - 2 * minPadding;
@@ -240,18 +240,18 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             if (availableWidth > 0) {
                 // Recreate the setup text.
                 mSetupTextLayout = new StaticLayout(
-                        getResources().getText(R.string.gadget_setup_text), mPaint, availableWidth,
-                        Layout.Alignment.ALIGN_CENTER, 1, 0, true);
+                    getResources().getText(R.string.gadget_setup_text), mPaint, availableWidth,
+                    Layout.Alignment.ALIGN_CENTER, 1, 0, true);
                 int textHeight = mSetupTextLayout.getHeight();
 
                 // Extra icon size due to the setting icon
                 float minHeightWithText = textHeight + actualIconSize * settingIconScaleFactor
-                        + grid.iconDrawablePaddingPx;
+                                          + grid.iconDrawablePaddingPx;
 
                 if (minHeightWithText < availableHeight) {
                     // We can draw the text as well
                     iconTop = (getHeight() - textHeight -
-                            grid.iconDrawablePaddingPx - actualIconSize) / 2;
+                               grid.iconDrawablePaddingPx - actualIconSize) / 2;
 
                 } else {
                     // We can't draw the text. Let the iconTop be same as before.

@@ -56,8 +56,8 @@ public class FastScrollThumbDrawable extends Drawable {
         float diameter = 2 * r;
         float r2 = r / 5;
         mPath.addRoundRect(bounds.left, bounds.top, bounds.left + diameter, bounds.top + diameter,
-                new float[]{r, r, r, r, r2, r2, r, r},
-                Path.Direction.CCW);
+                           new float[] {r, r, r, r, r2, r2, r, r},
+                           Path.Direction.CCW);
 
         sMatrix.setRotate(-45, bounds.left + r, bounds.top + r);
         if (mIsRtl) {

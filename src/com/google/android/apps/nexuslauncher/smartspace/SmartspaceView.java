@@ -59,7 +59,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAnimator.AnimatorUpdateListener,
-        View.OnClickListener, View.OnLongClickListener, Runnable, ZimSmartspaceController.Listener {
+    View.OnClickListener, View.OnLongClickListener, Runnable, ZimSmartspaceController.Listener {
     private TextView mSubtitleWeatherText;
     private final TextPaint dB;
     private View mTitleSeparator;
@@ -120,13 +120,13 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             final Uri.Builder appendPath = content_URI.buildUpon().appendPath("time");
             ContentUris.appendId(appendPath, System.currentTimeMillis());
             final Intent addFlags = new Intent(Intent.ACTION_VIEW)
-                    .setData(appendPath.build())
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            .setData(appendPath.build())
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             try {
                 Launcher.getLauncher(getContext()).startActivitySafely(v, addFlags, null);
             } catch (ActivityNotFoundException ex) {
                 LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(
-                        new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
+                    new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
             }
         };
 
@@ -180,8 +180,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
                 mTextPaint.setTextSize(textSize);
                 mTextPaint.getTextBounds(title, 0, title.length(), mTextBounds);
                 int padding = getPaddingRight() + getPaddingLeft()
-                        + mClockView.getPaddingLeft() + mClockView.getPaddingRight()
-                        + mTitleWeatherText.getPaddingLeft() + mTitleWeatherText.getPaddingRight();
+                              + mClockView.getPaddingLeft() + mClockView.getPaddingRight()
+                              + mTitleWeatherText.getPaddingLeft() + mTitleWeatherText.getPaddingRight();
                 if (padding + mSeparatorWidth + mWeatherIconSize + mTextBounds.width() <= size) {
                     break;
                 }
@@ -290,7 +290,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             clockAboveTextSize = R.dimen.smartspace_clock_above_size;
         }
         mClockAboveView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                getResources().getDimensionPixelSize(clockAboveTextSize));
+                                    getResources().getDimensionPixelSize(clockAboveTextSize));
     }
 
     private void bindClockAndSeparator(boolean forced) {
@@ -332,7 +332,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             container.setOnClickListener(mWeatherClickListener);
             container.setOnLongClickListener(co());
             title.setText(weather.getTitle(
-                    Utilities.getZimPrefs(getContext()).getWeatherUnit()));
+                              Utilities.getZimPrefs(getContext()).getWeatherUnit()));
             icon.setImageBitmap(addShadowToBitmap(weather.getIcon()));
         } else {
             container.setVisibility(View.GONE);
@@ -380,7 +380,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         final boolean b = true;
         final SmartspaceCard dp = dq.dP;
         return dp.cC(TextUtils.ellipsize(dp.cB(b), dB, getWidth() - getPaddingLeft()
-                - getPaddingRight() - getResources().getDimensionPixelSize(R.dimen.smartspace_horizontal_padding) - dB.measureText(dp.cA(b)), TextUtils.TruncateAt.END).toString());
+                                         - getPaddingRight() - getResources().getDimensionPixelSize(R.dimen.smartspace_horizontal_padding) - dB.measureText(dp.cA(b)), TextUtils.TruncateAt.END).toString());
     }
 
     private OnLongClickListener co() {
@@ -392,8 +392,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         removeView(mSmartspaceContent);
         final LayoutInflater from = LayoutInflater.from(getContext());
         addView(from.inflate(mDoubleLine ?
-                R.layout.smartspace_twolines :
-                R.layout.smartspace_singleline, this, false), indexOfChild);
+                             R.layout.smartspace_twolines :
+                             R.layout.smartspace_singleline, this, false), indexOfChild);
         loadViews();
     }
 
@@ -529,13 +529,13 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             final Uri.Builder appendPath = content_URI.buildUpon().appendPath("time");
             ContentUris.appendId(appendPath, System.currentTimeMillis());
             final Intent addFlags = new Intent(Intent.ACTION_VIEW).setData(appendPath.build())
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             try {
                 final Context context = dZ.getContext();
                 Launcher.getLauncher(context).startActivitySafely(view, addFlags, null);
             } catch (ActivityNotFoundException ex) {
                 LauncherAppsCompat.getInstance(dZ.getContext()).showAppDetailsForProfile(
-                        new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
+                    new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
             }
         }
     }

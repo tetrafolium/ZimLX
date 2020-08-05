@@ -130,7 +130,7 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
             // scrubbing a while and makes multiple big jumps, then reduce the time needed for the
             // fast scroll to settle so it doesn't feel so long.
             mRv.postDelayed(mFastScrollToTargetSectionRunnable,
-                    mHasFastScrollTouchSettledAtLeastOnce ?
+                            mHasFastScrollTouchSettledAtLeastOnce ?
                             REPEAT_TOUCH_SETTLING_DURATION :
                             INITIAL_TOUCH_SETTLING_DURATION);
         }
@@ -139,11 +139,11 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
         // position, and then run the animation for the duration.  If we are scrolling to the
         // first fast scroll section, then just scroll to the top of the list itself.
         List<AlphabeticalAppsList.FastScrollSectionInfo> fastScrollSections =
-                mApps.getFastScrollerSections();
+            mApps.getFastScrollerSections();
         int newPosition = info.fastScrollToItem.position;
         int newScrollY = fastScrollSections.size() > 0 && fastScrollSections.get(0) == info
-                ? 0
-                : Math.min(availableScrollHeight, mRv.getCurrentScrollY(newPosition, 0));
+                         ? 0
+                         : Math.min(availableScrollHeight, mRv.getCurrentScrollY(newPosition, 0));
         int numFrames = mFastScrollFrames.length;
         int deltaY = newScrollY - scrollY;
         float ySign = Math.signum(deltaY);
@@ -209,8 +209,8 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
                     && pos < mApps.getAdapterItems().size()) {
                 AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(pos);
                 isActive = item != null &&
-                        mCurrentFastScrollSection.equals(item.sectionName) &&
-                        item.position == mTargetFastScrollPosition;
+                           mCurrentFastScrollSection.equals(item.sectionName) &&
+                           item.position == mTargetFastScrollPosition;
             }
             viewHolder.itemView.setActivated(isActive);
         }

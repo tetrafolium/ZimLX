@@ -60,7 +60,7 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
         HashMap<ShortcutKey, ShortcutInfoCompat> pinnedShortcuts = new HashMap<>();
         if (isUserUnlocked) {
             List<ShortcutInfoCompat> shortcuts =
-                    deepShortcutManager.queryForPinnedShortcuts(null, mUser);
+                deepShortcutManager.queryForPinnedShortcuts(null, mUser);
             if (deepShortcutManager.wasLastCallSuccess()) {
                 for (ShortcutInfoCompat shortcut : shortcuts) {
                     pinnedShortcuts.put(ShortcutKey.fromInfo(shortcut), shortcut);
@@ -118,7 +118,7 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
 
         if (isUserUnlocked) {
             dataModel.updateDeepShortcutMap(
-                    null, mUser, deepShortcutManager.queryForAllShortcuts(mUser));
+                null, mUser, deepShortcutManager.queryForAllShortcuts(mUser));
         }
         bindDeepShortcuts(dataModel);
     }

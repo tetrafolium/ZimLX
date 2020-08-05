@@ -43,17 +43,17 @@ import java.lang.ref.WeakReference;
 public class PreloadIconDrawable extends FastBitmapDrawable {
 
     private static final Property<PreloadIconDrawable, Float> INTERNAL_STATE =
-            new Property<PreloadIconDrawable, Float>(Float.TYPE, "internalStateProgress") {
-                @Override
-                public Float get(PreloadIconDrawable object) {
-                    return object.mInternalStateProgress;
-                }
+    new Property<PreloadIconDrawable, Float>(Float.TYPE, "internalStateProgress") {
+        @Override
+        public Float get(PreloadIconDrawable object) {
+            return object.mInternalStateProgress;
+        }
 
-                @Override
-                public void set(PreloadIconDrawable object, Float value) {
-                    object.setInternalProgress(value);
-                }
-            };
+        @Override
+        public void set(PreloadIconDrawable object, Float value) {
+            object.setInternalProgress(value);
+        }
+    };
 
     public static final int PATH_SIZE = 100;
 
@@ -123,18 +123,18 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         mTmpMatrix.setScale(
-                (bounds.width() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE,
-                (bounds.height() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE);
+            (bounds.width() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE,
+            (bounds.height() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE);
         mTmpMatrix.postTranslate(
-                bounds.left + PROGRESS_WIDTH + PROGRESS_GAP,
-                bounds.top + PROGRESS_WIDTH + PROGRESS_GAP);
+            bounds.left + PROGRESS_WIDTH + PROGRESS_GAP,
+            bounds.top + PROGRESS_WIDTH + PROGRESS_GAP);
 
         mProgressPath.transform(mTmpMatrix, mScaledTrackPath);
         float scale = bounds.width() / PATH_SIZE;
         mProgressPaint.setStrokeWidth(PROGRESS_WIDTH * scale);
 
         mShadowBitmap = getShadowBitmap(bounds.width(), bounds.height(),
-                (PROGRESS_GAP) * scale);
+                                        (PROGRESS_GAP) * scale);
         mPathMeasure.setPath(mScaledTrackPath, true);
         mTrackLength = mPathMeasure.getLength();
 
@@ -225,7 +225,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         } else {
             mCurrentAnim = ObjectAnimator.ofFloat(this, INTERNAL_STATE, finalProgress);
             mCurrentAnim.setDuration(
-                    (long) ((finalProgress - mInternalStateProgress) * DURATION_SCALE));
+                (long) ((finalProgress - mInternalStateProgress) * DURATION_SCALE));
             mCurrentAnim.setInterpolator(Interpolators.LINEAR);
             if (isFinish) {
                 mCurrentAnim.addListener(new AnimatorListenerAdapter() {

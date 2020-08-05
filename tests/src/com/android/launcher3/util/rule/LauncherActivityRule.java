@@ -41,9 +41,9 @@ public class LauncherActivityRule implements TestRule {
 
     public static Intent getHomeIntent() {
         return new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setPackage(InstrumentationRegistry.getTargetContext().getPackageName())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+               .addCategory(Intent.CATEGORY_HOME)
+               .setPackage(InstrumentationRegistry.getTargetContext().getPackageName())
+               .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class LauncherActivityRule implements TestRule {
         @Override
         public void evaluate() {
             Application app = (Application)
-                    InstrumentationRegistry.getTargetContext().getApplicationContext();
+                              InstrumentationRegistry.getTargetContext().getApplicationContext();
             app.registerActivityLifecycleCallbacks(this);
             try {
                 mBase.evaluate();

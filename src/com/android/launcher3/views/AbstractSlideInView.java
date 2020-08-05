@@ -39,21 +39,21 @@ import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelo
  * Extension of AbstractFloatingView with common methods for sliding in from bottom
  */
 public abstract class AbstractSlideInView extends AbstractFloatingView
-        implements SwipeDetector.Listener {
+    implements SwipeDetector.Listener {
 
     protected static Property<AbstractSlideInView, Float> TRANSLATION_SHIFT =
-            new Property<AbstractSlideInView, Float>(Float.class, "translationShift") {
+    new Property<AbstractSlideInView, Float>(Float.class, "translationShift") {
 
-                @Override
-                public Float get(AbstractSlideInView view) {
-                    return view.mTranslationShift;
-                }
+        @Override
+        public Float get(AbstractSlideInView view) {
+            return view.mTranslationShift;
+        }
 
-                @Override
-                public void set(AbstractSlideInView view, Float value) {
-                    view.setTranslationShift(value);
-                }
-            };
+        @Override
+        public void set(AbstractSlideInView view, Float value) {
+            view.setTranslationShift(value);
+        }
+    };
     protected static final float TRANSLATION_SHIFT_CLOSED = 1f;
     protected static final float TRANSLATION_SHIFT_OPENED = 0f;
 
@@ -98,12 +98,12 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
         }
 
         int directionsToDetectScroll = mSwipeDetector.isIdleState() ?
-                SwipeDetector.DIRECTION_NEGATIVE : 0;
+                                       SwipeDetector.DIRECTION_NEGATIVE : 0;
         mSwipeDetector.setDetectableScrollConditions(
-                directionsToDetectScroll, false);
+            directionsToDetectScroll, false);
         mSwipeDetector.onTouchEvent(ev);
         return mSwipeDetector.isDraggingOrSettling()
-                || !mLauncher.getDragLayer().isEventOverView(mContent, ev);
+               || !mLauncher.getDragLayer().isEventOverView(mContent, ev);
     }
 
     @Override
@@ -137,14 +137,14 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
         if ((fling && velocity > 0) || mTranslationShift > 0.5f) {
             mScrollInterpolator = scrollInterpolatorForVelocity(velocity);
             mOpenCloseAnimator.setDuration(SwipeDetector.calculateDuration(
-                    velocity, TRANSLATION_SHIFT_CLOSED - mTranslationShift));
+                                               velocity, TRANSLATION_SHIFT_CLOSED - mTranslationShift));
             close(true);
         } else {
             mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
-                    TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
+                                             TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
             mOpenCloseAnimator.setDuration(
-                    SwipeDetector.calculateDuration(velocity, mTranslationShift))
-                    .setInterpolator(Interpolators.DEACCEL);
+                SwipeDetector.calculateDuration(velocity, mTranslationShift))
+            .setInterpolator(Interpolators.DEACCEL);
             mOpenCloseAnimator.start();
         }
     }
@@ -160,7 +160,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
             return;
         }
         mOpenCloseAnimator.setValues(
-                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_CLOSED));
+            PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_CLOSED));
         mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -169,8 +169,8 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
         });
         if (mSwipeDetector.isIdleState()) {
             mOpenCloseAnimator
-                    .setDuration(defaultDuration)
-                    .setInterpolator(Interpolators.ACCEL);
+            .setDuration(defaultDuration)
+            .setInterpolator(Interpolators.ACCEL);
         } else {
             mOpenCloseAnimator.setInterpolator(mScrollInterpolator);
         }

@@ -77,18 +77,18 @@ public class PreviewItemManager {
      *                animates the first item to its position in the preview.
      */
     public FolderPreviewItemAnim createFirstItemAnimation(final boolean reverse,
-                                                          final Runnable onCompleteRunnable) {
+            final Runnable onCompleteRunnable) {
         return reverse
-                ? new FolderPreviewItemAnim(this, mFirstPageParams.get(0), 0, 2, -1, -1,
-                FINAL_ITEM_ANIMATION_DURATION, onCompleteRunnable)
-                : new FolderPreviewItemAnim(this, mFirstPageParams.get(0), -1, -1, 0, 2,
-                INITIAL_ITEM_ANIMATION_DURATION, onCompleteRunnable);
+               ? new FolderPreviewItemAnim(this, mFirstPageParams.get(0), 0, 2, -1, -1,
+                                           FINAL_ITEM_ANIMATION_DURATION, onCompleteRunnable)
+               : new FolderPreviewItemAnim(this, mFirstPageParams.get(0), -1, -1, 0, 2,
+                                           INITIAL_ITEM_ANIMATION_DURATION, onCompleteRunnable);
     }
 
     Drawable prepareCreateAnimation(final View destView) {
         Drawable animateDrawable = ((TextView) destView).getCompoundDrawables()[1];
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(),
-                destView.getMeasuredWidth());
+                                    destView.getMeasuredWidth());
         mReferenceDrawable = animateDrawable;
         return animateDrawable;
     }
@@ -96,7 +96,7 @@ public class PreviewItemManager {
     public void recomputePreviewDrawingParams() {
         if (mReferenceDrawable != null) {
             computePreviewDrawingParams(mReferenceDrawable.getIntrinsicWidth(),
-                    mIcon.getMeasuredWidth());
+                                        mIcon.getMeasuredWidth());
         }
     }
 
@@ -109,14 +109,14 @@ public class PreviewItemManager {
 
             mIcon.mBackground.setup(mIcon.mLauncher, mIcon, mTotalWidth, mIcon.getPaddingTop());
             mIcon.mPreviewLayoutRule.init(mIcon.mBackground.previewSize, mIntrinsicIconSize,
-                    Utilities.isRtl(mIcon.getResources()));
+                                          Utilities.isRtl(mIcon.getResources()));
 
             updatePreviewItems(false);
         }
     }
 
     PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
-                                                             PreviewItemDrawingParams params) {
+            PreviewItemDrawingParams params) {
         // We use an index of -1 to represent an icon on the workspace for the destroy and
         // create animations
         if (index == -1) {
@@ -192,7 +192,7 @@ public class PreviewItemManager {
         index = index + Math.max(mFirstPageParams.size() - MAX_NUM_ITEMS_IN_PREVIEW, 0);
 
         PreviewItemDrawingParams params = index < mFirstPageParams.size() ?
-                mFirstPageParams.get(index) : null;
+                                          mFirstPageParams.get(index) : null;
         if (params != null) {
             params.hidden = hidden;
         }
@@ -317,7 +317,7 @@ public class PreviewItemManager {
             PreviewItemDrawingParams p = params.get(prevIndex);
             computePreviewItemDrawingParams(prevIndex, numItems, p);
             updateTransitionParam(p, moveIn.get(i), ENTER_INDEX, newParams.indexOf(moveIn.get(i)),
-                    numItems);
+                                  numItems);
         }
 
         // Items that are moving into new positions within the preview.

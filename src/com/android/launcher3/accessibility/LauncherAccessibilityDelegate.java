@@ -79,23 +79,23 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         mLauncher = launcher;
 
         mActions.put(REMOVE, new AccessibilityAction(REMOVE,
-                launcher.getText(R.string.remove_drop_target_label)));
+                     launcher.getText(R.string.remove_drop_target_label)));
         mActions.put(UNINSTALL, new AccessibilityAction(UNINSTALL,
-                launcher.getText(R.string.uninstall_drop_target_label)));
+                     launcher.getText(R.string.uninstall_drop_target_label)));
         mActions.put(RECONFIGURE, new AccessibilityAction(RECONFIGURE,
-                launcher.getText(R.string.gadget_setup_text)));
+                     launcher.getText(R.string.gadget_setup_text)));
         mActions.put(ADD_TO_WORKSPACE, new AccessibilityAction(ADD_TO_WORKSPACE,
-                launcher.getText(R.string.action_add_to_workspace)));
+                     launcher.getText(R.string.action_add_to_workspace)));
         mActions.put(MOVE, new AccessibilityAction(MOVE,
-                launcher.getText(R.string.action_move)));
+                     launcher.getText(R.string.action_move)));
         mActions.put(MOVE_TO_WORKSPACE, new AccessibilityAction(MOVE_TO_WORKSPACE,
-                launcher.getText(R.string.action_move_to_workspace)));
+                     launcher.getText(R.string.action_move_to_workspace)));
         mActions.put(RESIZE, new AccessibilityAction(RESIZE,
-                launcher.getText(R.string.action_resize)));
+                     launcher.getText(R.string.action_resize)));
         mActions.put(DEEP_SHORTCUTS, new AccessibilityAction(DEEP_SHORTCUTS,
-                launcher.getText(R.string.action_deep_shortcut)));
+                     launcher.getText(R.string.action_deep_shortcut)));
         mActions.put(SHORTCUTS_AND_NOTIFICATIONS, new AccessibilityAction(DEEP_SHORTCUTS,
-                launcher.getText(R.string.shortcuts_menu_with_notifications_description)));
+                     launcher.getText(R.string.shortcuts_menu_with_notifications_description)));
     }
 
     public void addAccessibilityAction(int action, int actionLabel) {
@@ -116,7 +116,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         // exposed as a direct shortcut
         if (!fromKeyboard && DeepShortcutManager.supportsShortcuts(item)) {
             info.addAction(mActions.get(NotificationListener.getInstanceIfConnected() != null
-                    ? SHORTCUTS_AND_NOTIFICATIONS : DEEP_SHORTCUTS));
+                                        ? SHORTCUTS_AND_NOTIFICATIONS : DEEP_SHORTCUTS));
         }
 
         for (ButtonDropTarget target : mLauncher.getDropTargetBar().getDropTargets()) {
@@ -127,8 +127,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
         // Do not add move actions for keyboard request as this uses virtual nodes.
         if (!fromKeyboard && ((item instanceof ShortcutInfo)
-                || (item instanceof LauncherAppWidgetInfo)
-                || (item instanceof FolderInfo))) {
+                              || (item instanceof LauncherAppWidgetInfo)
+                              || (item instanceof FolderInfo))) {
             info.addAction(mActions.get(MOVE));
 
             if (item.container >= 0) {
@@ -178,7 +178,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                         Workspace workspace = mLauncher.getWorkspace();
                         workspace.snapToPage(workspace.getPageIndexForScreenId(screenId));
                         mLauncher.addPendingItem(info, Favorites.CONTAINER_DESKTOP,
-                                screenId, coordinates, info.spanX, info.spanY);
+                                                 screenId, coordinates, info.spanX, info.spanY);
                     }
                     announceConfirmation(R.string.item_added_to_workspace);
                 }
@@ -217,12 +217,12 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             }
 
             new AlertDialog.Builder(mLauncher)
-                    .setTitle(R.string.action_resize)
-                    .setItems(labels, (dialog, which) -> {
-                        performResizeAction(actions.get(which), host, info);
-                        dialog.dismiss();
-                    })
-                    .show();
+            .setTitle(R.string.action_resize)
+            .setItems(labels, (dialog, which) -> {
+                performResizeAction(actions.get(which), host, info);
+                dialog.dismiss();
+            })
+            .show();
             return true;
         } else if (action == DEEP_SHORTCUTS) {
             return PopupContainerWithArrow.showForIcon((BubbleTextView) host) != null;

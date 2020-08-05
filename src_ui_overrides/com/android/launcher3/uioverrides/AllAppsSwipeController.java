@@ -56,7 +56,7 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     @Override
     protected int getLogContainerTypeForNormalState() {
         return mLauncher.getDragLayer().isEventOverView(mLauncher.getHotseat(), mTouchDownEvent) ?
-                ContainerType.HOTSEAT : ContainerType.WORKSPACE;
+               ContainerType.HOTSEAT : ContainerType.WORKSPACE;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
         float range = getShiftRange();
         long maxAccuracy = (long) (2 * range);
         mCurrentAnimation = mLauncher.getStateManager()
-                .createAnimationToNewWorkspace(mToState, maxAccuracy, animComponents);
+                            .createAnimationToNewWorkspace(mToState, maxAccuracy, animComponents);
         float startVerticalShift = mFromState.getVerticalProgress(mLauncher) * range;
         float endVerticalShift = mToState.getVerticalProgress(mLauncher) * range;
         float totalShift = endVerticalShift - startVerticalShift;

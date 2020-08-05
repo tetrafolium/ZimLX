@@ -54,7 +54,7 @@ public class BaseTestingActivity extends Activity implements View.OnClickListene
 
     public static Intent getCommandIntent(Class<?> clazz, String method) {
         return new Intent(clazz.getName() + SUFFIX_COMMAND)
-                .putExtra(EXTRA_METHOD, method);
+               .putExtra(EXTRA_METHOD, method);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class BaseTestingActivity extends Activity implements View.OnClickListene
         super.onCreate(savedInstanceState);
 
         mMargin = Math.round(TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, MARGIN_DP, getResources().getDisplayMetrics()));
+                                 TypedValue.COMPLEX_UNIT_DIP, MARGIN_DP, getResources().getDisplayMetrics()));
         mView = new LinearLayout(this);
         mView.setPadding(mMargin, mMargin, mMargin, mMargin);
         mView.setOrientation(LinearLayout.VERTICAL);

@@ -35,7 +35,7 @@ public class InstantAppResolver {
 
     public static InstantAppResolver newInstance(Context context) {
         return Utilities.getOverrideObject(
-                InstantAppResolver.class, context, R.string.instant_app_resolver_class);
+                   InstantAppResolver.class, context, R.string.instant_app_resolver_class);
     }
 
     public boolean isInstantApp(ApplicationInfo info) {
@@ -52,7 +52,7 @@ public class InstantAppResolver {
             return isInstantApp(packageManager.getPackageInfo(packageName, 0).applicationInfo);
         } catch (PackageManager.NameNotFoundException e) {
             Log.e("InstantAppResolver", "Failed to determine whether package is instant app "
-                    + packageName, e);
+                  + packageName, e);
         }
         return false;
     }

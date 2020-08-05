@@ -48,7 +48,7 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
      * to float (animation-fraction * total duration) to int conversion.
      */
     public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration,
-                                                  Runnable onCancelRunnable) {
+            Runnable onCancelRunnable) {
 
         /**
          * TODO: use {@link AnimatorSet#setCurrentPlayTime(long)} once b/68382377 is fixed.

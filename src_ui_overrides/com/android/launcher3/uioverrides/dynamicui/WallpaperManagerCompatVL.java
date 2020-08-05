@@ -59,7 +59,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
     private static final String VERSION_PREFIX = "1,";
     private static final String KEY_COLORS = "wallpaper_parsed_colors";
     private static final String ACTION_EXTRACTION_COMPLETE =
-            "com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL.EXTRACTION_COMPLETE";
+        "com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL.EXTRACTION_COMPLETE";
 
     private final ArrayList<OnColorsChangedListenerCompat> mListeners = new ArrayList<>();
 
@@ -92,8 +92,8 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
         // Find a permission which only we can use.
         try {
             for (PermissionInfo info : context.getPackageManager().getPackageInfo(
-                    context.getPackageName(),
-                    PackageManager.GET_PERMISSIONS).permissions) {
+                        context.getPackageName(),
+                        PackageManager.GET_PERMISSIONS).permissions) {
                 if ((info.protectionLevel & PermissionInfo.PROTECTION_SIGNATURE) != 0) {
                     permission = info.name;
                 }
@@ -123,8 +123,8 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 
     private void reloadColors() {
         JobInfo job = new JobInfo.Builder(Utilities.WALLPAPER_COMPAT_JOB_ID,
-                new ComponentName(mContext, ColorExtractionService.class))
-                .setMinimumLatency(0).build();
+                                          new ComponentName(mContext, ColorExtractionService.class))
+        .setMinimumLatency(0).build();
         ((JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE)).schedule(job);
     }
 
@@ -159,7 +159,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
         int tertiary = parts.length > 4 ? Integer.parseInt(parts[4]) : 0;
 
         return Pair.create(wallpaperId, new WallpaperColorsCompat(primary, secondary, tertiary,
-                0 /* hints */));
+                           0 /* hints */));
     }
 
     /**
@@ -226,16 +226,16 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
                     }
                     try (ParcelFileDescriptor fd = wm.getWallpaperFile(FLAG_SYSTEM)) {
                         BitmapRegionDecoder decoder = BitmapRegionDecoder
-                                .newInstance(fd.getFileDescriptor(), false);
+                                                      .newInstance(fd.getFileDescriptor(), false);
 
                         int requestedArea = decoder.getWidth() * decoder.getHeight();
                         BitmapFactory.Options options = new BitmapFactory.Options();
 
                         if (requestedArea > MAX_WALLPAPER_EXTRACTION_AREA) {
                             double areaRatio =
-                                    (double) requestedArea / MAX_WALLPAPER_EXTRACTION_AREA;
+                                (double) requestedArea / MAX_WALLPAPER_EXTRACTION_AREA;
                             double nearestPowOf2 =
-                                    Math.floor(Math.log(areaRatio) / (2 * Math.log(2)));
+                                Math.floor(Math.log(areaRatio) / (2 * Math.log(2)));
                             options.inSampleSize = (int) Math.pow(2, nearestPowOf2);
                         }
                         Rect region = new Rect(0, 0, decoder.getWidth(), decoder.getHeight());
@@ -254,13 +254,13 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
                 // Calculate how big the bitmap needs to be.
                 // This avoids unnecessary processing and allocation inside Palette.
                 final int requestedArea = drawable.getIntrinsicWidth() *
-                        drawable.getIntrinsicHeight();
+                                          drawable.getIntrinsicHeight();
                 double scale = 1;
                 if (requestedArea > MAX_WALLPAPER_EXTRACTION_AREA) {
                     scale = Math.sqrt(MAX_WALLPAPER_EXTRACTION_AREA / (double) requestedArea);
                 }
                 bitmap = Bitmap.createBitmap((int) (drawable.getIntrinsicWidth() * scale),
-                        (int) (drawable.getIntrinsicHeight() * scale), Bitmap.Config.ARGB_8888);
+                                             (int) (drawable.getIntrinsicHeight() * scale), Bitmap.Config.ARGB_8888);
                 final Canvas bmpCanvas = new Canvas(bitmap);
                 drawable.setBounds(0, 0, bitmap.getWidth(), bitmap.getHeight());
                 drawable.draw(bmpCanvas);
@@ -275,8 +275,8 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 
             // Send the result
             sendBroadcast(new Intent(ACTION_EXTRACTION_COMPLETE)
-                    .setPackage(getPackageName())
-                    .putExtra(KEY_COLORS, value));
+                          .setPackage(getPackageName())
+                          .putExtra(KEY_COLORS, value));
         }
     }
 }

@@ -139,9 +139,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mItem = item;
         mWidgetName.setText(mItem.label);
         mWidgetDims.setText(getContext().getString(R.string.widget_dims_format,
-                mItem.spanX, mItem.spanY));
+                            mItem.spanX, mItem.spanY));
         mWidgetDims.setContentDescription(getContext().getString(
-                R.string.widget_accessible_dims_format, mItem.spanX, mItem.spanY));
+                                              R.string.widget_accessible_dims_format, mItem.spanX, mItem.spanY));
         mWidgetPreviewLoader = loader;
 
         if (item.activityInfo != null) {
@@ -182,7 +182,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         }
         if (bitmap != null) {
             mWidgetImage.setBitmap(bitmap,
-                    DrawableFactory.get(getContext()).getBadgeForUser(mItem.user, getContext()));
+                                   DrawableFactory.get(getContext()).getBadgeForUser(mItem.user, getContext()));
             if (mAnimatePreview) {
                 mWidgetImage.setAlpha(0f);
                 ViewPropertyAnimator anim = mWidgetImage.animate();
@@ -198,7 +198,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return;
         }
         mActiveRequest = mWidgetPreviewLoader.getPreview(
-                mItem, mPresetPreviewSize, mPresetPreviewSize, this);
+                             mItem, mPresetPreviewSize, mPresetPreviewSize, this);
     }
 
     @Override

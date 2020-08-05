@@ -172,27 +172,27 @@ public class DragLayer extends BaseDragLayer<Launcher> {
                 final int action = ev.getAction();
                 boolean isOverFolderOrSearchBar;
                 switch (action) {
-                    case MotionEvent.ACTION_HOVER_ENTER:
-                        isOverFolderOrSearchBar = isEventOverView(topView, ev) ||
-                                isEventOverAccessibleDropTargetBar(ev);
-                        if (!isOverFolderOrSearchBar) {
-                            sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
-                            mHoverPointClosesFolder = true;
-                            return true;
-                        }
-                        mHoverPointClosesFolder = false;
-                        break;
-                    case MotionEvent.ACTION_HOVER_MOVE:
-                        isOverFolderOrSearchBar = isEventOverView(topView, ev) ||
-                                isEventOverAccessibleDropTargetBar(ev);
-                        if (!isOverFolderOrSearchBar && !mHoverPointClosesFolder) {
-                            sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
-                            mHoverPointClosesFolder = true;
-                            return true;
-                        } else if (!isOverFolderOrSearchBar) {
-                            return true;
-                        }
-                        mHoverPointClosesFolder = false;
+                case MotionEvent.ACTION_HOVER_ENTER:
+                    isOverFolderOrSearchBar = isEventOverView(topView, ev) ||
+                                              isEventOverAccessibleDropTargetBar(ev);
+                    if (!isOverFolderOrSearchBar) {
+                        sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
+                        mHoverPointClosesFolder = true;
+                        return true;
+                    }
+                    mHoverPointClosesFolder = false;
+                    break;
+                case MotionEvent.ACTION_HOVER_MOVE:
+                    isOverFolderOrSearchBar = isEventOverView(topView, ev) ||
+                                              isEventOverAccessibleDropTargetBar(ev);
+                    if (!isOverFolderOrSearchBar && !mHoverPointClosesFolder) {
+                        sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
+                        mHoverPointClosesFolder = true;
+                        return true;
+                    } else if (!isOverFolderOrSearchBar) {
+                        return true;
+                    }
+                    mHoverPointClosesFolder = false;
                 }
             }
         }
@@ -202,7 +202,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     private void sendTapOutsideFolderAccessibilityEvent(boolean isEditingName) {
         int stringId = isEditingName ? R.string.folder_tap_to_rename : R.string.folder_tap_to_close;
         sendCustomAccessibilityEvent(
-                this, AccessibilityEvent.TYPE_VIEW_FOCUSED, getContext().getString(stringId));
+            this, AccessibilityEvent.TYPE_VIEW_FOCUSED, getContext().getString(stringId));
     }
 
     @Override
@@ -228,7 +228,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     @Override
     public void addChildrenForAccessibility(ArrayList<View> childrenForAccessibility) {
         View topView = AbstractFloatingView.getTopOpenViewWithType(mActivity,
-                AbstractFloatingView.TYPE_ACCESSIBLE);
+                       AbstractFloatingView.TYPE_ACCESSIBLE);
         if (topView != null) {
             addAccessibleChildToList(topView, childrenForAccessibility);
             if (isInAccessibleDrag()) {
@@ -242,7 +242,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
         return super.dispatchUnhandledMove(focused, direction)
-                || mDragController.dispatchUnhandledMove(focused, direction);
+               || mDragController.dispatchUnhandledMove(focused, direction);
     }
 
     @Override
@@ -264,7 +264,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         final int fromY = r.top;
 
         animateViewIntoPosition(dragView, fromX, fromY, pos[0], pos[1], alpha, 1, 1, scaleX, scaleY,
-                onFinishRunnable, animationEndStyle, duration, null);
+                                onFinishRunnable, animationEndStyle, duration, null);
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child, View anchorView) {
@@ -320,7 +320,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         } else {
             toY -= (Math.round(scale * (dragView.getHeight() - child.getMeasuredHeight()))) / 2;
             toX -= (Math.round(scale * (dragView.getMeasuredWidth()
-                    - child.getMeasuredWidth()))) / 2;
+                                        - child.getMeasuredWidth()))) / 2;
         }
 
         final int fromX = r.left;
@@ -328,7 +328,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         child.setVisibility(INVISIBLE);
         Runnable onCompleteRunnable = () -> child.setVisibility(VISIBLE);
         animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, toScale, toScale,
-                onCompleteRunnable, ANIMATION_END_DISAPPEAR, duration, anchorView);
+                                onCompleteRunnable, ANIMATION_END_DISAPPEAR, duration, anchorView);
     }
 
     public void animateViewIntoPosition(final DragView view, final int fromX, final int fromY,
@@ -336,10 +336,10 @@ public class DragLayer extends BaseDragLayer<Launcher> {
                                         float finalScaleX, float finalScaleY, Runnable onCompleteRunnable,
                                         int animationEndStyle, int duration, View anchorView) {
         Rect from = new Rect(fromX, fromY, fromX +
-                view.getMeasuredWidth(), fromY + view.getMeasuredHeight());
+                             view.getMeasuredWidth(), fromY + view.getMeasuredHeight());
         Rect to = new Rect(toX, toY, toX + view.getMeasuredWidth(), toY + view.getMeasuredHeight());
         animateView(view, from, to, finalAlpha, initScaleX, initScaleY, finalScaleX, finalScaleY, duration,
-                null, null, onCompleteRunnable, animationEndStyle, anchorView);
+                    null, null, onCompleteRunnable, animationEndStyle, anchorView);
     }
 
     /**
@@ -401,9 +401,9 @@ public class DragLayer extends BaseDragLayer<Launcher> {
                 final int height = view.getMeasuredHeight();
 
                 float alphaPercent = alphaInterpolator == null ? percent :
-                        alphaInterpolator.getInterpolation(percent);
+                                     alphaInterpolator.getInterpolation(percent);
                 float motionPercent = motionInterpolator == null ? percent :
-                        motionInterpolator.getInterpolation(percent);
+                                      motionInterpolator.getInterpolation(percent);
 
                 float initialScaleX = initScaleX * dropViewScale;
                 float initialScaleY = initScaleY * dropViewScale;
@@ -418,7 +418,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
                 int y = (int) (fromTop + Math.round(((to.top - fromTop) * motionPercent)));
 
                 int anchorAdjust = mAnchorView == null ? 0 : (int) (mAnchorView.getScaleX() *
-                        (mAnchorViewInitialScrollX - mAnchorView.getScrollX()));
+                                   (mAnchorViewInitialScrollX - mAnchorView.getScrollX()));
 
                 int xPos = x - mDropView.getScrollX() + anchorAdjust;
                 int yPos = y - mDropView.getScrollY();
@@ -431,7 +431,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
             }
         };
         animateView(view, updateCb, duration, interpolator, onCompleteRunnable, animationEndStyle,
-                anchorView);
+                    anchorView);
     }
 
     public void animateView(final DragView view, AnimatorUpdateListener updateCb, int duration,
@@ -463,11 +463,11 @@ public class DragLayer extends BaseDragLayer<Launcher> {
                     onCompleteRunnable.run();
                 }
                 switch (animationEndStyle) {
-                    case ANIMATION_END_DISAPPEAR:
-                        clearAnimatedView();
-                        break;
-                    case ANIMATION_END_REMAIN_VISIBLE:
-                        break;
+                case ANIMATION_END_DISAPPEAR:
+                    clearAnimatedView();
+                    break;
+                case ANIMATION_END_REMAIN_VISIBLE:
+                    break;
                 }
                 mDropAnim = null;
             }

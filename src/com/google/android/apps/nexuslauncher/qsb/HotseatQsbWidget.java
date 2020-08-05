@@ -38,7 +38,7 @@ import org.zimmob.zimlx.globalsearch.SearchProviderController;
 import java.util.List;
 
 public class HotseatQsbWidget extends AbstractQsbLayout implements o,
-        ZimPreferences.OnPreferenceChangeListener {
+    ZimPreferences.OnPreferenceChangeListener {
 
     public static final String KEY_DOCK_COLORED_GOOGLE = "pref_dockColoredGoogle";
     public static final String KEY_DOCK_SEARCHBAR = "pref_dockSearchBar";
@@ -69,7 +69,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
 
     protected void onAttachedToWindow() {
         Utilities.getZimPrefs(getContext())
-                .addOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE, KEY_DOCK_SEARCHBAR);
+        .addOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE, KEY_DOCK_SEARCHBAR);
 
         dW();
         super.onAttachedToWindow();
@@ -81,8 +81,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         Utilities.getZimPrefs(getContext())
-                .removeOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE,
-                        KEY_DOCK_SEARCHBAR);
+        .removeOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE,
+                                          KEY_DOCK_SEARCHBAR);
         this.Ds.b(this);
     }
 
@@ -141,8 +141,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
 
     private void setColors() {
         View.inflate(new ContextThemeWrapper(getContext(),
-                        mIsGoogleColored ? R.style.HotseatQsbTheme_Colored : R.style.HotseatQsbTheme),
-                R.layout.qsb_hotseat_content, this);
+                                             mIsGoogleColored ? R.style.HotseatQsbTheme_Colored : R.style.HotseatQsbTheme),
+                     R.layout.qsb_hotseat_content, this);
         /*int colorRes;
         if (isDarkBar()) {
             colorRes = R.color.qsb_background_hotseat_dark;
@@ -159,7 +159,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         }
         WallpaperInfo wallpaperInfo = WallpaperManager.getInstance(getContext()).getWallpaperInfo();
         return wallpaperInfo != null && wallpaperInfo.getComponent().flattenToString()
-                .equals(getContext().getString(R.string.default_live_wallpaper));
+               .equals(getContext().getString(R.string.default_live_wallpaper));
     }
 
     protected final int aA(int i) {
@@ -169,7 +169,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
 
     private void doOnClick() {
         SearchProviderController controller = SearchProviderController.Companion
-                .getInstance(mActivity);
+                                              .getInstance(mActivity);
         if (controller.isGoogle()) {
             startGoogleSearch();
         } else {
@@ -187,21 +187,21 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
                 .startSearch(f.build(), f.getExtras())) {
             SharedPreferences devicePrefs = Utilities.getDevicePrefs(getContext());
             devicePrefs.edit().putInt("key_hotseat_qsb_tap_count",
-                    devicePrefs.getInt("key_hotseat_qsb_tap_count", 0) + 1).apply();
+                                      devicePrefs.getInt("key_hotseat_qsb_tap_count", 0) + 1).apply();
             mActivity.playQsbAnimation();
         } else {
             getContext().sendOrderedBroadcast(getSearchIntent(), null,
-                    new BroadcastReceiver() {
-                        @Override
-                        public void onReceive(Context context, Intent intent) {
-                            if (getResultCode() == 0) {
-                                fallbackSearch(
-                                        "com.google.android.googlequicksearchbox.TEXT_ASSIST");
-                            } else {
-                                mActivity.playQsbAnimation();
-                            }
-                        }
-                    }, null, 0, null, null);
+            new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (getResultCode() == 0) {
+                        fallbackSearch(
+                            "com.google.android.googlequicksearchbox.TEXT_ASSIST");
+                    } else {
+                        mActivity.playQsbAnimation();
+                    }
+                }
+            }, null, 0, null, null);
         }
     }
 
@@ -213,11 +213,11 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     @Override
     protected void noGoogleAppSearch() {
         final Intent searchIntent = new Intent("com.google.android.apps.searchlite.WIDGET_ACTION")
-                .setComponent(ComponentName.unflattenFromString(
-                        "com.google.android.apps.searchlite/.ui.SearchActivity"))
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                .putExtra("showKeyboard", true)
-                .putExtra("contentType", 12);
+        .setComponent(ComponentName.unflattenFromString(
+                          "com.google.android.apps.searchlite/.ui.SearchActivity"))
+        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        .putExtra("showKeyboard", true)
+        .putExtra("contentType", 12);
 
         final Context context = getContext();
         final PackageManager pm = context.getPackageManager();
@@ -225,15 +225,15 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         if (pm.queryIntentActivities(searchIntent, 0).isEmpty()) {
             try {
                 context.startActivity(
-                        new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")));
+                    new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")));
                 mActivity.openQsb();
             } catch (ActivityNotFoundException ignored) {
                 try {
                     getContext().getPackageManager().getPackageInfo(GOOGLE_QSB, 0);
                     LauncherAppsCompat.getInstance(getContext())
-                            .showAppDetailsForProfile(
-                                    new ComponentName(GOOGLE_QSB, ".SearchActivity"),
-                                    Process.myUserHandle());
+                    .showAppDetailsForProfile(
+                        new ComponentName(GOOGLE_QSB, ".SearchActivity"),
+                        Process.myUserHandle());
                 } catch (PackageManager.NameNotFoundException ignored2) {
                 }
             }
@@ -259,7 +259,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     public void setInsets(Rect rect) {
         super.setInsets(rect);
         setVisibility(
-                mActivity.getDeviceProfile().isVerticalBarLayout() ? View.GONE : View.VISIBLE);
+            mActivity.getDeviceProfile().isVerticalBarLayout() ? View.GONE : View.VISIBLE);
     }
 
     public void onClick(View view) {
@@ -275,7 +275,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         if (provider.isBroadcast()) {
             Intent intent = provider.getSettingsIntent();
             List queryBroadcastReceivers = getContext().getPackageManager()
-                    .queryBroadcastReceivers(intent, 0);
+                                           .queryBroadcastReceivers(intent, 0);
             if (!(queryBroadcastReceivers == null || queryBroadcastReceivers.isEmpty())) {
                 return intent;
             }
@@ -310,7 +310,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     static int getBottomMargin(Launcher launcher) {
         Resources resources = launcher.getResources();
         int minBottom = launcher.getDeviceProfile().getInsets().bottom + launcher.getResources()
-                .getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
+                        .getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
 
         DeviceProfile profile = launcher.getDeviceProfile();
         Rect rect = profile.getInsets();
@@ -322,9 +322,9 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         float f = ((hotseatIconsTop - hotseatLayoutPadding.bottom) + (profile.iconSizePx * 0.92f)) / 2.0f;
         float f2 = ((float) rect.bottom) * 0.67f;
         int bottomMargin = Math.round(f2 + (
-                ((((((float) hotseatTop) - f2) - f) - resources
-                        .getDimension(R.dimen.qsb_widget_height))
-                        - ((float) profile.verticalDragHandleSizePx)) / 2.0f));
+                                          ((((((float) hotseatTop) - f2) - f) - resources
+                                            .getDimension(R.dimen.qsb_widget_height))
+                                           - ((float) profile.verticalDragHandleSizePx)) / 2.0f));
 
         return Math.max(minBottom, bottomMargin);
     }

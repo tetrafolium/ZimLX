@@ -72,7 +72,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         setWillNotDraw(false);
 
         mSelectedIndicatorHeight =
-                getResources().getDimensionPixelSize(R.dimen.all_apps_tabs_indicator_height);
+            getResources().getDimensionPixelSize(R.dimen.all_apps_tabs_indicator_height);
 
         mSelectedIndicatorPaint = new Paint();
         //mSelectedIndicatorPaint.setColor(Utilities.getZimPrefs(context).getAccentColor());
@@ -81,7 +81,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         mDividerPaint = new Paint();
         mDividerPaint.setColor(Themes.getAttrColor(context, android.R.attr.colorControlHighlight));
         mDividerPaint.setStrokeWidth(
-                getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
+            getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
 
         mSharedPreferences = Launcher.getLauncher(getContext()).getSharedPrefs();
         mIsRtl = Utilities.isRtl(getResources());
@@ -175,7 +175,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
                 mSelectedIndicatorPaint.setColor(leftColor);
             } else {
                 mSelectedIndicatorPaint.setColor(
-                        (Integer) mArgbEvaluator.evaluate(leftFraction, leftColor, rightColor));
+                    (Integer) mArgbEvaluator.evaluate(leftFraction, leftColor, rightColor));
             }
         } else if (leftTab != null) {
             left = (int) (leftTab.getLeft() + leftTab.getWidth() * leftFraction);
@@ -222,7 +222,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         float y = getHeight() - mDividerPaint.getStrokeWidth() / 2;
         canvas.drawLine(getPaddingLeft(), y, getWidth() - getPaddingRight(), y, mDividerPaint);
         drawIndicator(canvas, mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
-                mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
+                      mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
     }
 
     private void drawIndicator(Canvas canvas, int l, int t, int r, int b, Paint paint) {
@@ -302,7 +302,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
             button.setText(tab.getName());
             button.setOnLongClickListener(v -> {
                 DrawerTabEditBottomSheet.Companion
-                        .editTab(Launcher.getLauncher(getContext()), tab.getDrawerTab());
+                .editTab(Launcher.getLauncher(getContext()), tab.getDrawerTab());
                 return true;
             });
         }

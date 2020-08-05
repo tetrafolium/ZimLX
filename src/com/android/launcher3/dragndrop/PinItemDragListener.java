@@ -78,14 +78,14 @@ public class PinItemDragListener extends BaseItemDragListener {
         final PendingAddItemInfo item;
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
             item = new PendingAddShortcutInfo(
-                    new PinShortcutRequestActivityInfo(mRequest, mLauncher));
+                new PinShortcutRequestActivityInfo(mRequest, mLauncher));
         } else {
             // mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_APPWIDGET
             LauncherAppWidgetProviderInfo providerInfo =
-                    LauncherAppWidgetProviderInfo.fromProviderInfo(
-                            mLauncher, mRequest.getAppWidgetProviderInfo(mLauncher));
+                LauncherAppWidgetProviderInfo.fromProviderInfo(
+                    mLauncher, mRequest.getAppWidgetProviderInfo(mLauncher));
             final PinWidgetFlowHandler flowHandler =
-                    new PinWidgetFlowHandler(providerInfo, mRequest);
+                new PinWidgetFlowHandler(providerInfo, mRequest);
             item = new PendingAddWidgetInfo(providerInfo) {
                 @Override
                 public WidgetAddFlowHandler getHandler() {

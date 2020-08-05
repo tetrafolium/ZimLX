@@ -78,15 +78,15 @@ public class PopupPopulatorTest {
     }
 
     private void filterShortcutsAndAssertNumStaticAndDynamic(
-            List<ShortcutInfoCompat> shortcuts, int expectedStatic, int expectedDynamic) {
+        List<ShortcutInfoCompat> shortcuts, int expectedStatic, int expectedDynamic) {
         filterShortcutsAndAssertNumStaticAndDynamic(shortcuts, expectedStatic, expectedDynamic, null);
     }
 
     private void filterShortcutsAndAssertNumStaticAndDynamic(List<ShortcutInfoCompat> shortcuts,
-                                                             int expectedStatic, int expectedDynamic, String shortcutIdToRemove) {
+            int expectedStatic, int expectedDynamic, String shortcutIdToRemove) {
         Collections.shuffle(shortcuts);
         List<ShortcutInfoCompat> filteredShortcuts = PopupPopulator.sortAndFilterShortcuts(
-                shortcuts, shortcutIdToRemove);
+                    shortcuts, shortcutIdToRemove);
         assertIsSorted(filteredShortcuts);
 
         int numStatic = 0;
@@ -111,7 +111,7 @@ public class PopupPopulatorTest {
             int rank = shortcut.getRank();
             if (shortcut.isDeclaredInManifest()) {
                 assertFalse("Static shortcuts should come before all dynamic shortcuts.",
-                        hasSeenDynamic);
+                            hasSeenDynamic);
                 assertTrue(rank > lastStaticRank);
                 lastStaticRank = rank;
             }

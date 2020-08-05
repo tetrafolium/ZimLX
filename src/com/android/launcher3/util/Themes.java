@@ -32,7 +32,7 @@ public class Themes {
         return Utilities.getZimPrefs(context).getAccentColor();
     }
     public static int getAttrColor(Context context, int attr) {
-        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
 
         int colorAccent = ta.getColor(0, 0);
         ta.recycle();
@@ -40,21 +40,21 @@ public class Themes {
     }
 
     public static boolean getAttrBoolean(Context context, int attr) {
-        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
         boolean value = ta.getBoolean(0, false);
         ta.recycle();
         return value;
     }
 
     public static Drawable getAttrDrawable(Context context, int attr) {
-        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
         Drawable value = ta.getDrawable(0);
         ta.recycle();
         return value;
     }
 
     public static int getAttrInteger(Context context, int attr) {
-        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
         int value = ta.getInteger(0, 0);
         ta.recycle();
         return value;
@@ -64,7 +64,7 @@ public class Themes {
      * Returns the alpha corresponding to the theme attribute {@param attr}, in the range [0, 255].
      */
     public static int getAlpha(Context context, int attr) {
-        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
         float alpha = ta.getFloat(0, 0);
         ta.recycle();
         return (int) (255 * alpha + 0.5f);
@@ -84,7 +84,7 @@ public class Themes {
      */
     public static void setColorScaleOnMatrix(int color, ColorMatrix target) {
         target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
-                Color.blue(color) / 255f, Color.alpha(color) / 255f);
+                        Color.blue(color) / 255f, Color.alpha(color) / 255f);
     }
 
     /**

@@ -78,7 +78,7 @@ public class BadgeInfo {
     public boolean addOrUpdateNotificationKey(NotificationKeyData notificationKey) {
         int indexOfPrevKey = mNotificationKeys.indexOf(notificationKey);
         NotificationKeyData prevKey = indexOfPrevKey == -1 ? null
-                : mNotificationKeys.get(indexOfPrevKey);
+                                      : mNotificationKeys.get(indexOfPrevKey);
         if (prevKey != null) {
             if (prevKey.count == notificationKey.count) {
                 return false;
@@ -137,7 +137,7 @@ public class BadgeInfo {
         }
         if (mNotificationIcon == null) {
             Drawable icon = mNotificationInfo.getIconForBackground(context, badgeColor)
-                    .getConstantState().newDrawable();
+                            .getConstantState().newDrawable();
             int iconSize = badgeSize - badgePadding * 2;
             icon.setBounds(0, 0, iconSize, iconSize);
             Bitmap iconBitmap = Bitmap.createBitmap(badgeSize, badgeSize, Bitmap.Config.ARGB_8888);
@@ -145,7 +145,7 @@ public class BadgeInfo {
             canvas.translate(badgePadding, badgePadding);
             icon.draw(canvas);
             mNotificationIcon = new BitmapShader(iconBitmap, Shader.TileMode.CLAMP,
-                    Shader.TileMode.CLAMP);
+                                                 Shader.TileMode.CLAMP);
         }
         return mNotificationIcon;
     }
@@ -164,7 +164,7 @@ public class BadgeInfo {
      */
     public boolean shouldBeInvalidated(BadgeInfo newBadge) {
         return mPackageUserKey.equals(newBadge.mPackageUserKey)
-                && (getNotificationCount() != newBadge.getNotificationCount()
-                || hasNotificationToShow());
+               && (getNotificationCount() != newBadge.getNotificationCount()
+                   || hasNotificationToShow());
     }
 }

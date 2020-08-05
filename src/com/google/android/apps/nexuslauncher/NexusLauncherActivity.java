@@ -26,7 +26,7 @@ public class NexusLauncherActivity extends Launcher {
 
           super.onCreate(savedInstanceState);
       }
-  */
+    */
     @Nullable
     public LauncherClient getGoogleNow() {
         return mLauncher.mClient;

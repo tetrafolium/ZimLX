@@ -30,7 +30,7 @@ public class ClippedFolderIconLayoutRule {
     }
 
     public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
-                                                                    PreviewItemDrawingParams params) {
+            PreviewItemDrawingParams params) {
         float totalScale = scaleForItem(curNumItems);
         float transX;
         float transY;
@@ -114,7 +114,7 @@ public class ClippedFolderIconLayoutRule {
 
         // We bump the radius up between 0 and MAX_RADIUS_DILATION % as the number of items increase
         float radius = mRadius * (1 + MAX_RADIUS_DILATION * (curNumItems -
-                MIN_NUM_ITEMS_IN_PREVIEW) / (MAX_NUM_ITEMS_IN_PREVIEW - MIN_NUM_ITEMS_IN_PREVIEW));
+                                  MIN_NUM_ITEMS_IN_PREVIEW) / (MAX_NUM_ITEMS_IN_PREVIEW - MIN_NUM_ITEMS_IN_PREVIEW));
         double theta = theta0 + index * (2 * Math.PI / curNumItems) * direction;
 
         float halfIconSize = (mIconSize * scaleForItem(curNumItems)) / 2;

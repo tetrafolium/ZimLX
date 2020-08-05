@@ -162,8 +162,8 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         // Add the arrow.
         final Resources res = getResources();
         final int arrowCenterOffset = res.getDimensionPixelSize(isAlignedWithStart()
-                ? R.dimen.popup_arrow_horizontal_center_start
-                : R.dimen.popup_arrow_horizontal_center_end);
+                                      ? R.dimen.popup_arrow_horizontal_center_start
+                                      : R.dimen.popup_arrow_horizontal_center_end);
         final int halfArrowWidth = res.getDimensionPixelSize(R.dimen.popup_arrow_width) / 2;
         mLauncher.getDragLayer().addView(mArrow);
         DragLayer.LayoutParams arrowLp = (DragLayer.LayoutParams) mArrow.getLayoutParams();
@@ -179,7 +179,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
             mArrow.setVisibility(INVISIBLE);
         } else {
             ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(
-                    arrowLp.width, arrowLp.height, !mIsAboveIcon));
+                        arrowLp.width, arrowLp.height, !mIsAboveIcon));
             Paint arrowPaint = arrowDrawable.getPaint();
             arrowPaint.setColor(Themes.getAttrColor(mLauncher, R.attr.popupColorPrimary));
             // The corner path effect won't be reflected in the shadow, but shouldn't be noticeable.
@@ -220,7 +220,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         int width = getMeasuredWidth();
         int extraVerticalSpace = mArrow.getLayoutParams().height + mArrayOffset
-                + getResources().getDimensionPixelSize(R.dimen.popup_vertical_padding);
+                                 + getResources().getDimensionPixelSize(R.dimen.popup_vertical_padding);
         int height = getMeasuredHeight() + extraVerticalSpace;
 
         getTargetObjectLocation(mTempRect);
@@ -232,7 +232,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         int rightAlignedX = mTempRect.right - width;
         int x = leftAlignedX;
         boolean canBeLeftAligned = leftAlignedX + width + insets.left
-                < dragLayer.getRight() - insets.right;
+                                   < dragLayer.getRight() - insets.right;
         boolean canBeRightAligned = rightAlignedX > dragLayer.getLeft() + insets.left;
         if (!canBeLeftAligned || (mIsRtl && canBeRightAligned)) {
             x = rightAlignedX;
@@ -247,14 +247,14 @@ public abstract class ArrowPopup extends AbstractFloatingView {
             // Aligning with the shortcut icon.
             int shortcutIconWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcut_icon_size);
             int shortcutPaddingStart = resources.getDimensionPixelSize(
-                    R.dimen.popup_padding_start);
+                                           R.dimen.popup_padding_start);
             xOffset = iconWidth / 2 - shortcutIconWidth / 2 - shortcutPaddingStart;
         } else {
             // Aligning with the drag handle.
             int shortcutDragHandleWidth = resources.getDimensionPixelSize(
-                    R.dimen.deep_shortcut_drag_handle_size);
+                                              R.dimen.deep_shortcut_drag_handle_size);
             int shortcutPaddingEnd = resources.getDimensionPixelSize(
-                    R.dimen.popup_padding_end);
+                                         R.dimen.popup_padding_end);
             xOffset = iconWidth / 2 - shortcutDragHandleWidth / 2 - shortcutPaddingEnd;
         }
         x += mIsLeftAligned ? xOffset : -xOffset;
@@ -308,7 +308,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         if (mIsAboveIcon) {
             arrowLp.gravity = lp.gravity = Gravity.BOTTOM;
             lp.bottomMargin =
-                    mLauncher.getDragLayer().getHeight() - y - getMeasuredHeight() - insets.top;
+                mLauncher.getDragLayer().getHeight() - y - getMeasuredHeight() - insets.top;
             arrowLp.bottomMargin = lp.bottomMargin - arrowLp.height - mArrayOffset - insets.bottom;
         } else {
             arrowLp.gravity = lp.gravity = Gravity.TOP;
@@ -347,7 +347,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
 
         // Rectangular reveal.
         final ValueAnimator revealAnim = createOpenCloseOutlineProvider()
-                .createRevealAnimator(this, false);
+                                         .createRevealAnimator(this, false);
         revealAnim.setDuration(revealDuration);
         revealAnim.setInterpolator(revealInterpolator);
 
@@ -360,7 +360,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         mArrow.setScaleX(0);
         mArrow.setScaleY(0);
         Animator arrowScale = ObjectAnimator.ofFloat(mArrow, LauncherAnimUtils.SCALE_PROPERTY, 1)
-                .setDuration(res.getInteger(R.integer.config_popupArrowOpenDuration));
+                              .setDuration(res.getInteger(R.integer.config_popupArrowOpenDuration));
 
         openAnim.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -398,7 +398,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
 
         // Rectangular reveal (reversed).
         final ValueAnimator revealAnim = createOpenCloseOutlineProvider()
-                .createRevealAnimator(this, true);
+                                         .createRevealAnimator(this, true);
         revealAnim.setInterpolator(revealInterpolator);
         closeAnim.play(revealAnim);
 
@@ -431,8 +431,8 @@ public abstract class ArrowPopup extends AbstractFloatingView {
 
     private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {
         int arrowCenterX = getResources().getDimensionPixelSize(mIsLeftAligned ^ mIsRtl ?
-                R.dimen.popup_arrow_horizontal_center_start :
-                R.dimen.popup_arrow_horizontal_center_end);
+                           R.dimen.popup_arrow_horizontal_center_start :
+                           R.dimen.popup_arrow_horizontal_center_end);
         if (!mIsLeftAligned) {
             arrowCenterX = getMeasuredWidth() - arrowCenterX;
         }
@@ -444,7 +444,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         }
 
         return new RoundedRectRevealOutlineProvider
-                (mOutlineRadius, mOutlineRadius, mStartRect, mEndRect);
+               (mOutlineRadius, mOutlineRadius, mStartRect, mEndRect);
     }
 
     /**

@@ -54,7 +54,7 @@ public class WidgetImageView extends View {
         super(context, attrs, defStyle);
 
         mBadgeMargin = context.getResources()
-                .getDimensionPixelSize(R.dimen.profile_badge_margin);
+                       .getDimensionPixelSize(R.dimen.profile_badge_margin);
     }
 
     public void setBitmap(Bitmap bitmap, Drawable badge) {
@@ -111,11 +111,11 @@ public class WidgetImageView extends View {
         if (mBadge != null) {
             Rect bounds = mBadge.getBounds();
             int left = Utilities.boundToRange(
-                    (int) (mDstRectF.right + mBadgeMargin - bounds.width()),
-                    mBadgeMargin, getWidth() - bounds.width());
+                           (int) (mDstRectF.right + mBadgeMargin - bounds.width()),
+                           mBadgeMargin, getWidth() - bounds.width());
             int top = Utilities.boundToRange(
-                    (int) (mDstRectF.bottom + mBadgeMargin - bounds.height()),
-                    mBadgeMargin, getHeight() - bounds.height());
+                          (int) (mDstRectF.bottom + mBadgeMargin - bounds.height()),
+                          mBadgeMargin, getHeight() - bounds.height());
             mBadge.setBounds(left, top, bounds.width() + left, bounds.height() + top);
         }
     }

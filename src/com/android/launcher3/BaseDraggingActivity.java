@@ -47,13 +47,13 @@ import androidx.annotation.NonNull;
  * Extension of BaseActivity allowing support for drag-n-drop
  */
 public abstract class BaseDraggingActivity extends BaseActivity
-        implements WallpaperColorInfo.OnChangeListener {
+    implements WallpaperColorInfo.OnChangeListener {
 
     private static final String TAG = "BaseDraggingActivity";
 
     // The Intent extra that defines whether to ignore the launch animation
     public static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
-            "com.android.launcher3.intent.extra.shortcut.INGORE_LAUNCH_ANIMATION";
+        "com.android.launcher3.intent.extra.shortcut.INGORE_LAUNCH_ANIMATION";
 
     // When starting an action mode, setting this tag will cause the action mode to be cancelled
     // automatically when user interacts with the launcher.
@@ -94,10 +94,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
     protected int getThemeRes(WallpaperColorInfo wallpaperColorInfo) {
         if (wallpaperColorInfo.isDark()) {
             return wallpaperColorInfo.supportsDarkText() ?
-                    R.style.LauncherTheme_DarkText : R.style.LauncherTheme_Dark;
+                   R.style.LauncherTheme_DarkText : R.style.LauncherTheme_Dark;
         } else {
             return wallpaperColorInfo.supportsDarkText() ?
-                    R.style.LauncherTheme_Dark_DarkText : R.style.LauncherTheme;
+                   R.style.LauncherTheme_Dark_DarkText : R.style.LauncherTheme;
         }
     }
 
@@ -160,10 +160,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
         // Only launch using the new animation if the shortcut has not opted out (this is a
         // private contract between launcher and may be ignored in the future).
         boolean useLaunchAnimation = (v != null) &&
-                !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
+                                     !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
         Bundle optsBundle = useLaunchAnimation
-                ? getActivityLaunchOptionsAsBundle(v)
-                : null;
+                            ? getActivityLaunchOptionsAsBundle(v)
+                            : null;
 
         UserHandle user = item == null ? null : item.user;
 
@@ -174,10 +174,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
         }
         try {
             boolean isShortcut = Utilities.ATLEAST_MARSHMALLOW
-                    && (item instanceof ShortcutInfo)
-                    && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
-                    || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
-                    && !((ShortcutInfo) item).isPromise();
+                                 && (item instanceof ShortcutInfo)
+                                 && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
+                                     || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
+                                 && !((ShortcutInfo) item).isPromise();
             if (isShortcut) {
                 // Shortcuts need some special checks due to legacy reasons.
                 startShortcutIntentSafely(intent, optsBundle, item);
@@ -186,7 +186,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 startActivity(intent, optsBundle);
             } else {
                 LauncherAppsCompat.getInstance(this).startActivityForProfile(
-                        intent.getComponent(), user, intent.getSourceBounds(), optsBundle);
+                    intent.getComponent(), user, intent.getSourceBounds(), optsBundle);
             }
             getUserEventDispatcher().logAppLaunch(v, intent);
             return true;
@@ -205,13 +205,13 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 // containing file Uri's would cause a crash as penaltyDeathOnFileUriExposure
                 // is enabled by default on NYC.
                 StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
-                        .penaltyLog().build());
+                                       .penaltyLog().build());
 
                 if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                     String id = ((ShortcutInfo) info).getDeepShortcutId();
                     String packageName = intent.getPackage();
                     DeepShortcutManager.getInstance(this).startShortcut(
-                            packageName, id, intent.getSourceBounds(), optsBundle, info.user);
+                        packageName, id, intent.getSourceBounds(), optsBundle, info.user);
                 } else {
                     // Could be launching some bookkeeping activity
                     startActivity(intent, optsBundle);

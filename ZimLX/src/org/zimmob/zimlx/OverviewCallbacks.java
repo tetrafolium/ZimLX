@@ -33,7 +33,7 @@ public class OverviewCallbacks {
         Preconditions.assertUIThread();
         if (sInstance == null) {
             sInstance = Utilities.getOverrideObject(OverviewCallbacks.class,
-                    context.getApplicationContext(), R.string.overview_callbacks_class);
+                                                    context.getApplicationContext(), R.string.overview_callbacks_class);
         }
         return sInstance;
     }

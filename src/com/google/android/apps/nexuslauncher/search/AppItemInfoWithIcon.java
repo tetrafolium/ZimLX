@@ -10,9 +10,9 @@ public class AppItemInfoWithIcon extends ItemInfoWithIcon {
 
     public AppItemInfoWithIcon(final ComponentKey componentKey) {
         mIntent = new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_LAUNCHER)
-                .setComponent(componentKey.componentName)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        .addCategory(Intent.CATEGORY_LAUNCHER)
+        .setComponent(componentKey.componentName)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         user = componentKey.user;
         itemType = 0;
     }

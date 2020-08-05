@@ -136,7 +136,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         waitUntilLoaderIdle();
         // Item deleted from db
         mCursor = mResolver.query(LauncherSettings.Favorites.getContentUri(item.id),
-                null, null, null, null, null);
+                                  null, null, null, null, null);
         assertEquals(0, mCursor.getCount());
 
         // The view does not exist
@@ -168,30 +168,30 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         waitUntilLoaderIdle();
         // Item deleted from db
         mCursor = mResolver.query(LauncherSettings.Favorites.getContentUri(item.id),
-                null, null, null, null, null);
+                                  null, null, null, null, null);
         mCursor.moveToNext();
 
         // Widget has a valid Id now.
         assertEquals(0, mCursor.getInt(mCursor.getColumnIndex(LauncherSettings.Favorites.RESTORED))
-                & LauncherAppWidgetInfo.FLAG_ID_NOT_VALID);
+                     & LauncherAppWidgetInfo.FLAG_ID_NOT_VALID);
         assertNotNull(mWidgetManager.getAppWidgetInfo(mCursor.getInt(mCursor.getColumnIndex(
-                LauncherSettings.Favorites.APPWIDGET_ID))));
+                          LauncherSettings.Favorites.APPWIDGET_ID))));
     }
 
     @Test
     public void testPendingWidget_notRestored_removed() throws Exception {
         LauncherAppWidgetInfo item = getInvalidWidgetInfo();
         item.restoreStatus = LauncherAppWidgetInfo.FLAG_ID_NOT_VALID
-                | LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
+                             | LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
 
         setupAndVerifyContents(item, Workspace.class, null);
         // The view does not exist
         assertFalse(mDevice.findObject(
-                new UiSelector().className(PendingAppWidgetHostView.class)).exists());
+                        new UiSelector().className(PendingAppWidgetHostView.class)).exists());
         waitUntilLoaderIdle();
         // Item deleted from db
         mCursor = mResolver.query(LauncherSettings.Favorites.getContentUri(item.id),
-                null, null, null, null, null);
+                                  null, null, null, null, null);
         assertEquals(0, mCursor.getCount());
     }
 
@@ -201,21 +201,21 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         // installed at the moment is not removed.
         LauncherAppWidgetInfo item = getInvalidWidgetInfo();
         item.restoreStatus = LauncherAppWidgetInfo.FLAG_ID_NOT_VALID
-                | LauncherAppWidgetInfo.FLAG_RESTORE_STARTED
-                | LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
+                             | LauncherAppWidgetInfo.FLAG_RESTORE_STARTED
+                             | LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
 
         setupAndVerifyContents(item, PendingAppWidgetHostView.class, null);
         // Verify item still exists in db
         waitUntilLoaderIdle();
         mCursor = mResolver.query(LauncherSettings.Favorites.getContentUri(item.id),
-                null, null, null, null, null);
+                                  null, null, null, null, null);
         assertEquals(1, mCursor.getCount());
 
         // Widget still has an invalid id.
         mCursor.moveToNext();
         assertEquals(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID,
-                mCursor.getInt(mCursor.getColumnIndex(LauncherSettings.Favorites.RESTORED))
-                        & LauncherAppWidgetInfo.FLAG_ID_NOT_VALID);
+                     mCursor.getInt(mCursor.getColumnIndex(LauncherSettings.Favorites.RESTORED))
+                     & LauncherAppWidgetInfo.FLAG_ID_NOT_VALID);
     }
 
     @Test
@@ -223,7 +223,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         // A widget which is being installed is not removed
         LauncherAppWidgetInfo item = getInvalidWidgetInfo();
         item.restoreStatus = LauncherAppWidgetInfo.FLAG_ID_NOT_VALID
-                | LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
+                             | LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
 
         // Create an active installer session
         SessionParams params = new SessionParams(SessionParams.MODE_FULL_INSTALL);
@@ -235,14 +235,14 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         // Verify item still exists in db
         waitUntilLoaderIdle();
         mCursor = mResolver.query(LauncherSettings.Favorites.getContentUri(item.id),
-                null, null, null, null, null);
+                                  null, null, null, null, null);
         assertEquals(1, mCursor.getCount());
 
         // Widget still has an invalid id.
         mCursor.moveToNext();
         assertEquals(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID,
-                mCursor.getInt(mCursor.getColumnIndex(LauncherSettings.Favorites.RESTORED))
-                        & LauncherAppWidgetInfo.FLAG_ID_NOT_VALID);
+                     mCursor.getInt(mCursor.getColumnIndex(LauncherSettings.Favorites.RESTORED))
+                     & LauncherAppWidgetInfo.FLAG_ID_NOT_VALID);
     }
 
     /**
@@ -253,7 +253,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
      * @param desc        the content description of the view or null.
      */
     private void setupAndVerifyContents(
-            LauncherAppWidgetInfo item, Class<?> widgetClass, String desc) {
+        LauncherAppWidgetInfo item, Class<?> widgetClass, String desc) {
         long screenId = Workspace.FIRST_SCREEN_ID;
         // Update the screen id counter for the provider.
         LauncherSettings.Settings.call(mResolver, LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
@@ -269,8 +269,8 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         // Insert the item
         ContentWriter writer = new ContentWriter(mTargetContext);
         item.id = LauncherSettings.Settings.call(
-                mResolver, LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
-                .getLong(LauncherSettings.Settings.EXTRA_VALUE);
+                      mResolver, LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
+                  .getLong(LauncherSettings.Settings.EXTRA_VALUE);
         item.screenId = screenId;
         item.onAddToDatabase(writer);
         writer.put(LauncherSettings.Favorites._ID, item.id);
@@ -281,7 +281,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         mActivityMonitor.startLauncher();
         // Verify UI
         UiSelector selector = new UiSelector().packageName(mTargetContext.getPackageName())
-                .className(widgetClass);
+        .className(widgetClass);
         if (desc != null) {
             selector = selector.description(desc);
         }
@@ -295,9 +295,9 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
      *                   the LauncherAppWidgetInfo
      */
     private LauncherAppWidgetInfo createWidgetInfo(
-            LauncherAppWidgetProviderInfo info, boolean bindWidget) {
+        LauncherAppWidgetProviderInfo info, boolean bindWidget) {
         LauncherAppWidgetInfo item = new LauncherAppWidgetInfo(
-                LauncherAppWidgetInfo.NO_ID, info.provider);
+            LauncherAppWidgetInfo.NO_ID, info.provider);
         item.spanX = info.minSpanX;
         item.spanY = info.minSpanY;
         item.minSpanX = info.minSpanX;
@@ -338,13 +338,13 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
             @Override
             public Set<String> call() {
                 return PackageInstallerCompat.getInstance(mTargetContext)
-                        .updateAndGetActiveSessionCache().keySet();
+                       .updateAndGetActiveSessionCache().keySet();
             }
         });
         while (true) {
             try {
                 mTargetContext.getPackageManager().getPackageInfo(
-                        pkg, PackageManager.GET_UNINSTALLED_PACKAGES);
+                    pkg, PackageManager.GET_UNINSTALLED_PACKAGES);
             } catch (Exception e) {
                 if (!activePackage.contains(pkg)) {
                     break;
@@ -370,10 +370,10 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
      */
     private void waitUntilLoaderIdle() throws Exception {
         new LooperExecutor(LauncherModel.getWorkerLooper())
-                .submit(new Runnable() {
-                    @Override
-                    public void run() {
-                    }
-                }).get(DEFAULT_WORKER_TIMEOUT_SECS, TimeUnit.SECONDS);
+        .submit(new Runnable() {
+            @Override
+            public void run() {
+            }
+        }).get(DEFAULT_WORKER_TIMEOUT_SECS, TimeUnit.SECONDS);
     }
 }

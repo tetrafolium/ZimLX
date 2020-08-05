@@ -136,7 +136,7 @@ public class ShelfScrimView extends ScrimView {
             mShelfTop = mShiftRange * mProgress + mTopOffset;
         } else {
             mShelfTop = Utilities.mapRange(mProgress / SCRIM_CATCHUP_THRESHOLD, -mRadius,
-                    mShelfTopAtThreshold);
+                                           mShelfTopAtThreshold);
         }
 
         if (mProgress >= 1) {
@@ -146,20 +146,20 @@ public class ShelfScrimView extends ScrimView {
             mRemainingScreenColor = 0;
 
             int alpha = Math.round(Utilities.mapToRange(
-                    mProgress, mMidProgress, 1, mMidAlpha, 0, ACCEL));
+                                       mProgress, mMidProgress, 1, mMidAlpha, 0, ACCEL));
             mShelfColor = setAlphaComponent(mEndScrim, alpha);
         } else {
             mDragHandleOffset += mShiftRange * (mMidProgress - mProgress);
 
             // Note that these ranges and interpolators are inverted because progress goes 1 to 0.
             int alpha = Math.round(
-                    Utilities.mapToRange(mProgress, (float) 0, mMidProgress, (float) mEndAlpha,
-                            (float) mMidAlpha, Interpolators.clampToProgress(ACCEL, 0.5f, 1f)));
+                            Utilities.mapToRange(mProgress, (float) 0, mMidProgress, (float) mEndAlpha,
+                                                 (float) mMidAlpha, Interpolators.clampToProgress(ACCEL, 0.5f, 1f)));
             mShelfColor = setAlphaComponent(mEndScrim, alpha);
 
             int remainingScrimAlpha = Math.round(
-                    Utilities.mapToRange(mProgress, (float) 0, mMidProgress, mMaxScrimAlpha,
-                            (float) 0, LINEAR));
+                                          Utilities.mapToRange(mProgress, (float) 0, mMidProgress, mMaxScrimAlpha,
+                                                  (float) 0, LINEAR));
             mRemainingScreenColor = setAlphaComponent(mScrimColor, remainingScrimAlpha);
         }
     }
@@ -194,7 +194,7 @@ public class ShelfScrimView extends ScrimView {
                 // Using a arbitrary '+10' in the bottom to avoid any left-overs at the
                 // corners due to rounding issues.
                 mTempPath.addRoundRect(0, height - mRadius, width, height + mRadius + 10,
-                        mRadius, mRadius, Path.Direction.CW);
+                                       mRadius, mRadius, Path.Direction.CW);
                 mRemainingScreenPath.reset();
                 mRemainingScreenPath.addRect(0, 0, width, height, Path.Direction.CW);
                 mRemainingScreenPath.op(mTempPath, Path.Op.DIFFERENCE);
@@ -209,7 +209,7 @@ public class ShelfScrimView extends ScrimView {
 
         mPaint.setColor(mShelfColor);
         onDrawRoundRect(canvas, 0, mShelfTop, getWidth(), height + mRadius,
-                mRadius, mRadius, mPaint);
+                        mRadius, mRadius, mPaint);
     }
 
     @Override

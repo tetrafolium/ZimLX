@@ -107,12 +107,12 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         if (requestCode == REQUEST_PERMISSION_STORAGE_ACCESS) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 new androidx.appcompat.app.AlertDialog.Builder(this)
-                        .setTitle(R.string.title_storage_permission_required)
-                        .setMessage(R.string.content_storage_permission_required)
-                        .setCancelable(false)
-                        .setNegativeButton(android.R.string.no, null)
-                        .setPositiveButton(android.R.string.yes, (dialog, which) -> Utilities.requestStoragePermission(this))
-                        .show();
+                .setTitle(R.string.title_storage_permission_required)
+                .setMessage(R.string.content_storage_permission_required)
+                .setCancelable(false)
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> Utilities.requestStoragePermission(this))
+                .show();
 
             }
 
@@ -243,14 +243,14 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         currentEditInfo = itemInfo;
         Boolean folderInfo = itemInfo instanceof FolderInfo;
         Intent intent = EditIconActivity
-                .Companion
-                .newIntent(this, infoProvider.getTitle(itemInfo), folderInfo, component);
+                        .Companion
+                        .newIntent(this, infoProvider.getTitle(itemInfo), folderInfo, component);
         int flags = Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
         BlankActivity.Companion
-                .startActivityForResult(this, intent, CODE_EDIT_ICON, flags, (resultCode, data) -> {
-                    handleEditIconResult(resultCode, data);
-                    return null;
-                });
+        .startActivityForResult(this, intent, CODE_EDIT_ICON, flags, (resultCode, data) -> {
+            handleEditIconResult(resultCode, data);
+            return null;
+        });
 
     }
 

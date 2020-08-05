@@ -44,8 +44,8 @@ public class DeferredAppWidgetHostView extends LauncherAppWidgetHostView {
         mPaint = new TextPaint();
         mPaint.setColor(Color.WHITE);
         mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
-                mLauncher.getDeviceProfile().getFullScreenProfile().iconTextSizePx,
-                getResources().getDisplayMetrics()));
+                           mLauncher.getDeviceProfile().getFullScreenProfile().iconTextSizePx,
+                           getResources().getDisplayMetrics()));
         setBackgroundResource(R.drawable.bg_deferred_app_widget);
     }
 
@@ -70,14 +70,14 @@ public class DeferredAppWidgetHostView extends LauncherAppWidgetHostView {
             return;
         }
         mSetupTextLayout = new StaticLayout(info.label, mPaint, availableWidth,
-                Layout.Alignment.ALIGN_CENTER, 1, 0, true);
+                                            Layout.Alignment.ALIGN_CENTER, 1, 0, true);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         if (mSetupTextLayout != null) {
             canvas.translate(getPaddingLeft() * 2,
-                    (getHeight() - mSetupTextLayout.getHeight()) / 2);
+                             (getHeight() - mSetupTextLayout.getHeight()) / 2);
             mSetupTextLayout.draw(canvas);
         }
     }

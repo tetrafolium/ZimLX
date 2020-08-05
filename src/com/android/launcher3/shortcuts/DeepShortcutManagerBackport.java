@@ -102,10 +102,10 @@ public class DeepShortcutManagerBackport {
                     if (eventType == XmlPullParser.START_TAG) {
                         if (parseXml.getName().equals("shortcut")) {
                             ShortcutInfoCompat info = parseShortcut(context,
-                                    activity,
-                                    resourcesForApplication,
-                                    packageName,
-                                    parseXml);
+                                                                    activity,
+                                                                    resourcesForApplication,
+                                                                    packageName,
+                                                                    parseXml);
 
                             if (info != null && info.getId() != null) {
                                 for (ResolveInfo ri : pm.queryIntentActivities(ShortcutInfoCompatBackport.stripPackage(info.makeIntent()), 0)) {

@@ -42,7 +42,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
             // is allowed of not.
             Resources res = Resources.getSystem();
             int originalSmallestWidth = res.getConfiguration().smallestScreenWidthDp
-                    * res.getDisplayMetrics().densityDpi / DENSITY_DEVICE_STABLE;
+                                        * res.getDisplayMetrics().densityDpi / DENSITY_DEVICE_STABLE;
             return originalSmallestWidth >= 600;
         }
         return false;
@@ -82,7 +82,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
             mPrefs = Utilities.getPrefs(mActivity);
             mPrefs.registerOnSharedPreferenceChangeListener(this);
             mAutoRotateEnabled = mPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
-                    getAllowRotationDefaultValue());
+                                                   getAllowRotationDefaultValue());
         } else {
             mPrefs = null;
         }
@@ -91,7 +91,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         mAutoRotateEnabled = mPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
-                getAllowRotationDefaultValue());
+                                               getAllowRotationDefaultValue());
         notifyChange();
     }
 
@@ -133,11 +133,11 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
         final int activityFlags;
         if (mStateHandlerRequest != REQUEST_NONE) {
             activityFlags = mStateHandlerRequest == REQUEST_LOCK ?
-                    SCREEN_ORIENTATION_LOCKED : SCREEN_ORIENTATION_UNSPECIFIED;
+                            SCREEN_ORIENTATION_LOCKED : SCREEN_ORIENTATION_UNSPECIFIED;
         } else if (mCurrentStateRequest == REQUEST_LOCK) {
             activityFlags = SCREEN_ORIENTATION_LOCKED;
         } else if (mIgnoreAutoRotateSettings || mCurrentStateRequest == REQUEST_ROTATE
-                || mAutoRotateEnabled) {
+                   || mAutoRotateEnabled) {
             activityFlags = SCREEN_ORIENTATION_UNSPECIFIED;
         } else {
             // If auto rotation is off, allow rotation on the activity, in case the user is using
@@ -153,8 +153,8 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
     @Override
     public String toString() {
         return String.format("[mStateHandlerRequest=%d, mCurrentStateRequest=%d,"
-                        + " mLastActivityFlags=%d, mIgnoreAutoRotateSettings=%b, mAutoRotateEnabled=%b]",
-                mStateHandlerRequest, mCurrentStateRequest, mLastActivityFlags,
-                mIgnoreAutoRotateSettings, mAutoRotateEnabled);
+                             + " mLastActivityFlags=%d, mIgnoreAutoRotateSettings=%b, mAutoRotateEnabled=%b]",
+                             mStateHandlerRequest, mCurrentStateRequest, mLastActivityFlags,
+                             mIgnoreAutoRotateSettings, mAutoRotateEnabled);
     }
 }

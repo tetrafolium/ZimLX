@@ -47,7 +47,7 @@ public class DeepShortcutManager {
     private static final String TAG = "DeepShortcutManager";
 
     private static final int FLAG_GET_ALL = ShortcutQuery.FLAG_MATCH_DYNAMIC
-            | ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_PINNED;
+                                            | ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_PINNED;
 
     private static DeepShortcutManager sInstance;
     private static final Object sInstanceLock = new Object();
@@ -75,9 +75,9 @@ public class DeepShortcutManager {
 
     public static boolean supportsShortcuts(ItemInfo info) {
         boolean isItemPromise = info instanceof com.android.launcher3.ShortcutInfo
-                && ((com.android.launcher3.ShortcutInfo) info).hasPromiseIconUi();
+                                && ((com.android.launcher3.ShortcutInfo) info).hasPromiseIconUi();
         return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
-                && !info.isDisabled() && !isItemPromise;
+               && !info.isDisabled() && !isItemPromise;
     }
 
     public static boolean supportsEdit(ItemInfo info) {
@@ -99,7 +99,7 @@ public class DeepShortcutManager {
      * because we only get "key" fields in onShortcutsChanged().
      */
     public List<ShortcutInfoCompat> queryForFullDetails(String packageName,
-                                                        List<String> shortcutIds, UserHandle user) {
+            List<String> shortcutIds, UserHandle user) {
         return query(FLAG_GET_ALL, packageName, null, shortcutIds, user);
     }
 
@@ -108,9 +108,9 @@ public class DeepShortcutManager {
      * to be displayed in the shortcuts container on long press.
      */
     public List<ShortcutInfoCompat> queryForShortcutsContainer(ComponentName activity,
-                                                               List<String> ids, UserHandle user) {
+            List<String> ids, UserHandle user) {
         return query(ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_DYNAMIC,
-                activity.getPackageName(), activity, ids, user);
+                     activity.getPackageName(), activity, ids, user);
     }
 
     /**
@@ -163,7 +163,7 @@ public class DeepShortcutManager {
         if (Utilities.ATLEAST_NOUGAT_MR1) {
             try {
                 mLauncherApps.startShortcut(packageName, id, sourceBounds,
-                        startActivityOptions, user);
+                                            startActivityOptions, user);
                 mWasLastCallSuccess = true;
             } catch (SecurityException | IllegalStateException e) {
                 Log.e(TAG, "Failed to start shortcut", e);
@@ -178,7 +178,7 @@ public class DeepShortcutManager {
         if (Utilities.ATLEAST_NOUGAT_MR1) {
             try {
                 mLauncherApps.startShortcut(packageName, id, intent.getSourceBounds(),
-                        startActivityOptions, user);
+                                            startActivityOptions, user);
                 mWasLastCallSuccess = true;
             } catch (SecurityException | IllegalStateException e) {
                 Log.e(TAG, "Failed to start shortcut", e);
@@ -194,7 +194,7 @@ public class DeepShortcutManager {
         if (Utilities.ATLEAST_NOUGAT_MR1) {
             try {
                 Drawable icon = mLauncherApps.getShortcutIconDrawable(
-                        shortcutInfo.getShortcutInfo(), density);
+                                    shortcutInfo.getShortcutInfo(), density);
                 mWasLastCallSuccess = true;
                 return icon;
             } catch (SecurityException | IllegalStateException e) {
@@ -221,7 +221,7 @@ public class DeepShortcutManager {
     }
 
     public List<ShortcutInfoCompat> queryForPinnedShortcuts(String packageName,
-                                                            List<String> shortcutIds, UserHandle user) {
+            List<String> shortcutIds, UserHandle user) {
         return query(ShortcutQuery.FLAG_MATCH_PINNED, packageName, null, shortcutIds, user);
     }
 

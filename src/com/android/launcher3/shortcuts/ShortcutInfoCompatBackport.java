@@ -69,16 +69,16 @@ public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
                 0;
 
         mShortLabel = xmlData.containsKey("shortcutShortLabel") ?
-                resources.getString(Integer.valueOf(xmlData.get("shortcutShortLabel").substring(1))) :
-                "";
+                      resources.getString(Integer.valueOf(xmlData.get("shortcutShortLabel").substring(1))) :
+                      "";
 
         mLongLabel = xmlData.containsKey("shortcutLongLabel") ?
-                resources.getString(Integer.valueOf(xmlData.get("shortcutLongLabel").substring(1))) :
-                mShortLabel;
+                     resources.getString(Integer.valueOf(xmlData.get("shortcutLongLabel").substring(1))) :
+                     mShortLabel;
 
         mDisabledMessage = xmlData.containsKey("shortcutDisabledMessage") ?
-                resources.getString(Integer.valueOf(xmlData.get("shortcutDisabledMessage").substring(1))) :
-                "";
+                           resources.getString(Integer.valueOf(xmlData.get("shortcutDisabledMessage").substring(1))) :
+                           "";
 
         HashMap<String, String> xmlDataIntent = new HashMap<>();
         HashMap<String, String> xmlDataExtras = new HashMap<>();
@@ -106,18 +106,18 @@ public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
         } while (parseXml.getDepth() > startDepth);
 
         String action = xmlDataIntent.containsKey("action") ?
-                xmlDataIntent.get("action") :
-                Intent.ACTION_MAIN;
+                        xmlDataIntent.get("action") :
+                        Intent.ACTION_MAIN;
 
         boolean useTargetPackage = xmlDataIntent.containsKey("targetPackage");
         String targetPackage = useTargetPackage ?
-                xmlDataIntent.get("targetPackage") :
-                mPackageName;
+                               xmlDataIntent.get("targetPackage") :
+                               mPackageName;
 
         mIntent = new Intent(action)
-                .setPackage(targetPackage)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME)
-                .putExtra(EXTRA_SHORTCUT_ID, mId);
+        .setPackage(targetPackage)
+        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME)
+        .putExtra(EXTRA_SHORTCUT_ID, mId);
 
         if (xmlDataIntent.containsKey("targetClass")) {
             mIntent.setComponent(new ComponentName(targetPackage, xmlDataIntent.get("targetClass")));
@@ -146,11 +146,11 @@ public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
     public Drawable getIcon(int density) {
         try {
             return mContext.getPackageManager()
-                    .getResourcesForApplication(mPackageName)
-                    .getDrawableForDensity(mIcon, density);
+                   .getResourcesForApplication(mPackageName)
+                   .getDrawableForDensity(mIcon, density);
         } catch (PackageManager.NameNotFoundException | Resources.NotFoundException ignored) {
             return mContext.getResources()
-                    .getDrawableForDensity(R.drawable.ic_default_shortcut, density);
+                   .getDrawableForDensity(R.drawable.ic_default_shortcut, density);
         }
     }
 

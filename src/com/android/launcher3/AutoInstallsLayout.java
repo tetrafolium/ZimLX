@@ -58,7 +58,7 @@ public class AutoInstallsLayout {
      * Marker action used to discover a package which defines launcher customization
      */
     static final String ACTION_LAUNCHER_CUSTOMIZATION =
-            "android.autoinstalls.config.action.PLAY_AUTO_INSTALL";
+        "android.autoinstalls.config.action.PLAY_AUTO_INSTALL";
     private static final String TAG = "AutoInstalls";
     private static final boolean LOGD = false;
     /**
@@ -96,9 +96,9 @@ public class AutoInstallsLayout {
     private static final String ATTR_KEY = "key";
     private static final String ATTR_VALUE = "value";
     private static final String HOTSEAT_CONTAINER_NAME =
-            Favorites.containerToString(Favorites.CONTAINER_HOTSEAT);
+        Favorites.containerToString(Favorites.CONTAINER_HOTSEAT);
     private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
-            "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
+        "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
     protected final LayoutParserCallback mCallback;
     protected final PackageManager mPackageManager;
     protected final Resources mSourceRes;
@@ -139,12 +139,12 @@ public class AutoInstallsLayout {
     static AutoInstallsLayout get(Context context, AppWidgetHost appWidgetHost,
                                   LayoutParserCallback callback) {
         Pair<String, Resources> customizationApkInfo = Utilities.findSystemApk(
-                ACTION_LAUNCHER_CUSTOMIZATION, context.getPackageManager());
+                    ACTION_LAUNCHER_CUSTOMIZATION, context.getPackageManager());
         if (customizationApkInfo == null) {
             return null;
         }
         return get(context, customizationApkInfo.first, customizationApkInfo.second,
-                appWidgetHost, callback);
+                   appWidgetHost, callback);
     }
 
     static AutoInstallsLayout get(Context context, String pkg, Resources targetRes,
@@ -153,15 +153,15 @@ public class AutoInstallsLayout {
 
         // Try with grid size and hotseat count
         String layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES_WITH_HOSTEAT,
-                grid.numColumns, grid.numRows, grid.numHotseatIcons);
+                                          grid.numColumns, grid.numRows, grid.numHotseatIcons);
         int layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
 
         // Try with only grid size
         if (layoutId == 0) {
             Log.d(TAG, "Formatted layout: " + layoutName
-                    + " not found. Trying layout without hosteat");
+                  + " not found. Trying layout without hosteat");
             layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES,
-                    grid.numColumns, grid.numRows);
+                                       grid.numColumns, grid.numRows);
             layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
         }
 
@@ -176,11 +176,11 @@ public class AutoInstallsLayout {
             return null;
         }
         return new AutoInstallsLayout(context, appWidgetHost, callback, targetRes, layoutId,
-                TAG_WORKSPACE);
+                                      TAG_WORKSPACE);
     }
 
     protected static void beginDocument(XmlPullParser parser, String firstElementName)
-            throws XmlPullParserException, IOException {
+    throws XmlPullParserException, IOException {
         int type;
         while ((type = parser.next()) != XmlPullParser.START_TAG
                 && type != XmlPullParser.END_DOCUMENT) ;
@@ -191,7 +191,7 @@ public class AutoInstallsLayout {
 
         if (!parser.getName().equals(firstElementName)) {
             throw new XmlPullParserException("Unexpected start tag: found " + parser.getName() +
-                    ", expected " + firstElementName);
+                                             ", expected " + firstElementName);
         }
     }
 
@@ -211,7 +211,7 @@ public class AutoInstallsLayout {
      */
     protected static String getAttributeValue(XmlResourceParser parser, String attribute) {
         String value = parser.getAttributeValue(
-                "http://schemas.android.com/apk/res-auto", attribute);
+                           "http://schemas.android.com/apk/res-auto", attribute);
         if (value == null) {
             value = parser.getAttributeValue(null, attribute);
         }
@@ -223,10 +223,10 @@ public class AutoInstallsLayout {
      * first before falling back to anonymous attribute.
      */
     protected static int getAttributeResourceValue(XmlResourceParser parser, String attribute,
-                                                   int defaultValue) {
+            int defaultValue) {
         int value = parser.getAttributeResourceValue(
-                "http://schemas.android.com/apk/res-auto", attribute,
-                defaultValue);
+                        "http://schemas.android.com/apk/res-auto", attribute,
+                        defaultValue);
         if (value == defaultValue) {
             value = parser.getAttributeResourceValue(null, attribute, defaultValue);
         }
@@ -255,7 +255,7 @@ public class AutoInstallsLayout {
      * Parses the layout and returns the number of elements added on the homescreen.
      */
     protected int parseLayout(int layoutId, ArrayList<Long> screenIds)
-            throws XmlPullParserException, IOException {
+    throws XmlPullParserException, IOException {
         XmlResourceParser parser = mSourceRes.getXml(layoutId);
         beginDocument(parser, mRootTag);
         final int depth = parser.getDepth();
@@ -284,7 +284,7 @@ public class AutoInstallsLayout {
             // Hack: hotseat items are stored using screen ids
             long rank = Long.parseLong(getAttributeValue(parser, ATTR_RANK));
             out[1] = (FeatureFlags.NO_ALL_APPS_ICON || rank < mIdp.getAllAppsButtonRank())
-                    ? rank : (rank + 1);
+                     ? rank : (rank + 1);
         } else {
             out[0] = Favorites.CONTAINER_DESKTOP;
             out[1] = Long.parseLong(getAttributeValue(parser, ATTR_SCREEN));
@@ -295,10 +295,10 @@ public class AutoInstallsLayout {
      * Parses the current node and returns the number of elements added.
      */
     protected int parseAndAddNode(
-            XmlResourceParser parser,
-            ArrayMap<String, TagParser> tagParserMap,
-            ArrayList<Long> screenIds)
-            throws XmlPullParserException, IOException {
+        XmlResourceParser parser,
+        ArrayMap<String, TagParser> tagParserMap,
+        ArrayList<Long> screenIds)
+    throws XmlPullParserException, IOException {
 
         if (TAG_INCLUDE.equals(parser.getName())) {
             final int resId = getAttributeResourceValue(parser, ATTR_WORKSPACE, 0);
@@ -319,9 +319,9 @@ public class AutoInstallsLayout {
         mValues.put(Favorites.SCREEN, screenId);
 
         mValues.put(Favorites.CELLX,
-                convertToDistanceFromEnd(getAttributeValue(parser, ATTR_X), mColumnCount));
+                    convertToDistanceFromEnd(getAttributeValue(parser, ATTR_X), mColumnCount));
         mValues.put(Favorites.CELLY,
-                convertToDistanceFromEnd(getAttributeValue(parser, ATTR_Y), mRowCount));
+                    convertToDistanceFromEnd(getAttributeValue(parser, ATTR_Y), mRowCount));
 
         TagParser tagParser = tagParserMap.get(parser.getName());
         if (tagParser == null) {
@@ -380,7 +380,7 @@ public class AutoInstallsLayout {
          * @return the id of the row added or -1;
          */
         long parseAndAdd(XmlResourceParser parser)
-                throws XmlPullParserException, IOException;
+        throws XmlPullParserException, IOException;
     }
 
     public interface LayoutParserCallback {
@@ -408,18 +408,18 @@ public class AutoInstallsLayout {
                         info = mPackageManager.getActivityInfo(cn, 0);
                     } catch (PackageManager.NameNotFoundException nnfe) {
                         String[] packages = mPackageManager.currentToCanonicalPackageNames(
-                                new String[]{packageName});
+                                                new String[] {packageName});
                         cn = new ComponentName(packages[0], className);
                         info = mPackageManager.getActivityInfo(cn, 0);
                     }
                     final Intent intent = new Intent(Intent.ACTION_MAIN, null)
-                            .addCategory(Intent.CATEGORY_LAUNCHER)
-                            .setComponent(cn)
-                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    .addCategory(Intent.CATEGORY_LAUNCHER)
+                    .setComponent(cn)
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                              Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
                     return addShortcut(info.loadLabel(mPackageManager).toString(),
-                            intent, Favorites.ITEM_TYPE_APPLICATION);
+                                       intent, Favorites.ITEM_TYPE_APPLICATION);
                 } catch (PackageManager.NameNotFoundException e) {
                     Log.e(TAG, "Favorite not found: " + packageName + "/" + className);
                 }
@@ -454,12 +454,12 @@ public class AutoInstallsLayout {
 
             mValues.put(Favorites.RESTORED, ShortcutInfo.FLAG_AUTOINSTALL_ICON);
             final Intent intent = new Intent(Intent.ACTION_MAIN, null)
-                    .addCategory(Intent.CATEGORY_LAUNCHER)
-                    .setComponent(new ComponentName(packageName, className))
-                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                            Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            .addCategory(Intent.CATEGORY_LAUNCHER)
+            .setComponent(new ComponentName(packageName, className))
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                      Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             return addShortcut(mContext.getString(R.string.package_state_unknown), intent,
-                    Favorites.ITEM_TYPE_APPLICATION);
+                               Favorites.ITEM_TYPE_APPLICATION);
         }
     }
 
@@ -498,16 +498,16 @@ public class AutoInstallsLayout {
             // Auto installs should always support the current platform version.
             LauncherIcons li = LauncherIcons.obtain(mContext);
             mValues.put(LauncherSettings.Favorites.ICON, Utilities.flattenBitmap(
-                    li.createBadgedIconBitmap(icon, Process.myUserHandle(), Build.VERSION.SDK_INT).icon));
+                            li.createBadgedIconBitmap(icon, Process.myUserHandle(), Build.VERSION.SDK_INT).icon));
             li.recycle();
 
             mValues.put(Favorites.ICON_PACKAGE, mIconRes.getResourcePackageName(iconId));
             mValues.put(Favorites.ICON_RESOURCE, mIconRes.getResourceName(iconId));
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                            Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             return addShortcut(mSourceRes.getString(titleResId),
-                    intent, Favorites.ITEM_TYPE_SHORTCUT);
+                               intent, Favorites.ITEM_TYPE_SHORTCUT);
         }
 
         protected Intent parseIntent(XmlResourceParser parser) {
@@ -532,7 +532,7 @@ public class AutoInstallsLayout {
 
         @Override
         public long parseAndAdd(XmlResourceParser parser)
-                throws XmlPullParserException, IOException {
+        throws XmlPullParserException, IOException {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
             if (TextUtils.isEmpty(packageName) || TextUtils.isEmpty(className)) {
@@ -573,9 +573,9 @@ public class AutoInstallsLayout {
         protected long verifyAndInsert(ComponentName cn, Bundle extras) {
             mValues.put(Favorites.APPWIDGET_PROVIDER, cn.flattenToString());
             mValues.put(Favorites.RESTORED,
-                    LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
-                            LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
-                            LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG);
+                        LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
+                        LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
+                        LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG);
             mValues.put(Favorites._ID, mCallback.generateNewItemId());
             if (!extras.isEmpty()) {
                 mValues.put(Favorites.INTENT, new Intent().putExtras(extras).toUri(0));
@@ -603,7 +603,7 @@ public class AutoInstallsLayout {
 
         @Override
         public long parseAndAdd(XmlResourceParser parser)
-                throws XmlPullParserException, IOException {
+        throws XmlPullParserException, IOException {
             final String title;
             final int titleResId = getAttributeResourceValue(parser, ATTR_TITLE, 0);
             if (titleResId != 0) {
@@ -673,7 +673,7 @@ public class AutoInstallsLayout {
 
                     addedId = folderItems.get(0);
                     mDb.update(Favorites.TABLE_NAME, childValues,
-                            Favorites._ID + "=" + addedId, null);
+                               Favorites._ID + "=" + addedId, null);
                 }
             }
             return addedId;

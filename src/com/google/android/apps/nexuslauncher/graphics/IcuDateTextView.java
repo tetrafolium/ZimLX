@@ -44,7 +44,7 @@ public class IcuDateTextView extends DoubleShadowTextView {
             format = mDateFormat.format(System.currentTimeMillis());
         } else {
             format = DateUtils.formatDateTime(getContext(), System.currentTimeMillis(),
-                    DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_MONTH);
+                                              DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_MONTH);
         }
         setText(format);
         setContentDescription(format);
@@ -54,8 +54,8 @@ public class IcuDateTextView extends DoubleShadowTextView {
     public static DateFormat getDateFormat(Context context, boolean forcedChange, DateFormat oldFormat, boolean isTimeAbove) {
         if (oldFormat == null || forcedChange) {
             (oldFormat = DateFormat.getInstanceForSkeleton(context
-                    .getString(R.string.icu_abbrev_wday_month_day_no_year), Locale.getDefault()))
-                    .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
+                         .getString(R.string.icu_abbrev_wday_month_day_no_year), Locale.getDefault()))
+            .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
         }
         ZimPreferences prefs = Utilities.getZimPrefs(context);
         boolean showTime = prefs.getSmartspaceTime();
@@ -67,7 +67,7 @@ public class IcuDateTextView extends DoubleShadowTextView {
             if (showDate && !isTimeAbove)
                 format += context.getString(R.string.icu_abbrev_date);
             (oldFormat = DateFormat.getInstanceForSkeleton(format, Locale.getDefault()))
-                    .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
+            .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
         }
         return oldFormat;
     }

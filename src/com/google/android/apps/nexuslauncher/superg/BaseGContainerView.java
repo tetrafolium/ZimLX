@@ -95,21 +95,21 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         SearchProviderController controller = SearchProviderController.Companion.getInstance(getContext());
         if (controller.isGoogle()) {
             getContext().sendOrderedBroadcast(getPillAnimationIntent("com.google.nexuslauncher.FAST_TEXT_SEARCH"),
-                    null,
-                    new BroadcastReceiver() {
-                        @Override
-                        public void onReceive(Context context, Intent intent) {
-                            if (getResultCode() == 0) {
-                                startQsbActivity(BaseGContainerView.TEXT_ASSIST);
-                            } else {
-                                loadWindowFocus();
-                            }
-                        }
-                    },
-                    null,
-                    0,
-                    null,
-                    null);
+                                              null,
+            new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (getResultCode() == 0) {
+                        startQsbActivity(BaseGContainerView.TEXT_ASSIST);
+                    } else {
+                        loadWindowFocus();
+                    }
+                }
+            },
+            null,
+            0,
+            null,
+            null);
         } else {
             SearchProvider provider = controller.getSearchProvider();
             provider.startSearch(new Function1<Intent, Unit>() {
@@ -127,18 +127,18 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         mQsbView.getLocationOnScreen(qsbLocation);
 
         Rect rect = new Rect(qsbLocation[0],
-                qsbLocation[1],
-                qsbLocation[0] + mQsbView.getWidth(),
-                qsbLocation[1] + mQsbView.getHeight());
+                             qsbLocation[1],
+                             qsbLocation[0] + mQsbView.getWidth(),
+                             qsbLocation[1] + mQsbView.getHeight());
 
         Intent intent = new Intent(action);
         setGoogleAnimationStart(rect, intent);
         intent.setSourceBounds(rect);
         return intent.putExtra("source_round_left", true)
-                .putExtra("source_round_right", true)
-                .putExtra("source_logo_offset", midLocation(findViewById(R.id.g_icon), rect))
-                .setPackage("com.google.android.googlequicksearchbox")
-                .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_NEW_TASK);
+               .putExtra("source_round_right", true)
+               .putExtra("source_logo_offset", midLocation(findViewById(R.id.g_icon), rect))
+               .setPackage("com.google.android.googlequicksearchbox")
+               .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     private Point midLocation(View view, Rect rect) {
@@ -218,11 +218,11 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         Context context = getContext();
         try {
             context.startActivity(new Intent(action).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK)
-                    .setPackage("com.google.android.googlequicksearchbox"));
+                                  .setPackage("com.google.android.googlequicksearchbox"));
         } catch (ActivityNotFoundException ignored) {
             try {
                 context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")),
-                        Launcher.getLauncher(context).getActivityLaunchOptions(mQsbView).toBundle());
+                                      Launcher.getLauncher(context).getActivityLaunchOptions(mQsbView).toBundle());
             } catch (ActivityNotFoundException ignored2) {
             }
         }

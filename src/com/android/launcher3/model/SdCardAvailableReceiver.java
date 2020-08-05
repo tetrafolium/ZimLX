@@ -72,12 +72,12 @@ public class SdCardAvailableReceiver extends BroadcastReceiver {
             }
             if (!packagesRemoved.isEmpty()) {
                 mModel.onPackagesRemoved(user,
-                        packagesRemoved.toArray(new String[packagesRemoved.size()]));
+                                         packagesRemoved.toArray(new String[packagesRemoved.size()]));
             }
             if (!packagesUnavailable.isEmpty()) {
                 mModel.onPackagesUnavailable(
-                        packagesUnavailable.toArray(new String[packagesUnavailable.size()]),
-                        user, false);
+                    packagesUnavailable.toArray(new String[packagesUnavailable.size()]),
+                    user, false);
             }
         }
 

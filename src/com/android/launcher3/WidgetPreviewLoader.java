@@ -67,7 +67,7 @@ public class WidgetPreviewLoader {
      */
     @Thunk
     final Set<Bitmap> mUnusedBitmaps =
-            Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
+        Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
 
     private final Context mContext;
     private final IconCache mIconCache;
@@ -130,15 +130,15 @@ public class WidgetPreviewLoader {
         @Override
         public void onCreateTable(SQLiteDatabase database) {
             database.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
-                    COLUMN_COMPONENT + " TEXT NOT NULL, " +
-                    COLUMN_USER + " INTEGER NOT NULL, " +
-                    COLUMN_SIZE + " TEXT NOT NULL, " +
-                    COLUMN_PACKAGE + " TEXT NOT NULL, " +
-                    COLUMN_LAST_UPDATED + " INTEGER NOT NULL DEFAULT 0, " +
-                    COLUMN_VERSION + " INTEGER NOT NULL DEFAULT 0, " +
-                    COLUMN_PREVIEW_BITMAP + " BLOB, " +
-                    "PRIMARY KEY (" + COLUMN_COMPONENT + ", " + COLUMN_USER + ", " + COLUMN_SIZE + ") " +
-                    ");");
+                             COLUMN_COMPONENT + " TEXT NOT NULL, " +
+                             COLUMN_USER + " INTEGER NOT NULL, " +
+                             COLUMN_SIZE + " TEXT NOT NULL, " +
+                             COLUMN_PACKAGE + " TEXT NOT NULL, " +
+                             COLUMN_LAST_UPDATED + " INTEGER NOT NULL DEFAULT 0, " +
+                             COLUMN_VERSION + " INTEGER NOT NULL DEFAULT 0, " +
+                             COLUMN_PREVIEW_BITMAP + " BLOB, " +
+                             "PRIMARY KEY (" + COLUMN_COMPONENT + ", " + COLUMN_USER + ", " + COLUMN_SIZE + ") " +
+                             ");");
         }
     }
 
@@ -165,8 +165,8 @@ public class WidgetPreviewLoader {
         }
 
         mDb.delete(
-                CacheDb.COLUMN_PACKAGE + " = ? AND " + CacheDb.COLUMN_USER + " = ?",
-                new String[]{packageName, Long.toString(userSerial)});
+            CacheDb.COLUMN_PACKAGE + " = ? AND " + CacheDb.COLUMN_USER + " = ?",
+            new String[] {packageName, Long.toString(userSerial)});
     }
 
     /**
@@ -196,12 +196,13 @@ public class WidgetPreviewLoader {
 
         LongSparseArray<HashSet<String>> packagesToDelete = new LongSparseArray<>();
         long passedUserId = packageUser == null ? 0
-                : mUserManager.getSerialNumberForUser(packageUser.mUser);
+                            : mUserManager.getSerialNumberForUser(packageUser.mUser);
         Cursor c = null;
         try {
             c = mDb.query(
-                    new String[]{CacheDb.COLUMN_USER, CacheDb.COLUMN_PACKAGE,
-                            CacheDb.COLUMN_LAST_UPDATED, CacheDb.COLUMN_VERSION},
+                    new String[] {CacheDb.COLUMN_USER, CacheDb.COLUMN_PACKAGE,
+                                  CacheDb.COLUMN_LAST_UPDATED, CacheDb.COLUMN_VERSION
+                                 },
                     null, null);
             while (c.moveToNext()) {
                 long userId = c.getLong(0);
@@ -210,7 +211,7 @@ public class WidgetPreviewLoader {
                 long version = c.getLong(3);
 
                 if (packageUser != null && (!pkg.equals(packageUser.mPackageName)
-                        || userId != passedUserId)) {
+                                            || userId != passedUserId)) {
                     // This preview is associated with a different package/user, no need to remove.
                     continue;
                 }
@@ -257,14 +258,14 @@ public class WidgetPreviewLoader {
         Cursor cursor = null;
         try {
             cursor = mDb.query(
-                    new String[]{CacheDb.COLUMN_PREVIEW_BITMAP},
-                    CacheDb.COLUMN_COMPONENT + " = ? AND " + CacheDb.COLUMN_USER + " = ? AND "
-                            + CacheDb.COLUMN_SIZE + " = ?",
-                    new String[]{
-                            key.componentName.flattenToShortString(),
-                            Long.toString(mUserManager.getSerialNumberForUser(key.user)),
-                            key.size
-                    });
+                         new String[] {CacheDb.COLUMN_PREVIEW_BITMAP},
+                         CacheDb.COLUMN_COMPONENT + " = ? AND " + CacheDb.COLUMN_USER + " = ? AND "
+                         + CacheDb.COLUMN_SIZE + " = ?",
+                         new String[] {
+                             key.componentName.flattenToShortString(),
+                             Long.toString(mUserManager.getSerialNumberForUser(key.user)),
+                             key.size
+                         });
             // If cancelled, skip getting the blob and decoding it into a bitmap
             if (loadTask.isCancelled()) {
                 return null;
@@ -295,10 +296,10 @@ public class WidgetPreviewLoader {
                                    int previewWidth, int previewHeight) {
         if (item.widgetInfo != null) {
             return generateWidgetPreview(launcher, item.widgetInfo,
-                    previewWidth, recycle, null);
+                                         previewWidth, recycle, null);
         } else {
             return generateShortcutPreview(launcher, item.activityInfo,
-                    previewWidth, previewHeight, recycle);
+                                           previewWidth, previewHeight, recycle);
         }
     }
 
@@ -332,7 +333,7 @@ public class WidgetPreviewLoader {
                 drawable = mutateOnMainThread(drawable);
             } else {
                 Log.w(TAG, "Can't load widget preview drawable 0x" +
-                        Integer.toHexString(info.previewImage) + " for provider: " + info.provider);
+                      Integer.toHexString(info.previewImage) + " for provider: " + info.provider);
             }
         }
 
@@ -397,7 +398,7 @@ public class WidgetPreviewLoader {
             final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
             p.setStyle(Paint.Style.STROKE);
             p.setStrokeWidth(mContext.getResources()
-                    .getDimension(R.dimen.widget_preview_cell_divider_width));
+                             .getDimension(R.dimen.widget_preview_cell_divider_width));
             p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 
             float t = boxRect.left;
@@ -417,11 +418,11 @@ public class WidgetPreviewLoader {
             // Draw icon in the center.
             try {
                 Drawable icon =
-                        mIconCache.getFullResIcon(info.provider.getPackageName(), info.icon);
+                    mIconCache.getFullResIcon(info.provider.getPackageName(), info.icon);
                 if (icon != null) {
                     int appIconSize = launcher.getDeviceProfile().iconSizePx;
                     int iconSize = (int) Math.min(appIconSize * scale,
-                            Math.min(boxRect.width(), boxRect.height()));
+                                                  Math.min(boxRect.width(), boxRect.height()));
 
                     icon = mutateOnMainThread(icon);
                     int hoffset = (previewWidth - iconSize) / 2;
@@ -445,8 +446,8 @@ public class WidgetPreviewLoader {
         builder.keyShadowDistance = res.getDimension(R.dimen.widget_preview_key_shadow_distance);
 
         builder.bounds.set(builder.shadowBlur, builder.shadowBlur,
-                width - builder.shadowBlur,
-                height - builder.shadowBlur - builder.keyShadowDistance);
+                           width - builder.shadowBlur,
+                           height - builder.shadowBlur - builder.keyShadowDistance);
         builder.drawShadow(c);
         return builder.bounds;
     }
@@ -455,7 +456,7 @@ public class WidgetPreviewLoader {
                                            int maxWidth, int maxHeight, Bitmap preview) {
         int iconSize = launcher.getDeviceProfile().iconSizePx;
         int padding = launcher.getResources()
-                .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
+                      .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
 
         int size = iconSize + 2 * padding;
         if (maxHeight < size || maxWidth < size) {
@@ -478,7 +479,7 @@ public class WidgetPreviewLoader {
 
         LauncherIcons li = LauncherIcons.obtain(mContext);
         Bitmap icon = li.createScaledBitmapWithoutShadow(
-                mutateOnMainThread(info.getFullResIcon(mIconCache)), 0);
+                          mutateOnMainThread(info.getFullResIcon(mIconCache)), 0);
         li.recycle();
 
         Rect src = new Rect(0, 0, icon.getWidth(), icon.getHeight());
@@ -486,7 +487,7 @@ public class WidgetPreviewLoader {
         boxRect.set(0, 0, iconSize, iconSize);
         boxRect.offset(padding, padding);
         c.drawBitmap(icon, src, boxRect,
-                new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));
+                     new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));
         c.setBitmap(null);
         return preview;
     }
@@ -518,7 +519,7 @@ public class WidgetPreviewLoader {
                 versions = new long[2];
                 try {
                     PackageInfo info = mContext.getPackageManager().getPackageInfo(packageName,
-                            PackageManager.GET_UNINSTALLED_PACKAGES);
+                                       PackageManager.GET_UNINSTALLED_PACKAGES);
                     versions[0] = info.versionCode;
                     versions[1] = info.lastUpdateTime;
                 } catch (NameNotFoundException e) {
@@ -531,7 +532,7 @@ public class WidgetPreviewLoader {
     }
 
     public class PreviewLoadTask extends AsyncTask<Void, Void, Bitmap>
-            implements CancellationSignal.OnCancelListener {
+        implements CancellationSignal.OnCancelListener {
         @Thunk
         final WidgetCacheKey mKey;
         private final WidgetItem mInfo;
@@ -554,7 +555,7 @@ public class WidgetPreviewLoader {
             mActivity = BaseActivity.fromContext(mCaller.getContext());
             if (DEBUG) {
                 Log.d(TAG, String.format("%s, %s, %d, %d",
-                        mKey, mInfo, mPreviewHeight, mPreviewWidth));
+                                         mKey, mInfo, mPreviewHeight, mPreviewWidth));
             }
         }
 
@@ -594,9 +595,9 @@ public class WidgetPreviewLoader {
                 // app was updated while we are generating the preview, we use the old version info,
                 // which would gets re-written next time.
                 boolean persistable = mInfo.activityInfo == null
-                        || mInfo.activityInfo.isPersistable();
+                                      || mInfo.activityInfo.isPersistable();
                 mVersions = persistable ? getPackageVersion(mKey.componentName.getPackageName())
-                        : null;
+                            : null;
 
                 // it's not in the db... we need to generate it
                 preview = generatePreview(mActivity, mInfo, unusedBitmap, mPreviewWidth, mPreviewHeight);

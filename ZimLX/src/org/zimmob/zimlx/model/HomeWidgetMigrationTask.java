@@ -70,7 +70,7 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
         }
 
         boolean allowOverlap = Utilities.getPrefs(mContext)
-                .getBoolean(ALLOW_OVERLAP_PREF, false);
+                               .getBoolean(ALLOW_OVERLAP_PREF, false);
         GridOccupancy occupied = new GridOccupancy(mTrgX, mTrgY);
 
         if (!allowOverlap) {
@@ -90,14 +90,14 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
 
         if (allowOverlap || occupied.isRegionVacant(0, 0, mTrgX, 1)) {
             List<LauncherAppWidgetProviderInfo> customWidgets =
-                    CustomWidgetParser.getCustomWidgets(mContext);
+                CustomWidgetParser.getCustomWidgets(mContext);
             if (!customWidgets.isEmpty()) {
                 LauncherAppWidgetProviderInfo provider = customWidgets.get(0);
                 int widgetId = CustomWidgetParser
-                        .getWidgetIdForCustomProvider(mContext, provider.provider);
+                               .getWidgetIdForCustomProvider(mContext, provider.provider);
                 long itemId = LauncherSettings.Settings.call(mContext.getContentResolver(),
-                        LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
-                        .getLong(LauncherSettings.Settings.EXTRA_VALUE);
+                              LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
+                              .getLong(LauncherSettings.Settings.EXTRA_VALUE);
 
                 ContentValues values = new ContentValues();
                 values.put(LauncherSettings.Favorites._ID, itemId);
@@ -111,7 +111,7 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
                 values.put(Favorites.APPWIDGET_ID, widgetId);
                 values.put(Favorites.APPWIDGET_PROVIDER, provider.provider.flattenToString());
                 mUpdateOperations.add(ContentProviderOperation
-                        .newInsert(Favorites.CONTENT_URI).withValues(values).build());
+                                      .newInsert(Favorites.CONTENT_URI).withValues(values).build());
             }
         }
 
@@ -123,7 +123,7 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
         SharedPreferences prefs = Utilities.getPrefs(context);
 
         boolean needsMigration = !prefs.getBoolean(PREF_MIGRATION_STATUS, false)
-                && prefs.getBoolean(SMARTSPACE_PREF, true);
+                                 && prefs.getBoolean(SMARTSPACE_PREF, true);
         if (!needsMigration) return;
         // Save the pref so we only run migration once
         prefs.edit().putBoolean(PREF_MIGRATION_STATUS, true).commit();
@@ -135,7 +135,7 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
 
         try {
             if (!new HomeWidgetMigrationTask(context, LauncherAppState.getIDP(context),
-                    validPackages, size).migrateWorkspace()) {
+                                             validPackages, size).migrateWorkspace()) {
                 throw new RuntimeException("Failed to migrate Smartspace");
             }
         } catch (Exception e) {

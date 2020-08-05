@@ -45,7 +45,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
 
     // TODO: Remove support for this broadcast, instead use widget options to send bind time options
     private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
-            "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
+        "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
 
     public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
                                LayoutParserCallback callback, Resources sourceRes, int layoutId) {
@@ -109,9 +109,9 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
             }
 
             ResolveInfo resolved = mPackageManager.resolveActivity(metaIntent,
-                    PackageManager.MATCH_DEFAULT_ONLY);
+                                   PackageManager.MATCH_DEFAULT_ONLY);
             final List<ResolveInfo> appList = mPackageManager.queryIntentActivities(
-                    metaIntent, PackageManager.MATCH_DEFAULT_ONLY);
+                                                  metaIntent, PackageManager.MATCH_DEFAULT_ONLY);
 
             // Verify that the result is an app and not just the resolver dialog asking which
             // app to use.
@@ -122,7 +122,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
                     // There is no logical choice for this meta-favorite, so rather than making
                     // a bad choice just add nothing.
                     Log.w(TAG, "No preference or single system activity found for "
-                            + metaIntent.toString());
+                          + metaIntent.toString());
                     return -1;
                 }
                 resolved = systemApp;
@@ -133,10 +133,10 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
                 return -1;
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                            Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
             return addShortcut(info.loadLabel(mPackageManager).toString(), intent,
-                    Favorites.ITEM_TYPE_APPLICATION);
+                               Favorites.ITEM_TYPE_APPLICATION);
         }
 
         private ResolveInfo getSingleSystemActivity(List<ResolveInfo> appList) {
@@ -145,7 +145,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
             for (int i = 0; i < N; ++i) {
                 try {
                     ApplicationInfo info = mPackageManager.getApplicationInfo(
-                            appList.get(i).activityInfo.packageName, 0);
+                                               appList.get(i).activityInfo.packageName, 0);
                     if ((info.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
                         if (systemResolve != null) {
                             return null;
@@ -162,7 +162,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         }
 
         private boolean wouldLaunchResolverActivity(ResolveInfo resolved,
-                                                    List<ResolveInfo> appList) {
+                List<ResolveInfo> appList) {
             // If the list contains the above resolved activity, then it can't be
             // ResolverActivity itself.
             for (int i = 0; i < appList.size(); ++i) {
@@ -208,7 +208,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
 
         @Override
         public long parseAndAdd(XmlResourceParser parser) throws XmlPullParserException,
-                IOException {
+            IOException {
             final int groupDepth = parser.getDepth();
             int type;
             long addedId = -1;
@@ -222,7 +222,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
                     addedId = mChildParser.parseAndAdd(parser);
                 } else {
                     Log.e(TAG, "Fallback groups can contain only favorites, found "
-                            + fallback_item_name);
+                          + fallback_item_name);
                 }
             }
             return addedId;
@@ -237,13 +237,13 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
 
         @Override
         public long parseAndAdd(XmlResourceParser parser) throws XmlPullParserException,
-                IOException {
+            IOException {
             // Folder contents come from an external XML resource
             final Partner partner = Partner.get(mPackageManager);
             if (partner != null) {
                 final Resources partnerRes = partner.getResources();
                 final int resId = partnerRes.getIdentifier(Partner.RES_FOLDER,
-                        "xml", partner.getPackageName());
+                                  "xml", partner.getPackageName());
                 if (resId != 0) {
                     final XmlResourceParser partnerParser = partnerRes.getXml(resId);
                     beginDocument(partnerParser, TAG_FOLDER);
@@ -264,7 +264,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
 
         @Override
         public long parseAndAdd(XmlResourceParser parser) throws XmlPullParserException,
-                IOException {
+            IOException {
             final int resId = getAttributeResourceValue(parser, ATTR_FOLDER_ITEMS, 0);
             if (resId != 0) {
                 parser = mSourceRes.getXml(resId);
@@ -286,7 +286,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
                 mPackageManager.getReceiverInfo(cn, 0);
             } catch (Exception e) {
                 String[] packages = mPackageManager.currentToCanonicalPackageNames(
-                        new String[]{cn.getPackageName()});
+                                        new String[] {cn.getPackageName()});
                 cn = new ComponentName(packages[0], cn.getClassName());
                 try {
                     mPackageManager.getReceiverInfo(cn, 0);

@@ -62,7 +62,7 @@ public abstract class SQLiteCacheHelper {
         }
         try {
             mOpenHelper.getWritableDatabase().insertWithOnConflict(
-                    mTableName, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                mTableName, null, values, SQLiteDatabase.CONFLICT_REPLACE);
         } catch (SQLiteFullException e) {
             onDiskFull(e);
         } catch (SQLiteException e) {
@@ -80,7 +80,7 @@ public abstract class SQLiteCacheHelper {
      */
     public Cursor query(String[] columns, String selection, String[] selectionArgs) {
         return mOpenHelper.getReadableDatabase().query(
-                mTableName, columns, selection, selectionArgs, null, null, null);
+                   mTableName, columns, selection, selectionArgs, null, null, null);
     }
 
     public void clear() {

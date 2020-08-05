@@ -136,7 +136,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     protected int getAvailableScrollHeight() {
         View child = getChildAt(0);
         return child.getMeasuredHeight() * mAdapter.getItemCount() - getScrollbarTrackHeight()
-                - mScrollbarTop;
+               - mScrollbarTop;
     }
 
     private boolean isModelNotReady() {
@@ -152,7 +152,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
         if (e.getAction() == MotionEvent.ACTION_DOWN) {
             mTouchDownOnScroller =
-                    mScrollbar.isHitInParent(e.getX(), e.getY(), mFastScrollerOffset);
+                mScrollbar.isHitInParent(e.getX(), e.getY(), mFastScrollerOffset);
         }
         if (mTouchDownOnScroller) {
             return mScrollbar.handleTouchEvent(e, mFastScrollerOffset);

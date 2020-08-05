@@ -53,7 +53,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
         AllAppsTransitionController controller = mLauncher.getAllAppsController();
 
         mDiscoBounceAnimation =
-                AnimatorInflater.loadAnimator(launcher, R.animator.discovery_bounce);
+            AnimatorInflater.loadAnimator(launcher, R.animator.discovery_bounce);
         mDiscoBounceAnimation.setTarget(new VerticalProgressWrapper(controller, delta));
         mDiscoBounceAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -159,13 +159,13 @@ public class DiscoveryBounce extends AbstractFloatingView {
             new Handler().postDelayed(() -> showForOverviewIfNeeded(launcher, false), DELAY_MS);
             return;
         } else if (InternalStateHandler.hasPending()
-                || AbstractFloatingView.getTopOpenView(launcher) != null) {
+                   || AbstractFloatingView.getTopOpenView(launcher) != null) {
             // TODO: Move these checks to the top and call this method after invalidate handler.
             return;
         }
 
         new DiscoveryBounce(launcher, (1 - OVERVIEW.getVerticalProgress(launcher)))
-                .show(PREDICTION);
+        .show(PREDICTION);
     }
 
     /**

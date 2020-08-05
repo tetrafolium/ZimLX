@@ -136,11 +136,11 @@ public class IconPalette {
         if (contrastingColor != resolvedColor) {
             if (DEBUG) {
                 Log.w(TAG, String.format(
-                        "Enhanced contrast of notification for %s " +
-                                "%s (over background) by changing #%s to %s",
-                        context.getPackageName(),
-                        contrastChange(resolvedColor, contrastingColor, background),
-                        Integer.toHexString(resolvedColor), Integer.toHexString(contrastingColor)));
+                          "Enhanced contrast of notification for %s " +
+                          "%s (over background) by changing #%s to %s",
+                          context.getPackageName(),
+                          contrastChange(resolvedColor, contrastingColor, background),
+                          Integer.toHexString(resolvedColor), Integer.toHexString(contrastingColor)));
             }
         }
         return contrastingColor;
@@ -163,8 +163,8 @@ public class IconPalette {
      */
     private static String contrastChange(int colorOld, int colorNew, int bg) {
         return String.format("from %.2f:1 to %.2f:1",
-                ColorUtils.calculateContrast(colorOld, bg),
-                ColorUtils.calculateContrast(colorNew, bg));
+                             ColorUtils.calculateContrast(colorOld, bg),
+                             ColorUtils.calculateContrast(colorNew, bg));
     }
 
     /**

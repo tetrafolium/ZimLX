@@ -102,8 +102,8 @@ public class ExtendedEditText extends EditText {
 
     private boolean showSoftInput() {
         return requestFocus() &&
-                ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
-                        .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+               ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
+               .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
     }
 
     public void dispatchBackKey() {

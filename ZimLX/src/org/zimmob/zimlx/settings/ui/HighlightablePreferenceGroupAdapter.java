@@ -99,18 +99,18 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
     }
 
     public HighlightablePreferenceGroupAdapter(PreferenceGroup preferenceGroup, String key,
-                                               boolean highlightRequested) {
+            boolean highlightRequested) {
         super(preferenceGroup);
         mHighlightKey = key;
         mHighlightRequested = highlightRequested;
         final Context context = preferenceGroup.getContext();
         final TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground,
-                outValue, true /* resolveRefs */);
+                                            outValue, true /* resolveRefs */);
         mNormalBackgroundRes = outValue.resourceId;
         context.getTheme().resolveAttribute(android.R.attr.windowBackground, outValue, true);
         mInvisibleBackground = ColorUtils
-                .setAlphaComponent(ContextCompat.getColor(context, outValue.resourceId), 0);
+                               .setAlphaComponent(ContextCompat.getColor(context, outValue.resourceId), 0);
         int accent = Utilities.getZimPrefs(context).getAccentColor();
         mHighlightColor = ColorUtils.setAlphaComponent(accent, (int) (255 * 0.26));
     }
@@ -183,10 +183,10 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
         final int colorFrom = mInvisibleBackground;
         final int colorTo = mHighlightColor;
         final ValueAnimator fadeInLoop = ValueAnimator.ofObject(
-                new ArgbEvaluator(), colorFrom, colorTo);
+                                             new ArgbEvaluator(), colorFrom, colorTo);
         fadeInLoop.setDuration(HIGHLIGHT_FADE_IN_DURATION);
         fadeInLoop.addUpdateListener(
-                animator -> v.setBackgroundColor((int) animator.getAnimatedValue()));
+            animator -> v.setBackgroundColor((int) animator.getAnimatedValue()));
         fadeInLoop.setRepeatMode(ValueAnimator.REVERSE);
         fadeInLoop.setRepeatCount(4);
         fadeInLoop.start();
@@ -215,7 +215,7 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
                 new ArgbEvaluator(), colorFrom, colorTo);
         colorAnimation.setDuration(HIGHLIGHT_FADE_OUT_DURATION);
         colorAnimation.addUpdateListener(
-                animator -> v.setBackgroundColor((int) animator.getAnimatedValue()));
+            animator -> v.setBackgroundColor((int) animator.getAnimatedValue()));
         colorAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

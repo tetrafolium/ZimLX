@@ -30,8 +30,8 @@ public class MainProcessInitializer {
 
     public static void initialize(Context context) {
         Utilities.getOverrideObject(
-                MainProcessInitializer.class, context, R.string.main_process_initializer_class)
-                .init(context);
+            MainProcessInitializer.class, context, R.string.main_process_initializer_class)
+        .init(context);
     }
 
     protected void init(Context context) {

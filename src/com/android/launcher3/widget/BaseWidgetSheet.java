@@ -43,7 +43,7 @@ import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
  * Base class for various widgets popup
  */
 abstract class BaseWidgetSheet extends AbstractSlideInView
-        implements OnClickListener, OnLongClickListener, DragSource {
+    implements OnClickListener, OnLongClickListener, DragSource {
 
 
     /* Touch handling related member variables. */
@@ -64,8 +64,8 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
         }
 
         CharSequence msg = Utilities.wrapForTts(
-                getContext().getText(R.string.long_press_widget_to_add),
-                getContext().getString(R.string.long_accessible_way_to_add));
+                               getContext().getText(R.string.long_press_widget_to_add),
+                               getContext().getString(R.string.long_accessible_way_to_add));
         mWidgetInstructionToast = Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT);
         mWidgetInstructionToast.show();
     }
@@ -99,8 +99,8 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
         mLauncher.getDragLayer().getLocationInDragLayer(image, loc);
 
         new PendingItemDragHelper(v).startDrag(
-                image.getBitmapBounds(), image.getBitmap().getWidth(), image.getWidth(),
-                new Point(loc[0], loc[1]), this, new DragOptions());
+            image.getBitmapBounds(), image.getBitmap().getWidth(), image.getWidth(),
+            new Point(loc[0], loc[1]), this, new DragOptions());
         close(true);
         return true;
     }
@@ -121,14 +121,14 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     protected void clearNavBarColor() {
         mLauncher.getSystemUiController().updateUiState(
-                SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
+            SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
     }
 
     protected void setupNavBarColor() {
         boolean isSheetDark = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
         mLauncher.getSystemUiController().updateUiState(
-                SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
-                isSheetDark ? SystemUiController.FLAG_DARK_NAV : SystemUiController.FLAG_LIGHT_NAV);
+            SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
+            isSheetDark ? SystemUiController.FLAG_DARK_NAV : SystemUiController.FLAG_LIGHT_NAV);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class LivePreviewWidgetCell extends WidgetCell {
      * TODO: Consider moving this to the background thread.
      */
     public static Bitmap generateFromRemoteViews(BaseActivity activity, RemoteViews views,
-                                                 LauncherAppWidgetProviderInfo info, int previewSize, int[] preScaledWidthOut) {
+            LauncherAppWidgetProviderInfo info, int previewSize, int[] preScaledWidthOut) {
 
         DeviceProfile dp = activity.getDeviceProfile();
         int viewWidth = dp.cellWidthPx * info.spanX;
@@ -50,7 +50,7 @@ public class LivePreviewWidgetCell extends WidgetCell {
         try {
             v = views.apply(activity, new FrameLayout(activity));
             v.measure(MeasureSpec.makeMeasureSpec(viewWidth, MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(viewHeight, MeasureSpec.EXACTLY));
+                      MeasureSpec.makeMeasureSpec(viewHeight, MeasureSpec.EXACTLY));
 
             viewWidth = v.getMeasuredWidth();
             viewHeight = v.getMeasuredHeight();
@@ -88,7 +88,7 @@ public class LivePreviewWidgetCell extends WidgetCell {
     public void ensurePreview() {
         if (mPreview != null && mActiveRequest == null) {
             Bitmap preview = generateFromRemoteViews(
-                    mActivity, mPreview, mItem.widgetInfo, mPresetPreviewSize, new int[1]);
+                                 mActivity, mPreview, mItem.widgetInfo, mPresetPreviewSize, new int[1]);
             if (preview != null) {
                 applyPreview(preview);
                 return;

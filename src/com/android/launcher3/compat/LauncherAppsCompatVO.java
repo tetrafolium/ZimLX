@@ -67,7 +67,7 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
      */
     @Nullable
     public static ShortcutInfo createShortcutInfoFromPinItemRequest(
-            Context context, final PinItemRequest request, final long acceptDelay) {
+        Context context, final PinItemRequest request, final long acceptDelay) {
         if (request != null &&
                 request.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT &&
                 request.isValid()) {
@@ -100,7 +100,7 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
             li.createShortcutIcon(compat, false /* badged */).applyTo(info);
             li.recycle();
             LauncherAppState.getInstance(context).getModel()
-                    .updateAndBindShortcutInfo(info, compat);
+            .updateAndBindShortcutInfo(info, compat);
             return info;
         } else {
             return null;
@@ -117,7 +117,7 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
         try {
             ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
             return (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
-                    ? null : info;
+                   ? null : info;
         } catch (PackageManager.NameNotFoundException e) {
             return null;
         }
@@ -125,7 +125,7 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
 
     @Override
     public List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(
-            @Nullable PackageUserKey packageUser) {
+        @Nullable PackageUserKey packageUser) {
         List<ShortcutConfigActivityInfo> result = new ArrayList<>();
         UserHandle myUser = Process.myUserHandle();
 
@@ -142,7 +142,7 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
         for (UserHandle user : users) {
             boolean ignoreTargetSdk = myUser.equals(user);
             List<LauncherActivityInfo> activities =
-                    mLauncherApps.getShortcutConfigActivityList(packageName, user);
+                mLauncherApps.getShortcutConfigActivityList(packageName, user);
             for (LauncherActivityInfo activityInfo : activities) {
                 if (ignoreTargetSdk || activityInfo.getApplicationInfo().targetSdkVersion >=
                         Build.VERSION_CODES.O) {

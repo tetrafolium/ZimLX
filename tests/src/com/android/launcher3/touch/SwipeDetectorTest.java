@@ -64,7 +64,7 @@ public class SwipeDetectorTest {
         mDetector = new SwipeDetector(mTouchSlop, mMockListener, SwipeDetector.VERTICAL);
         mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_BOTH, false);
         mTouchSlop = ViewConfiguration.get(InstrumentationRegistry.getTargetContext())
-                .getScaledTouchSlop();
+                     .getScaledTouchSlop();
         L("mTouchSlop=", mTouchSlop);
     }
 

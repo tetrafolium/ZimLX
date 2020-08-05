@@ -78,7 +78,7 @@ public class WidgetsListAdapterTest {
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
         mAdapter = new WidgetsListAdapter(mContext, mMockLayoutInflater, mMockWidgetCache,
-                mIconCache, null, null);
+                                          mIconCache, null, null);
         mAdapter.registerAdapterDataObserver(mListener);
     }
 
@@ -141,7 +141,7 @@ public class WidgetsListAdapterTest {
         AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(mContext);
         for (AppWidgetProviderInfo widgetInfo : widgetManager.getAllProviders(null)) {
             WidgetItem wi = new WidgetItem(LauncherAppWidgetProviderInfo
-                    .fromProviderInfo(mContext, widgetInfo), pm, mTestProfile);
+                                           .fromProviderInfo(mContext, widgetInfo), pm, mTestProfile);
 
             PackageItemInfo pInfo = new PackageItemInfo(wi.componentName.getPackageName());
             pInfo.title = pInfo.packageName;

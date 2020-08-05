@@ -66,7 +66,7 @@ public class FastBitmapDrawable extends Drawable {
 
     // Animator and properties for the fast bitmap drawable's scale
     private static final Property<FastBitmapDrawable, Float> SCALE
-            = new Property<FastBitmapDrawable, Float>(Float.TYPE, "scale") {
+    = new Property<FastBitmapDrawable, Float>(Float.TYPE, "scale") {
         @Override
         public Float get(FastBitmapDrawable fastBitmapDrawable) {
             return fastBitmapDrawable.mScale;
@@ -288,7 +288,7 @@ public class FastBitmapDrawable extends Drawable {
                 int brightnessI = (int) (255 * brightnessF);
                 if (usePorterDuffFilter) {
                     filter = new PorterDuffColorFilter(Color.argb(brightnessI, 255, 255, 255),
-                            PorterDuff.Mode.SRC_ATOP);
+                                                       PorterDuff.Mode.SRC_ATOP);
                 } else {
                     float saturationF = 1f - getDesaturation();
                     sTempFilterMatrix.setSaturation(saturationF);

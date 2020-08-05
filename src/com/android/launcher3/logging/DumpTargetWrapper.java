@@ -56,18 +56,18 @@ public class DumpTargetWrapper {
             return "";
         }
         switch (t.type) {
-            case LauncherDumpProto.DumpTarget.Type.ITEM:
-                return getItemStr(t);
-            case LauncherDumpProto.DumpTarget.Type.CONTAINER:
-                String str = LoggerUtils.getFieldName(t.containerType, ContainerType.class);
-                if (t.containerType == ContainerType.WORKSPACE) {
-                    str += " id=" + t.pageId;
-                } else if (t.containerType == ContainerType.FOLDER) {
-                    str += " grid(" + t.gridX + "," + t.gridY + ")";
-                }
-                return str;
-            default:
-                return "UNKNOWN TARGET TYPE";
+        case LauncherDumpProto.DumpTarget.Type.ITEM:
+            return getItemStr(t);
+        case LauncherDumpProto.DumpTarget.Type.CONTAINER:
+            String str = LoggerUtils.getFieldName(t.containerType, ContainerType.class);
+            if (t.containerType == ContainerType.WORKSPACE) {
+                str += " id=" + t.pageId;
+            } else if (t.containerType == ContainerType.FOLDER) {
+                str += " grid(" + t.gridX + "," + t.gridY + ")";
+            }
+            return str;
+        default:
+            return "UNKNOWN TARGET TYPE";
         }
     }
 
@@ -80,7 +80,7 @@ public class DumpTargetWrapper {
             typeStr += ", component=" + t.component;
         }
         return typeStr + ", grid(" + t.gridX + "," + t.gridY + "), span(" + t.spanX + "," + t.spanY
-                + "), pageIdx=" + t.pageId + " user=" + t.userType;
+               + "), pageIdx=" + t.pageId + " user=" + t.userType;
     }
 
     public DumpTarget getDumpTarget() {
@@ -108,18 +108,18 @@ public class DumpTargetWrapper {
         dt.type = DumpTarget.Type.ITEM;
 
         switch (info.itemType) {
-            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                dt.itemType = ItemType.APP_ICON;
-                break;
-            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                dt.itemType = ItemType.UNKNOWN_ITEMTYPE;
-                break;
-            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                dt.itemType = ItemType.WIDGET;
-                break;
-            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                dt.itemType = ItemType.SHORTCUT;
-                break;
+        case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+            dt.itemType = ItemType.APP_ICON;
+            break;
+        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+            dt.itemType = ItemType.UNKNOWN_ITEMTYPE;
+            break;
+        case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+            dt.itemType = ItemType.WIDGET;
+            break;
+        case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+            dt.itemType = ItemType.SHORTCUT;
+            break;
         }
         return dt;
     }
@@ -134,9 +134,9 @@ public class DumpTargetWrapper {
 
     public DumpTarget writeToDumpTarget(ItemInfo info) {
         node.component = info.getTargetComponent() == null ? "" :
-                info.getTargetComponent().flattenToString();
+                         info.getTargetComponent().flattenToString();
         node.packageName = info.getTargetComponent() == null ? "" :
-                info.getTargetComponent().getPackageName();
+                           info.getTargetComponent().getPackageName();
         if (info instanceof LauncherAppWidgetInfo) {
             node.component = ((LauncherAppWidgetInfo) info).providerName.flattenToString();
             node.packageName = ((LauncherAppWidgetInfo) info).providerName.getPackageName();

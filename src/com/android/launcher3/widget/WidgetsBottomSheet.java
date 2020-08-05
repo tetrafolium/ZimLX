@@ -68,7 +68,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     public void populateAndShow(ItemInfo itemInfo) {
         mOriginalItemInfo = itemInfo;
         ((TextView) findViewById(R.id.title)).setText(getContext().getString(
-                R.string.widgets_bottom_sheet_title, mOriginalItemInfo.title));
+                    R.string.widgets_bottom_sheet_title, mOriginalItemInfo.title));
 
         onWidgetsBound();
 
@@ -80,9 +80,9 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     @Override
     protected void onWidgetsBound() {
         List<WidgetItem> widgets = mLauncher.getPopupDataProvider().getWidgetsForPackageUser(
-                new PackageUserKey(
-                        mOriginalItemInfo.getTargetComponent().getPackageName(),
-                        mOriginalItemInfo.user));
+                                       new PackageUserKey(
+                                           mOriginalItemInfo.getTargetComponent().getPackageName(),
+                                           mOriginalItemInfo.user));
 
         ViewGroup widgetRow = findViewById(R.id.widgets);
         ViewGroup widgetCells = widgetRow.findViewById(R.id.widgets_cell_list);
@@ -92,7 +92,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         for (int i = 0; i < widgets.size(); i++) {
             WidgetCell widget = addItemCell(widgetCells);
             widget.applyFromCellItem(widgets.get(i), LauncherAppState.getInstance(mLauncher)
-                    .getWidgetCache());
+                                     .getWidgetCache());
             widget.ensurePreview();
             widget.setVisibility(View.VISIBLE);
             if (i < widgets.size() - 1) {
@@ -108,9 +108,9 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         } else {
             // Otherwise, add an empty view to the start as padding (but still scroll edge to edge).
             View leftPaddingView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.widget_list_divider, widgetRow, false);
+                                       R.layout.widget_list_divider, widgetRow, false);
             leftPaddingView.getLayoutParams().width = Utilities.pxFromDp(
-                    16, getResources().getDisplayMetrics());
+                        16, getResources().getDisplayMetrics());
             widgetCells.addView(leftPaddingView, 0);
         }
     }
@@ -121,7 +121,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
     private WidgetCell addItemCell(ViewGroup parent) {
         WidgetCell widget = (WidgetCell) LayoutInflater.from(getContext()).inflate(
-                R.layout.widget_cell, parent, false);
+                                R.layout.widget_cell, parent, false);
 
         widget.setOnClickListener(this);
         widget.setOnLongClickListener(this);
@@ -138,7 +138,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         mIsOpen = true;
         setupNavBarColor();
         mOpenCloseAnimator.setValues(
-                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
+            PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
         mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
         mOpenCloseAnimator.start();
     }
@@ -170,7 +170,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         }
 
         setPadding(getPaddingLeft() + leftInset, getPaddingTop(),
-                getPaddingRight() + rightInset, getPaddingBottom() + bottomInset);
+                   getPaddingRight() + rightInset, getPaddingBottom() + bottomInset);
     }
 
     @Override
@@ -181,6 +181,6 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     @Override
     protected Pair<View, String> getAccessibilityTarget() {
         return Pair.create(findViewById(R.id.title), getContext().getString(
-                mIsOpen ? R.string.widgets_list : R.string.widgets_list_closed));
+                               mIsOpen ? R.string.widgets_list : R.string.widgets_list_closed));
     }
 }

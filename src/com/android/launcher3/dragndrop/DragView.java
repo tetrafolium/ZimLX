@@ -229,7 +229,7 @@ public class DragView extends View {
                     int w = mBitmap.getWidth();
                     int h = mBitmap.getHeight();
                     int blurMargin = (int) mLauncher.getResources()
-                            .getDimension(R.dimen.blur_size_medium_outline) / 2;
+                                     .getDimension(R.dimen.blur_size_medium_outline) / 2;
 
                     Rect bounds = new Rect(0, 0, w, h);
                     bounds.inset(blurMargin, blurMargin);
@@ -241,7 +241,7 @@ public class DragView extends View {
 
                     LauncherIcons li = LauncherIcons.obtain(mLauncher);
                     Utilities.scaleRectAboutCenter(bounds,
-                            li.getNormalizer().getScale(dr, null, null, null));
+                                                   li.getNormalizer().getScale(dr, null, null, null));
                     li.recycle();
                     AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) dr;
 
@@ -253,13 +253,13 @@ public class DragView extends View {
                     final Path mask = adaptiveIcon.getIconMask();
 
                     mTranslateX = new SpringFloatValue(DragView.this,
-                            w * AdaptiveIconDrawable.getExtraInsetFraction());
+                                                       w * AdaptiveIconDrawable.getExtraInsetFraction());
                     mTranslateY = new SpringFloatValue(DragView.this,
-                            h * AdaptiveIconDrawable.getExtraInsetFraction());
+                                                       h * AdaptiveIconDrawable.getExtraInsetFraction());
 
                     bounds.inset(
-                            (int) (-bounds.width() * AdaptiveIconDrawable.getExtraInsetFraction()),
-                            (int) (-bounds.height() * AdaptiveIconDrawable.getExtraInsetFraction())
+                        (int) (-bounds.width() * AdaptiveIconDrawable.getExtraInsetFraction()),
+                        (int) (-bounds.height() * AdaptiveIconDrawable.getExtraInsetFraction())
                     );
                     mBgSpringDrawable = adaptiveIcon.getBackground();
                     if (mBgSpringDrawable == null) {
@@ -334,27 +334,27 @@ public class DragView extends View {
     private Drawable getFullDrawable(ItemInfo info, LauncherAppState appState, Object[] outObj) {
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
             LauncherActivityInfo activityInfo = LauncherAppsCompat.getInstance(mLauncher)
-                    .resolveActivity(info.getIntent(), info.user);
+                                                .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;
             return (activityInfo != null) ? appState.getIconCache()
-                    .getFullResIcon(activityInfo, false) : null;
+                   .getFullResIcon(activityInfo, false) : null;
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             if (info instanceof PendingAddShortcutInfo) {
                 ShortcutConfigActivityInfo activityInfo =
-                        ((PendingAddShortcutInfo) info).activityInfo;
+                    ((PendingAddShortcutInfo) info).activityInfo;
                 outObj[0] = activityInfo;
                 return activityInfo.getFullResIcon(appState.getIconCache());
             }
             ShortcutKey key = ShortcutKey.fromItemInfo(info);
             DeepShortcutManager sm = DeepShortcutManager.getInstance(mLauncher);
             List<ShortcutInfoCompat> si = sm.queryForFullDetails(
-                    key.componentName.getPackageName(), Arrays.asList(key.getId()), key.user);
+                                              key.componentName.getPackageName(), Arrays.asList(key.getId()), key.user);
             if (si.isEmpty()) {
                 return null;
             } else {
                 outObj[0] = si.get(0);
                 return sm.getShortcutIconDrawable(si.get(0),
-                        appState.getInvariantDeviceProfile().fillResIconDpi);
+                                                  appState.getInvariantDeviceProfile().fillResIconDpi);
             }
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             FolderInfo folderInfo = (FolderInfo) info;
@@ -362,7 +362,7 @@ public class DragView extends View {
                 return getFullDrawable(folderInfo.getCoverInfo(), appState, outObj);
             }
             FolderAdaptiveIcon icon = FolderAdaptiveIcon.createFolderAdaptiveIcon(
-                    mLauncher, info.id, new Point(mBitmap.getWidth(), mBitmap.getHeight()));
+                                          mLauncher, info.id, new Point(mBitmap.getWidth(), mBitmap.getHeight()));
             if (icon == null) {
                 return null;
             }
@@ -385,7 +385,7 @@ public class DragView extends View {
         int iconSize = appState.getInvariantDeviceProfile().iconBitmapSize;
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             boolean iconBadged = (info instanceof ItemInfoWithIcon)
-                    && (((ItemInfoWithIcon) info).runtimeStatusFlags & FLAG_ICON_BADGED) > 0;
+                                 && (((ItemInfoWithIcon) info).runtimeStatusFlags & FLAG_ICON_BADGED) > 0;
             if ((info.id == ItemInfo.NO_ID && !iconBadged)
                     || !(obj instanceof ShortcutInfoCompat)) {
                 // The item is not yet added on home screen.
@@ -398,12 +398,12 @@ public class DragView extends View {
             float badgeSize = mLauncher.getResources().getDimension(R.dimen.profile_badge_size);
             float insetFraction = (iconSize - badgeSize) / iconSize;
             return new InsetDrawable(new FastBitmapDrawable(badge),
-                    insetFraction, insetFraction, 0, 0);
+                                     insetFraction, insetFraction, 0, 0);
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             return ((FolderAdaptiveIcon) obj).getBadge();
         } else {
             return mLauncher.getPackageManager()
-                    .getUserBadgedIcon(new FixedSizeEmptyDrawable(iconSize), info.user);
+                   .getUserBadgedIcon(new FixedSizeEmptyDrawable(iconSize), info.user);
         }
     }
 
@@ -541,7 +541,7 @@ public class DragView extends View {
             mFilterAnimator.cancel();
         }
         mFilterAnimator = ValueAnimator.ofObject(new FloatArrayEvaluator(mCurrentFilter),
-                oldFilter, targetFilter);
+                          oldFilter, targetFilter);
         mFilterAnimator.setDuration(COLOR_CHANGE_DURATION);
         mFilterAnimator.addUpdateListener(new AnimatorUpdateListener() {
 
@@ -616,7 +616,7 @@ public class DragView extends View {
         mTempLoc[0] = toTouchX - mRegistrationX;
         mTempLoc[1] = toTouchY - mRegistrationY;
         mDragLayer.animateViewIntoPosition(this, mTempLoc, 1f, mScaleOnDrop, mScaleOnDrop,
-                DragLayer.ANIMATION_END_DISAPPEAR, onCompleteRunnable, duration);
+                                           DragLayer.ANIMATION_END_DISAPPEAR, onCompleteRunnable, duration);
     }
 
     public void animateShift(final int shiftX, final int shiftY) {
@@ -659,18 +659,18 @@ public class DragView extends View {
     private static class SpringFloatValue {
 
         private static final FloatPropertyCompat<SpringFloatValue> VALUE =
-                new FloatPropertyCompat<SpringFloatValue>("value") {
-                    @Override
-                    public float getValue(SpringFloatValue object) {
-                        return object.mValue;
-                    }
+        new FloatPropertyCompat<SpringFloatValue>("value") {
+            @Override
+            public float getValue(SpringFloatValue object) {
+                return object.mValue;
+            }
 
-                    @Override
-                    public void setValue(SpringFloatValue object, float value) {
-                        object.mValue = value;
-                        object.mView.invalidate();
-                    }
-                };
+            @Override
+            public void setValue(SpringFloatValue object, float value) {
+                object.mValue = value;
+                object.mView.invalidate();
+            }
+        };
 
         // Following three values are fine tuned with motion ux designer
         private final static int STIFFNESS = 4000;
@@ -686,10 +686,10 @@ public class DragView extends View {
         public SpringFloatValue(View view, float range) {
             mView = view;
             mSpring = new SpringAnimation(this, VALUE, 0)
-                    .setMinValue(-range).setMaxValue(range)
-                    .setSpring(new SpringForce(0)
-                            .setDampingRatio(DAMPENING_RATIO)
-                            .setStiffness(STIFFNESS));
+            .setMinValue(-range).setMaxValue(range)
+            .setSpring(new SpringForce(0)
+                       .setDampingRatio(DAMPENING_RATIO)
+                       .setStiffness(STIFFNESS));
             mDelta = view.getResources().getDisplayMetrics().density * PARALLAX_MAX_IN_DP;
         }
 

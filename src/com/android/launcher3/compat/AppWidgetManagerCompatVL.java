@@ -103,7 +103,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
             return true;
         }
         return mAppWidgetManager.bindAppWidgetIdIfAllowed(
-                appWidgetId, info.getProfile(), info.provider, options);
+                   appWidgetId, info.getProfile(), info.provider, options);
     }
 
     @Override

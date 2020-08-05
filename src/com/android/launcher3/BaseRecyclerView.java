@@ -101,7 +101,7 @@ public abstract class BaseRecyclerView extends RecyclerView {
      * @param scrollY the current scroll y
      */
     protected void synchronizeScrollBarThumbOffsetToViewScroll(int scrollY,
-                                                               int availableScrollHeight) {
+            int availableScrollHeight) {
         // Only show the scrollbar if there is height to be scrolled
         if (availableScrollHeight <= 0) {
             mScrollbar.setThumbOffsetY(-1);
@@ -112,7 +112,7 @@ public abstract class BaseRecyclerView extends RecyclerView {
         // view padding, while the scrollBarY is drawn right up to the background padding (ignoring
         // padding)
         int scrollBarY =
-                (int) (((float) scrollY / availableScrollHeight) * getAvailableScrollBarHeight());
+            (int) (((float) scrollY / availableScrollHeight) * getAvailableScrollBarHeight());
 
         // Calculate the position and size of the scroll bar
         mScrollbar.setThumbOffsetY(scrollBarY);

@@ -87,7 +87,7 @@ public class WidgetsModel {
             AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(context);
             for (AppWidgetProviderInfo widgetInfo : widgetManager.getAllProviders(packageUser)) {
                 widgetsAndShortcuts.add(new WidgetItem(LauncherAppWidgetProviderInfo
-                        .fromProviderInfo(context, widgetInfo), pm, idp));
+                                                       .fromProviderInfo(context, widgetInfo), pm, idp));
             }
 
             // Shortcuts
@@ -111,7 +111,7 @@ public class WidgetsModel {
     }
 
     private synchronized void setWidgetsAndShortcuts(ArrayList<WidgetItem> rawWidgetsShortcuts,
-                                                     LauncherAppState app, @Nullable PackageUserKey packageUser) {
+            LauncherAppState app, @Nullable PackageUserKey packageUser) {
         if (DEBUG) {
             Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());
         }
@@ -165,8 +165,8 @@ public class WidgetsModel {
                 if (minSpanX > idp.numColumns || minSpanY > idp.numRows) {
                     if (DEBUG) {
                         Log.d(TAG, String.format(
-                                "Widget %s : (%d X %d) can't fit on this device",
-                                item.componentName, minSpanX, minSpanY));
+                                  "Widget %s : (%d X %d) can't fit on this device",
+                                  item.componentName, minSpanX, minSpanY));
                     }
                     continue;
                 }
@@ -178,7 +178,7 @@ public class WidgetsModel {
             if (!mAppFilter.shouldShowApp(item.componentName)) {
                 if (DEBUG) {
                     Log.d(TAG, String.format("%s is filtered and not added to the widget tray.",
-                            item.componentName));
+                                             item.componentName));
                 }
                 continue;
             }

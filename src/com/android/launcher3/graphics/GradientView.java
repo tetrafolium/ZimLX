@@ -103,9 +103,9 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
 
     protected void updateColors() {
         this.mColor1 = ColorUtils.setAlphaComponent(mWallpaperColorInfo.getMainColor(),
-                mAlphaColors);
+                       mAlphaColors);
         this.mColor2 = ColorUtils.setAlphaComponent(mWallpaperColorInfo.getSecondaryColor(),
-                mAlphaColors);
+                       mAlphaColors);
         if (mWidth + mHeight > 0) {
             createRadialShader();
         }
@@ -128,23 +128,23 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
         float posScreenBottom = (radius - mHeight) / radius; // center lives below screen
 
         RadialGradient shaderNoScrim = new RadialGradient(
-                mWidth * 0.5f,
-                mHeight * gradientCenterY,
-                radius,
-                new int[]{mColor1, mColor1, mColor2},
-                new float[]{0f, posScreenBottom, 1f},
-                Shader.TileMode.CLAMP);
+            mWidth * 0.5f,
+            mHeight * gradientCenterY,
+            radius,
+            new int[] {mColor1, mColor1, mColor2},
+            new float[] {0f, posScreenBottom, 1f},
+            Shader.TileMode.CLAMP);
         mPaintNoScrim.setShader(shaderNoScrim);
 
         int color1 = ColorUtils.compositeColors(mScrimColor, mColor1);
         int color2 = ColorUtils.compositeColors(mScrimColor, mColor2);
         RadialGradient shaderWithScrim = new RadialGradient(
-                mWidth * 0.5f,
-                mHeight * gradientCenterY,
-                radius,
-                new int[]{color1, color1, color2},
-                new float[]{0f, posScreenBottom, 1f},
-                Shader.TileMode.CLAMP);
+            mWidth * 0.5f,
+            mHeight * gradientCenterY,
+            radius,
+            new int[] {color1, color1, color2},
+            new float[] {0f, posScreenBottom, 1f},
+            Shader.TileMode.CLAMP);
         mPaintWithScrim.setShader(shaderWithScrim);
     }
 
@@ -185,12 +185,13 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
         Canvas c = new Canvas(dst);
         Paint paint = new Paint(Paint.DITHER_FLAG);
         LinearGradient lg = new LinearGradient(0, 0, 0, mMaskHeight,
-                new int[]{
-                        0x00FFFFFF,
-                        ColorUtils.setAlphaComponent(Color.WHITE, (int) (0xFF * 0.95)),
-                        0xFFFFFFFF},
-                new float[]{0f, 0.8f, 1f},
-                Shader.TileMode.CLAMP);
+                                               new int[] {
+                                                   0x00FFFFFF,
+                                                   ColorUtils.setAlphaComponent(Color.WHITE, (int) (0xFF * 0.95)),
+                                                   0xFFFFFFFF
+                                               },
+                                               new float[] {0f, 0.8f, 1f},
+                                               Shader.TileMode.CLAMP);
         paint.setShader(lg);
         c.drawRect(0, 0, mMaskWidth, mMaskHeight, paint);
         return dst;

@@ -72,10 +72,10 @@ public class RequestPinItemActivity extends BaseTestingActivity {
         new Canvas(icon).drawCircle(r, r, r, p);
 
         ShortcutInfo info = new ShortcutInfo.Builder(this, mShortcutId)
-                .setIntent(getPackageManager().getLaunchIntentForPackage(getPackageName()))
-                .setIcon(Icon.createWithBitmap(icon))
-                .setShortLabel("Test shortcut")
-                .build();
+        .setIntent(getPackageManager().getLaunchIntentForPackage(getPackageName()))
+        .setIcon(Icon.createWithBitmap(icon))
+        .setShortLabel("Test shortcut")
+        .build();
 
         IntentSender callback = mCallback == null ? null : mCallback.getIntentSender();
         sm.requestPinShortcut(info, callback);
@@ -93,7 +93,7 @@ public class RequestPinItemActivity extends BaseTestingActivity {
         Bundle extras = null;
         if (mRemoteViewColor != Color.TRANSPARENT) {
             int layoutId = getResources().getIdentifier(
-                    "test_layout_appwidget_view", "layout", getPackageName());
+                               "test_layout_appwidget_view", "layout", getPackageName());
             RemoteViews views = new RemoteViews(getPackageName(), layoutId);
             views.setInt(android.R.id.icon, "setBackgroundColor", mRemoteViewColor);
             extras = new Bundle();

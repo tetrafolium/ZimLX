@@ -42,38 +42,38 @@ public class StylusEventHelper {
      */
     private static boolean isStylusButtonPressed(MotionEvent event) {
         return event.getToolType(0) == MotionEvent.TOOL_TYPE_STYLUS
-                && ((event.getButtonState() & MotionEvent.BUTTON_SECONDARY)
-                == MotionEvent.BUTTON_SECONDARY);
+               && ((event.getButtonState() & MotionEvent.BUTTON_SECONDARY)
+                   == MotionEvent.BUTTON_SECONDARY);
     }
 
     public boolean onMotionEvent(MotionEvent event) {
         final boolean stylusButtonPressed = isStylusButtonPressed(event);
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mIsButtonPressed = stylusButtonPressed;
-                if (mIsButtonPressed) {
-                    return mListener.onPressed(event);
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (!Utilities.pointInView(mView, event.getX(), event.getY(), mSlop)) {
-                    return false;
-                }
-                if (!mIsButtonPressed && stylusButtonPressed) {
-                    mIsButtonPressed = true;
-                    return mListener.onPressed(event);
-                } else if (mIsButtonPressed && !stylusButtonPressed) {
-                    mIsButtonPressed = false;
-                    return mListener.onReleased(event);
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                if (mIsButtonPressed) {
-                    mIsButtonPressed = false;
-                    return mListener.onReleased(event);
-                }
-                break;
+        case MotionEvent.ACTION_DOWN:
+            mIsButtonPressed = stylusButtonPressed;
+            if (mIsButtonPressed) {
+                return mListener.onPressed(event);
+            }
+            break;
+        case MotionEvent.ACTION_MOVE:
+            if (!Utilities.pointInView(mView, event.getX(), event.getY(), mSlop)) {
+                return false;
+            }
+            if (!mIsButtonPressed && stylusButtonPressed) {
+                mIsButtonPressed = true;
+                return mListener.onPressed(event);
+            } else if (mIsButtonPressed && !stylusButtonPressed) {
+                mIsButtonPressed = false;
+                return mListener.onReleased(event);
+            }
+            break;
+        case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_CANCEL:
+            if (mIsButtonPressed) {
+                mIsButtonPressed = false;
+                return mListener.onReleased(event);
+            }
+            break;
         }
         return false;
     }

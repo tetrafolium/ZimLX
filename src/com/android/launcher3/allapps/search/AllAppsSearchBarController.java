@@ -40,8 +40,8 @@ import java.util.List;
  * An interface to a search box that AllApps can command.
  */
 public class AllAppsSearchBarController
-        implements TextWatcher, OnEditorActionListener, ExtendedEditText.OnBackKeyListener,
-        OnFocusChangeListener {
+    implements TextWatcher, OnEditorActionListener, ExtendedEditText.OnBackKeyListener,
+    OnFocusChangeListener {
 
     protected Launcher mLauncher;
     protected Callbacks mCb;
@@ -57,8 +57,8 @@ public class AllAppsSearchBarController
      * Sets the references to the apps model and the search result callback.
      */
     public final void initialize(
-            SearchAlgorithm searchAlgorithm, ExtendedEditText input,
-            Launcher launcher, Callbacks cb) {
+        SearchAlgorithm searchAlgorithm, ExtendedEditText input,
+        Launcher launcher, Callbacks cb) {
         mCb = cb;
         mLauncher = launcher;
 
@@ -112,7 +112,7 @@ public class AllAppsSearchBarController
         String query = v.getText().toString();
         if (query.isEmpty()) {
             ((InputMethodManager) mLauncher.getSystemService(Context.INPUT_METHOD_SERVICE))
-                    .hideSoftInputFromWindow(v.getWindowToken(), 0);
+            .hideSoftInputFromWindow(v.getWindowToken(), 0);
             return false;
         }
 
@@ -121,7 +121,7 @@ public class AllAppsSearchBarController
         }
 
         return mLauncher.startActivitySafely(v,
-                PackageManagerHelper.getMarketSearchIntent(mLauncher, query), null);
+                                             PackageManagerHelper.getMarketSearchIntent(mLauncher, query), null);
     }
 
     @Override

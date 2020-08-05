@@ -104,7 +104,7 @@ public class LoaderResults {
         final int currentScreen;
         {
             int currScreen = mPageToBindFirst != PagedView.INVALID_RESTORE_PAGE
-                    ? mPageToBindFirst : callbacks.getCurrentWorkspaceScreen();
+                             ? mPageToBindFirst : callbacks.getCurrentWorkspaceScreen();
             if (currScreen >= orderedScreenIds.size()) {
                 // There may be no workspace screens (just hotseat items and an empty page).
                 currScreen = PagedView.INVALID_RESTORE_PAGE;
@@ -113,7 +113,7 @@ public class LoaderResults {
         }
         final boolean validFirstPage = currentScreen >= 0;
         final long currentScreenId =
-                validFirstPage ? orderedScreenIds.get(currentScreen) : INVALID_SCREEN_ID;
+            validFirstPage ? orderedScreenIds.get(currentScreen) : INVALID_SCREEN_ID;
 
         // Separate the items that are on the current screen, and all the other remaining items
         ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
@@ -122,9 +122,9 @@ public class LoaderResults {
         ArrayList<LauncherAppWidgetInfo> otherAppWidgets = new ArrayList<>();
 
         filterCurrentWorkspaceItems(currentScreenId, workspaceItems, currentWorkspaceItems,
-                otherWorkspaceItems);
+                                    otherWorkspaceItems);
         filterCurrentWorkspaceItems(currentScreenId, appWidgets, currentAppWidgets,
-                otherAppWidgets);
+                                    otherAppWidgets);
         sortWorkspaceItemsSpatially(currentWorkspaceItems);
         sortWorkspaceItemsSpatially(otherWorkspaceItems);
 
@@ -156,13 +156,13 @@ public class LoaderResults {
         // This ensures that the first screen is immediately visible (eg. during rotation)
         // In case of !validFirstPage, bind all pages one after other.
         final Executor deferredExecutor =
-                validFirstPage ? new ViewOnDrawExecutor() : mainExecutor;
+            validFirstPage ? new ViewOnDrawExecutor() : mainExecutor;
 
         mainExecutor.execute(() -> {
             Callbacks callbacks13 = mCallbacks.get();
             if (callbacks13 != null) {
                 callbacks13.finishFirstPageBind(
-                        validFirstPage ? (ViewOnDrawExecutor) deferredExecutor : null);
+                    validFirstPage ? (ViewOnDrawExecutor) deferredExecutor : null);
             }
         });
 
@@ -200,9 +200,9 @@ public class LoaderResults {
      * specified screen.
      */
     public static <T extends ItemInfo> void filterCurrentWorkspaceItems(long currentScreenId,
-                                                                        ArrayList<T> allWorkspaceItems,
-                                                                        ArrayList<T> currentScreenItems,
-                                                                        ArrayList<T> otherScreenItems) {
+            ArrayList<T> allWorkspaceItems,
+            ArrayList<T> currentScreenItems,
+            ArrayList<T> otherScreenItems) {
         // Purge any null ItemInfos
         Iterator<T> iter = allWorkspaceItems.iterator();
         while (iter.hasNext()) {
@@ -251,23 +251,23 @@ public class LoaderResults {
                 if (lhs.container == rhs.container) {
                     // Within containers, order by their spatial position in that container
                     switch ((int) lhs.container) {
-                        case LauncherSettings.Favorites.CONTAINER_DESKTOP: {
-                            long lr = (lhs.screenId * screenCellCount +
-                                    lhs.cellY * screenCols + lhs.cellX);
-                            long rr = (rhs.screenId * screenCellCount +
-                                    rhs.cellY * screenCols + rhs.cellX);
-                            return Utilities.longCompare(lr, rr);
+                    case LauncherSettings.Favorites.CONTAINER_DESKTOP: {
+                        long lr = (lhs.screenId * screenCellCount +
+                                   lhs.cellY * screenCols + lhs.cellX);
+                        long rr = (rhs.screenId * screenCellCount +
+                                   rhs.cellY * screenCols + rhs.cellX);
+                        return Utilities.longCompare(lr, rr);
+                    }
+                    case LauncherSettings.Favorites.CONTAINER_HOTSEAT: {
+                        // We currently use the screen id as the rank
+                        return Utilities.longCompare(lhs.screenId, rhs.screenId);
+                    }
+                    default:
+                        if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                            throw new RuntimeException("Unexpected container type when " +
+                                                       "sorting workspace items.");
                         }
-                        case LauncherSettings.Favorites.CONTAINER_HOTSEAT: {
-                            // We currently use the screen id as the rank
-                            return Utilities.longCompare(lhs.screenId, rhs.screenId);
-                        }
-                        default:
-                            if (FeatureFlags.IS_DOGFOOD_BUILD) {
-                                throw new RuntimeException("Unexpected container type when " +
-                                        "sorting workspace items.");
-                            }
-                            return 0;
+                        return 0;
                     }
                 } else {
                     // Between containers, order by hotseat, desktop
@@ -340,7 +340,7 @@ public class LoaderResults {
 
     public void bindWidgets() {
         final ArrayList<WidgetListRowEntry> widgets =
-                mBgDataModel.widgetsModel.getWidgetsList(mApp.getContext());
+            mBgDataModel.widgetsModel.getWidgetsList(mApp.getContext());
         Runnable r = () -> {
             Callbacks callbacks = mCallbacks.get();
             if (callbacks != null) {

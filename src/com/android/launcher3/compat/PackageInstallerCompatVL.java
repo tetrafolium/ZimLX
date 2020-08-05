@@ -79,7 +79,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         String packageName = info.getAppPackageName();
         if (packageName != null) {
             mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
-                    info.getAppLabel());
+                                           info.getAppLabel());
         }
     }
 
@@ -105,7 +105,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
                 LauncherAppState app = LauncherAppState.getInstanceNoCreate();
                 if (app != null) {
                     app.getModel().onInstallSessionCreated(
-                            PackageInstallInfo.fromInstallingState(sessionInfo));
+                        PackageInstallInfo.fromInstallingState(sessionInfo));
                 }
             }
         }
@@ -119,8 +119,8 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
             if (packageName != null) {
                 sendUpdate(PackageInstallInfo.fromState(
-                        success ? STATUS_INSTALLED : STATUS_FAILED,
-                        packageName));
+                               success ? STATUS_INSTALLED : STATUS_FAILED,
+                               packageName));
             }
         }
 
@@ -167,7 +167,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
             if (!mSessionVerifiedMap.containsKey(pkg)) {
                 LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mAppContext);
                 boolean hasSystemFlag = launcherApps.getApplicationInfo(pkg,
-                        ApplicationInfo.FLAG_SYSTEM, Process.myUserHandle()) != null;
+                                        ApplicationInfo.FLAG_SYSTEM, Process.myUserHandle()) != null;
                 mSessionVerifiedMap.put(pkg, DEBUG || hasSystemFlag);
             }
         }

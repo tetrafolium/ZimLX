@@ -106,12 +106,12 @@ public class BadgeRenderer {
         showNotificationCount = Utilities.getZimPrefs(mContext).getNotificationCount();
 
         IconDrawer iconDrawer = badgeInfo != null && badgeInfo.isIconLarge()
-                ? mLargeIconDrawer : mSmallIconDrawer;
+                                ? mLargeIconDrawer : mSmallIconDrawer;
         Shader icon = badgeInfo == null ? null : badgeInfo.getNotificationIconForBadge(
-                mContext, backgroundColor, mSize, iconDrawer.mPadding);
+                          mContext, backgroundColor, mSize, iconDrawer.mPadding);
 
         String notificationCount = badgeInfo == null ? "0"
-                : String.valueOf(badgeInfo.getNotificationCount());
+                                   : String.valueOf(badgeInfo.getNotificationCount());
         int numChars = notificationCount.length();
         int width = showNotificationCount ? mSize : mSize + mCharSize * (numChars - 1);
         //int width = DOTS_ONLY ? mSize : mSize + mCharSize * (numChars - 1);
@@ -121,7 +121,7 @@ public class BadgeRenderer {
         backgroundColor = Utilities.getZimPrefs(mContext).getNotificationBackground();
         if (backgroundWithShadow == null) {
             backgroundWithShadow = new ShadowGenerator.Builder(backgroundColor)
-                    .setupBlurForSize(mSize).createPill(width, mSize);
+            .setupBlurForSize(mSize).createPill(width, mSize);
             mBackgroundsWithShadow.put(numChars, backgroundWithShadow);
         }
         canvas.save();
@@ -142,27 +142,27 @@ public class BadgeRenderer {
         // Prepare the background and shadow and possible stacking effect.
         int backgroundWithShadowSize = backgroundWithShadow.getHeight(); // Same as width.
         boolean shouldStack = !isDot && badgeInfo != null
-                && badgeInfo.getNotificationKeys().size() > 1;
+                              && badgeInfo.getNotificationKeys().size() > 1;
         if (shouldStack) {
             int offsetDiffX = mStackOffsetX - mOffset;
             int offsetDiffY = mStackOffsetY - mOffset;
             canvas.translate(offsetDiffX, offsetDiffY);
             canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
-                    -backgroundWithShadowSize / 2, mBackgroundPaint);
+                              -backgroundWithShadowSize / 2, mBackgroundPaint);
             canvas.translate(-offsetDiffX, -offsetDiffY);
         }
 
         if (isText) {
             canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
-                    -backgroundWithShadowSize / 2, mBackgroundPaint);
+                              -backgroundWithShadowSize / 2, mBackgroundPaint);
             canvas.drawText(notificationCount, 0, mTextHeight / 2, mTextPaint);
         } else if (isIcon) {
             canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
-                    -backgroundWithShadowSize / 2, mBackgroundPaint);
+                              -backgroundWithShadowSize / 2, mBackgroundPaint);
             iconDrawer.drawIcon(icon, canvas);
         } else if (isDot) {
             canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
-                    -backgroundWithShadowSize / 2, mBackgroundPaint);
+                              -backgroundWithShadowSize / 2, mBackgroundPaint);
         }
         canvas.restore();
     }
@@ -175,7 +175,7 @@ public class BadgeRenderer {
         private final int mPadding;
         private final Bitmap mCircleClipBitmap;
         private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG |
-                Paint.FILTER_BITMAP_FLAG);
+                                               Paint.FILTER_BITMAP_FLAG);
 
         public IconDrawer(int padding) {
             mPadding = padding;

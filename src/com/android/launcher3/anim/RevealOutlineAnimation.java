@@ -33,7 +33,7 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
 
     public ValueAnimator createRevealAnimator(final View revealView, boolean isReversed) {
         ValueAnimator va =
-                isReversed ? ValueAnimator.ofFloat(1f, 0f) : ValueAnimator.ofFloat(0f, 1f);
+            isReversed ? ValueAnimator.ofFloat(1f, 0f) : ValueAnimator.ofFloat(0f, 1f);
         final float elevation = revealView.getElevation();
 
         va.addListener(new AnimatorListenerAdapter() {

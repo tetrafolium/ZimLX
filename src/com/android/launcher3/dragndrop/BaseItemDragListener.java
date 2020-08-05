@@ -45,7 +45,7 @@ import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
  * {@link DragSource} for handling drop from a different window.
  */
 public abstract class BaseItemDragListener extends InternalStateHandler implements
-        View.OnDragListener, DragSource, DragOptions.PreDragCondition {
+    View.OnDragListener, DragSource, DragOptions.PreDragCondition {
 
     private static final String TAG = "BaseItemDragListener";
 
@@ -123,7 +123,7 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
         // across windows, using drag position here give a good estimate for relative position
         // to source window.
         createDragHelper().startDrag(new Rect(mPreviewRect),
-                mPreviewBitmapWidth, mPreviewViewWidth, downPos, this, options);
+                                     mPreviewBitmapWidth, mPreviewViewWidth, downPos, this, options);
         mDragStartTime = SystemClock.uptimeMillis();
         return true;
     }
@@ -144,7 +144,7 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
         mLauncher.getDragLayer().setAlpha(1);
 
         dragObject.dragView.setColor(
-                mLauncher.getResources().getColor(R.color.delete_target_hover_tint));
+            mLauncher.getResources().getColor(R.color.delete_target_hover_tint));
     }
 
     @Override

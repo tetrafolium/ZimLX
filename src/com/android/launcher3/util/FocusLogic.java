@@ -85,53 +85,53 @@ public class FocusLogic {
 
         if (DEBUG) {
             Log.v(TAG, String.format(
-                    "handleKeyEvent START: cntX=%d, cntY=%d, iconIdx=%d, pageIdx=%d, pageCnt=%d",
-                    cntX, cntY, iconIdx, pageIndex, pageCount));
+                      "handleKeyEvent START: cntX=%d, cntY=%d, iconIdx=%d, pageIdx=%d, pageCnt=%d",
+                      cntX, cntY, iconIdx, pageIndex, pageCount));
         }
 
         int newIndex = NOOP;
         switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, -1 /*increment*/, isRtl);
-                if (!isRtl && newIndex == NOOP && pageIndex > 0) {
-                    newIndex = PREVIOUS_PAGE_RIGHT_COLUMN;
-                } else if (isRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
-                    newIndex = NEXT_PAGE_RIGHT_COLUMN;
-                }
-                break;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, 1 /*increment*/, isRtl);
-                if (!isRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
-                    newIndex = NEXT_PAGE_LEFT_COLUMN;
-                } else if (isRtl && newIndex == NOOP && pageIndex > 0) {
-                    newIndex = PREVIOUS_PAGE_LEFT_COLUMN;
-                }
-                break;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                newIndex = handleDpadVertical(iconIdx, cntX, cntY, map, 1  /*increment*/);
-                break;
-            case KeyEvent.KEYCODE_DPAD_UP:
-                newIndex = handleDpadVertical(iconIdx, cntX, cntY, map, -1  /*increment*/);
-                break;
-            case KeyEvent.KEYCODE_MOVE_HOME:
-                newIndex = handleMoveHome();
-                break;
-            case KeyEvent.KEYCODE_MOVE_END:
-                newIndex = handleMoveEnd();
-                break;
-            case KeyEvent.KEYCODE_PAGE_DOWN:
-                newIndex = handlePageDown(pageIndex, pageCount);
-                break;
-            case KeyEvent.KEYCODE_PAGE_UP:
-                newIndex = handlePageUp(pageIndex);
-                break;
-            default:
-                break;
+        case KeyEvent.KEYCODE_DPAD_LEFT:
+            newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, -1 /*increment*/, isRtl);
+            if (!isRtl && newIndex == NOOP && pageIndex > 0) {
+                newIndex = PREVIOUS_PAGE_RIGHT_COLUMN;
+            } else if (isRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
+                newIndex = NEXT_PAGE_RIGHT_COLUMN;
+            }
+            break;
+        case KeyEvent.KEYCODE_DPAD_RIGHT:
+            newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, 1 /*increment*/, isRtl);
+            if (!isRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
+                newIndex = NEXT_PAGE_LEFT_COLUMN;
+            } else if (isRtl && newIndex == NOOP && pageIndex > 0) {
+                newIndex = PREVIOUS_PAGE_LEFT_COLUMN;
+            }
+            break;
+        case KeyEvent.KEYCODE_DPAD_DOWN:
+            newIndex = handleDpadVertical(iconIdx, cntX, cntY, map, 1  /*increment*/);
+            break;
+        case KeyEvent.KEYCODE_DPAD_UP:
+            newIndex = handleDpadVertical(iconIdx, cntX, cntY, map, -1  /*increment*/);
+            break;
+        case KeyEvent.KEYCODE_MOVE_HOME:
+            newIndex = handleMoveHome();
+            break;
+        case KeyEvent.KEYCODE_MOVE_END:
+            newIndex = handleMoveEnd();
+            break;
+        case KeyEvent.KEYCODE_PAGE_DOWN:
+            newIndex = handlePageDown(pageIndex, pageCount);
+            break;
+        case KeyEvent.KEYCODE_PAGE_UP:
+            newIndex = handlePageUp(pageIndex);
+            break;
+        default:
+            break;
         }
 
         if (DEBUG) {
             Log.v(TAG, String.format("handleKeyEvent FINISH: index [%d -> %s]",
-                    iconIdx, getStringIndex(newIndex)));
+                                     iconIdx, getStringIndex(newIndex)));
         }
         return newIndex;
     }
@@ -188,7 +188,7 @@ public class FocusLogic {
      */
     // TODO: get rid of the dynamic matrix creation
     public static int[][] createSparseMatrixWithHotseat(
-            CellLayout iconLayout, CellLayout hotseatLayout, DeviceProfile dp) {
+        CellLayout iconLayout, CellLayout hotseatLayout, DeviceProfile dp) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
         ViewGroup hotseatParent = hotseatLayout.getShortcutsAndWidgets();
@@ -196,8 +196,8 @@ public class FocusLogic {
         boolean isHotseatHorizontal = !dp.isVerticalBarLayout();
         boolean moreIconsInHotseatThanWorkspace = !FeatureFlags.NO_ALL_APPS_ICON &&
                 (isHotseatHorizontal
-                        ? hotseatLayout.getCountX() > iconLayout.getCountX()
-                        : hotseatLayout.getCountY() > iconLayout.getCountY());
+                 ? hotseatLayout.getCountX() > iconLayout.getCountX()
+                 : hotseatLayout.getCountY() > iconLayout.getCountY());
 
         int m, n;
         if (isHotseatHorizontal) {
@@ -246,11 +246,11 @@ public class FocusLogic {
         for (int i = hotseatParent.getChildCount() - 1; i >= 0; i--) {
             if (isHotseatHorizontal) {
                 int cx = ((CellLayout.LayoutParams)
-                        hotseatParent.getChildAt(i).getLayoutParams()).cellX;
+                          hotseatParent.getChildAt(i).getLayoutParams()).cellX;
                 matrix[cx][iconLayout.getCountY()] = iconParent.getChildCount() + i;
             } else {
                 int cy = ((CellLayout.LayoutParams)
-                        hotseatParent.getChildAt(i).getLayoutParams()).cellY;
+                          hotseatParent.getChildAt(i).getLayoutParams()).cellY;
                 matrix[iconLayout.getCountX()][cy] = iconParent.getChildCount() + i;
             }
         }
@@ -272,7 +272,7 @@ public class FocusLogic {
      */
     // TODO: get rid of the dynamic matrix creation
     public static int[][] createSparseMatrixWithPivotColumn(CellLayout iconLayout,
-                                                            int pivotX, int pivotY) {
+            int pivotX, int pivotY) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
 
@@ -338,7 +338,7 @@ public class FocusLogic {
         }
         if (DEBUG) {
             Log.v(TAG, String.format("\thandleDpadHorizontal: \t[x, y]=[%d, %d] iconIndex=%d",
-                    xPos, yPos, iconIdx));
+                                     xPos, yPos, iconIdx));
         }
 
         // Rule1: check first in the horizontal direction
@@ -422,7 +422,7 @@ public class FocusLogic {
 
         if (DEBUG) {
             Log.v(TAG, String.format("\thandleDpadVertical: \t[x, y]=[%d, %d] iconIndex=%d",
-                    xPos, yPos, iconIndex));
+                                     xPos, yPos, iconIndex));
         }
 
         // Rule1: check first in the dpad direction
@@ -504,7 +504,7 @@ public class FocusLogic {
                 newIconIndex = matrix[x][y];
                 if (DEBUG) {
                     Log.v(TAG, String.format("\t\tinspect: \t[x, y]=[%d, %d] %d",
-                            x, y, matrix[x][y]));
+                                             x, y, matrix[x][y]));
                 }
                 return newIconIndex;
             }
@@ -517,26 +517,26 @@ public class FocusLogic {
      */
     private static String getStringIndex(int index) {
         switch (index) {
-            case NOOP:
-                return "NOOP";
-            case PREVIOUS_PAGE_FIRST_ITEM:
-                return "PREVIOUS_PAGE_FIRST";
-            case PREVIOUS_PAGE_LAST_ITEM:
-                return "PREVIOUS_PAGE_LAST";
-            case PREVIOUS_PAGE_RIGHT_COLUMN:
-                return "PREVIOUS_PAGE_RIGHT_COLUMN";
-            case CURRENT_PAGE_FIRST_ITEM:
-                return "CURRENT_PAGE_FIRST";
-            case CURRENT_PAGE_LAST_ITEM:
-                return "CURRENT_PAGE_LAST";
-            case NEXT_PAGE_FIRST_ITEM:
-                return "NEXT_PAGE_FIRST";
-            case NEXT_PAGE_LEFT_COLUMN:
-                return "NEXT_PAGE_LEFT_COLUMN";
-            case ALL_APPS_COLUMN:
-                return "ALL_APPS_COLUMN";
-            default:
-                return Integer.toString(index);
+        case NOOP:
+            return "NOOP";
+        case PREVIOUS_PAGE_FIRST_ITEM:
+            return "PREVIOUS_PAGE_FIRST";
+        case PREVIOUS_PAGE_LAST_ITEM:
+            return "PREVIOUS_PAGE_LAST";
+        case PREVIOUS_PAGE_RIGHT_COLUMN:
+            return "PREVIOUS_PAGE_RIGHT_COLUMN";
+        case CURRENT_PAGE_FIRST_ITEM:
+            return "CURRENT_PAGE_FIRST";
+        case CURRENT_PAGE_LAST_ITEM:
+            return "CURRENT_PAGE_LAST";
+        case NEXT_PAGE_FIRST_ITEM:
+            return "NEXT_PAGE_FIRST";
+        case NEXT_PAGE_LEFT_COLUMN:
+            return "NEXT_PAGE_LEFT_COLUMN";
+        case ALL_APPS_COLUMN:
+            return "ALL_APPS_COLUMN";
+        default:
+            return Integer.toString(index);
         }
     }
 
@@ -563,11 +563,11 @@ public class FocusLogic {
      * @return the view adjacent to {@param oldView} in the {@param nextPage} of the folder.
      */
     public static View getAdjacentChildInNextFolderPage(
-            ShortcutAndWidgetContainer nextPage, View oldView, int edgeColumn) {
+        ShortcutAndWidgetContainer nextPage, View oldView, int edgeColumn) {
         final int newRow = ((CellLayout.LayoutParams) oldView.getLayoutParams()).cellY;
 
         int column = (edgeColumn == NEXT_PAGE_LEFT_COLUMN) ^ nextPage.invertLayoutHorizontally()
-                ? 0 : (((CellLayout) nextPage.getParent()).getCountX() - 1);
+                     ? 0 : (((CellLayout) nextPage.getParent()).getCountX() - 1);
 
         for (; column >= 0; column--) {
             for (int row = newRow; row >= 0; row--) {

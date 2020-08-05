@@ -81,7 +81,7 @@ public class LauncherAppState {
     private LauncherAppState(Context context) {
         if (getLocalProvider(context) == null) {
             throw new RuntimeException(
-                    "Initializing LauncherAppState in the absence of LauncherProvider");
+                "Initializing LauncherAppState in the absence of LauncherProvider");
         }
         Log.v(Launcher.TAG, "LauncherAppState initiated");
         Preconditions.assertUIThread();
@@ -117,12 +117,12 @@ public class LauncherAppState {
         } else {
             // Register an observer to rebind the notification listener when badging is re-enabled.
             mNotificationBadgingObserver = new SettingsObserver.Secure(
-                    mContext.getContentResolver()) {
+            mContext.getContentResolver()) {
                 @Override
                 public void onSettingChanged(boolean isNotificationBadgingEnabled) {
                     if (isNotificationBadgingEnabled) {
                         NotificationListener.requestRebind(new ComponentName(
-                                mContext, NotificationListener.class));
+                                                               mContext, NotificationListener.class));
                     }
                 }
             };
@@ -184,7 +184,7 @@ public class LauncherAppState {
 
     private static LauncherProvider getLocalProvider(Context context) {
         try (ContentProviderClient cl = context.getContentResolver()
-                .acquireContentProviderClient(LauncherProvider.AUTHORITY)) {
+                                            .acquireContentProviderClient(LauncherProvider.AUTHORITY)) {
             return (LauncherProvider) cl.getLocalContentProvider();
         }
     }

@@ -25,7 +25,7 @@ import android.view.View;
  * A convenience class to update a view's visibility state after an alpha animation.
  */
 public class AlphaUpdateListener extends AnimationSuccessListener
-        implements AnimatorUpdateListener {
+    implements AnimatorUpdateListener {
     private static final float ALPHA_CUTOFF_THRESHOLD = 0.01f;
 
     private View mView;
@@ -54,7 +54,7 @@ public class AlphaUpdateListener extends AnimationSuccessListener
         if (view.getAlpha() < ALPHA_CUTOFF_THRESHOLD && view.getVisibility() != View.INVISIBLE) {
             view.setVisibility(View.INVISIBLE);
         } else if (view.getAlpha() > ALPHA_CUTOFF_THRESHOLD
-                && view.getVisibility() != View.VISIBLE) {
+                   && view.getVisibility() != View.VISIBLE) {
             view.setVisibility(View.VISIBLE);
         }
     }

@@ -63,10 +63,10 @@ public class SuperGContainerView extends BaseGContainerView {
             layoutParams.width = qsbWidth / deviceProfile.inv.numColumns;
             if (deviceProfile.isVerticalBarLayout()) {
                 layoutParams.width = Math.max(layoutParams.width,
-                        getResources().getDimensionPixelSize(R.dimen.qsb_min_width_with_mic));
+                                              getResources().getDimensionPixelSize(R.dimen.qsb_min_width_with_mic));
             } else {
                 layoutParams.width = Math.max(layoutParams.width,
-                        getResources().getDimensionPixelSize(R.dimen.qsb_min_width_portrait));
+                                              getResources().getDimensionPixelSize(R.dimen.qsb_min_width_portrait));
             }
             layoutParams.setMarginStart(marginStart);
             layoutParams.resolveLayoutDirection(layoutParams.getLayoutDirection());
