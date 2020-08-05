@@ -53,325 +53,335 @@ import org.zimmob.zimlx.views.BlurScrimView;
  * depending on whether it's closer to top or closer to the page indicator.
  */
 public class AllAppsTransitionController
-    implements StateHandler, OnDeviceProfileChangeListener,
-               ColorEngine.OnColorChangeListener {
+	implements StateHandler, OnDeviceProfileChangeListener,
+	           ColorEngine.OnColorChangeListener {
 
-  public static final Property<AllAppsTransitionController, Float>
-      ALL_APPS_PROGRESS = new Property<AllAppsTransitionController, Float>(
-          Float.class, "allAppsProgress") {
-        @Override
-        public Float get(final AllAppsTransitionController controller) {
-          return controller.mProgress;
-        }
+public static final Property<AllAppsTransitionController, Float>
+ALL_APPS_PROGRESS = new Property<AllAppsTransitionController, Float>(
+	Float.class, "allAppsProgress") {
+	@Override
+	public Float get(final AllAppsTransitionController controller) {
+		return controller.mProgress;
+	}
 
-        @Override
-        public void set(final AllAppsTransitionController controller,
-                        final Float progress) {
-          controller.setProgress(progress);
-        }
-      };
+	@Override
+	public void set(final AllAppsTransitionController controller,
+	                final Float progress) {
+		controller.setProgress(progress);
+	}
+};
 
-  public static final Property<AllAppsTransitionController, Float>
-      SCRIM_PROGRESS = new Property<AllAppsTransitionController, Float>(
-          Float.class, "allAppsProgress") {
-        @Override
-        public Float get(final AllAppsTransitionController controller) {
-          return controller.mScrimProgress;
-        }
+public static final Property<AllAppsTransitionController, Float>
+SCRIM_PROGRESS = new Property<AllAppsTransitionController, Float>(
+	Float.class, "allAppsProgress") {
+	@Override
+	public Float get(final AllAppsTransitionController controller) {
+		return controller.mScrimProgress;
+	}
 
-        @Override
-        public void set(final AllAppsTransitionController controller,
-                        final Float progress) {
-          controller.setScrimProgress(progress);
-        }
-      };
+	@Override
+	public void set(final AllAppsTransitionController controller,
+	                final Float progress) {
+		controller.setScrimProgress(progress);
+	}
+};
 
-  private AllAppsContainerView mAppsView;
-  private ScrimView mScrimView;
+private AllAppsContainerView mAppsView;
+private ScrimView mScrimView;
 
-  private final Launcher mLauncher;
-  private boolean mIsDarkTheme;
-  private boolean mIsVerticalLayout;
+private final Launcher mLauncher;
+private boolean mIsDarkTheme;
+private boolean mIsVerticalLayout;
 
-  // Animation in this class is controlled by a single variable {@link
-  // mProgress}. Visually, it represents top y coordinate of the all apps
-  // container if multiplied with
-  // {@link mShiftRange}.
+// Animation in this class is controlled by a single variable {@link
+// mProgress}. Visually, it represents top y coordinate of the all apps
+// container if multiplied with
+// {@link mShiftRange}.
 
-  // When {@link mProgress} is 0, all apps container is pulled up.
-  // When {@link mProgress} is 1, all apps container is pulled down.
-  private float mShiftRange; // changes depending on the orientation
-  private float mProgress;   // [0, 1], mShiftRange * mProgress = shiftCurrent
-  private float mScrimProgress;
+// When {@link mProgress} is 0, all apps container is pulled up.
+// When {@link mProgress} is 1, all apps container is pulled down.
+private float mShiftRange;   // changes depending on the orientation
+private float mProgress;     // [0, 1], mShiftRange * mProgress = shiftCurrent
+private float mScrimProgress;
 
-  private float mScrollRangeDelta = 0;
+private float mScrollRangeDelta = 0;
 
-  private Hotseat mHotseat;
-  public Drawable hotseatBackground;
+private Hotseat mHotseat;
+public Drawable hotseatBackground;
 
-  public AllAppsTransitionController(final Launcher l) {
-    mLauncher = l;
-    mShiftRange = mLauncher.getDeviceProfile().heightPx;
-    mProgress = mScrimProgress = 1f;
+public AllAppsTransitionController(final Launcher l) {
+	mLauncher = l;
+	mShiftRange = mLauncher.getDeviceProfile().heightPx;
+	mProgress = mScrimProgress = 1f;
 
-    mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
-    mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
-    mLauncher.addOnDeviceProfileChangeListener(this);
-  }
+	mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
+	mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
+	mLauncher.addOnDeviceProfileChangeListener(this);
+}
 
-  public float getShiftRange() { return mShiftRange; }
+public float getShiftRange() {
+	return mShiftRange;
+}
 
-  private void onProgressAnimationStart() {
-    // Initialize values that should not change until #onDragEnd
-    mAppsView.setVisibility(View.VISIBLE);
-  }
+private void onProgressAnimationStart() {
+	// Initialize values that should not change until #onDragEnd
+	mAppsView.setVisibility(View.VISIBLE);
+}
 
-  @Override
-  public void onDeviceProfileChanged(final DeviceProfile dp) {
-    mIsVerticalLayout = dp.isVerticalBarLayout();
-    setScrollRangeDelta(mScrollRangeDelta);
+@Override
+public void onDeviceProfileChanged(final DeviceProfile dp) {
+	mIsVerticalLayout = dp.isVerticalBarLayout();
+	setScrollRangeDelta(mScrollRangeDelta);
 
-    if (mIsVerticalLayout) {
-      mAppsView.setAlpha(1);
-      mLauncher.getHotseat().setTranslationY(0);
-      mLauncher.getWorkspace().getPageIndicator().setTranslationY(0);
-    }
-  }
+	if (mIsVerticalLayout) {
+		mAppsView.setAlpha(1);
+		mLauncher.getHotseat().setTranslationY(0);
+		mLauncher.getWorkspace().getPageIndicator().setTranslationY(0);
+	}
+}
 
-  /**
-   * Note this method should not be called outside this class. This is public
-   * because it is used in xml-based animations which also handle updating the
-   * appropriate UI.
-   *
-   * @param progress value between 0 and 1, 0 shows all apps and 1 shows
-   *     workspace
-   * @see #setState(LauncherState)
-   * @see #setStateWithAnimation(LauncherState, AnimatorSetBuilder,
-   *     AnimationConfig)
-   */
-  public void setProgress(final float progress) {
-    mProgress = progress;
-    float shiftCurrent = getShiftApps(progress, true);
+/**
+ * Note this method should not be called outside this class. This is public
+ * because it is used in xml-based animations which also handle updating the
+ * appropriate UI.
+ *
+ * @param progress value between 0 and 1, 0 shows all apps and 1 shows
+ *     workspace
+ * @see #setState(LauncherState)
+ * @see #setStateWithAnimation(LauncherState, AnimatorSetBuilder,
+ *     AnimationConfig)
+ */
+public void setProgress(final float progress) {
+	mProgress = progress;
+	float shiftCurrent = getShiftApps(progress, true);
 
-    mAppsView.setTranslationY(getShiftApps(progress, false));
-    float hotseatTranslation = -mShiftRange + shiftCurrent;
+	mAppsView.setTranslationY(getShiftApps(progress, false));
+	float hotseatTranslation = -mShiftRange + shiftCurrent;
 
-    if (!mIsVerticalLayout) {
-      mLauncher.getHotseat().setTranslationY(hotseatTranslation);
-      mLauncher.getWorkspace().getPageIndicator().setTranslationY(
-          hotseatTranslation);
-    }
+	if (!mIsVerticalLayout) {
+		mLauncher.getHotseat().setTranslationY(hotseatTranslation);
+		mLauncher.getWorkspace().getPageIndicator().setTranslationY(
+			hotseatTranslation);
+	}
 
-    // Use a light system UI (dark icons) if all apps is behind at least half of
-    // the status bar.
-    boolean forceChange = shiftCurrent - mScrimView.getDragHandleSize() <=
-                          mLauncher.getDeviceProfile().getInsets().top / 2;
-    if (forceChange) {
-      mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS,
-                                                      !mIsDarkTheme);
-    } else {
-      mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
-    }
-  }
+	// Use a light system UI (dark icons) if all apps is behind at least half of
+	// the status bar.
+	boolean forceChange = shiftCurrent - mScrimView.getDragHandleSize() <=
+	                      mLauncher.getDeviceProfile().getInsets().top / 2;
+	if (forceChange) {
+		mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS,
+		                                                !mIsDarkTheme);
+	} else {
+		mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
+	}
+}
 
-  private float getShiftApps(final float progress, final boolean inverted) {
-    float normalShift = progress * mShiftRange;
-    ZimPreferences prefs = ZimPreferences.Companion.getInstanceNoCreate();
-    if (mAppsView.getFloatingHeaderView().hasVisibleContent() &&
-        prefs.getAllAppsSearch() != prefs.getDockSearchBar()) {
-      float overviewProgress = OVERVIEW.getVerticalProgress(mLauncher);
-      float overviewShift = getQsbHeight();
-      overviewShift = -overviewShift;
-      if (prefs.getAllAppsSearch()) {
-        overviewShift = -overviewShift;
-      }
-      if (progress < overviewProgress) {
-        overviewShift = Utilities.mapToRange(
-            progress, 0, overviewProgress,
-            inverted ? prefs.getDockSearchBar() ? -overviewShift : 0 : 0,
-            inverted ? 0 : overviewShift, Interpolators.LINEAR);
-      } else if (inverted) {
-        overviewShift = 0;
-      }
-      return normalShift + overviewShift;
-    } else {
-      return normalShift;
-    }
-  }
+private float getShiftApps(final float progress, final boolean inverted) {
+	float normalShift = progress * mShiftRange;
+	ZimPreferences prefs = ZimPreferences.Companion.getInstanceNoCreate();
+	if (mAppsView.getFloatingHeaderView().hasVisibleContent() &&
+	    prefs.getAllAppsSearch() != prefs.getDockSearchBar()) {
+		float overviewProgress = OVERVIEW.getVerticalProgress(mLauncher);
+		float overviewShift = getQsbHeight();
+		overviewShift = -overviewShift;
+		if (prefs.getAllAppsSearch()) {
+			overviewShift = -overviewShift;
+		}
+		if (progress < overviewProgress) {
+			overviewShift = Utilities.mapToRange(
+				progress, 0, overviewProgress,
+				inverted ? prefs.getDockSearchBar() ? -overviewShift : 0 : 0,
+				inverted ? 0 : overviewShift, Interpolators.LINEAR);
+		} else if (inverted) {
+			overviewShift = 0;
+		}
+		return normalShift + overviewShift;
+	} else {
+		return normalShift;
+	}
+}
 
-  private int getQsbHeight() {
-    MarginLayoutParams mlp =
-        (MarginLayoutParams)mAppsView.getSearchView().getLayoutParams();
-    return mlp.topMargin + mlp.height;
-  }
+private int getQsbHeight() {
+	MarginLayoutParams mlp =
+		(MarginLayoutParams)mAppsView.getSearchView().getLayoutParams();
+	return mlp.topMargin + mlp.height;
+}
 
-  public float getProgress() { return mProgress; }
+public float getProgress() {
+	return mProgress;
+}
 
-  public void setScrimProgress(final float progress) {
-    mScrimProgress = progress;
-    mScrimView.setProgress(progress);
-  }
+public void setScrimProgress(final float progress) {
+	mScrimProgress = progress;
+	mScrimView.setProgress(progress);
+}
 
-  public float getScrimProgress() { return mScrimProgress; }
+public float getScrimProgress() {
+	return mScrimProgress;
+}
 
-  /**
-   * Sets the vertical transition progress to {@param state} and updates all the
-   * dependent UI accordingly.
-   */
-  @Override
-  public void setState(final LauncherState state) {
-    float targetProgress = state.getVerticalProgress(mLauncher);
-    setProgress(targetProgress);
-    setScrimProgress(state.getScrimProgress(mLauncher));
-    setAlphas(state, null, new AnimatorSetBuilder());
-    onProgressAnimationEnd();
-  }
+/**
+ * Sets the vertical transition progress to {@param state} and updates all the
+ * dependent UI accordingly.
+ */
+@Override
+public void setState(final LauncherState state) {
+	float targetProgress = state.getVerticalProgress(mLauncher);
+	setProgress(targetProgress);
+	setScrimProgress(state.getScrimProgress(mLauncher));
+	setAlphas(state, null, new AnimatorSetBuilder());
+	onProgressAnimationEnd();
+}
 
-  /**
-   * Creates an animation which updates the vertical transition progress and
-   * updates all the dependent UI using various animation events
-   */
-  @Override
-  public void setStateWithAnimation(final LauncherState toState,
-                                    final AnimatorSetBuilder builder,
-                                    final AnimationConfig config) {
-    float targetProgress = toState.getVerticalProgress(mLauncher);
-    float targetScrimProgress = toState.getScrimProgress(mLauncher);
-    if (Float.compare(mProgress, targetProgress) == 0 &&
-        Float.compare(mScrimProgress, targetScrimProgress) == 0) {
-      setAlphas(toState, config, builder);
-      // Fail fast
-      onProgressAnimationEnd();
-      return;
-    }
+/**
+ * Creates an animation which updates the vertical transition progress and
+ * updates all the dependent UI using various animation events
+ */
+@Override
+public void setStateWithAnimation(final LauncherState toState,
+                                  final AnimatorSetBuilder builder,
+                                  final AnimationConfig config) {
+	float targetProgress = toState.getVerticalProgress(mLauncher);
+	float targetScrimProgress = toState.getScrimProgress(mLauncher);
+	if (Float.compare(mProgress, targetProgress) == 0 &&
+	    Float.compare(mScrimProgress, targetScrimProgress) == 0) {
+		setAlphas(toState, config, builder);
+		// Fail fast
+		onProgressAnimationEnd();
+		return;
+	}
 
-    if (!config.playNonAtomicComponent()) {
-      // There is no atomic component for the all apps transition, so just
-      // return early.
-      return;
-    }
+	if (!config.playNonAtomicComponent()) {
+		// There is no atomic component for the all apps transition, so just
+		// return early.
+		return;
+	}
 
-    Interpolator interpolator =
-        config.userControlled
-            ? LINEAR
-            : toState == OVERVIEW ? builder.getInterpolator(ANIM_OVERVIEW_SCALE,
-                                                            FAST_OUT_SLOW_IN)
-                                  : FAST_OUT_SLOW_IN;
-    ObjectAnimator anim = ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS,
-                                                 mProgress, targetProgress);
-    anim.setDuration(config.duration);
-    anim.setInterpolator(
-        builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
-    anim.addListener(getProgressAnimatorListener());
+	Interpolator interpolator =
+		config.userControlled
+	    ? LINEAR
+	    : toState == OVERVIEW ? builder.getInterpolator(ANIM_OVERVIEW_SCALE,
+		                                            FAST_OUT_SLOW_IN)
+		                  : FAST_OUT_SLOW_IN;
+	ObjectAnimator anim = ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS,
+	                                             mProgress, targetProgress);
+	anim.setDuration(config.duration);
+	anim.setInterpolator(
+		builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
+	anim.addListener(getProgressAnimatorListener());
 
-    builder.play(anim);
+	builder.play(anim);
 
-    ObjectAnimator scrimAnim = ObjectAnimator.ofFloat(
-        this, SCRIM_PROGRESS, mScrimProgress, targetScrimProgress);
-    scrimAnim.setDuration(config.duration);
-    scrimAnim.setInterpolator(
-        builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
-    scrimAnim.addListener(getProgressAnimatorListener());
+	ObjectAnimator scrimAnim = ObjectAnimator.ofFloat(
+		this, SCRIM_PROGRESS, mScrimProgress, targetScrimProgress);
+	scrimAnim.setDuration(config.duration);
+	scrimAnim.setInterpolator(
+		builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
+	scrimAnim.addListener(getProgressAnimatorListener());
 
-    builder.play(scrimAnim);
+	builder.play(scrimAnim);
 
-    setAlphas(toState, config, builder);
-  }
+	setAlphas(toState, config, builder);
+}
 
-  private void setAlphas(final LauncherState toState,
-                         final AnimationConfig config,
-                         final AnimatorSetBuilder builder) {
-    PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
-                                           : config.getPropertySetter(builder);
-    int visibleElements = toState.getVisibleElements(mLauncher);
-    ZimPreferences prefs = ZimPreferences.Companion.getInstanceNoCreate();
-    boolean hasHeader =
-        (visibleElements & ALL_APPS_HEADER) != 0 && prefs.getAllAppsSearch();
-    boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
-    boolean hasContent = (visibleElements & ALL_APPS_CONTENT) != 0;
+private void setAlphas(final LauncherState toState,
+                       final AnimationConfig config,
+                       final AnimatorSetBuilder builder) {
+	PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
+	                                   : config.getPropertySetter(builder);
+	int visibleElements = toState.getVisibleElements(mLauncher);
+	ZimPreferences prefs = ZimPreferences.Companion.getInstanceNoCreate();
+	boolean hasHeader =
+		(visibleElements & ALL_APPS_HEADER) != 0 && prefs.getAllAppsSearch();
+	boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
+	boolean hasContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 
-    Interpolator allAppsFade =
-        builder.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
-    setter.setViewAlpha(mAppsView.getSearchView(), hasHeader ? 1 : 0,
-                        allAppsFade);
-    setter.setViewAlpha(mAppsView.getContentView(), hasContent ? 1 : 0,
-                        allAppsFade);
-    setter.setViewAlpha(mAppsView.getScrollBar(), hasContent ? 1 : 0,
-                        allAppsFade);
-    mAppsView.getFloatingHeaderView().setContentVisibility(
-        hasHeaderExtra, hasContent, setter, allAppsFade);
+	Interpolator allAppsFade =
+		builder.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
+	setter.setViewAlpha(mAppsView.getSearchView(), hasHeader ? 1 : 0,
+	                    allAppsFade);
+	setter.setViewAlpha(mAppsView.getContentView(), hasContent ? 1 : 0,
+	                    allAppsFade);
+	setter.setViewAlpha(mAppsView.getScrollBar(), hasContent ? 1 : 0,
+	                    allAppsFade);
+	mAppsView.getFloatingHeaderView().setContentVisibility(
+		hasHeaderExtra, hasContent, setter, allAppsFade);
 
-    setter.setInt(mScrimView, ScrimView.DRAG_HANDLE_ALPHA,
-                  (visibleElements & VERTICAL_SWIPE_INDICATOR) != 0 ? 255 : 0,
-                  LINEAR);
-  }
+	setter.setInt(mScrimView, ScrimView.DRAG_HANDLE_ALPHA,
+	              (visibleElements & VERTICAL_SWIPE_INDICATOR) != 0 ? 255 : 0,
+	              LINEAR);
+}
 
-  public AnimatorListenerAdapter getProgressAnimatorListener() {
-    return new AnimationSuccessListener() {
-      @Override
-      public void onAnimationSuccess(final Animator animator) {
-        onProgressAnimationEnd();
-      }
+public AnimatorListenerAdapter getProgressAnimatorListener() {
+	return new AnimationSuccessListener() {
+		       @Override
+		       public void onAnimationSuccess(final Animator animator) {
+			       onProgressAnimationEnd();
+		       }
 
-      @Override
-      public void onAnimationStart(final Animator animation) {
-        onProgressAnimationStart();
-      }
-    };
-  }
+		       @Override
+		       public void onAnimationStart(final Animator animation) {
+			       onProgressAnimationStart();
+		       }
+	};
+}
 
-  public void setupViews(final AllAppsContainerView appsView,
-                         final Hotseat hotseat) {
-    mAppsView = appsView;
-    mScrimView = mLauncher.findViewById(R.id.scrim_view);
-    mHotseat = hotseat;
-    hotseatBackground = mHotseat.getBackground();
-  }
+public void setupViews(final AllAppsContainerView appsView,
+                       final Hotseat hotseat) {
+	mAppsView = appsView;
+	mScrimView = mLauncher.findViewById(R.id.scrim_view);
+	mHotseat = hotseat;
+	hotseatBackground = mHotseat.getBackground();
+}
 
-  /**
-   * Updates the total scroll range but does not update the UI.
-   */
-  public void setScrollRangeDelta(final float delta) {
-    mScrollRangeDelta = delta;
-    mShiftRange = mLauncher.getDeviceProfile().heightPx - mScrollRangeDelta;
+/**
+ * Updates the total scroll range but does not update the UI.
+ */
+public void setScrollRangeDelta(final float delta) {
+	mScrollRangeDelta = delta;
+	mShiftRange = mLauncher.getDeviceProfile().heightPx - mScrollRangeDelta;
 
-    if (mScrimView != null) {
-      mScrimView.reInitUi();
-    }
-  }
+	if (mScrimView != null) {
+		mScrimView.reInitUi();
+	}
+}
 
-  /**
-   * Set the final view states based on the progress.
-   * TODO: This logic should go in {@link LauncherState}
-   */
-  private void onProgressAnimationEnd() {
-    if (Float.compare(mProgress, 1f) == 0) {
-      mAppsView.setVisibility(View.INVISIBLE);
-      mHotseat.setBackground(hotseatBackground);
-      mAppsView.reset(true);
-    } else if (Float.compare(mProgress, 0f) == 0) {
-      mAppsView.setVisibility(View.VISIBLE);
-      mAppsView.onScrollUpEnd();
-      mHotseat.setBackground(mAppsView.getBackground());
-    } else {
-      mAppsView.setVisibility(View.VISIBLE);
-      mHotseat.setBackground(mAppsView.getBackground());
-    }
-  }
+/**
+ * Set the final view states based on the progress.
+ * TODO: This logic should go in {@link LauncherState}
+ */
+private void onProgressAnimationEnd() {
+	if (Float.compare(mProgress, 1f) == 0) {
+		mAppsView.setVisibility(View.INVISIBLE);
+		mHotseat.setBackground(hotseatBackground);
+		mAppsView.reset(true);
+	} else if (Float.compare(mProgress, 0f) == 0) {
+		mAppsView.setVisibility(View.VISIBLE);
+		mAppsView.onScrollUpEnd();
+		mHotseat.setBackground(mAppsView.getBackground());
+	} else {
+		mAppsView.setVisibility(View.VISIBLE);
+		mHotseat.setBackground(mAppsView.getBackground());
+	}
+}
 
-  public void reset() { setProgress(1f); }
+public void reset() {
+	setProgress(1f);
+}
 
-  public AllAppsContainerView getAppsView() { return mAppsView; }
+public AllAppsContainerView getAppsView() {
+	return mAppsView;
+}
 
-  @Override
-  public void onColorChange(final
-                            @NotNull ColorEngine.ResolveInfo resolveInfo) {
-    mIsDarkTheme = ZimUtilsKt.isDark(resolveInfo.getColor());
-  }
+@Override
+public void onColorChange(final
+                          @NotNull ColorEngine.ResolveInfo resolveInfo) {
+	mIsDarkTheme = ZimUtilsKt.isDark(resolveInfo.getColor());
+}
 
-  public void setOverlayScroll(final float scroll) {
-    if (mScrimView instanceof BlurScrimView) {
-      ((BlurScrimView)mScrimView).setOverlayScroll(scroll);
-    }
-  }
+public void setOverlayScroll(final float scroll) {
+	if (mScrimView instanceof BlurScrimView) {
+		((BlurScrimView)mScrimView).setOverlayScroll(scroll);
+	}
+}
 }

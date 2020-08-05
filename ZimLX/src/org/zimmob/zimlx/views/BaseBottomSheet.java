@@ -39,115 +39,116 @@ import com.android.launcher3.views.AbstractSlideInView;
  */
 public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
 
-  private static final int DEFAULT_CLOSE_DURATION = 200;
-  private Rect mInsets;
+private static final int DEFAULT_CLOSE_DURATION = 200;
+private Rect mInsets;
 
-  protected final ColorScrim mColorScrim;
+protected final ColorScrim mColorScrim;
 
-  public BaseBottomSheet(final Context context, final AttributeSet attrs) {
-    this(context, attrs, 0);
-  }
+public BaseBottomSheet(final Context context, final AttributeSet attrs) {
+	this(context, attrs, 0);
+}
 
-  public BaseBottomSheet(final Context context, final AttributeSet attrs,
-                         final int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-    mColorScrim = ColorScrim.createExtractedColorScrim(this);
-    setWillNotDraw(false);
-    mInsets = new Rect();
-    mContent = this;
-  }
+public BaseBottomSheet(final Context context, final AttributeSet attrs,
+                       final int defStyleAttr) {
+	super(context, attrs, defStyleAttr);
+	mColorScrim = ColorScrim.createExtractedColorScrim(this);
+	setWillNotDraw(false);
+	mInsets = new Rect();
+	mContent = this;
+}
 
-  @Override
-  protected void onLayout(final boolean changed, final int l, final int t,
-                          final int r, final int b) {
-    super.onLayout(changed, l, t, r, b);
-    setTranslationShift(mTranslationShift);
-  }
+@Override
+protected void onLayout(final boolean changed, final int l, final int t,
+                        final int r, final int b) {
+	super.onLayout(changed, l, t, r, b);
+	setTranslationShift(mTranslationShift);
+}
 
-  public void show(final View view, final boolean animate) {
-    ((ViewGroup)findViewById(R.id.sheet_contents)).addView(view);
+public void show(final View view, final boolean animate) {
+	((ViewGroup)findViewById(R.id.sheet_contents)).addView(view);
 
-    mLauncher.getDragLayer().addView(this);
-    mIsOpen = false;
-    animateOpen(animate);
-  }
+	mLauncher.getDragLayer().addView(this);
+	mIsOpen = false;
+	animateOpen(animate);
+}
 
-  protected void setTranslationShift(final float translationShift) {
-    super.setTranslationShift(translationShift);
-    mColorScrim.setProgress(1 - mTranslationShift);
-  }
+protected void setTranslationShift(final float translationShift) {
+	super.setTranslationShift(translationShift);
+	mColorScrim.setProgress(1 - mTranslationShift);
+}
 
-  protected void onCloseComplete() {
-    super.onCloseComplete();
-    clearNavBarColor();
-  }
+protected void onCloseComplete() {
+	super.onCloseComplete();
+	clearNavBarColor();
+}
 
-  protected void clearNavBarColor() {
-    mLauncher.getSystemUiController().updateUiState(
-        SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
-  }
+protected void clearNavBarColor() {
+	mLauncher.getSystemUiController().updateUiState(
+		SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
+}
 
-  protected void setupNavBarColor() {
-    boolean isSheetDark =
-        Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
-    mLauncher.getSystemUiController().updateUiState(
-        SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
-        isSheetDark ? SystemUiController.FLAG_DARK_NAV
-                    : SystemUiController.FLAG_LIGHT_NAV);
-  }
+protected void setupNavBarColor() {
+	boolean isSheetDark =
+		Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
+	mLauncher.getSystemUiController().updateUiState(
+		SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
+		isSheetDark ? SystemUiController.FLAG_DARK_NAV
+		    : SystemUiController.FLAG_LIGHT_NAV);
+}
 
-  private void animateOpen(final boolean animate) {
-    if (mIsOpen || mOpenCloseAnimator.isRunning()) {
-      return;
-    }
-    mIsOpen = true;
-    setupNavBarColor();
-    mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
-        TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-    mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
-    if (!animate) {
-      mOpenCloseAnimator.setDuration(0);
-    }
-    mOpenCloseAnimator.start();
-  }
+private void animateOpen(final boolean animate) {
+	if (mIsOpen || mOpenCloseAnimator.isRunning()) {
+		return;
+	}
+	mIsOpen = true;
+	setupNavBarColor();
+	mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
+					     TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
+	mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
+	if (!animate) {
+		mOpenCloseAnimator.setDuration(0);
+	}
+	mOpenCloseAnimator.start();
+}
 
-  @Override
-  protected void handleClose(final boolean animate) {
-    handleClose(animate, DEFAULT_CLOSE_DURATION);
-  }
+@Override
+protected void handleClose(final boolean animate) {
+	handleClose(animate, DEFAULT_CLOSE_DURATION);
+}
 
-  @Override
-  protected boolean isOfType(final @FloatingViewType int type) {
-    return (type & TYPE_SETTINGS_SHEET) != 0;
-  }
+@Override
+protected boolean isOfType(final @FloatingViewType int type) {
+	return (type & TYPE_SETTINGS_SHEET) != 0;
+}
 
-  @Override
-  public void setInsets(final Rect insets) {
-    // Extend behind left, right, and bottom insets.
-    int leftInset = insets.left - mInsets.left;
-    int rightInset = insets.right - mInsets.right;
-    int bottomInset = insets.bottom - mInsets.bottom;
-    mInsets.set(insets);
+@Override
+public void setInsets(final Rect insets) {
+	// Extend behind left, right, and bottom insets.
+	int leftInset = insets.left - mInsets.left;
+	int rightInset = insets.right - mInsets.right;
+	int bottomInset = insets.bottom - mInsets.bottom;
+	mInsets.set(insets);
 
-    if (!Utilities.ATLEAST_OREO &&
-        !mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-      View navBarBg = findViewById(R.id.nav_bar_bg);
-      ViewGroup.LayoutParams navBarBgLp = navBarBg.getLayoutParams();
-      navBarBgLp.height = bottomInset;
-      navBarBg.setLayoutParams(navBarBgLp);
-      bottomInset = 0;
-    }
+	if (!Utilities.ATLEAST_OREO &&
+	    !mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+		View navBarBg = findViewById(R.id.nav_bar_bg);
+		ViewGroup.LayoutParams navBarBgLp = navBarBg.getLayoutParams();
+		navBarBgLp.height = bottomInset;
+		navBarBg.setLayoutParams(navBarBgLp);
+		bottomInset = 0;
+	}
 
-    setPadding(getPaddingLeft() + leftInset, getPaddingTop(),
-               getPaddingRight() + rightInset,
-               getPaddingBottom() + bottomInset);
-  }
+	setPadding(getPaddingLeft() + leftInset, getPaddingTop(),
+	           getPaddingRight() + rightInset,
+	           getPaddingBottom() + bottomInset);
+}
 
-  @Override
-  public final void logActionCommand(final int command) {}
+@Override
+public final void logActionCommand(final int command) {
+}
 
-  public static BaseBottomSheet inflate(final Launcher launcher) {
-    return (BaseBottomSheet)launcher.getLayoutInflater().inflate(
-        R.layout.base_bottom_sheet, launcher.getDragLayer(), false);
-  }
+public static BaseBottomSheet inflate(final Launcher launcher) {
+	return (BaseBottomSheet)launcher.getLayoutInflater().inflate(
+		R.layout.base_bottom_sheet, launcher.getDragLayer(), false);
+}
 }

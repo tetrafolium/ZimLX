@@ -34,96 +34,100 @@ import com.android.launcher3.Utilities;
  */
 public class WidgetImageView extends View {
 
-  private final Paint mPaint =
-      new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-  private final RectF mDstRectF = new RectF();
-  private final int mBadgeMargin;
+private final Paint mPaint =
+	new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+private final RectF mDstRectF = new RectF();
+private final int mBadgeMargin;
 
-  private Bitmap mBitmap;
-  private Drawable mBadge;
+private Bitmap mBitmap;
+private Drawable mBadge;
 
-  public WidgetImageView(final Context context) { this(context, null); }
+public WidgetImageView(final Context context) {
+	this(context, null);
+}
 
-  public WidgetImageView(final Context context, final AttributeSet attrs) {
-    this(context, attrs, 0);
-  }
+public WidgetImageView(final Context context, final AttributeSet attrs) {
+	this(context, attrs, 0);
+}
 
-  public WidgetImageView(final Context context, final AttributeSet attrs,
-                         final int defStyle) {
-    super(context, attrs, defStyle);
+public WidgetImageView(final Context context, final AttributeSet attrs,
+                       final int defStyle) {
+	super(context, attrs, defStyle);
 
-    mBadgeMargin = context.getResources().getDimensionPixelSize(
-        R.dimen.profile_badge_margin);
-  }
+	mBadgeMargin = context.getResources().getDimensionPixelSize(
+		R.dimen.profile_badge_margin);
+}
 
-  public void setBitmap(final Bitmap bitmap, final Drawable badge) {
-    mBitmap = bitmap;
-    mBadge = badge;
-    invalidate();
-  }
+public void setBitmap(final Bitmap bitmap, final Drawable badge) {
+	mBitmap = bitmap;
+	mBadge = badge;
+	invalidate();
+}
 
-  public Bitmap getBitmap() { return mBitmap; }
+public Bitmap getBitmap() {
+	return mBitmap;
+}
 
-  @Override
-  protected void onDraw(final Canvas canvas) {
-    if (mBitmap != null) {
-      updateDstRectF();
-      canvas.drawBitmap(mBitmap, null, mDstRectF, mPaint);
+@Override
+protected void onDraw(final Canvas canvas) {
+	if (mBitmap != null) {
+		updateDstRectF();
+		canvas.drawBitmap(mBitmap, null, mDstRectF, mPaint);
 
-      // Only draw the badge if a preview was drawn.
-      if (mBadge != null) {
-        mBadge.draw(canvas);
-      }
-    }
-  }
+		// Only draw the badge if a preview was drawn.
+		if (mBadge != null) {
+			mBadge.draw(canvas);
+		}
+	}
+}
 
-  /**
-   * Prevents the inefficient alpha view rendering.
-   */
-  @Override
-  public boolean hasOverlappingRendering() {
-    return false;
-  }
+/**
+ * Prevents the inefficient alpha view rendering.
+ */
+@Override
+public boolean hasOverlappingRendering() {
+	return false;
+}
 
-  private void updateDstRectF() {
-    float myWidth = getWidth();
-    float myHeight = getHeight();
-    float bitmapWidth = mBitmap.getWidth();
+private void updateDstRectF() {
+	float myWidth = getWidth();
+	float myHeight = getHeight();
+	float bitmapWidth = mBitmap.getWidth();
 
-    final float scale = bitmapWidth > myWidth ? myWidth / bitmapWidth : 1;
-    float scaledWidth = bitmapWidth * scale;
-    float scaledHeight = mBitmap.getHeight() * scale;
+	final float scale = bitmapWidth > myWidth ? myWidth / bitmapWidth : 1;
+	float scaledWidth = bitmapWidth * scale;
+	float scaledHeight = mBitmap.getHeight() * scale;
 
-    mDstRectF.left = (myWidth - scaledWidth) / 2;
-    mDstRectF.right = (myWidth + scaledWidth) / 2;
+	mDstRectF.left = (myWidth - scaledWidth) / 2;
+	mDstRectF.right = (myWidth + scaledWidth) / 2;
 
-    if (scaledHeight > myHeight) {
-      mDstRectF.top = 0;
-      mDstRectF.bottom = scaledHeight;
-    } else {
-      mDstRectF.top = (myHeight - scaledHeight) / 2;
-      mDstRectF.bottom = (myHeight + scaledHeight) / 2;
-    }
+	if (scaledHeight > myHeight) {
+		mDstRectF.top = 0;
+		mDstRectF.bottom = scaledHeight;
+	} else {
+		mDstRectF.top = (myHeight - scaledHeight) / 2;
+		mDstRectF.bottom = (myHeight + scaledHeight) / 2;
+	}
 
-    if (mBadge != null) {
-      Rect bounds = mBadge.getBounds();
-      int left = Utilities.boundToRange(
-          (int)(mDstRectF.right + mBadgeMargin - bounds.width()), mBadgeMargin,
-          getWidth() - bounds.width());
-      int top = Utilities.boundToRange(
-          (int)(mDstRectF.bottom + mBadgeMargin - bounds.height()),
-          mBadgeMargin, getHeight() - bounds.height());
-      mBadge.setBounds(left, top, bounds.width() + left, bounds.height() + top);
-    }
-  }
+	if (mBadge != null) {
+		Rect bounds = mBadge.getBounds();
+		int left = Utilities.boundToRange(
+			(int)(mDstRectF.right + mBadgeMargin - bounds.width()), mBadgeMargin,
+			getWidth() - bounds.width());
+		int top = Utilities.boundToRange(
+			(int)(mDstRectF.bottom + mBadgeMargin - bounds.height()),
+			mBadgeMargin, getHeight() - bounds.height());
+		mBadge.setBounds(left, top, bounds.width() + left, bounds.height() + top);
+	}
+}
 
-  /**
-   * @return the bounds where the image was drawn.
-   */
-  public Rect getBitmapBounds() {
-    updateDstRectF();
-    Rect rect = new Rect();
-    mDstRectF.round(rect);
-    return rect;
-  }
+/**
+ * @return the bounds where the image was drawn.
+ */
+public Rect getBitmapBounds() {
+	updateDstRectF();
+	Rect rect = new Rect();
+	mDstRectF.round(rect);
+	return rect;
+}
 }

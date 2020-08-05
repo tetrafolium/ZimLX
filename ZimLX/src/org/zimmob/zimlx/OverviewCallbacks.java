@@ -26,21 +26,24 @@ import com.android.launcher3.util.Preconditions;
  */
 public class OverviewCallbacks {
 
-  private static OverviewCallbacks sInstance;
+private static OverviewCallbacks sInstance;
 
-  public static OverviewCallbacks get(final Context context) {
-    Preconditions.assertUIThread();
-    if (sInstance == null) {
-      sInstance = Utilities.getOverrideObject(
-          OverviewCallbacks.class, context.getApplicationContext(),
-          R.string.overview_callbacks_class);
-    }
-    return sInstance;
-  }
+public static OverviewCallbacks get(final Context context) {
+	Preconditions.assertUIThread();
+	if (sInstance == null) {
+		sInstance = Utilities.getOverrideObject(
+			OverviewCallbacks.class, context.getApplicationContext(),
+			R.string.overview_callbacks_class);
+	}
+	return sInstance;
+}
 
-  public void onInitOverviewTransition() {}
+public void onInitOverviewTransition() {
+}
 
-  public void onResetOverview() {}
+public void onResetOverview() {
+}
 
-  public void closeAllWindows() {}
+public void closeAllWindows() {
+}
 }

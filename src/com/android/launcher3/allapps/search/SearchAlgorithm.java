@@ -20,13 +20,13 @@ package com.android.launcher3.allapps.search;
  */
 public interface SearchAlgorithm {
 
-  /**
-   * Performs search and sends the result to the callback.
-   */
-  void doSearch(String query, AllAppsSearchBarController.Callbacks callback);
+/**
+ * Performs search and sends the result to the callback.
+ */
+void doSearch(String query, AllAppsSearchBarController.Callbacks callback);
 
-  /**
-   * Cancels any active request.
-   */
-  void cancel(boolean interruptActiveRequests);
+/**
+ * Cancels any active request.
+ */
+void cancel(boolean interruptActiveRequests);
 }

@@ -43,128 +43,128 @@ import com.android.launcher3.allapps.AllAppsBackgroundDrawable;
  */
 public class DrawableFactory {
 
-  private static final String TAG = "DrawableFactory";
+private static final String TAG = "DrawableFactory";
 
-  private static DrawableFactory sInstance;
-  private static final Object LOCK = new Object();
+private static DrawableFactory sInstance;
+private static final Object LOCK = new Object();
 
-  private Path mPreloadProgressPath;
+private Path mPreloadProgressPath;
 
-  public static DrawableFactory get(final Context context) {
-    synchronized (LOCK) {
-      if (sInstance == null) {
-        sInstance = Utilities.getOverrideObject(
-            DrawableFactory.class, context.getApplicationContext(),
-            R.string.drawable_factory_class);
-      }
-      return sInstance;
-    }
-  }
+public static DrawableFactory get(final Context context) {
+	synchronized (LOCK) {
+		if (sInstance == null) {
+			sInstance = Utilities.getOverrideObject(
+				DrawableFactory.class, context.getApplicationContext(),
+				R.string.drawable_factory_class);
+		}
+		return sInstance;
+	}
+}
 
-  protected final UserHandle mMyUser = Process.myUserHandle();
-  protected final ArrayMap<UserHandle, Bitmap> mUserBadges = new ArrayMap<>();
+protected final UserHandle mMyUser = Process.myUserHandle();
+protected final ArrayMap<UserHandle, Bitmap> mUserBadges = new ArrayMap<>();
 
-  /**
-   * Returns a FastBitmapDrawable with the icon.
-   */
-  public FastBitmapDrawable newIcon(final ItemInfoWithIcon info) {
-    FastBitmapDrawable drawable = new FastBitmapDrawable(info);
-    drawable.setIsDisabled(info.isDisabled());
-    return drawable;
-  }
+/**
+ * Returns a FastBitmapDrawable with the icon.
+ */
+public FastBitmapDrawable newIcon(final ItemInfoWithIcon info) {
+	FastBitmapDrawable drawable = new FastBitmapDrawable(info);
+	drawable.setIsDisabled(info.isDisabled());
+	return drawable;
+}
 
-  public FastBitmapDrawable newIcon(final BitmapInfo info,
-                                    final ActivityInfo target) {
-    return new FastBitmapDrawable(info);
-  }
+public FastBitmapDrawable newIcon(final BitmapInfo info,
+                                  final ActivityInfo target) {
+	return new FastBitmapDrawable(info);
+}
 
-  /**
-   * Returns a FastBitmapDrawable with the icon.
-   */
-  public FastBitmapDrawable newIcon(final Bitmap icon, final ItemInfo info) {
-    return new FastBitmapDrawable(icon);
-  }
-  /**
-   * Returns a FastBitmapDrawable with the icon.
-   */
-  public PreloadIconDrawable newPendingIcon(final ItemInfoWithIcon info,
-                                            final Context context) {
-    if (mPreloadProgressPath == null) {
-      mPreloadProgressPath = getPreloadProgressPath(context);
-    }
-    return new PreloadIconDrawable(info, mPreloadProgressPath, context);
-  }
+/**
+ * Returns a FastBitmapDrawable with the icon.
+ */
+public FastBitmapDrawable newIcon(final Bitmap icon, final ItemInfo info) {
+	return new FastBitmapDrawable(icon);
+}
+/**
+ * Returns a FastBitmapDrawable with the icon.
+ */
+public PreloadIconDrawable newPendingIcon(final ItemInfoWithIcon info,
+                                          final Context context) {
+	if (mPreloadProgressPath == null) {
+		mPreloadProgressPath = getPreloadProgressPath(context);
+	}
+	return new PreloadIconDrawable(info, mPreloadProgressPath, context);
+}
 
-  protected Path getPreloadProgressPath(final Context context) {
-    if (Utilities.ATLEAST_OREO) {
-      try {
-        // Try to load the path from Mask Icon
-        Drawable icon =
-            context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper);
-        icon.setBounds(0, 0, PreloadIconDrawable.PATH_SIZE,
-                       PreloadIconDrawable.PATH_SIZE);
-        return (Path)icon.getClass().getMethod("getIconMask").invoke(icon);
-      } catch (Exception e) {
-        Log.e(TAG, "Error loading mask icon", e);
-      }
-    }
+protected Path getPreloadProgressPath(final Context context) {
+	if (Utilities.ATLEAST_OREO) {
+		try {
+			// Try to load the path from Mask Icon
+			Drawable icon =
+				context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper);
+			icon.setBounds(0, 0, PreloadIconDrawable.PATH_SIZE,
+			               PreloadIconDrawable.PATH_SIZE);
+			return (Path)icon.getClass().getMethod("getIconMask").invoke(icon);
+		} catch (Exception e) {
+			Log.e(TAG, "Error loading mask icon", e);
+		}
+	}
 
-    // Create a circle static from top center and going clockwise.
-    Path p = new Path();
-    p.moveTo(PreloadIconDrawable.PATH_SIZE / 2, 0);
-    p.addArc(0, 0, PreloadIconDrawable.PATH_SIZE, PreloadIconDrawable.PATH_SIZE,
-             -90, 360);
-    return p;
-  }
+	// Create a circle static from top center and going clockwise.
+	Path p = new Path();
+	p.moveTo(PreloadIconDrawable.PATH_SIZE / 2, 0);
+	p.addArc(0, 0, PreloadIconDrawable.PATH_SIZE, PreloadIconDrawable.PATH_SIZE,
+	         -90, 360);
+	return p;
+}
 
-  public AllAppsBackgroundDrawable getAllAppsBackground(final Context context) {
-    return new AllAppsBackgroundDrawable(context);
-  }
+public AllAppsBackgroundDrawable getAllAppsBackground(final Context context) {
+	return new AllAppsBackgroundDrawable(context);
+}
 
-  /**
-   * Returns a drawable that can be used as a badge for the user or null.
-   */
-  @UiThread
-  public Drawable getBadgeForUser(final UserHandle user,
-                                  final Context context) {
-    if (mMyUser.equals(user)) {
-      return null;
-    }
+/**
+ * Returns a drawable that can be used as a badge for the user or null.
+ */
+@UiThread
+public Drawable getBadgeForUser(final UserHandle user,
+                                final Context context) {
+	if (mMyUser.equals(user)) {
+		return null;
+	}
 
-    Bitmap badgeBitmap = getUserBadge(user, context);
-    FastBitmapDrawable d = new FastBitmapDrawable(badgeBitmap);
-    d.setFilterBitmap(true);
-    d.setBounds(0, 0, badgeBitmap.getWidth(), badgeBitmap.getHeight());
-    return d;
-  }
+	Bitmap badgeBitmap = getUserBadge(user, context);
+	FastBitmapDrawable d = new FastBitmapDrawable(badgeBitmap);
+	d.setFilterBitmap(true);
+	d.setBounds(0, 0, badgeBitmap.getWidth(), badgeBitmap.getHeight());
+	return d;
+}
 
-  protected synchronized Bitmap getUserBadge(final UserHandle user,
-                                             final Context context) {
-    Bitmap badgeBitmap = mUserBadges.get(user);
-    if (badgeBitmap != null) {
-      return badgeBitmap;
-    }
+protected synchronized Bitmap getUserBadge(final UserHandle user,
+                                           final Context context) {
+	Bitmap badgeBitmap = mUserBadges.get(user);
+	if (badgeBitmap != null) {
+		return badgeBitmap;
+	}
 
-    final Resources res = context.getApplicationContext().getResources();
-    int badgeSize = res.getDimensionPixelSize(R.dimen.profile_badge_size);
-    badgeBitmap =
-        Bitmap.createBitmap(badgeSize, badgeSize, Bitmap.Config.ARGB_8888);
+	final Resources res = context.getApplicationContext().getResources();
+	int badgeSize = res.getDimensionPixelSize(R.dimen.profile_badge_size);
+	badgeBitmap =
+		Bitmap.createBitmap(badgeSize, badgeSize, Bitmap.Config.ARGB_8888);
 
-    Drawable drawable =
-        context.getPackageManager().getUserBadgedDrawableForDensity(
-            new BitmapDrawable(res, badgeBitmap), user,
-            new Rect(0, 0, badgeSize, badgeSize), 0);
-    if (drawable instanceof BitmapDrawable) {
-      badgeBitmap = ((BitmapDrawable)drawable).getBitmap();
-    } else {
-      badgeBitmap.eraseColor(Color.TRANSPARENT);
-      Canvas c = new Canvas(badgeBitmap);
-      drawable.setBounds(0, 0, badgeSize, badgeSize);
-      drawable.draw(c);
-      c.setBitmap(null);
-    }
+	Drawable drawable =
+		context.getPackageManager().getUserBadgedDrawableForDensity(
+			new BitmapDrawable(res, badgeBitmap), user,
+			new Rect(0, 0, badgeSize, badgeSize), 0);
+	if (drawable instanceof BitmapDrawable) {
+		badgeBitmap = ((BitmapDrawable)drawable).getBitmap();
+	} else {
+		badgeBitmap.eraseColor(Color.TRANSPARENT);
+		Canvas c = new Canvas(badgeBitmap);
+		drawable.setBounds(0, 0, badgeSize, badgeSize);
+		drawable.draw(c);
+		c.setBitmap(null);
+	}
 
-    mUserBadges.put(user, badgeBitmap);
-    return badgeBitmap;
-  }
+	mUserBadges.put(user, badgeBitmap);
+	return badgeBitmap;
+}
 }

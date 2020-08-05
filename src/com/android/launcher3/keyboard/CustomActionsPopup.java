@@ -37,55 +37,57 @@ import java.util.List;
  */
 public class CustomActionsPopup implements OnMenuItemClickListener {
 
-  private final Launcher mLauncher;
-  private final LauncherAccessibilityDelegate mDelegate;
-  private final View mIcon;
+private final Launcher mLauncher;
+private final LauncherAccessibilityDelegate mDelegate;
+private final View mIcon;
 
-  public CustomActionsPopup(final Launcher launcher, final View icon) {
-    mLauncher = launcher;
-    mIcon = icon;
-    PopupContainerWithArrow container =
-        PopupContainerWithArrow.getOpen(launcher);
-    if (container != null) {
-      mDelegate = container.getAccessibilityDelegate();
-    } else {
-      mDelegate = launcher.getAccessibilityDelegate();
-    }
-  }
+public CustomActionsPopup(final Launcher launcher, final View icon) {
+	mLauncher = launcher;
+	mIcon = icon;
+	PopupContainerWithArrow container =
+		PopupContainerWithArrow.getOpen(launcher);
+	if (container != null) {
+		mDelegate = container.getAccessibilityDelegate();
+	} else {
+		mDelegate = launcher.getAccessibilityDelegate();
+	}
+}
 
-  private List<AccessibilityAction> getActionList() {
-    if (mIcon == null || !(mIcon.getTag() instanceof ItemInfo)) {
-      return Collections.EMPTY_LIST;
-    }
+private List<AccessibilityAction> getActionList() {
+	if (mIcon == null || !(mIcon.getTag() instanceof ItemInfo)) {
+		return Collections.EMPTY_LIST;
+	}
 
-    AccessibilityNodeInfo info = AccessibilityNodeInfo.obtain();
-    mDelegate.addSupportedActions(mIcon, info, true);
-    List<AccessibilityAction> result = new ArrayList<>(info.getActionList());
-    info.recycle();
-    return result;
-  }
+	AccessibilityNodeInfo info = AccessibilityNodeInfo.obtain();
+	mDelegate.addSupportedActions(mIcon, info, true);
+	List<AccessibilityAction> result = new ArrayList<>(info.getActionList());
+	info.recycle();
+	return result;
+}
 
-  public boolean canShow() { return !getActionList().isEmpty(); }
+public boolean canShow() {
+	return !getActionList().isEmpty();
+}
 
-  public boolean show() {
-    List<AccessibilityAction> actions = getActionList();
-    if (actions.isEmpty()) {
-      return false;
-    }
+public boolean show() {
+	List<AccessibilityAction> actions = getActionList();
+	if (actions.isEmpty()) {
+		return false;
+	}
 
-    PopupMenu popup = new PopupMenu(mLauncher, mIcon);
-    popup.setOnMenuItemClickListener(this);
-    Menu menu = popup.getMenu();
-    for (AccessibilityAction action : actions) {
-      menu.add(Menu.NONE, action.getId(), Menu.NONE, action.getLabel());
-    }
-    popup.show();
-    return true;
-  }
+	PopupMenu popup = new PopupMenu(mLauncher, mIcon);
+	popup.setOnMenuItemClickListener(this);
+	Menu menu = popup.getMenu();
+	for (AccessibilityAction action : actions) {
+		menu.add(Menu.NONE, action.getId(), Menu.NONE, action.getLabel());
+	}
+	popup.show();
+	return true;
+}
 
-  @Override
-  public boolean onMenuItemClick(final MenuItem menuItem) {
-    return mDelegate.performAction(mIcon, (ItemInfo)mIcon.getTag(),
-                                   menuItem.getItemId());
-  }
+@Override
+public boolean onMenuItemClick(final MenuItem menuItem) {
+	return mDelegate.performAction(mIcon, (ItemInfo)mIcon.getTag(),
+	                               menuItem.getItemId());
+}
 }

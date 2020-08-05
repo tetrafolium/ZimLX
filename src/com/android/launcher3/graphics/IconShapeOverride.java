@@ -44,183 +44,185 @@ import org.zimmob.zimlx.ZimLauncher;
 @TargetApi(Build.VERSION_CODES.O)
 public class IconShapeOverride {
 
-  private static final String TAG = "IconShapeOverride";
+private static final String TAG = "IconShapeOverride";
 
-  // Time to wait before killing the process this ensures that the progress bar
-  // is visible for sufficient time so that there is no flicker.
-  private static final long PROCESS_KILL_DELAY_MS = 1000;
+// Time to wait before killing the process this ensures that the progress bar
+// is visible for sufficient time so that there is no flicker.
+private static final long PROCESS_KILL_DELAY_MS = 1000;
 
-  private static final int RESTART_REQUEST_CODE =
-      42; // the answer to everything
+private static final int RESTART_REQUEST_CODE =
+	42; // the answer to everything
 
-  public static boolean isSupported(final Context context) {
-    if (!Utilities.ATLEAST_OREO) {
-      return false;
-    }
+public static boolean isSupported(final Context context) {
+	if (!Utilities.ATLEAST_OREO) {
+		return false;
+	}
 
-    try {
-      if (getSystemResField().get(null) != Resources.getSystem()) {
-        // Our assumption that mSystem is the system resource is not true.
-        return false;
-      }
-    } catch (Exception e) {
-      // Ignore, not supported
-      return false;
-    }
+	try {
+		if (getSystemResField().get(null) != Resources.getSystem()) {
+			// Our assumption that mSystem is the system resource is not true.
+			return false;
+		}
+	} catch (Exception e) {
+		// Ignore, not supported
+		return false;
+	}
 
-    return getConfigResId() != 0;
-  }
+	return getConfigResId() != 0;
+}
 
-  public static void apply(final Context context) {
-    if (!Utilities.ATLEAST_OREO) {
-      return;
-    }
-    String path = getAppliedValue(context);
-    if (TextUtils.isEmpty(path)) {
-      return;
-    }
-    if (!isSupported(context)) {
-      return;
-    }
+public static void apply(final Context context) {
+	if (!Utilities.ATLEAST_OREO) {
+		return;
+	}
+	String path = getAppliedValue(context);
+	if (TextUtils.isEmpty(path)) {
+		return;
+	}
+	if (!isSupported(context)) {
+		return;
+	}
 
-    // magic
-    try {
-      Resources override =
-          new ResourcesOverride(Resources.getSystem(), getConfigResId(), path);
-      getSystemResField().set(null, override);
-      int masks = getOverrideMasksResId();
-      if (masks != 0) {
-        ((ResourcesOverride) override).setArrayOverrideId(masks);
-      }
-    } catch (Exception e) {
-      Log.e(TAG, "Unable to override icon shape", e);
-      // revert value.
-      getDevicePrefs(context).edit().remove(THEME_ICON_SHAPE).apply();
-    }
-  }
+	// magic
+	try {
+		Resources override =
+			new ResourcesOverride(Resources.getSystem(), getConfigResId(), path);
+		getSystemResField().set(null, override);
+		int masks = getOverrideMasksResId();
+		if (masks != 0) {
+			((ResourcesOverride) override).setArrayOverrideId(masks);
+		}
+	} catch (Exception e) {
+		Log.e(TAG, "Unable to override icon shape", e);
+		// revert value.
+		getDevicePrefs(context).edit().remove(THEME_ICON_SHAPE).apply();
+	}
+}
 
-  private static Field getSystemResField() throws Exception {
-    Field staticField = Resources.class.getDeclaredField("mSystem");
-    staticField.setAccessible(true);
-    return staticField;
-  }
+private static Field getSystemResField() throws Exception {
+	Field staticField = Resources.class.getDeclaredField("mSystem");
+	staticField.setAccessible(true);
+	return staticField;
+}
 
-  private static int getConfigResId() {
-    return Resources.getSystem().getIdentifier("config_icon_mask", "string",
-                                               "android");
-  }
+private static int getConfigResId() {
+	return Resources.getSystem().getIdentifier("config_icon_mask", "string",
+	                                           "android");
+}
 
-  private static int getOverrideMasksResId() {
-    return Resources.getSystem().getIdentifier("system_icon_masks", "array",
-                                               "android");
-  }
+private static int getOverrideMasksResId() {
+	return Resources.getSystem().getIdentifier("system_icon_masks", "array",
+	                                           "android");
+}
 
-  public static String getAppliedValue(final Context context) {
-    String devValue = getDevicePrefs(context).getString(THEME_ICON_SHAPE, "");
-    if (!TextUtils.isEmpty(devValue)) {
-      // Migrate to general preferences to back up shape overrides
-      getPrefs(context).edit().putString(THEME_ICON_SHAPE, devValue).apply();
-      getDevicePrefs(context).edit().remove(THEME_ICON_SHAPE).apply();
-    }
+public static String getAppliedValue(final Context context) {
+	String devValue = getDevicePrefs(context).getString(THEME_ICON_SHAPE, "");
+	if (!TextUtils.isEmpty(devValue)) {
+		// Migrate to general preferences to back up shape overrides
+		getPrefs(context).edit().putString(THEME_ICON_SHAPE, devValue).apply();
+		getDevicePrefs(context).edit().remove(THEME_ICON_SHAPE).apply();
+	}
 
-    return getPrefs(context).getString(THEME_ICON_SHAPE, "");
-  }
+	return getPrefs(context).getString(THEME_ICON_SHAPE, "");
+}
 
-  public static void handlePreferenceUi(final ListPreference preference) {
-    Context context = preference.getContext();
-    preference.setValue(getAppliedValue(context));
-    preference.setOnPreferenceChangeListener(
-        new PreferenceChangeHandler(context));
-  }
+public static void handlePreferenceUi(final ListPreference preference) {
+	Context context = preference.getContext();
+	preference.setValue(getAppliedValue(context));
+	preference.setOnPreferenceChangeListener(
+		new PreferenceChangeHandler(context));
+}
 
-  private static class ResourcesOverride extends Resources {
+private static class ResourcesOverride extends Resources {
 
-    private final int mOverrideId;
-    private int mArrayOverrideId = 0;
-    private final String mOverrideValue;
+private final int mOverrideId;
+private int mArrayOverrideId = 0;
+private final String mOverrideValue;
 
-    public ResourcesOverride(final Resources parent, final int overrideId,
-                             final String overrideValue) {
-      super(parent.getAssets(), parent.getDisplayMetrics(),
-            parent.getConfiguration());
-      mOverrideId = overrideId;
-      mOverrideValue = overrideValue;
-    }
+public ResourcesOverride(final Resources parent, final int overrideId,
+                         final String overrideValue) {
+	super(parent.getAssets(), parent.getDisplayMetrics(),
+	      parent.getConfiguration());
+	mOverrideId = overrideId;
+	mOverrideValue = overrideValue;
+}
 
-    @NonNull
-    @Override
-    public String getString(final int id) throws NotFoundException {
-      if (id == mOverrideId) {
-        return mOverrideValue;
-      }
-      return super.getString(id);
-    }
+@NonNull
+@Override
+public String getString(final int id) throws NotFoundException {
+	if (id == mOverrideId) {
+		return mOverrideValue;
+	}
+	return super.getString(id);
+}
 
-    void setArrayOverrideId(final int id) { mArrayOverrideId = id; }
+void setArrayOverrideId(final int id) {
+	mArrayOverrideId = id;
+}
 
-    // I do admit that this is one hell of a hack
-    @NonNull
-    @Override
-    public String[] getStringArray(final int id) throws NotFoundException {
-      if (id != 0 && id == mArrayOverrideId) {
-        int size = super.getStringArray(id).length;
-        String[] arr = new String[size];
-        Arrays.fill(arr, mOverrideValue);
-        return arr;
-      }
-      return super.getStringArray(id);
-    }
-  }
+// I do admit that this is one hell of a hack
+@NonNull
+@Override
+public String[] getStringArray(final int id) throws NotFoundException {
+	if (id != 0 && id == mArrayOverrideId) {
+		int size = super.getStringArray(id).length;
+		String[] arr = new String[size];
+		Arrays.fill(arr, mOverrideValue);
+		return arr;
+	}
+	return super.getStringArray(id);
+}
+}
 
-  private static class PreferenceChangeHandler
-      implements Preference.OnPreferenceChangeListener {
+private static class PreferenceChangeHandler
+	implements Preference.OnPreferenceChangeListener {
 
-    private final Context mContext;
+private final Context mContext;
 
-    private PreferenceChangeHandler(final Context context) {
-      mContext = context;
-    }
+private PreferenceChangeHandler(final Context context) {
+	mContext = context;
+}
 
-    @Override
-    public boolean onPreferenceChange(final Preference preference,
-                                      final Object o) {
-      String newValue = (String)o;
-      if (!getAppliedValue(mContext).equals(newValue)) {
-        if (preference instanceof ListPreference) {
-          ((ListPreference)preference).setValue(newValue);
-        }
+@Override
+public boolean onPreferenceChange(final Preference preference,
+                                  final Object o) {
+	String newValue = (String)o;
+	if (!getAppliedValue(mContext).equals(newValue)) {
+		if (preference instanceof ListPreference) {
+			((ListPreference)preference).setValue(newValue);
+		}
 
-        new LooperExecutor(LauncherModel.getWorkerLooper())
-            .execute(new OverrideApplyHandler(mContext, newValue));
-      }
-      return false;
-    }
-  }
+		new LooperExecutor(LauncherModel.getWorkerLooper())
+		.execute(new OverrideApplyHandler(mContext, newValue));
+	}
+	return false;
+}
+}
 
-  private static class OverrideApplyHandler implements Runnable {
+private static class OverrideApplyHandler implements Runnable {
 
-    private final Context mContext;
-    private final String mValue;
+private final Context mContext;
+private final String mValue;
 
-    private OverrideApplyHandler(final Context context, final String value) {
-      mContext = context;
-      mValue = value;
-    }
+private OverrideApplyHandler(final Context context, final String value) {
+	mContext = context;
+	mValue = value;
+}
 
-    @SuppressLint("ApplySharedPref")
-    @Override
-    public void run() {
-      // Synchronously write the preference.
-      getDevicePrefs(mContext)
-          .edit()
-          .putString(THEME_ICON_SHAPE, mValue)
-          .commit();
-      // Clear the icon cache.
-      LauncherAppState.getInstance(mContext).getIconCache().clear();
+@SuppressLint("ApplySharedPref")
+@Override
+public void run() {
+	// Synchronously write the preference.
+	getDevicePrefs(mContext)
+	.edit()
+	.putString(THEME_ICON_SHAPE, mValue)
+	.commit();
+	// Clear the icon cache.
+	LauncherAppState.getInstance(mContext).getIconCache().clear();
 
-      // Schedule restart
-      ((ZimLauncher)LauncherAppState.getInstanceNoCreate().getLauncher())
-          .scheduleRestart();
-    }
-  }
+	// Schedule restart
+	((ZimLauncher)LauncherAppState.getInstanceNoCreate().getLauncher())
+	.scheduleRestart();
+}
+}
 }

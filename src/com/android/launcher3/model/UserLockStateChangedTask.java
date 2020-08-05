@@ -43,88 +43,90 @@ import java.util.List;
  */
 public class UserLockStateChangedTask extends BaseModelUpdateTask {
 
-  private final UserHandle mUser;
+private final UserHandle mUser;
 
-  public UserLockStateChangedTask(final UserHandle user) { mUser = user; }
+public UserLockStateChangedTask(final UserHandle user) {
+	mUser = user;
+}
 
-  @Override
-  public void execute(final LauncherAppState app, final BgDataModel dataModel,
-                      final AllAppsList apps) {
-    Context context = app.getContext();
-    boolean isUserUnlocked =
-        UserManagerCompat.getInstance(context).isUserUnlocked(mUser);
-    DeepShortcutManager deepShortcutManager =
-        DeepShortcutManager.getInstance(context);
+@Override
+public void execute(final LauncherAppState app, final BgDataModel dataModel,
+                    final AllAppsList apps) {
+	Context context = app.getContext();
+	boolean isUserUnlocked =
+		UserManagerCompat.getInstance(context).isUserUnlocked(mUser);
+	DeepShortcutManager deepShortcutManager =
+		DeepShortcutManager.getInstance(context);
 
-    HashMap<ShortcutKey, ShortcutInfoCompat> pinnedShortcuts = new HashMap<>();
-    if (isUserUnlocked) {
-      List<ShortcutInfoCompat> shortcuts =
-          deepShortcutManager.queryForPinnedShortcuts(null, mUser);
-      if (deepShortcutManager.wasLastCallSuccess()) {
-        for (ShortcutInfoCompat shortcut : shortcuts) {
-          pinnedShortcuts.put(ShortcutKey.fromInfo(shortcut), shortcut);
-        }
-      } else {
-        // Shortcut manager can fail due to some race condition when the lock
-        // state changes too frequently. For the purpose of the update, consider
-        // it as still locked.
-        isUserUnlocked = false;
-      }
-    }
+	HashMap<ShortcutKey, ShortcutInfoCompat> pinnedShortcuts = new HashMap<>();
+	if (isUserUnlocked) {
+		List<ShortcutInfoCompat> shortcuts =
+			deepShortcutManager.queryForPinnedShortcuts(null, mUser);
+		if (deepShortcutManager.wasLastCallSuccess()) {
+			for (ShortcutInfoCompat shortcut : shortcuts) {
+				pinnedShortcuts.put(ShortcutKey.fromInfo(shortcut), shortcut);
+			}
+		} else {
+			// Shortcut manager can fail due to some race condition when the lock
+			// state changes too frequently. For the purpose of the update, consider
+			// it as still locked.
+			isUserUnlocked = false;
+		}
+	}
 
-    // Update the workspace to reflect the changes to updated shortcuts residing
-    // on it.
-    ArrayList<ShortcutInfo> updatedShortcutInfos = new ArrayList<>();
-    HashSet<ShortcutKey> removedKeys = new HashSet<>();
+	// Update the workspace to reflect the changes to updated shortcuts residing
+	// on it.
+	ArrayList<ShortcutInfo> updatedShortcutInfos = new ArrayList<>();
+	HashSet<ShortcutKey> removedKeys = new HashSet<>();
 
-    for (ItemInfo itemInfo : dataModel.itemsIdMap) {
-      if (itemInfo.itemType ==
-              LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
-          mUser.equals(itemInfo.user)) {
-        ShortcutInfo si = (ShortcutInfo)itemInfo;
-        if (isUserUnlocked) {
-          ShortcutKey key = ShortcutKey.fromItemInfo(si);
-          ShortcutInfoCompat shortcut = pinnedShortcuts.get(key);
-          // We couldn't verify the shortcut during loader. If its no longer
-          // available (probably due to clear data), delete the workspace item
-          // as well
-          if (shortcut == null) {
-            removedKeys.add(key);
-            continue;
-          }
-          si.runtimeStatusFlags &= ~FLAG_DISABLED_LOCKED_USER;
-          si.updateFromDeepShortcutInfo(shortcut, context);
-          // If the shortcut is pinned but no longer has an icon in the system,
-          // keep the current icon instead of reverting to the default icon.
-          LauncherIcons li = LauncherIcons.obtain(context);
-          li.createShortcutIcon(shortcut, true, Provider.of(si.iconBitmap))
-              .applyTo(si);
-          li.recycle();
-        } else {
-          si.runtimeStatusFlags |= FLAG_DISABLED_LOCKED_USER;
-        }
-        updatedShortcutInfos.add(si);
-      }
-    }
-    bindUpdatedShortcuts(updatedShortcutInfos, mUser);
-    if (!removedKeys.isEmpty()) {
-      deleteAndBindComponentsRemoved(
-          ItemInfoMatcher.ofShortcutKeys(removedKeys));
-    }
+	for (ItemInfo itemInfo : dataModel.itemsIdMap) {
+		if (itemInfo.itemType ==
+		    LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
+		    mUser.equals(itemInfo.user)) {
+			ShortcutInfo si = (ShortcutInfo)itemInfo;
+			if (isUserUnlocked) {
+				ShortcutKey key = ShortcutKey.fromItemInfo(si);
+				ShortcutInfoCompat shortcut = pinnedShortcuts.get(key);
+				// We couldn't verify the shortcut during loader. If its no longer
+				// available (probably due to clear data), delete the workspace item
+				// as well
+				if (shortcut == null) {
+					removedKeys.add(key);
+					continue;
+				}
+				si.runtimeStatusFlags &= ~FLAG_DISABLED_LOCKED_USER;
+				si.updateFromDeepShortcutInfo(shortcut, context);
+				// If the shortcut is pinned but no longer has an icon in the system,
+				// keep the current icon instead of reverting to the default icon.
+				LauncherIcons li = LauncherIcons.obtain(context);
+				li.createShortcutIcon(shortcut, true, Provider.of(si.iconBitmap))
+				.applyTo(si);
+				li.recycle();
+			} else {
+				si.runtimeStatusFlags |= FLAG_DISABLED_LOCKED_USER;
+			}
+			updatedShortcutInfos.add(si);
+		}
+	}
+	bindUpdatedShortcuts(updatedShortcutInfos, mUser);
+	if (!removedKeys.isEmpty()) {
+		deleteAndBindComponentsRemoved(
+			ItemInfoMatcher.ofShortcutKeys(removedKeys));
+	}
 
-    // Remove shortcut id map for that user
-    Iterator<ComponentKey> keysIter =
-        dataModel.deepShortcutMap.keySet().iterator();
-    while (keysIter.hasNext()) {
-      if (keysIter.next().user.equals(mUser)) {
-        keysIter.remove();
-      }
-    }
+	// Remove shortcut id map for that user
+	Iterator<ComponentKey> keysIter =
+		dataModel.deepShortcutMap.keySet().iterator();
+	while (keysIter.hasNext()) {
+		if (keysIter.next().user.equals(mUser)) {
+			keysIter.remove();
+		}
+	}
 
-    if (isUserUnlocked) {
-      dataModel.updateDeepShortcutMap(
-          null, mUser, deepShortcutManager.queryForAllShortcuts(mUser));
-    }
-    bindDeepShortcuts(dataModel);
-  }
+	if (isUserUnlocked) {
+		dataModel.updateDeepShortcutMap(
+			null, mUser, deepShortcutManager.queryForAllShortcuts(mUser));
+	}
+	bindDeepShortcuts(dataModel);
+}
 }

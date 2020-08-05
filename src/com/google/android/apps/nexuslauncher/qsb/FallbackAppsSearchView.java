@@ -16,93 +16,97 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FallbackAppsSearchView
-    extends ExtendedEditText implements OnUpdateListener, Callbacks {
-  final AllAppsSearchBarController DI;
-  AllAppsQsbLayout DJ;
-  AlphabeticalAppsList mApps;
-  AllAppsContainerView mAppsView;
+	extends ExtendedEditText implements OnUpdateListener, Callbacks {
+final AllAppsSearchBarController DI;
+AllAppsQsbLayout DJ;
+AlphabeticalAppsList mApps;
+AllAppsContainerView mAppsView;
 
-  public FallbackAppsSearchView(final Context context) { this(context, null); }
+public FallbackAppsSearchView(final Context context) {
+	this(context, null);
+}
 
-  public FallbackAppsSearchView(final Context context,
-                                final AttributeSet attributeSet) {
-    this(context, attributeSet, 0);
-  }
+public FallbackAppsSearchView(final Context context,
+                              final AttributeSet attributeSet) {
+	this(context, attributeSet, 0);
+}
 
-  public FallbackAppsSearchView(final Context context,
-                                final AttributeSet attributeSet, final int i) {
-    super(context, attributeSet, i);
-    this.DI = new AllAppsSearchBarController();
-  }
+public FallbackAppsSearchView(final Context context,
+                              final AttributeSet attributeSet, final int i) {
+	super(context, attributeSet, i);
+	this.DI = new AllAppsSearchBarController();
+}
 
-  protected void onAttachedToWindow() {
-    super.onAttachedToWindow();
-    Launcher.getLauncher(getContext())
-        .getAppsView()
-        .getAppsStore()
-        .addUpdateListener(this);
-  }
+protected void onAttachedToWindow() {
+	super.onAttachedToWindow();
+	Launcher.getLauncher(getContext())
+	.getAppsView()
+	.getAppsStore()
+	.addUpdateListener(this);
+}
 
-  protected void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
-    Launcher.getLauncher(getContext())
-        .getAppsView()
-        .getAppsStore()
-        .removeUpdateListener(this);
-  }
+protected void onDetachedFromWindow() {
+	super.onDetachedFromWindow();
+	Launcher.getLauncher(getContext())
+	.getAppsView()
+	.getAppsStore()
+	.removeUpdateListener(this);
+}
 
-  @Override
-  public void onSearchResult(final String query,
-                             final ArrayList<ComponentKey> apps,
-                             final List<String> suggestions) {
-    if (getParent() != null) {
-      if (apps != null) {
-        mApps.setOrderedFilter(apps);
-      }
-      if (suggestions != null) {
-        mApps.setSearchSuggestions(suggestions);
-      }
-      if (apps != null || suggestions != null) {
-        dV();
-        x(true);
-        mAppsView.setLastSearchQuery(query);
-      }
-    }
-  }
+@Override
+public void onSearchResult(final String query,
+                           final ArrayList<ComponentKey> apps,
+                           final List<String> suggestions) {
+	if (getParent() != null) {
+		if (apps != null) {
+			mApps.setOrderedFilter(apps);
+		}
+		if (suggestions != null) {
+			mApps.setSearchSuggestions(suggestions);
+		}
+		if (apps != null || suggestions != null) {
+			dV();
+			x(true);
+			mAppsView.setLastSearchQuery(query);
+		}
+	}
+}
 
-  @Override
-  public final void clearSearchResult() {
-    if (getParent() != null) {
-      if (mApps.setOrderedFilter(null) || mApps.setSearchSuggestions(null)) {
-        dV();
-      }
-      x(false);
-      DJ.mDoNotRemoveFallback = true;
-      mAppsView.onClearSearchResult();
-      DJ.mDoNotRemoveFallback = false;
-    }
-  }
+@Override
+public final void clearSearchResult() {
+	if (getParent() != null) {
+		if (mApps.setOrderedFilter(null) || mApps.setSearchSuggestions(null)) {
+			dV();
+		}
+		x(false);
+		DJ.mDoNotRemoveFallback = true;
+		mAppsView.onClearSearchResult();
+		DJ.mDoNotRemoveFallback = false;
+	}
+}
 
-  @Override
-  public boolean onSubmitSearch() {
-    if (mApps.hasNoFilteredResults()) {
-      return false;
-    }
-    Intent i = mApps.getFilteredApps().get(0).getIntent();
-    getContext().startActivity(i);
-    return true;
-  }
+@Override
+public boolean onSubmitSearch() {
+	if (mApps.hasNoFilteredResults()) {
+		return false;
+	}
+	Intent i = mApps.getFilteredApps().get(0).getIntent();
+	getContext().startActivity(i);
+	return true;
+}
 
-  public void onAppsUpdated() { this.DI.refreshSearchResult(); }
+public void onAppsUpdated() {
+	this.DI.refreshSearchResult();
+}
 
-  private void x(final boolean z) {
-    PredictionsFloatingHeader predictionsFloatingHeader =
-        mAppsView.getFloatingHeaderView();
-    predictionsFloatingHeader.setCollapsed(z);
-  }
+private void x(final boolean z) {
+	PredictionsFloatingHeader predictionsFloatingHeader =
+		mAppsView.getFloatingHeaderView();
+	predictionsFloatingHeader.setCollapsed(z);
+}
 
-  private void dV() {
-    this.DJ.setShadowAlpha(0);
-    mAppsView.onSearchResultsChanged();
-  }
+private void dV() {
+	this.DJ.setShadowAlpha(0);
+	mAppsView.onSearchResultsChanged();
+}
 }

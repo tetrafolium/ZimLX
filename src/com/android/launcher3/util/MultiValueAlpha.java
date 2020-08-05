@@ -25,75 +25,79 @@ import android.view.View;
  */
 public class MultiValueAlpha {
 
-  public static final Property<AlphaProperty, Float> VALUE =
-      new Property<AlphaProperty, Float>(Float.TYPE, "value") {
-        @Override
-        public Float get(final AlphaProperty alphaProperty) {
-          return alphaProperty.mValue;
-        }
+public static final Property<AlphaProperty, Float> VALUE =
+	new Property<AlphaProperty, Float>(Float.TYPE, "value") {
+	@Override
+	public Float get(final AlphaProperty alphaProperty) {
+		return alphaProperty.mValue;
+	}
 
-        @Override
-        public void set(final AlphaProperty object, final Float value) {
-          object.setValue(value);
-        }
-      };
+	@Override
+	public void set(final AlphaProperty object, final Float value) {
+		object.setValue(value);
+	}
+};
 
-  private final View mView;
-  private final AlphaProperty[] mMyProperties;
+private final View mView;
+private final AlphaProperty[] mMyProperties;
 
-  private int mValidMask;
+private int mValidMask;
 
-  public MultiValueAlpha(final View view, final int size) {
-    mView = view;
-    mMyProperties = new AlphaProperty[size];
+public MultiValueAlpha(final View view, final int size) {
+	mView = view;
+	mMyProperties = new AlphaProperty[size];
 
-    mValidMask = 0;
-    for (int i = 0; i < size; i++) {
-      int myMask = 1 << i;
-      mValidMask |= myMask;
-      mMyProperties[i] = new AlphaProperty(myMask);
-    }
-  }
+	mValidMask = 0;
+	for (int i = 0; i < size; i++) {
+		int myMask = 1 << i;
+		mValidMask |= myMask;
+		mMyProperties[i] = new AlphaProperty(myMask);
+	}
+}
 
-  public AlphaProperty getProperty(final int index) {
-    return mMyProperties[index];
-  }
+public AlphaProperty getProperty(final int index) {
+	return mMyProperties[index];
+}
 
-  public class AlphaProperty {
+public class AlphaProperty {
 
-    private final int mMyMask;
+private final int mMyMask;
 
-    private float mValue = 1;
-    // Factor of all other alpha channels, only valid if mMyMask is present in
-    // mValidMask.
-    private float mOthers = 1;
+private float mValue = 1;
+// Factor of all other alpha channels, only valid if mMyMask is present in
+// mValidMask.
+private float mOthers = 1;
 
-    AlphaProperty(final int myMask) { mMyMask = myMask; }
+AlphaProperty(final int myMask) {
+	mMyMask = myMask;
+}
 
-    public void setValue(final float value) {
-      if (mValue == value) {
-        return;
-      }
+public void setValue(final float value) {
+	if (mValue == value) {
+		return;
+	}
 
-      if ((mValidMask & mMyMask) == 0) {
-        // Our cache value is not correct, recompute it.
-        mOthers = 1;
-        for (AlphaProperty prop : mMyProperties) {
-          if (prop != this) {
-            mOthers *= prop.mValue;
-          }
-        }
-      }
+	if ((mValidMask & mMyMask) == 0) {
+		// Our cache value is not correct, recompute it.
+		mOthers = 1;
+		for (AlphaProperty prop : mMyProperties) {
+			if (prop != this) {
+				mOthers *= prop.mValue;
+			}
+		}
+	}
 
-      // Since we have changed our value, all other caches except our own need
-      // to be recomputed. Change mValidMask to indicate the new valid caches
-      // (only our own).
-      mValidMask = mMyMask;
-      mValue = value;
+	// Since we have changed our value, all other caches except our own need
+	// to be recomputed. Change mValidMask to indicate the new valid caches
+	// (only our own).
+	mValidMask = mMyMask;
+	mValue = value;
 
-      mView.setAlpha(mOthers * mValue);
-    }
+	mView.setAlpha(mOthers * mValue);
+}
 
-    public float getValue() { return mValue; }
-  }
+public float getValue() {
+	return mValue;
+}
+}
 }

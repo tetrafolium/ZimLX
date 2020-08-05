@@ -16,27 +16,27 @@ import org.zimmob.zimlx.util.ThemeActivity;
  */
 public class AboutActivity extends ThemeActivity {
 
-  @BindView(R.id.toolbar) public Toolbar toolbar;
-  private ThemeOverride themeOverride;
-  private int currentTheme = 0;
-  private ThemeOverride.ThemeSet themeSet;
-  @Override
-  protected void onCreate(final Bundle savedInstanceState) {
-    Utilities.setupPirateLocale(this);
-    themeSet = new ThemeOverride.Settings();
-    themeOverride = new ThemeOverride(themeSet, this);
-    themeOverride.applyTheme(this);
-    currentTheme = themeOverride.getTheme(this);
-    super.onCreate(savedInstanceState);
+@BindView(R.id.toolbar) public Toolbar toolbar;
+private ThemeOverride themeOverride;
+private int currentTheme = 0;
+private ThemeOverride.ThemeSet themeSet;
+@Override
+protected void onCreate(final Bundle savedInstanceState) {
+	Utilities.setupPirateLocale(this);
+	themeSet = new ThemeOverride.Settings();
+	themeOverride = new ThemeOverride(themeSet, this);
+	themeOverride.applyTheme(this);
+	currentTheme = themeOverride.getTheme(this);
+	super.onCreate(savedInstanceState);
 
-    setContentView(R.layout.activity_more);
-    ButterKnife.bind(this);
-    setSupportActionBar(toolbar);
-    toolbar.setBackgroundColor(Utilities.getZimPrefs(this).getPrimaryColor());
-    toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-    toolbar.setNavigationIcon(
-        getResources().getDrawable(R.drawable.ic_arrow_back_white_24px));
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    toolbar.setTitle(R.string.about_title);
-  }
+	setContentView(R.layout.activity_more);
+	ButterKnife.bind(this);
+	setSupportActionBar(toolbar);
+	toolbar.setBackgroundColor(Utilities.getZimPrefs(this).getPrimaryColor());
+	toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+	toolbar.setNavigationIcon(
+		getResources().getDrawable(R.drawable.ic_arrow_back_white_24px));
+	getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+	toolbar.setTitle(R.string.about_title);
+}
 }

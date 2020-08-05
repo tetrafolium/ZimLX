@@ -12,26 +12,26 @@ import java.util.List;
  */
 public class LauncherFiles {
 
-  public static final String LAUNCHER_DB = "zlauncher.db";
-  public static final String LAUNCHER_DB2 = "zapps.db";
-  public static final String SHARED_PREFERENCES_KEY =
-      BuildConfig.APPLICATION_ID + "_preferences";
-  public static final String OLD_SHARED_PREFERENCES_KEY =
-      "org.zimmob.zimlx.prefs";
-  public static final String MANAGED_USER_PREFERENCES_KEY =
-      "org.zimmob.zimlx.managedusers.prefs";
-  // This preference file is not backed up to cloud.
-  public static final String DEVICE_PREFERENCES_KEY =
-      "org.zimmob.zimlx.device.prefs";
-  // Google Reflection client preferences
-  public static final String REFLECTION_PREFERENCES_KEY =
-      "reflection.private.properties";
-  public static final String WIDGET_PREVIEWS_DB = "widgetpreviews.db";
-  public static final String APP_ICONS_DB = "app_icons.db";
-  private static final String XML = ".xml";
-  public static final List<String> ALL_FILES =
-      Collections.unmodifiableList(Arrays.asList(
-          LAUNCHER_DB, SHARED_PREFERENCES_KEY + XML, WIDGET_PREVIEWS_DB,
-          MANAGED_USER_PREFERENCES_KEY + XML, DEVICE_PREFERENCES_KEY + XML,
-          REFLECTION_PREFERENCES_KEY + XML, APP_ICONS_DB));
+public static final String LAUNCHER_DB = "zlauncher.db";
+public static final String LAUNCHER_DB2 = "zapps.db";
+public static final String SHARED_PREFERENCES_KEY =
+	BuildConfig.APPLICATION_ID + "_preferences";
+public static final String OLD_SHARED_PREFERENCES_KEY =
+	"org.zimmob.zimlx.prefs";
+public static final String MANAGED_USER_PREFERENCES_KEY =
+	"org.zimmob.zimlx.managedusers.prefs";
+// This preference file is not backed up to cloud.
+public static final String DEVICE_PREFERENCES_KEY =
+	"org.zimmob.zimlx.device.prefs";
+// Google Reflection client preferences
+public static final String REFLECTION_PREFERENCES_KEY =
+	"reflection.private.properties";
+public static final String WIDGET_PREVIEWS_DB = "widgetpreviews.db";
+public static final String APP_ICONS_DB = "app_icons.db";
+private static final String XML = ".xml";
+public static final List<String> ALL_FILES =
+	Collections.unmodifiableList(Arrays.asList(
+					     LAUNCHER_DB, SHARED_PREFERENCES_KEY + XML, WIDGET_PREVIEWS_DB,
+					     MANAGED_USER_PREFERENCES_KEY + XML, DEVICE_PREFERENCES_KEY + XML,
+					     REFLECTION_PREFERENCES_KEY + XML, APP_ICONS_DB));
 }

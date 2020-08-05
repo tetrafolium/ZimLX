@@ -32,75 +32,99 @@ import com.android.launcher3.R;
  */
 @TargetApi(Build.VERSION_CODES.N)
 public class ShortcutInfoCompat {
-  private static final String INTENT_CATEGORY =
-      "com.android.launcher3.DEEP_SHORTCUT";
-  private static final String EXTRA_BADGEPKG = "badge_package";
-  public static final String EXTRA_SHORTCUT_ID = "shortcut_id";
-  private ShortcutInfo mShortcutInfo;
+private static final String INTENT_CATEGORY =
+	"com.android.launcher3.DEEP_SHORTCUT";
+private static final String EXTRA_BADGEPKG = "badge_package";
+public static final String EXTRA_SHORTCUT_ID = "shortcut_id";
+private ShortcutInfo mShortcutInfo;
 
-  public ShortcutInfoCompat(final ShortcutInfo shortcutInfo) {
-    mShortcutInfo = shortcutInfo;
-  }
+public ShortcutInfoCompat(final ShortcutInfo shortcutInfo) {
+	mShortcutInfo = shortcutInfo;
+}
 
-  @TargetApi(Build.VERSION_CODES.N)
-  public Intent makeIntent() {
-    return new Intent(Intent.ACTION_MAIN)
-        .addCategory(INTENT_CATEGORY)
-        .setComponent(getActivity())
-        .setPackage(getPackage())
-        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                  Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-        .putExtra(EXTRA_SHORTCUT_ID, getId());
-  }
+@TargetApi(Build.VERSION_CODES.N)
+public Intent makeIntent() {
+	return new Intent(Intent.ACTION_MAIN)
+	       .addCategory(INTENT_CATEGORY)
+	       .setComponent(getActivity())
+	       .setPackage(getPackage())
+	       .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+	                 Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+	       .putExtra(EXTRA_SHORTCUT_ID, getId());
+}
 
-  public ShortcutInfo getShortcutInfo() { return mShortcutInfo; }
+public ShortcutInfo getShortcutInfo() {
+	return mShortcutInfo;
+}
 
-  public String getPackage() { return mShortcutInfo.getPackage(); }
+public String getPackage() {
+	return mShortcutInfo.getPackage();
+}
 
-  public String getBadgePackage(final Context context) {
-    String whitelistedPkg =
-        context.getString(R.string.shortcutinfocompat_badgepkg_whitelist);
-    if (whitelistedPkg.equals(getPackage()) &&
-        mShortcutInfo.getExtras().containsKey(EXTRA_BADGEPKG)) {
-      return mShortcutInfo.getExtras().getString(EXTRA_BADGEPKG);
-    }
-    return getPackage();
-  }
+public String getBadgePackage(final Context context) {
+	String whitelistedPkg =
+		context.getString(R.string.shortcutinfocompat_badgepkg_whitelist);
+	if (whitelistedPkg.equals(getPackage()) &&
+	    mShortcutInfo.getExtras().containsKey(EXTRA_BADGEPKG)) {
+		return mShortcutInfo.getExtras().getString(EXTRA_BADGEPKG);
+	}
+	return getPackage();
+}
 
-  public String getId() { return mShortcutInfo.getId(); }
+public String getId() {
+	return mShortcutInfo.getId();
+}
 
-  public CharSequence getShortLabel() { return mShortcutInfo.getShortLabel(); }
+public CharSequence getShortLabel() {
+	return mShortcutInfo.getShortLabel();
+}
 
-  public CharSequence getLongLabel() { return mShortcutInfo.getLongLabel(); }
+public CharSequence getLongLabel() {
+	return mShortcutInfo.getLongLabel();
+}
 
-  public long getLastChangedTimestamp() {
-    return mShortcutInfo.getLastChangedTimestamp();
-  }
+public long getLastChangedTimestamp() {
+	return mShortcutInfo.getLastChangedTimestamp();
+}
 
-  public ComponentName getActivity() { return mShortcutInfo.getActivity(); }
+public ComponentName getActivity() {
+	return mShortcutInfo.getActivity();
+}
 
-  public UserHandle getUserHandle() { return mShortcutInfo.getUserHandle(); }
+public UserHandle getUserHandle() {
+	return mShortcutInfo.getUserHandle();
+}
 
-  public boolean hasKeyFieldsOnly() { return mShortcutInfo.hasKeyFieldsOnly(); }
+public boolean hasKeyFieldsOnly() {
+	return mShortcutInfo.hasKeyFieldsOnly();
+}
 
-  public boolean isPinned() { return mShortcutInfo.isPinned(); }
+public boolean isPinned() {
+	return mShortcutInfo.isPinned();
+}
 
-  public boolean isDeclaredInManifest() {
-    return mShortcutInfo.isDeclaredInManifest();
-  }
+public boolean isDeclaredInManifest() {
+	return mShortcutInfo.isDeclaredInManifest();
+}
 
-  public boolean isEnabled() { return mShortcutInfo.isEnabled(); }
+public boolean isEnabled() {
+	return mShortcutInfo.isEnabled();
+}
 
-  public boolean isDynamic() { return mShortcutInfo.isDynamic(); }
+public boolean isDynamic() {
+	return mShortcutInfo.isDynamic();
+}
 
-  public int getRank() { return mShortcutInfo.getRank(); }
+public int getRank() {
+	return mShortcutInfo.getRank();
+}
 
-  public CharSequence getDisabledMessage() {
-    return mShortcutInfo.getDisabledMessage();
-  }
+public CharSequence getDisabledMessage() {
+	return mShortcutInfo.getDisabledMessage();
+}
 
-  @Override
-  public String toString() {
-    return mShortcutInfo.toString();
-  }
+@Override
+public String toString() {
+	return mShortcutInfo.toString();
+}
 }

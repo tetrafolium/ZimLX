@@ -33,98 +33,107 @@ import org.junit.runners.model.Statement;
  */
 public class LauncherActivityRule implements TestRule {
 
-  private Launcher mActivity;
+private Launcher mActivity;
 
-  public static Intent getHomeIntent() {
-    return new Intent(Intent.ACTION_MAIN)
-        .addCategory(Intent.CATEGORY_HOME)
-        .setPackage(InstrumentationRegistry.getTargetContext().getPackageName())
-        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-  }
+public static Intent getHomeIntent() {
+	return new Intent(Intent.ACTION_MAIN)
+	       .addCategory(Intent.CATEGORY_HOME)
+	       .setPackage(InstrumentationRegistry.getTargetContext().getPackageName())
+	       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+}
 
-  @Override
-  public Statement apply(final Statement base, final Description description) {
-    return new MyStatement(base);
-  }
+@Override
+public Statement apply(final Statement base, final Description description) {
+	return new MyStatement(base);
+}
 
-  public Launcher getActivity() { return mActivity; }
+public Launcher getActivity() {
+	return mActivity;
+}
 
-  public Callable<Boolean> itemExists(final ItemOperator op) {
-    return new Callable<Boolean>() {
-      @Override
-      public Boolean call() {
-        Launcher launcher = getActivity();
-        if (launcher == null) {
-          return false;
-        }
-        return launcher.getWorkspace().getFirstMatch(op) != null;
-      }
-    };
-  }
+public Callable<Boolean> itemExists(final ItemOperator op) {
+	return new Callable<Boolean>() {
+		       @Override
+		       public Boolean call() {
+			       Launcher launcher = getActivity();
+			       if (launcher == null) {
+				       return false;
+			       }
+			       return launcher.getWorkspace().getFirstMatch(op) != null;
+		       }
+	};
+}
 
-  /**
-   * Starts the launcher activity in the target package.
-   */
-  public void startLauncher() {
-    InstrumentationRegistry.getInstrumentation().startActivitySync(
-        getHomeIntent());
-  }
+/**
+ * Starts the launcher activity in the target package.
+ */
+public void startLauncher() {
+	InstrumentationRegistry.getInstrumentation().startActivitySync(
+		getHomeIntent());
+}
 
-  public void returnToHome() {
-    InstrumentationRegistry.getTargetContext().startActivity(getHomeIntent());
-    InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-  }
+public void returnToHome() {
+	InstrumentationRegistry.getTargetContext().startActivity(getHomeIntent());
+	InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+}
 
-  private class MyStatement
-      extends Statement implements ActivityLifecycleCallbacks {
+private class MyStatement
+	extends Statement implements ActivityLifecycleCallbacks {
 
-    private final Statement mBase;
+private final Statement mBase;
 
-    public MyStatement(final Statement base) { mBase = base; }
+public MyStatement(final Statement base) {
+	mBase = base;
+}
 
-    @Override
-    public void evaluate() {
-      Application app = (Application)InstrumentationRegistry.getTargetContext()
-                            .getApplicationContext();
-      app.registerActivityLifecycleCallbacks(this);
-      try {
-        mBase.evaluate();
-      } catch (Throwable throwable) {
-        throwable.printStackTrace();
-      } finally {
-        app.unregisterActivityLifecycleCallbacks(this);
-      }
-    }
+@Override
+public void evaluate() {
+	Application app = (Application)InstrumentationRegistry.getTargetContext()
+	                  .getApplicationContext();
+	app.registerActivityLifecycleCallbacks(this);
+	try {
+		mBase.evaluate();
+	} catch (Throwable throwable) {
+		throwable.printStackTrace();
+	} finally {
+		app.unregisterActivityLifecycleCallbacks(this);
+	}
+}
 
-    @Override
-    public void onActivityCreated(final Activity activity,
-                                  final Bundle bundle) {
-      if (activity instanceof Launcher) {
-        mActivity = (Launcher)activity;
-      }
-    }
+@Override
+public void onActivityCreated(final Activity activity,
+                              final Bundle bundle) {
+	if (activity instanceof Launcher) {
+		mActivity = (Launcher)activity;
+	}
+}
 
-    @Override
-    public void onActivityStarted(final Activity activity) {}
+@Override
+public void onActivityStarted(final Activity activity) {
+}
 
-    @Override
-    public void onActivityResumed(final Activity activity) {}
+@Override
+public void onActivityResumed(final Activity activity) {
+}
 
-    @Override
-    public void onActivityPaused(final Activity activity) {}
+@Override
+public void onActivityPaused(final Activity activity) {
+}
 
-    @Override
-    public void onActivityStopped(final Activity activity) {}
+@Override
+public void onActivityStopped(final Activity activity) {
+}
 
-    @Override
-    public void onActivitySaveInstanceState(final Activity activity,
-                                            final Bundle bundle) {}
+@Override
+public void onActivitySaveInstanceState(final Activity activity,
+                                        final Bundle bundle) {
+}
 
-    @Override
-    public void onActivityDestroyed(final Activity activity) {
-      if (activity == mActivity) {
-        mActivity = null;
-      }
-    }
-  }
+@Override
+public void onActivityDestroyed(final Activity activity) {
+	if (activity == mActivity) {
+		mActivity = null;
+	}
+}
+}
 }

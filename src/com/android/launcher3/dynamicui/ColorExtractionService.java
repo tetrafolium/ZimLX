@@ -45,173 +45,173 @@ import java.io.IOException;
  */
 public class ColorExtractionService extends JobService {
 
-  private static final String TAG = "ColorExtractionService";
-  private static final boolean DEBUG = false;
+private static final String TAG = "ColorExtractionService";
+private static final boolean DEBUG = false;
 
-  /**
-   * The fraction of the wallpaper to extract colors for use on the hotseat.
-   */
-  private static final float HOTSEAT_FRACTION = 1f / 4;
+/**
+ * The fraction of the wallpaper to extract colors for use on the hotseat.
+ */
+private static final float HOTSEAT_FRACTION = 1f / 4;
 
-  private HandlerThread mWorkerThread;
-  private Handler mWorkerHandler;
+private HandlerThread mWorkerThread;
+private Handler mWorkerHandler;
 
-  @Override
-  public void onCreate() {
-    super.onCreate();
-    mWorkerThread = new HandlerThread("ColorExtractionService");
-    mWorkerThread.start();
-    mWorkerHandler = new Handler(mWorkerThread.getLooper());
-  }
+@Override
+public void onCreate() {
+	super.onCreate();
+	mWorkerThread = new HandlerThread("ColorExtractionService");
+	mWorkerThread.start();
+	mWorkerHandler = new Handler(mWorkerThread.getLooper());
+}
 
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-    mWorkerThread.quit();
-  }
+@Override
+public void onDestroy() {
+	super.onDestroy();
+	mWorkerThread.quit();
+}
 
-  @Override
-  public boolean onStartJob(final JobParameters jobParameters) {
-    if (DEBUG)
-      Log.d(TAG, "onStartJob");
-    mWorkerHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        WallpaperManager wallpaperManager =
-            WallpaperManager.getInstance(ColorExtractionService.this);
-        int wallpaperId = ExtractionUtils.getWallpaperId(wallpaperManager);
+@Override
+public boolean onStartJob(final JobParameters jobParameters) {
+	if (DEBUG)
+		Log.d(TAG, "onStartJob");
+	mWorkerHandler.post(new Runnable() {
+			@Override
+			public void run() {
+			        WallpaperManager wallpaperManager =
+					WallpaperManager.getInstance(ColorExtractionService.this);
+			        int wallpaperId = ExtractionUtils.getWallpaperId(wallpaperManager);
 
-        ExtractedColors extractedColors = new ExtractedColors();
-        if (wallpaperManager.getWallpaperInfo() != null) {
-          // We can't extract colors from live wallpapers; always use the
-          // default color.
-          extractedColors.updateHotseatPalette(null);
+			        ExtractedColors extractedColors = new ExtractedColors();
+			        if (wallpaperManager.getWallpaperInfo() != null) {
+			                // We can't extract colors from live wallpapers; always use the
+			                // default color.
+			                extractedColors.updateHotseatPalette(null);
 
-          if (FeatureFlags.QSB_IN_HOTSEAT ||
-              FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-            extractedColors.updateWallpaperThemePalette(null);
-          }
-        } else {
-          // We extract colors for the hotseat and status bar separately,
-          // since they only consider part of the wallpaper.
-          extractedColors.updateHotseatPalette(getHotseatPalette());
+			                if (FeatureFlags.QSB_IN_HOTSEAT ||
+			                    FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+			                        extractedColors.updateWallpaperThemePalette(null);
+					}
+				} else {
+			                // We extract colors for the hotseat and status bar separately,
+			                // since they only consider part of the wallpaper.
+			                extractedColors.updateHotseatPalette(getHotseatPalette());
 
-          if (FeatureFlags.LIGHT_STATUS_BAR) {
-            extractedColors.updateStatusBarPalette(getStatusBarPalette());
-          }
+			                if (FeatureFlags.LIGHT_STATUS_BAR) {
+			                        extractedColors.updateStatusBarPalette(getStatusBarPalette());
+					}
 
-          if (FeatureFlags.QSB_IN_HOTSEAT ||
-              FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-            extractedColors.updateWallpaperThemePalette(getWallpaperPalette());
-          }
-        }
+			                if (FeatureFlags.QSB_IN_HOTSEAT ||
+			                    FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+			                        extractedColors.updateWallpaperThemePalette(getWallpaperPalette());
+					}
+				}
 
-        // Save the extracted colors and wallpaper id to LauncherProvider.
-        String colorsString = extractedColors.encodeAsString();
-        Bundle extras = new Bundle();
-        extras.putInt(LauncherSettings.Settings.EXTRA_WALLPAPER_ID,
-                      wallpaperId);
-        extras.putString(LauncherSettings.Settings.EXTRA_EXTRACTED_COLORS,
-                         colorsString);
-        getContentResolver().call(
-            LauncherSettings.Settings.CONTENT_URI,
-            LauncherSettings.Settings
-                .METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID,
-            null, extras);
-        jobFinished(jobParameters, false /* needsReschedule */);
-        if (DEBUG)
-          Log.d(TAG, "job finished!");
-      }
-    });
-    return true;
-  }
+			        // Save the extracted colors and wallpaper id to LauncherProvider.
+			        String colorsString = extractedColors.encodeAsString();
+			        Bundle extras = new Bundle();
+			        extras.putInt(LauncherSettings.Settings.EXTRA_WALLPAPER_ID,
+			                      wallpaperId);
+			        extras.putString(LauncherSettings.Settings.EXTRA_EXTRACTED_COLORS,
+			                         colorsString);
+			        getContentResolver().call(
+					LauncherSettings.Settings.CONTENT_URI,
+					LauncherSettings.Settings
+					.METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID,
+					null, extras);
+			        jobFinished(jobParameters, false /* needsReschedule */);
+			        if (DEBUG)
+					Log.d(TAG, "job finished!");
+			}
+		});
+	return true;
+}
 
-  @Override
-  public boolean onStopJob(final JobParameters jobParameters) {
-    if (DEBUG)
-      Log.d(TAG, "onStopJob");
-    mWorkerHandler.removeCallbacksAndMessages(null);
-    return true;
-  }
+@Override
+public boolean onStopJob(final JobParameters jobParameters) {
+	if (DEBUG)
+		Log.d(TAG, "onStopJob");
+	mWorkerHandler.removeCallbacksAndMessages(null);
+	return true;
+}
 
-  @TargetApi(Build.VERSION_CODES.N)
-  private Palette getHotseatPalette() {
-    WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
-    if (Utilities.ATLEAST_NOUGAT) {
-      try (ParcelFileDescriptor fd = wallpaperManager.getWallpaperFile(
-               WallpaperManager.FLAG_SYSTEM)) {
-        BitmapRegionDecoder decoder =
-            BitmapRegionDecoder.newInstance(fd.getFileDescriptor(), false);
-        int height = decoder.getHeight();
-        Rect decodeRegion = new Rect(0, (int)(height * (1f - HOTSEAT_FRACTION)),
-                                     decoder.getWidth(), height);
-        Bitmap bitmap = decoder.decodeRegion(decodeRegion, null);
-        decoder.recycle();
-        if (bitmap != null) {
-          return Palette.from(bitmap).clearFilters().generate();
-        }
-      } catch (IOException | NullPointerException e) {
-        Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
-      }
-    }
+@TargetApi(Build.VERSION_CODES.N)
+private Palette getHotseatPalette() {
+	WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+	if (Utilities.ATLEAST_NOUGAT) {
+		try (ParcelFileDescriptor fd = wallpaperManager.getWallpaperFile(
+			     WallpaperManager.FLAG_SYSTEM)) {
+			BitmapRegionDecoder decoder =
+				BitmapRegionDecoder.newInstance(fd.getFileDescriptor(), false);
+			int height = decoder.getHeight();
+			Rect decodeRegion = new Rect(0, (int)(height * (1f - HOTSEAT_FRACTION)),
+			                             decoder.getWidth(), height);
+			Bitmap bitmap = decoder.decodeRegion(decodeRegion, null);
+			decoder.recycle();
+			if (bitmap != null) {
+				return Palette.from(bitmap).clearFilters().generate();
+			}
+		} catch (IOException | NullPointerException e) {
+			Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
+		}
+	}
 
-    Bitmap wallpaper =
-        ((BitmapDrawable)wallpaperManager.getDrawable()).getBitmap();
-    return Palette.from(wallpaper)
-        .setRegion(0, (int)(wallpaper.getHeight() * (1f - HOTSEAT_FRACTION)),
-                   wallpaper.getWidth(), wallpaper.getHeight())
-        .clearFilters()
-        .generate();
-  }
+	Bitmap wallpaper =
+		((BitmapDrawable)wallpaperManager.getDrawable()).getBitmap();
+	return Palette.from(wallpaper)
+	       .setRegion(0, (int)(wallpaper.getHeight() * (1f - HOTSEAT_FRACTION)),
+	                  wallpaper.getWidth(), wallpaper.getHeight())
+	       .clearFilters()
+	       .generate();
+}
 
-  @TargetApi(Build.VERSION_CODES.N)
-  private Palette getStatusBarPalette() {
-    WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
-    int statusBarHeight =
-        getResources().getDimensionPixelSize(R.dimen.status_bar_height);
+@TargetApi(Build.VERSION_CODES.N)
+private Palette getStatusBarPalette() {
+	WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+	int statusBarHeight =
+		getResources().getDimensionPixelSize(R.dimen.status_bar_height);
 
-    if (Utilities.ATLEAST_NOUGAT) {
-      try (ParcelFileDescriptor fd = wallpaperManager.getWallpaperFile(
-               WallpaperManager.FLAG_SYSTEM)) {
-        BitmapRegionDecoder decoder =
-            BitmapRegionDecoder.newInstance(fd.getFileDescriptor(), false);
-        Rect decodeRegion = new Rect(0, 0, decoder.getWidth(), statusBarHeight);
-        Bitmap bitmap = decoder.decodeRegion(decodeRegion, null);
-        decoder.recycle();
-        if (bitmap != null) {
-          return Palette.from(bitmap).clearFilters().generate();
-        }
-      } catch (IOException | NullPointerException e) {
-        Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
-      }
-    }
+	if (Utilities.ATLEAST_NOUGAT) {
+		try (ParcelFileDescriptor fd = wallpaperManager.getWallpaperFile(
+			     WallpaperManager.FLAG_SYSTEM)) {
+			BitmapRegionDecoder decoder =
+				BitmapRegionDecoder.newInstance(fd.getFileDescriptor(), false);
+			Rect decodeRegion = new Rect(0, 0, decoder.getWidth(), statusBarHeight);
+			Bitmap bitmap = decoder.decodeRegion(decodeRegion, null);
+			decoder.recycle();
+			if (bitmap != null) {
+				return Palette.from(bitmap).clearFilters().generate();
+			}
+		} catch (IOException | NullPointerException e) {
+			Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
+		}
+	}
 
-    Bitmap wallpaper =
-        ((BitmapDrawable)wallpaperManager.getDrawable()).getBitmap();
-    return Palette.from(wallpaper)
-        .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
-        .clearFilters()
-        .generate();
-  }
+	Bitmap wallpaper =
+		((BitmapDrawable)wallpaperManager.getDrawable()).getBitmap();
+	return Palette.from(wallpaper)
+	       .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
+	       .clearFilters()
+	       .generate();
+}
 
-  @TargetApi(Build.VERSION_CODES.N)
-  private Palette getWallpaperPalette() {
-    WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
-    if (Utilities.ATLEAST_NOUGAT) {
-      try (ParcelFileDescriptor fd = wallpaperManager.getWallpaperFile(
-               WallpaperManager.FLAG_SYSTEM)) {
-        Bitmap bitmap =
-            BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor());
-        if (bitmap != null) {
-          return Palette.from(bitmap).clearFilters().generate();
-        }
-      } catch (IOException | NullPointerException e) {
-        Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
-      }
-    }
+@TargetApi(Build.VERSION_CODES.N)
+private Palette getWallpaperPalette() {
+	WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+	if (Utilities.ATLEAST_NOUGAT) {
+		try (ParcelFileDescriptor fd = wallpaperManager.getWallpaperFile(
+			     WallpaperManager.FLAG_SYSTEM)) {
+			Bitmap bitmap =
+				BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor());
+			if (bitmap != null) {
+				return Palette.from(bitmap).clearFilters().generate();
+			}
+		} catch (IOException | NullPointerException e) {
+			Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
+		}
+	}
 
-    Bitmap wallpaper =
-        ((BitmapDrawable)wallpaperManager.getDrawable()).getBitmap();
-    return Palette.from(wallpaper).clearFilters().generate();
-  }
+	Bitmap wallpaper =
+		((BitmapDrawable)wallpaperManager.getDrawable()).getBitmap();
+	return Palette.from(wallpaper).clearFilters().generate();
+}
 }

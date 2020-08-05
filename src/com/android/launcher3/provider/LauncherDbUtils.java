@@ -33,113 +33,115 @@ import java.util.Collection;
  */
 public class LauncherDbUtils {
 
-  private static final String TAG = "LauncherDbUtils";
+private static final String TAG = "LauncherDbUtils";
 
-  /**
-   * Makes the first screen as screen 0 (if screen 0 already exists,
-   * renames it to some other number).
-   * If the first row of screen 0 is non empty, runs a 'lossy' GridMigrationTask
-   * to clear the first row. The items in the first screen are moved and resized
-   * but the carry-forward items are simply deleted.
-   */
-  public static boolean prepareScreenZeroToHostQsb(final Context context,
-                                                   final SQLiteDatabase db) {
-    try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-      // Get the existing screens
-      ArrayList<Long> screenIds = getScreenIdsFromCursor(
-          db.query(WorkspaceScreens.TABLE_NAME, null, null, null, null, null,
-                   WorkspaceScreens.SCREEN_RANK));
+/**
+ * Makes the first screen as screen 0 (if screen 0 already exists,
+ * renames it to some other number).
+ * If the first row of screen 0 is non empty, runs a 'lossy' GridMigrationTask
+ * to clear the first row. The items in the first screen are moved and resized
+ * but the carry-forward items are simply deleted.
+ */
+public static boolean prepareScreenZeroToHostQsb(final Context context,
+                                                 final SQLiteDatabase db) {
+	try (SQLiteTransaction t = new SQLiteTransaction(db)) {
+		// Get the existing screens
+		ArrayList<Long> screenIds = getScreenIdsFromCursor(
+			db.query(WorkspaceScreens.TABLE_NAME, null, null, null, null, null,
+			         WorkspaceScreens.SCREEN_RANK));
 
-      if (screenIds.isEmpty()) {
-        // No update needed
-        t.commit();
-        return true;
-      }
-      if (screenIds.get(0) != 0) {
-        // First screen is not 0, we need to rename screens
-        if (screenIds.indexOf(0L) > -1) {
-          // There is already a screen 0. First rename it to a different screen.
-          long newScreenId = 1;
-          while (screenIds.indexOf(newScreenId) > -1)
-            newScreenId++;
-          renameScreen(db, 0, newScreenId);
-        }
+		if (screenIds.isEmpty()) {
+			// No update needed
+			t.commit();
+			return true;
+		}
+		if (screenIds.get(0) != 0) {
+			// First screen is not 0, we need to rename screens
+			if (screenIds.indexOf(0L) > -1) {
+				// There is already a screen 0. First rename it to a different screen.
+				long newScreenId = 1;
+				while (screenIds.indexOf(newScreenId) > -1)
+					newScreenId++;
+				renameScreen(db, 0, newScreenId);
+			}
 
-        // Rename the first screen to 0.
-        renameScreen(db, screenIds.get(0), 0);
-      }
+			// Rename the first screen to 0.
+			renameScreen(db, screenIds.get(0), 0);
+		}
 
-      // Check if the first row is empty
-      if (DatabaseUtils.queryNumEntries(
-              db, Favorites.TABLE_NAME,
-              "container = -100 and screen = 0 and cellY = 0") == 0) {
-        // First row is empty, no need to migrate.
-        t.commit();
-        return true;
-      }
+		// Check if the first row is empty
+		if (DatabaseUtils.queryNumEntries(
+			    db, Favorites.TABLE_NAME,
+			    "container = -100 and screen = 0 and cellY = 0") == 0) {
+			// First row is empty, no need to migrate.
+			t.commit();
+			return true;
+		}
 
-      new LossyScreenMigrationTask(context, LauncherAppState.getIDP(context),
-                                   db)
-          .migrateScreen0();
-      t.commit();
-      return true;
-    } catch (Exception e) {
-      Log.e(TAG, "Failed to update workspace size", e);
-      return false;
-    }
-  }
+		new LossyScreenMigrationTask(context, LauncherAppState.getIDP(context),
+		                             db)
+		.migrateScreen0();
+		t.commit();
+		return true;
+	} catch (Exception e) {
+		Log.e(TAG, "Failed to update workspace size", e);
+		return false;
+	}
+}
 
-  private static void renameScreen(final SQLiteDatabase db,
-                                   final long oldScreen, final long newScreen) {
-    String[] whereParams = new String[] {Long.toString(oldScreen)};
+private static void renameScreen(final SQLiteDatabase db,
+                                 final long oldScreen, final long newScreen) {
+	String[] whereParams = new String[] {Long.toString(oldScreen)};
 
-    ContentValues values = new ContentValues();
-    values.put(WorkspaceScreens._ID, newScreen);
-    db.update(WorkspaceScreens.TABLE_NAME, values, "_id = ?", whereParams);
+	ContentValues values = new ContentValues();
+	values.put(WorkspaceScreens._ID, newScreen);
+	db.update(WorkspaceScreens.TABLE_NAME, values, "_id = ?", whereParams);
 
-    values.clear();
-    values.put(Favorites.SCREEN, newScreen);
-    db.update(Favorites.TABLE_NAME, values, "container = -100 and screen = ?",
-              whereParams);
-  }
+	values.clear();
+	values.put(Favorites.SCREEN, newScreen);
+	db.update(Favorites.TABLE_NAME, values, "container = -100 and screen = ?",
+	          whereParams);
+}
 
-  /**
-   * Parses the cursor containing workspace screens table and returns the list
-   * of screen IDs
-   */
-  public static ArrayList<Long> getScreenIdsFromCursor(final Cursor sc) {
-    try {
-      return iterateCursor(sc, sc.getColumnIndexOrThrow(WorkspaceScreens._ID),
-                           new ArrayList<Long>());
-    } finally {
-      sc.close();
-    }
-  }
+/**
+ * Parses the cursor containing workspace screens table and returns the list
+ * of screen IDs
+ */
+public static ArrayList<Long> getScreenIdsFromCursor(final Cursor sc) {
+	try {
+		return iterateCursor(sc, sc.getColumnIndexOrThrow(WorkspaceScreens._ID),
+		                     new ArrayList<Long>());
+	} finally {
+		sc.close();
+	}
+}
 
-  public static <T extends Collection<Long>>
-      T iterateCursor(final Cursor c, final int columnIndex, final T out) {
-    while (c.moveToNext()) {
-      out.add(c.getLong(columnIndex));
-    }
-    return out;
-  }
+public static <T extends Collection<Long> >
+T iterateCursor(final Cursor c, final int columnIndex, final T out) {
+	while (c.moveToNext()) {
+		out.add(c.getLong(columnIndex));
+	}
+	return out;
+}
 
-  /**
-   * Utility class to simplify managing sqlite transactions
-   */
-  public static class SQLiteTransaction implements AutoCloseable {
-    private final SQLiteDatabase mDb;
+/**
+ * Utility class to simplify managing sqlite transactions
+ */
+public static class SQLiteTransaction implements AutoCloseable {
+private final SQLiteDatabase mDb;
 
-    public SQLiteTransaction(final SQLiteDatabase db) {
-      mDb = db;
-      db.beginTransaction();
-    }
+public SQLiteTransaction(final SQLiteDatabase db) {
+	mDb = db;
+	db.beginTransaction();
+}
 
-    public void commit() { mDb.setTransactionSuccessful(); }
+public void commit() {
+	mDb.setTransactionSuccessful();
+}
 
-    @Override
-    public void close() {
-      mDb.endTransaction();
-    }
-  }
+@Override
+public void close() {
+	mDb.endTransaction();
+}
+}
 }

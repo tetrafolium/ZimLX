@@ -25,35 +25,37 @@ import android.widget.RelativeLayout;
  */
 public class WorkFooterContainer extends RelativeLayout {
 
-  public WorkFooterContainer(final Context context) { super(context); }
+public WorkFooterContainer(final Context context) {
+	super(context);
+}
 
-  public WorkFooterContainer(final Context context, final AttributeSet attrs) {
-    super(context, attrs);
-  }
+public WorkFooterContainer(final Context context, final AttributeSet attrs) {
+	super(context, attrs);
+}
 
-  public WorkFooterContainer(final Context context, final AttributeSet attrs,
-                             final int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-  }
+public WorkFooterContainer(final Context context, final AttributeSet attrs,
+                           final int defStyleAttr) {
+	super(context, attrs, defStyleAttr);
+}
 
-  @Override
-  protected void onLayout(final boolean changed, final int l, final int t,
-                          final int r, final int b) {
-    super.onLayout(changed, l, t, r, b);
-    updateTranslation();
-  }
+@Override
+protected void onLayout(final boolean changed, final int l, final int t,
+                        final int r, final int b) {
+	super.onLayout(changed, l, t, r, b);
+	updateTranslation();
+}
 
-  @Override
-  public void offsetTopAndBottom(final int offset) {
-    super.offsetTopAndBottom(offset);
-    updateTranslation();
-  }
+@Override
+public void offsetTopAndBottom(final int offset) {
+	super.offsetTopAndBottom(offset);
+	updateTranslation();
+}
 
-  private void updateTranslation() {
-    if (getParent() instanceof View) {
-      View parent = (View)getParent();
-      int availableBot = parent.getHeight() - parent.getPaddingBottom();
-      setTranslationY(Math.max(0, availableBot - getBottom()));
-    }
-  }
+private void updateTranslation() {
+	if (getParent() instanceof View) {
+		View parent = (View)getParent();
+		int availableBot = parent.getHeight() - parent.getPaddingBottom();
+		setTranslationY(Math.max(0, availableBot - getBottom()));
+	}
+}
 }

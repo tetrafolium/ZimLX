@@ -57,643 +57,666 @@ import org.zimmob.zimlx.globalsearch.SearchProviderController;
 import org.zimmob.zimlx.graphics.NinePatchDrawHelper;
 
 public abstract class AbstractQsbLayout extends FrameLayout
-    implements OnSharedPreferenceChangeListener, OnClickListener,
-               OnLongClickListener, Insettable,
-               SearchProviderController.OnProviderChangeListener {
-  protected final static String GOOGLE_QSB =
-      "com.google.android.googlequicksearchbox";
-  private static final Rect CS = new Rect();
-  protected final TextPaint CT;
-  protected final Paint mMicStrokePaint;
-  protected final Paint CV;
-  protected final NinePatchDrawHelper mShadowHelper;
-  protected final NinePatchDrawHelper mClearShadowHelper;
-  protected final NexusLauncherActivity mActivity;
-  protected final int CY;
-  protected final int CZ;
-  protected final int Da;
-  protected Bitmap Db;
-  protected int Dc;
-  protected int Dd;
-  public float micStrokeWidth;
-  private ImageView mLogoIconView;
-  protected ImageView mMicIconView;
-  protected String Dg;
-  protected boolean Dh;
-  protected int Di;
-  protected boolean mUseTwoBubbles;
-  private final int Dk;
-  private final int Dl;
-  private final int Dm;
-  private final TransformingTouchDelegate Dn;
-  private final boolean Do;
-  protected final boolean mIsRtl;
-  protected Bitmap mShadowBitmap;
-  protected Bitmap mClearBitmap;
-  private boolean mShowAssistant;
+	implements OnSharedPreferenceChangeListener, OnClickListener,
+	                                        OnLongClickListener, Insettable,
+	                                        SearchProviderController.OnProviderChangeListener {
+protected final static String GOOGLE_QSB =
+	"com.google.android.googlequicksearchbox";
+private static final Rect CS = new Rect();
+protected final TextPaint CT;
+protected final Paint mMicStrokePaint;
+protected final Paint CV;
+protected final NinePatchDrawHelper mShadowHelper;
+protected final NinePatchDrawHelper mClearShadowHelper;
+protected final NexusLauncherActivity mActivity;
+protected final int CY;
+protected final int CZ;
+protected final int Da;
+protected Bitmap Db;
+protected int Dc;
+protected int Dd;
+public float micStrokeWidth;
+private ImageView mLogoIconView;
+protected ImageView mMicIconView;
+protected String Dg;
+protected boolean Dh;
+protected int Di;
+protected boolean mUseTwoBubbles;
+private final int Dk;
+private final int Dl;
+private final int Dm;
+private final TransformingTouchDelegate Dn;
+private final boolean Do;
+protected final boolean mIsRtl;
+protected Bitmap mShadowBitmap;
+protected Bitmap mClearBitmap;
+private boolean mShowAssistant;
 
-  private float mRadius = -1.0f;
+private float mRadius = -1.0f;
 
-  public abstract void startSearch(String str, int i);
+public abstract void startSearch(String str, int i);
 
-  protected abstract int aA(int i);
+protected abstract int aA(int i);
 
-  public abstract void l(String str);
+public abstract void l(String str);
 
-  public AbstractQsbLayout(final Context context) { this(context, null); }
+public AbstractQsbLayout(final Context context) {
+	this(context, null);
+}
 
-  public AbstractQsbLayout(final Context context,
-                           final AttributeSet attributeSet) {
-    this(context, attributeSet, 0);
-  }
+public AbstractQsbLayout(final Context context,
+                         final AttributeSet attributeSet) {
+	this(context, attributeSet, 0);
+}
 
-  public AbstractQsbLayout(final Context context,
-                           final AttributeSet attributeSet, final int i) {
-    super(context, attributeSet, i);
-    this.CT = new TextPaint();
-    this.mMicStrokePaint = new Paint(1);
-    this.CV = new Paint(1);
-    this.mShadowHelper = new NinePatchDrawHelper();
-    this.mClearShadowHelper = new NinePatchDrawHelper();
-    this.mClearShadowHelper.paint.setXfermode(
-        new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-    this.Di = 0;
-    this.mActivity = (NexusLauncherActivity)Launcher.getLauncher(context);
-    this.Do = Themes.getAttrBoolean(this.mActivity, R.attr.isWorkspaceDarkText);
-    setOnLongClickListener(this);
-    this.Dk = getResources().getDimensionPixelSize(
-        R.dimen.qsb_doodle_tap_target_logo_width);
-    this.Da = getResources().getDimensionPixelSize(R.dimen.qsb_mic_width);
-    this.CY = getResources().getDimensionPixelSize(R.dimen.qsb_text_spacing);
-    this.CZ = getResources().getDimensionPixelSize(R.dimen.qsb_two_bubble_gap);
-    this.CT.setTextSize((float)getResources().getDimensionPixelSize(
-        R.dimen.qsb_hint_text_size));
-    this.Dl = getResources().getDimensionPixelSize(R.dimen.qsb_shadow_margin);
-    this.Dm = getResources().getDimensionPixelSize(R.dimen.qsb_max_hint_length);
-    this.mIsRtl = Utilities.isRtl(getResources());
-    this.Dn = new TransformingTouchDelegate(this);
-    setTouchDelegate(this.Dn);
-    this.CV.setColor(Color.WHITE);
-  }
+public AbstractQsbLayout(final Context context,
+                         final AttributeSet attributeSet, final int i) {
+	super(context, attributeSet, i);
+	this.CT = new TextPaint();
+	this.mMicStrokePaint = new Paint(1);
+	this.CV = new Paint(1);
+	this.mShadowHelper = new NinePatchDrawHelper();
+	this.mClearShadowHelper = new NinePatchDrawHelper();
+	this.mClearShadowHelper.paint.setXfermode(
+		new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+	this.Di = 0;
+	this.mActivity = (NexusLauncherActivity)Launcher.getLauncher(context);
+	this.Do = Themes.getAttrBoolean(this.mActivity, R.attr.isWorkspaceDarkText);
+	setOnLongClickListener(this);
+	this.Dk = getResources().getDimensionPixelSize(
+		R.dimen.qsb_doodle_tap_target_logo_width);
+	this.Da = getResources().getDimensionPixelSize(R.dimen.qsb_mic_width);
+	this.CY = getResources().getDimensionPixelSize(R.dimen.qsb_text_spacing);
+	this.CZ = getResources().getDimensionPixelSize(R.dimen.qsb_two_bubble_gap);
+	this.CT.setTextSize((float)getResources().getDimensionPixelSize(
+				    R.dimen.qsb_hint_text_size));
+	this.Dl = getResources().getDimensionPixelSize(R.dimen.qsb_shadow_margin);
+	this.Dm = getResources().getDimensionPixelSize(R.dimen.qsb_max_hint_length);
+	this.mIsRtl = Utilities.isRtl(getResources());
+	this.Dn = new TransformingTouchDelegate(this);
+	setTouchDelegate(this.Dn);
+	this.CV.setColor(Color.WHITE);
+}
 
-  protected void onAttachedToWindow() {
-    super.onAttachedToWindow();
-    dy().registerOnSharedPreferenceChangeListener(this);
-    this.Dn.setDelegateView(this.mMicIconView);
-    SearchProviderController.Companion.getInstance(getContext())
-        .addOnProviderChangeListener(this);
-  }
+protected void onAttachedToWindow() {
+	super.onAttachedToWindow();
+	dy().registerOnSharedPreferenceChangeListener(this);
+	this.Dn.setDelegateView(this.mMicIconView);
+	SearchProviderController.Companion.getInstance(getContext())
+	.addOnProviderChangeListener(this);
+}
 
-  public boolean onTouchEvent(final MotionEvent motionEvent) {
-    if (motionEvent.getActionMasked() == 0) {
-      View findViewById = findViewById(R.id.g_icon);
-      int i = 0;
-      int i2 = 1;
-      if (this.mIsRtl) {
-        if (Float.compare(motionEvent.getX(),
-                          (float)(dI() ? getWidth() - this.Dk
-                                       : findViewById.getLeft())) >= 0) {
-          i = 1;
-        }
-      } else {
-        if (Float.compare(motionEvent.getX(),
-                          (float)(dI() ? this.Dk : findViewById.getRight())) <=
-            0) {
-          i = 1;
-        }
-      }
-      if (i == 0) {
-        i2 = 2;
-      }
-      this.Di = i2;
-    }
-    return super.onTouchEvent(motionEvent);
-  }
+public boolean onTouchEvent(final MotionEvent motionEvent) {
+	if (motionEvent.getActionMasked() == 0) {
+		View findViewById = findViewById(R.id.g_icon);
+		int i = 0;
+		int i2 = 1;
+		if (this.mIsRtl) {
+			if (Float.compare(motionEvent.getX(),
+			                  (float)(dI() ? getWidth() - this.Dk
+			               : findViewById.getLeft())) >= 0) {
+				i = 1;
+			}
+		} else {
+			if (Float.compare(motionEvent.getX(),
+			                  (float)(dI() ? this.Dk : findViewById.getRight())) <=
+			    0) {
+				i = 1;
+			}
+		}
+		if (i == 0) {
+			i2 = 2;
+		}
+		this.Di = i2;
+	}
+	return super.onTouchEvent(motionEvent);
+}
 
-  protected final SharedPreferences dy() {
-    dz();
-    SharedPreferences devicePrefs = Utilities.getPrefs(getContext());
-    loadPreferences(devicePrefs);
-    return devicePrefs;
-  }
+protected final SharedPreferences dy() {
+	dz();
+	SharedPreferences devicePrefs = Utilities.getPrefs(getContext());
+	loadPreferences(devicePrefs);
+	return devicePrefs;
+}
 
-  protected final void dz() {
-    mLogoIconView = findViewById(R.id.g_icon);
-    mMicIconView = findViewById(R.id.mic_icon);
-    mMicIconView.setOnClickListener(this);
-    mLogoIconView.setOnClickListener(this);
-  }
+protected final void dz() {
+	mLogoIconView = findViewById(R.id.g_icon);
+	mMicIconView = findViewById(R.id.mic_icon);
+	mMicIconView.setOnClickListener(this);
+	mLogoIconView.setOnClickListener(this);
+}
 
-  protected void onLayout(final boolean z, final int i, final int i2,
-                          final int i3, final int i4) {
-    super.onLayout(z, i, i2, i3, i4);
-    this.mMicIconView.getHitRect(CS);
-    if (this.mIsRtl) {
-      CS.left -= this.Dl;
-    } else {
-      CS.right += this.Dl;
-    }
-    Dn.setBounds(CS.left, CS.top, CS.right, CS.bottom);
-  }
+protected void onLayout(final boolean z, final int i, final int i2,
+                        final int i3, final int i4) {
+	super.onLayout(z, i, i2, i3, i4);
+	this.mMicIconView.getHitRect(CS);
+	if (this.mIsRtl) {
+		CS.left -= this.Dl;
+	} else {
+		CS.right += this.Dl;
+	}
+	Dn.setBounds(CS.left, CS.top, CS.right, CS.bottom);
+}
 
-  protected void onDetachedFromWindow() {
-    Utilities.getPrefs(getContext())
-        .unregisterOnSharedPreferenceChangeListener(this);
-    SearchProviderController.Companion.getInstance(getContext())
-        .removeOnProviderChangeListener(this);
-    super.onDetachedFromWindow();
-  }
+protected void onDetachedFromWindow() {
+	Utilities.getPrefs(getContext())
+	.unregisterOnSharedPreferenceChangeListener(this);
+	SearchProviderController.Companion.getInstance(getContext())
+	.removeOnProviderChangeListener(this);
+	super.onDetachedFromWindow();
+}
 
-  public final void ay(final int i) {
-    if (this.Dc != i) {
-      this.Dc = i;
-      this.mShadowBitmap = null;
-      invalidate();
-    }
-  }
+public final void ay(final int i) {
+	if (this.Dc != i) {
+		this.Dc = i;
+		this.mShadowBitmap = null;
+		invalidate();
+	}
+}
 
-  public final void az(final int i) {
-    Dd = i;
-    if (Dd != Dc || Db != mShadowBitmap) {
-      Db = null;
-      invalidate();
-    }
-  }
+public final void az(final int i) {
+	Dd = i;
+	if (Dd != Dc || Db != mShadowBitmap) {
+		Db = null;
+		invalidate();
+	}
+}
 
-  public final void h(final float f) {
-    this.micStrokeWidth =
-        TypedValue.applyDimension(1, f, getResources().getDisplayMetrics());
-    this.mMicStrokePaint.setStrokeWidth(this.micStrokeWidth);
-    this.mMicStrokePaint.setStyle(Style.STROKE);
-    this.mMicStrokePaint.setColor(0xFFBDC1C6);
-  }
+public final void h(final float f) {
+	this.micStrokeWidth =
+		TypedValue.applyDimension(1, f, getResources().getDisplayMetrics());
+	this.mMicStrokePaint.setStrokeWidth(this.micStrokeWidth);
+	this.mMicStrokePaint.setStyle(Style.STROKE);
+	this.mMicStrokePaint.setColor(0xFFBDC1C6);
+}
 
-  public void setInsets(final Rect rect) { requestLayout(); }
+public void setInsets(final Rect rect) {
+	requestLayout();
+}
 
-  protected void onMeasure(final int i, final int i2) {
-    DeviceProfile deviceProfile = this.mActivity.getDeviceProfile();
-    int aA = aA(MeasureSpec.getSize(i));
-    int i3 = aA / deviceProfile.inv.numHotseatIcons;
-    int round = Math.round(0.92f * ((float)deviceProfile.iconSizePx));
-    setMeasuredDimension(((aA - (i3 - round)) + getPaddingLeft()) +
-                             getPaddingRight(),
-                         MeasureSpec.getSize(i2));
-    for (aA = getChildCount() - 1; aA >= 0; aA--) {
-      View childAt = getChildAt(aA);
-      measureChildWithMargins(childAt, i, 0, i2, 0);
-      if (childAt.getMeasuredWidth() <= round) {
-        LayoutParams layoutParams = (LayoutParams)childAt.getLayoutParams();
-        int measuredWidth = (round - childAt.getMeasuredWidth()) / 2;
-        layoutParams.rightMargin = measuredWidth;
-        layoutParams.leftMargin = measuredWidth;
-      }
-    }
-  }
+protected void onMeasure(final int i, final int i2) {
+	DeviceProfile deviceProfile = this.mActivity.getDeviceProfile();
+	int aA = aA(MeasureSpec.getSize(i));
+	int i3 = aA / deviceProfile.inv.numHotseatIcons;
+	int round = Math.round(0.92f * ((float)deviceProfile.iconSizePx));
+	setMeasuredDimension(((aA - (i3 - round)) + getPaddingLeft()) +
+	                     getPaddingRight(),
+	                     MeasureSpec.getSize(i2));
+	for (aA = getChildCount() - 1; aA >= 0; aA--) {
+		View childAt = getChildAt(aA);
+		measureChildWithMargins(childAt, i, 0, i2, 0);
+		if (childAt.getMeasuredWidth() <= round) {
+			LayoutParams layoutParams = (LayoutParams)childAt.getLayoutParams();
+			int measuredWidth = (round - childAt.getMeasuredWidth()) / 2;
+			layoutParams.rightMargin = measuredWidth;
+			layoutParams.leftMargin = measuredWidth;
+		}
+	}
+}
 
-  protected final Bitmap dA() {
-    dB();
-    return this.mShadowBitmap;
-  }
+protected final Bitmap dA() {
+	dB();
+	return this.mShadowBitmap;
+}
 
-  final void dB() {
-    if (mShadowBitmap == null) {
-      mShadowBitmap = aB(this.Dc, true);
-      mClearBitmap = null;
-      if (Color.alpha(Dc) != 255) {
-        mClearBitmap = aB(0xFF000000, false);
-      }
-    }
-  }
+final void dB() {
+	if (mShadowBitmap == null) {
+		mShadowBitmap = aB(this.Dc, true);
+		mClearBitmap = null;
+		if (Color.alpha(Dc) != 255) {
+			mClearBitmap = aB(0xFF000000, false);
+		}
+	}
+}
 
-  protected void clearMainPillBg(final Canvas canvas) {}
+protected void clearMainPillBg(final Canvas canvas) {
+}
 
-  protected void clearPillBg(final Canvas canvas, final int left, final int top,
-                             final int right) {}
+protected void clearPillBg(final Canvas canvas, final int left, final int top,
+                           final int right) {
+}
 
-  public void draw(final Canvas canvas) {
-    int i;
-    dB();
-    clearMainPillBg(canvas);
-    a(this.mShadowBitmap, canvas);
-    if (this.mUseTwoBubbles) {
-      int paddingLeft;
-      int paddingLeft2;
-      if (Db == null) {
-        Bitmap bitmap;
-        if (Dc == Dd) {
-          i = 1;
-        } else {
-          i = 0;
-        }
-        if (i != 0) {
-          bitmap = mShadowBitmap;
-        } else {
-          bitmap = aB(Dd, true);
-        }
-        Db = bitmap;
-      }
-      Bitmap bitmap2 = Db;
-      i = a(bitmap2);
-      int paddingTop = getPaddingTop() -
-                       ((bitmap2.getHeight() - getHeightWithoutPadding()) / 2);
-      if (mIsRtl) {
-        paddingLeft = getPaddingLeft() - i;
-        paddingLeft2 = getPaddingLeft() + i;
-        i = dG();
-      } else {
-        paddingLeft = ((getWidth() - getPaddingRight()) - dG()) - i;
-        paddingLeft2 = getWidth() - getPaddingRight();
-      }
-      clearPillBg(canvas, paddingLeft, paddingTop, paddingLeft2 + i);
-      mShadowHelper.draw(bitmap2, canvas, (float)paddingLeft, (float)paddingTop,
-                         (float)(paddingLeft2 + i));
-    }
-    if (micStrokeWidth > 0.0f && mMicIconView.getVisibility() == View.VISIBLE) {
-      float i2;
-      i = mIsRtl ? getPaddingLeft() : (getWidth() - getPaddingRight()) - dG();
-      int paddingTop2 = getPaddingTop();
-      int paddingLeft3 =
-          mIsRtl ? getPaddingLeft() + dG() : getWidth() - getPaddingRight();
-      int paddingBottom = LauncherAppState.getInstance(getContext())
-                              .getInvariantDeviceProfile()
-                              .iconBitmapSize -
-                          getPaddingBottom();
-      float f = ((float)(paddingBottom - paddingTop2)) * 0.5f;
-      float i3 = micStrokeWidth / 2.0f;
-      if (mUseTwoBubbles) {
-        i2 = i3;
-      } else {
-        i2 = i3;
-        canvas.drawRoundRect(i + i3, paddingTop2 + i3, paddingLeft3 - i3,
-                             (paddingBottom - i3) + 1, f, f, CV);
-      }
-      canvas.drawRoundRect(i + i2, paddingTop2 + i2, paddingLeft3 - i2,
-                           (paddingBottom - i2) + 1, f, f, mMicStrokePaint);
-    }
-    super.draw(canvas);
-  }
+public void draw(final Canvas canvas) {
+	int i;
+	dB();
+	clearMainPillBg(canvas);
+	a(this.mShadowBitmap, canvas);
+	if (this.mUseTwoBubbles) {
+		int paddingLeft;
+		int paddingLeft2;
+		if (Db == null) {
+			Bitmap bitmap;
+			if (Dc == Dd) {
+				i = 1;
+			} else {
+				i = 0;
+			}
+			if (i != 0) {
+				bitmap = mShadowBitmap;
+			} else {
+				bitmap = aB(Dd, true);
+			}
+			Db = bitmap;
+		}
+		Bitmap bitmap2 = Db;
+		i = a(bitmap2);
+		int paddingTop = getPaddingTop() -
+		                 ((bitmap2.getHeight() - getHeightWithoutPadding()) / 2);
+		if (mIsRtl) {
+			paddingLeft = getPaddingLeft() - i;
+			paddingLeft2 = getPaddingLeft() + i;
+			i = dG();
+		} else {
+			paddingLeft = ((getWidth() - getPaddingRight()) - dG()) - i;
+			paddingLeft2 = getWidth() - getPaddingRight();
+		}
+		clearPillBg(canvas, paddingLeft, paddingTop, paddingLeft2 + i);
+		mShadowHelper.draw(bitmap2, canvas, (float)paddingLeft, (float)paddingTop,
+		                   (float)(paddingLeft2 + i));
+	}
+	if (micStrokeWidth > 0.0f && mMicIconView.getVisibility() == View.VISIBLE) {
+		float i2;
+		i = mIsRtl ? getPaddingLeft() : (getWidth() - getPaddingRight()) - dG();
+		int paddingTop2 = getPaddingTop();
+		int paddingLeft3 =
+			mIsRtl ? getPaddingLeft() + dG() : getWidth() - getPaddingRight();
+		int paddingBottom = LauncherAppState.getInstance(getContext())
+		                    .getInvariantDeviceProfile()
+		                    .iconBitmapSize -
+		                    getPaddingBottom();
+		float f = ((float)(paddingBottom - paddingTop2)) * 0.5f;
+		float i3 = micStrokeWidth / 2.0f;
+		if (mUseTwoBubbles) {
+			i2 = i3;
+		} else {
+			i2 = i3;
+			canvas.drawRoundRect(i + i3, paddingTop2 + i3, paddingLeft3 - i3,
+			                     (paddingBottom - i3) + 1, f, f, CV);
+		}
+		canvas.drawRoundRect(i + i2, paddingTop2 + i2, paddingLeft3 - i2,
+		                     (paddingBottom - i2) + 1, f, f, mMicStrokePaint);
+	}
+	super.draw(canvas);
+}
 
-  protected final void a(final Bitmap bitmap, final Canvas canvas) {
-    int a = a(bitmap);
-    int paddingTop = getPaddingTop() -
-                     ((bitmap.getHeight() - getHeightWithoutPadding()) / 2);
-    int paddingLeft = getPaddingLeft() - a;
-    int width = (getWidth() - getPaddingRight()) + a;
-    if (this.mIsRtl) {
-      paddingLeft += dF();
-    } else {
-      width -= dF();
-    }
-    this.mShadowHelper.draw(bitmap, canvas, (float)paddingLeft,
-                            (float)paddingTop, (float)width);
-  }
+protected final void a(final Bitmap bitmap, final Canvas canvas) {
+	int a = a(bitmap);
+	int paddingTop = getPaddingTop() -
+	                 ((bitmap.getHeight() - getHeightWithoutPadding()) / 2);
+	int paddingLeft = getPaddingLeft() - a;
+	int width = (getWidth() - getPaddingRight()) + a;
+	if (this.mIsRtl) {
+		paddingLeft += dF();
+	} else {
+		width -= dF();
+	}
+	this.mShadowHelper.draw(bitmap, canvas, (float)paddingLeft,
+	                        (float)paddingTop, (float)width);
+}
 
-  protected final void drawPill(final NinePatchDrawHelper helper,
-                                final Bitmap bitmap, final Canvas canvas) {
-    int a = a(bitmap);
-    int left = getPaddingLeft() - a;
-    int top = getPaddingTop() -
-              ((bitmap.getHeight() - getHeightWithoutPadding()) / 2);
-    int right = (getWidth() - getPaddingRight()) + a;
-    if (mIsRtl) {
-      left += dF();
-    } else {
-      right -= dF();
-    }
-    helper.draw(bitmap, canvas, (float)left, (float)top, (float)right);
-  }
+protected final void drawPill(final NinePatchDrawHelper helper,
+                              final Bitmap bitmap, final Canvas canvas) {
+	int a = a(bitmap);
+	int left = getPaddingLeft() - a;
+	int top = getPaddingTop() -
+	          ((bitmap.getHeight() - getHeightWithoutPadding()) / 2);
+	int right = (getWidth() - getPaddingRight()) + a;
+	if (mIsRtl) {
+		left += dF();
+	} else {
+		right -= dF();
+	}
+	helper.draw(bitmap, canvas, (float)left, (float)top, (float)right);
+}
 
-  private Bitmap aB(final int i, final boolean withShadow) {
-    float f = (float)LauncherAppState.getInstance(getContext())
-                  .getInvariantDeviceProfile()
-                  .iconBitmapSize;
-    return c(0.010416667f * f, f * 0.020833334f, i, withShadow);
-  }
+private Bitmap aB(final int i, final boolean withShadow) {
+	float f = (float)LauncherAppState.getInstance(getContext())
+	          .getInvariantDeviceProfile()
+	          .iconBitmapSize;
+	return c(0.010416667f * f, f * 0.020833334f, i, withShadow);
+}
 
-  protected final Bitmap c(final float f, final float f2, final int i,
-                           final boolean withShadow) {
-    int dC = getHeightWithoutPadding();
-    int i2 = dC + 20;
-    Builder builder = new Builder(i);
-    builder.shadowBlur = f;
-    builder.keyShadowDistance = f2;
-    if (Do && this instanceof HotseatQsbWidget) {
-      builder.ambientShadowAlpha *= 2;
-    }
-    if (!withShadow) {
-      builder.ambientShadowAlpha = 0;
-    }
-    builder.keyShadowAlpha = builder.ambientShadowAlpha;
-    Bitmap pill;
-    if (mRadius < 0) {
-      TypedValue edgeRadius =
-          FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
-      if (edgeRadius != null) {
-        pill = builder.createPill(
-            i2, dC,
-            edgeRadius.getDimension(getResources().getDisplayMetrics()));
-      } else {
-        pill = builder.createPill(i2, dC);
-      }
-    } else {
-      pill = builder.createPill(i2, dC, mRadius);
-    }
-    if (Utilities.ATLEAST_OREO) {
-      return pill.copy(Config.HARDWARE, false);
-    }
-    return pill;
-  }
+protected final Bitmap c(final float f, final float f2, final int i,
+                         final boolean withShadow) {
+	int dC = getHeightWithoutPadding();
+	int i2 = dC + 20;
+	Builder builder = new Builder(i);
+	builder.shadowBlur = f;
+	builder.keyShadowDistance = f2;
+	if (Do && this instanceof HotseatQsbWidget) {
+		builder.ambientShadowAlpha *= 2;
+	}
+	if (!withShadow) {
+		builder.ambientShadowAlpha = 0;
+	}
+	builder.keyShadowAlpha = builder.ambientShadowAlpha;
+	Bitmap pill;
+	if (mRadius < 0) {
+		TypedValue edgeRadius =
+			FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
+		if (edgeRadius != null) {
+			pill = builder.createPill(
+				i2, dC,
+				edgeRadius.getDimension(getResources().getDisplayMetrics()));
+		} else {
+			pill = builder.createPill(i2, dC);
+		}
+	} else {
+		pill = builder.createPill(i2, dC, mRadius);
+	}
+	if (Utilities.ATLEAST_OREO) {
+		return pill.copy(Config.HARDWARE, false);
+	}
+	return pill;
+}
 
-  protected final int a(final Bitmap bitmap) {
-    return (bitmap.getWidth() - (getHeightWithoutPadding() + 20)) / 2;
-  }
+protected final int a(final Bitmap bitmap) {
+	return (bitmap.getWidth() - (getHeightWithoutPadding() + 20)) / 2;
+}
 
-  protected final int getHeightWithoutPadding() {
-    return (getHeight() - getPaddingTop()) - getPaddingBottom();
-  }
+protected final int getHeightWithoutPadding() {
+	return (getHeight() - getPaddingTop()) - getPaddingBottom();
+}
 
-  protected final int dD() {
-    return this.mUseTwoBubbles ? this.Da : this.Da + this.CY;
-  }
+protected final int dD() {
+	return this.mUseTwoBubbles ? this.Da : this.Da + this.CY;
+}
 
-  protected final void setHintText(final String str, final TextView textView) {
-    String str2;
-    if (TextUtils.isEmpty(str) || !dE()) {
-      str2 = str;
-    } else {
-      str2 = TextUtils.ellipsize(str, this.CT, (float)this.Dm, TruncateAt.END)
-                 .toString();
-    }
-    this.Dg = str2;
-    textView.setText(this.Dg);
-    int i = 17;
-    if (dE()) {
-      i = 8388629;
-      if (this.mIsRtl) {
-        textView.setPadding(dD(), 0, 0, 0);
-      } else {
-        textView.setPadding(0, 0, dD(), 0);
-      }
-    }
-    textView.setGravity(i);
-    ((LayoutParams)textView.getLayoutParams()).gravity = i;
-    textView.setContentDescription(str);
-  }
+protected final void setHintText(final String str, final TextView textView) {
+	String str2;
+	if (TextUtils.isEmpty(str) || !dE()) {
+		str2 = str;
+	} else {
+		str2 = TextUtils.ellipsize(str, this.CT, (float)this.Dm, TruncateAt.END)
+		       .toString();
+	}
+	this.Dg = str2;
+	textView.setText(this.Dg);
+	int i = 17;
+	if (dE()) {
+		i = 8388629;
+		if (this.mIsRtl) {
+			textView.setPadding(dD(), 0, 0, 0);
+		} else {
+			textView.setPadding(0, 0, dD(), 0);
+		}
+	}
+	textView.setGravity(i);
+	((LayoutParams)textView.getLayoutParams()).gravity = i;
+	textView.setContentDescription(str);
+}
 
-  protected final boolean dE() {
-    if (!this.Dh) {
-      return this.mUseTwoBubbles;
-    }
-    return true;
-  }
+protected final boolean dE() {
+	if (!this.Dh) {
+		return this.mUseTwoBubbles;
+	}
+	return true;
+}
 
-  protected final int dF() { return this.mUseTwoBubbles ? dG() + this.CZ : 0; }
+protected final int dF() {
+	return this.mUseTwoBubbles ? dG() + this.CZ : 0;
+}
 
-  protected final int dG() {
-    if (!this.mUseTwoBubbles || TextUtils.isEmpty(this.Dg)) {
-      return this.Da;
-    }
-    return (((int)this.CT.measureText(this.Dg)) + this.CY) + this.Da;
-  }
+protected final int dG() {
+	if (!this.mUseTwoBubbles || TextUtils.isEmpty(this.Dg)) {
+		return this.Da;
+	}
+	return (((int)this.CT.measureText(this.Dg)) + this.CY) + this.Da;
+}
 
-  protected final void dH() {
-    int dF;
-    int i;
-    int i2;
-    int dG;
-    InsetDrawable insetDrawable = (InsetDrawable)createRipple().mutate();
-    RippleDrawable rippleDrawable = (RippleDrawable)insetDrawable.getDrawable();
-    if (this.mIsRtl) {
-      dF = dF();
-    } else {
-      dF = 0;
-    }
-    if (this.mIsRtl) {
-      i = 0;
-    } else {
-      i = dF();
-    }
-    rippleDrawable.setLayerInset(0, dF, 0, i, 0);
-    setBackground(insetDrawable);
-    RippleDrawable rippleDrawable2 =
-        (RippleDrawable)rippleDrawable.getConstantState()
-            .newDrawable()
-            .mutate();
-    rippleDrawable2.setLayerInset(0, 0, this.Dl, 0, this.Dl);
-    this.mMicIconView.setBackground(rippleDrawable2);
-    this.mMicIconView.getLayoutParams().width = dG();
-    if (this.mIsRtl) {
-      i2 = 0;
-    } else {
-      i2 = dG() - this.Da;
-    }
-    if (this.mIsRtl) {
-      dG = dG() - this.Da;
-    } else {
-      dG = 0;
-    }
-    this.mMicIconView.setPadding(i2, 0, dG, 0);
-    this.mMicIconView.requestLayout();
-  }
+protected final void dH() {
+	int dF;
+	int i;
+	int i2;
+	int dG;
+	InsetDrawable insetDrawable = (InsetDrawable)createRipple().mutate();
+	RippleDrawable rippleDrawable = (RippleDrawable)insetDrawable.getDrawable();
+	if (this.mIsRtl) {
+		dF = dF();
+	} else {
+		dF = 0;
+	}
+	if (this.mIsRtl) {
+		i = 0;
+	} else {
+		i = dF();
+	}
+	rippleDrawable.setLayerInset(0, dF, 0, i, 0);
+	setBackground(insetDrawable);
+	RippleDrawable rippleDrawable2 =
+		(RippleDrawable)rippleDrawable.getConstantState()
+		.newDrawable()
+		.mutate();
+	rippleDrawable2.setLayerInset(0, 0, this.Dl, 0, this.Dl);
+	this.mMicIconView.setBackground(rippleDrawable2);
+	this.mMicIconView.getLayoutParams().width = dG();
+	if (this.mIsRtl) {
+		i2 = 0;
+	} else {
+		i2 = dG() - this.Da;
+	}
+	if (this.mIsRtl) {
+		dG = dG() - this.Da;
+	} else {
+		dG = 0;
+	}
+	this.mMicIconView.setPadding(i2, 0, dG, 0);
+	this.mMicIconView.requestLayout();
+}
 
-  private InsetDrawable createRipple() {
-    GradientDrawable shape = new GradientDrawable();
-    shape.setShape(GradientDrawable.RECTANGLE);
-    shape.setCornerRadius(getCornerRadius());
-    shape.setColor(ContextCompat.getColor(getContext(), android.R.color.white));
+private InsetDrawable createRipple() {
+	GradientDrawable shape = new GradientDrawable();
+	shape.setShape(GradientDrawable.RECTANGLE);
+	shape.setCornerRadius(getCornerRadius());
+	shape.setColor(ContextCompat.getColor(getContext(), android.R.color.white));
 
-    ColorStateList rippleColor = ContextCompat.getColorStateList(
-        getContext(), R.color.focused_background);
-    RippleDrawable ripple = new RippleDrawable(rippleColor, null, shape);
-    return new InsetDrawable(ripple, getResources().getDimensionPixelSize(
-                                         R.dimen.qsb_shadow_margin));
-  }
+	ColorStateList rippleColor = ContextCompat.getColorStateList(
+		getContext(), R.color.focused_background);
+	RippleDrawable ripple = new RippleDrawable(rippleColor, null, shape);
+	return new InsetDrawable(ripple, getResources().getDimensionPixelSize(
+					 R.dimen.qsb_shadow_margin));
+}
 
-  protected float getCornerRadius() {
-    return getCornerRadius(
-        getContext(),
-        Utilities.pxFromDp(100, getResources().getDisplayMetrics()));
-  }
+protected float getCornerRadius() {
+	return getCornerRadius(
+		getContext(),
+		Utilities.pxFromDp(100, getResources().getDisplayMetrics()));
+}
 
-  public static float getCornerRadius(final Context context,
-                                      final float defaultRadius) {
-    float radius = round(Utilities.getZimPrefs(context).getSearchBarRadius());
-    if (radius > 0f) {
-      return radius;
-    }
-    TypedValue edgeRadius =
-        FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
-    if (edgeRadius != null) {
-      return edgeRadius.getDimension(
-          context.getResources().getDisplayMetrics());
-    } else {
-      return defaultRadius;
-    }
-  }
+public static float getCornerRadius(final Context context,
+                                    final float defaultRadius) {
+	float radius = round(Utilities.getZimPrefs(context).getSearchBarRadius());
+	if (radius > 0f) {
+		return radius;
+	}
+	TypedValue edgeRadius =
+		FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
+	if (edgeRadius != null) {
+		return edgeRadius.getDimension(
+			context.getResources().getDisplayMetrics());
+	} else {
+		return defaultRadius;
+	}
+}
 
-  public boolean dI() { return false; }
+public boolean dI() {
+	return false;
+}
 
-  public void onClick(final View view) {
-    SearchProviderController controller =
-        SearchProviderController.Companion.getInstance(mActivity);
-    SearchProvider provider = controller.getSearchProvider();
-    if (view == mMicIconView) {
-      if (controller.isGoogle()) {
-        fallbackSearch(mShowAssistant ? Intent.ACTION_VOICE_COMMAND
-                                      : "android.intent.action.VOICE_ASSIST");
-      } else if (mShowAssistant && provider.getSupportsAssistant()) {
-        provider.startAssistant(intent -> {
-          getContext().startActivity(intent);
-          return null;
-        });
-      } else if (provider.getSupportsVoiceSearch()) {
-        provider.startVoiceSearch(intent -> {
-          getContext().startActivity(intent);
-          return null;
-        });
-      }
-    } else if (view == mLogoIconView) {
-      if (provider.getSupportsFeed() && logoCanOpenFeed()) {
-        provider.startFeed(intent -> {
-          getContext().startActivity(intent);
-          return null;
-        });
-      } else {
-        startSearch("", Di);
-      }
-    }
-  }
+public void onClick(final View view) {
+	SearchProviderController controller =
+		SearchProviderController.Companion.getInstance(mActivity);
+	SearchProvider provider = controller.getSearchProvider();
+	if (view == mMicIconView) {
+		if (controller.isGoogle()) {
+			fallbackSearch(mShowAssistant ? Intent.ACTION_VOICE_COMMAND
+			              : "android.intent.action.VOICE_ASSIST");
+		} else if (mShowAssistant && provider.getSupportsAssistant()) {
+			provider.startAssistant(intent->{
+					getContext().startActivity(intent);
+					return null;
+				});
+		} else if (provider.getSupportsVoiceSearch()) {
+			provider.startVoiceSearch(intent->{
+					getContext().startActivity(intent);
+					return null;
+				});
+		}
+	} else if (view == mLogoIconView) {
+		if (provider.getSupportsFeed() && logoCanOpenFeed()) {
+			provider.startFeed(intent->{
+					getContext().startActivity(intent);
+					return null;
+				});
+		} else {
+			startSearch("", Di);
+		}
+	}
+}
 
-  protected boolean logoCanOpenFeed() { return true; }
+protected boolean logoCanOpenFeed() {
+	return true;
+}
 
-  protected final void k(final String str) {
-    try {
-      getContext().startActivity(new Intent(str).addFlags(268468224).setPackage(
-          "com.google.android.googlequicksearchbox"));
-    } catch (ActivityNotFoundException e) {
-      LauncherAppsCompat.getInstance(getContext())
-          .showAppDetailsForProfile(
-              new ComponentName("com.google.android.googlequicksearchbox",
-                                ".SearchActivity"),
-              Process.myUserHandle());
-    }
-  }
+protected final void k(final String str) {
+	try {
+		getContext().startActivity(new Intent(str).addFlags(268468224).setPackage(
+						   "com.google.android.googlequicksearchbox"));
+	} catch (ActivityNotFoundException e) {
+		LauncherAppsCompat.getInstance(getContext())
+		.showAppDetailsForProfile(
+			new ComponentName("com.google.android.googlequicksearchbox",
+			                  ".SearchActivity"),
+			Process.myUserHandle());
+	}
+}
 
-  public void
-  onSharedPreferenceChanged(final SharedPreferences sharedPreferences,
-                            final String str) {
-    switch (str) {
-    case "opa_enabled":
-    case "opa_assistant":
-    case "pref_bubbleSearchStyle":
-      loadPreferences(sharedPreferences);
-    }
-  }
+public void
+onSharedPreferenceChanged(final SharedPreferences sharedPreferences,
+                          final String str) {
+	switch (str) {
+	case "opa_enabled":
+	case "opa_assistant":
+	case "pref_bubbleSearchStyle":
+		loadPreferences(sharedPreferences);
+	}
+}
 
-  @Override
-  public void onSearchProviderChanged() {
-    loadPreferences(Utilities.getPrefs(getContext()));
-  }
+@Override
+public void onSearchProviderChanged() {
+	loadPreferences(Utilities.getPrefs(getContext()));
+}
 
-  protected void loadPreferences(final SharedPreferences sharedPreferences) {
-    post(() -> {
-      mShowAssistant = sharedPreferences.getBoolean("opa_assistant", true);
-      mLogoIconView.setImageDrawable(getIcon());
-      mMicIconView.setVisibility(
-          sharedPreferences.getBoolean("opa_enabled", true) ? View.VISIBLE
-                                                            : View.GONE);
-      mMicIconView.setImageDrawable(getMicIcon());
-      mUseTwoBubbles = useTwoBubbles();
-      mRadius = Utilities.getZimPrefs(getContext()).getSearchBarRadius();
-      invalidate();
-    });
-  }
+protected void loadPreferences(final SharedPreferences sharedPreferences) {
+	post(()->{
+			mShowAssistant = sharedPreferences.getBoolean("opa_assistant", true);
+			mLogoIconView.setImageDrawable(getIcon());
+			mMicIconView.setVisibility(
+				sharedPreferences.getBoolean("opa_enabled", true) ? View.VISIBLE
+				                            : View.GONE);
+			mMicIconView.setImageDrawable(getMicIcon());
+			mUseTwoBubbles = useTwoBubbles();
+			mRadius = Utilities.getZimPrefs(getContext()).getSearchBarRadius();
+			invalidate();
+		});
+}
 
-  protected Drawable getIcon() { return getIcon(true); }
+protected Drawable getIcon() {
+	return getIcon(true);
+}
 
-  protected Drawable getIcon(final boolean colored) {
-    SearchProvider provider =
-        SearchProviderController.Companion.getInstance(getContext())
-            .getSearchProvider();
-    return provider.getIcon(colored);
-  }
+protected Drawable getIcon(final boolean colored) {
+	SearchProvider provider =
+		SearchProviderController.Companion.getInstance(getContext())
+		.getSearchProvider();
+	return provider.getIcon(colored);
+}
 
-  protected Drawable getMicIcon() { return getMicIcon(true); }
+protected Drawable getMicIcon() {
+	return getMicIcon(true);
+}
 
-  protected Drawable getMicIcon(final boolean colored) {
-    SearchProvider provider =
-        SearchProviderController.Companion.getInstance(getContext())
-            .getSearchProvider();
-    if (mShowAssistant && provider.getSupportsAssistant()) {
-      return provider.getAssistantIcon(colored);
-    } else if (provider.getSupportsVoiceSearch()) {
-      return provider.getVoiceIcon(colored);
-    } else {
-      mMicIconView.setVisibility(GONE);
-      return new ColorDrawable(Color.TRANSPARENT);
-    }
-  }
+protected Drawable getMicIcon(final boolean colored) {
+	SearchProvider provider =
+		SearchProviderController.Companion.getInstance(getContext())
+		.getSearchProvider();
+	if (mShowAssistant && provider.getSupportsAssistant()) {
+		return provider.getAssistantIcon(colored);
+	} else if (provider.getSupportsVoiceSearch()) {
+		return provider.getVoiceIcon(colored);
+	} else {
+		mMicIconView.setVisibility(GONE);
+		return new ColorDrawable(Color.TRANSPARENT);
+	}
+}
 
-  public boolean onLongClick(final View view) {
-    if (view != this) {
-      return false;
-    }
-    return dK();
-  }
+public boolean onLongClick(final View view) {
+	if (view != this) {
+		return false;
+	}
+	return dK();
+}
 
-  protected boolean dK() {
-    String clipboardText = getClipboardText();
-    Intent settingsBroadcast = createSettingsBroadcast();
-    Intent settingsIntent = createSettingsIntent();
-    if (settingsIntent == null && settingsBroadcast == null &&
-        clipboardText == null) {
-      return false;
-    }
-    if (Utilities.ATLEAST_MARSHMALLOW) {
-      startActionMode(new QsbActionMode(this, clipboardText, settingsBroadcast,
-                                        settingsIntent),
-                      1);
-    }
-    return true;
-  }
+protected boolean dK() {
+	String clipboardText = getClipboardText();
+	Intent settingsBroadcast = createSettingsBroadcast();
+	Intent settingsIntent = createSettingsIntent();
+	if (settingsIntent == null && settingsBroadcast == null &&
+	    clipboardText == null) {
+		return false;
+	}
+	if (Utilities.ATLEAST_MARSHMALLOW) {
+		startActionMode(new QsbActionMode(this, clipboardText, settingsBroadcast,
+		                                  settingsIntent),
+		                1);
+	}
+	return true;
+}
 
-  @Nullable
-  protected String getClipboardText() {
-    ClipboardManager clipboardManager =
-        ContextCompat.getSystemService(getContext(), ClipboardManager.class);
-    ClipData primaryClip = clipboardManager.getPrimaryClip();
-    if (primaryClip != null) {
-      for (int i = 0; i < primaryClip.getItemCount(); i++) {
-        CharSequence text = primaryClip.getItemAt(i).coerceToText(getContext());
-        if (!TextUtils.isEmpty(text)) {
-          return text.toString();
-        }
-      }
-    }
-    return null;
-  }
+@Nullable
+protected String getClipboardText() {
+	ClipboardManager clipboardManager =
+		ContextCompat.getSystemService(getContext(), ClipboardManager.class);
+	ClipData primaryClip = clipboardManager.getPrimaryClip();
+	if (primaryClip != null) {
+		for (int i = 0; i < primaryClip.getItemCount(); i++) {
+			CharSequence text = primaryClip.getItemAt(i).coerceToText(getContext());
+			if (!TextUtils.isEmpty(text)) {
+				return text.toString();
+			}
+		}
+	}
+	return null;
+}
 
-  protected Intent createSettingsBroadcast() { return null; }
+protected Intent createSettingsBroadcast() {
+	return null;
+}
 
-  protected Intent createSettingsIntent() { return null; }
+protected Intent createSettingsIntent() {
+	return null;
+}
 
-  public int dL() { return 0; }
+public int dL() {
+	return 0;
+}
 
-  protected void fallbackSearch(final String action) {
-    try {
-      getContext().startActivity(new Intent(action)
-                                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                               Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                                     .setPackage(GOOGLE_QSB));
-    } catch (ActivityNotFoundException e) {
-      noGoogleAppSearch();
-    }
-  }
+protected void fallbackSearch(final String action) {
+	try {
+		getContext().startActivity(new Intent(action)
+		                           .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+		                                     Intent.FLAG_ACTIVITY_CLEAR_TASK)
+		                           .setPackage(GOOGLE_QSB));
+	} catch (ActivityNotFoundException e) {
+		noGoogleAppSearch();
+	}
+}
 
-  protected void noGoogleAppSearch() {}
+protected void noGoogleAppSearch() {
+}
 
-  public boolean useTwoBubbles() {
-    return mMicIconView.getVisibility() == View.VISIBLE &&
-        Utilities.getZimPrefs(mActivity).getDualBubbleSearch();
-  }
+public boolean useTwoBubbles() {
+	return mMicIconView.getVisibility() == View.VISIBLE &&
+	       Utilities.getZimPrefs(mActivity).getDualBubbleSearch();
+}
 }

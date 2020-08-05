@@ -25,12 +25,12 @@ import com.android.launcher3.compat.ShortcutConfigActivityInfo;
  */
 public class PendingAddShortcutInfo extends PendingAddItemInfo {
 
-  public ShortcutConfigActivityInfo activityInfo;
+public ShortcutConfigActivityInfo activityInfo;
 
-  public PendingAddShortcutInfo(final ShortcutConfigActivityInfo activityInfo) {
-    this.activityInfo = activityInfo;
-    componentName = activityInfo.getComponent();
-    user = activityInfo.getUser();
-    itemType = activityInfo.getItemType();
-  }
+public PendingAddShortcutInfo(final ShortcutConfigActivityInfo activityInfo) {
+	this.activityInfo = activityInfo;
+	componentName = activityInfo.getComponent();
+	user = activityInfo.getUser();
+	itemType = activityInfo.getItemType();
+}
 }

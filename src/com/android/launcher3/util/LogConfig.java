@@ -8,22 +8,22 @@ package com.android.launcher3.util;
  */
 
 public class LogConfig {
-  // These are list of strings that can be used to replace TAGNAME.
+// These are list of strings that can be used to replace TAGNAME.
 
-  /**
-   * After this tag is turned on, whenever there is n user event, debug
-   * information is printed out to logcat.
-   */
-  public static final String USEREVENT = "UserEvent";
+/**
+ * After this tag is turned on, whenever there is n user event, debug
+ * information is printed out to logcat.
+ */
+public static final String USEREVENT = "UserEvent";
 
-  /**
-   * When turned on, all icons are kept on the home screen, even if they don't
-   * have an active session.
-   */
-  public static final String KEEP_ALL_ICONS = "KeepAllIcons";
+/**
+ * When turned on, all icons are kept on the home screen, even if they don't
+ * have an active session.
+ */
+public static final String KEEP_ALL_ICONS = "KeepAllIcons";
 
-  /**
-   * When turned on, icon cache is only fetched from memory and not disk.
-   */
-  public static final String MEMORY_ONLY_ICON_CACHE = "MemoryOnlyIconCache";
+/**
+ * When turned on, icon cache is only fetched from memory and not disk.
+ */
+public static final String MEMORY_ONLY_ICON_CACHE = "MemoryOnlyIconCache";
 }

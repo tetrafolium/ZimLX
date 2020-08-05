@@ -36,165 +36,165 @@ import com.android.launcher3.dragndrop.DragLayer;
  * workspace.
  */
 public class WorkspaceAccessibilityHelper
-    extends DragAndDropAccessibilityDelegate {
+	extends DragAndDropAccessibilityDelegate {
 
-  private final Rect mTempRect = new Rect();
-  private final int[] mTempCords = new int[2];
+private final Rect mTempRect = new Rect();
+private final int[] mTempCords = new int[2];
 
-  public WorkspaceAccessibilityHelper(final CellLayout layout) {
-    super(layout);
-  }
+public WorkspaceAccessibilityHelper(final CellLayout layout) {
+	super(layout);
+}
 
-  public static String getDescriptionForDropOver(final View overChild,
-                                                 final Context context) {
-    ItemInfo info = (ItemInfo)overChild.getTag();
-    if (info instanceof ShortcutInfo) {
-      return context.getString(R.string.create_folder_with, info.title);
-    } else if (info instanceof FolderInfo) {
-      if (TextUtils.isEmpty(info.title)) {
-        // Find the first item in the folder.
-        FolderInfo folder = (FolderInfo)info;
-        ShortcutInfo firstItem = null;
-        for (ShortcutInfo shortcut : folder.contents) {
-          if (firstItem == null || firstItem.rank > shortcut.rank) {
-            firstItem = shortcut;
-          }
-        }
+public static String getDescriptionForDropOver(final View overChild,
+                                               final Context context) {
+	ItemInfo info = (ItemInfo)overChild.getTag();
+	if (info instanceof ShortcutInfo) {
+		return context.getString(R.string.create_folder_with, info.title);
+	} else if (info instanceof FolderInfo) {
+		if (TextUtils.isEmpty(info.title)) {
+			// Find the first item in the folder.
+			FolderInfo folder = (FolderInfo)info;
+			ShortcutInfo firstItem = null;
+			for (ShortcutInfo shortcut : folder.contents) {
+				if (firstItem == null || firstItem.rank > shortcut.rank) {
+					firstItem = shortcut;
+				}
+			}
 
-        if (firstItem != null) {
-          return context.getString(R.string.add_to_folder_with_app,
-                                   firstItem.title);
-        }
-      }
-      return context.getString(R.string.add_to_folder, info.title);
-    }
-    return "";
-  }
+			if (firstItem != null) {
+				return context.getString(R.string.add_to_folder_with_app,
+				                         firstItem.title);
+			}
+		}
+		return context.getString(R.string.add_to_folder, info.title);
+	}
+	return "";
+}
 
-  /**
-   * Find the virtual view id corresponding to the top left corner of any drop
-   * region by which the passed id is contained. For an icon, this is simply
-   */
-  @Override
-  protected int intersectsValidDropTarget(final int id) {
-    int mCountX = mView.getCountX();
-    int mCountY = mView.getCountY();
+/**
+ * Find the virtual view id corresponding to the top left corner of any drop
+ * region by which the passed id is contained. For an icon, this is simply
+ */
+@Override
+protected int intersectsValidDropTarget(final int id) {
+	int mCountX = mView.getCountX();
+	int mCountY = mView.getCountY();
 
-    int x = id % mCountX;
-    int y = id / mCountX;
-    LauncherAccessibilityDelegate.DragInfo dragInfo = mDelegate.getDragInfo();
+	int x = id % mCountX;
+	int y = id / mCountX;
+	LauncherAccessibilityDelegate.DragInfo dragInfo = mDelegate.getDragInfo();
 
-    if (dragInfo.dragType == DragType.WIDGET && !mView.acceptsWidget()) {
-      return INVALID_POSITION;
-    }
+	if (dragInfo.dragType == DragType.WIDGET && !mView.acceptsWidget()) {
+		return INVALID_POSITION;
+	}
 
-    if (dragInfo.dragType == DragType.WIDGET) {
-      // For a widget, every cell must be vacant. In addition, we will return
-      // any valid drop target by which the passed id is contained.
-      boolean fits = false;
+	if (dragInfo.dragType == DragType.WIDGET) {
+		// For a widget, every cell must be vacant. In addition, we will return
+		// any valid drop target by which the passed id is contained.
+		boolean fits = false;
 
-      // These represent the amount that we can back off if we hit a problem.
-      // They get consumed as we move up and to the right, trying new regions.
-      int spanX = dragInfo.info.spanX;
-      int spanY = dragInfo.info.spanY;
+		// These represent the amount that we can back off if we hit a problem.
+		// They get consumed as we move up and to the right, trying new regions.
+		int spanX = dragInfo.info.spanX;
+		int spanY = dragInfo.info.spanY;
 
-      for (int m = 0; m < spanX; m++) {
-        for (int n = 0; n < spanY; n++) {
+		for (int m = 0; m < spanX; m++) {
+			for (int n = 0; n < spanY; n++) {
 
-          fits = true;
-          int x0 = x - m;
-          int y0 = y - n;
+				fits = true;
+				int x0 = x - m;
+				int y0 = y - n;
 
-          if (x0 < 0 || y0 < 0)
-            continue;
+				if (x0 < 0 || y0 < 0)
+					continue;
 
-          for (int i = x0; i < x0 + spanX; i++) {
-            if (!fits)
-              break;
-            for (int j = y0; j < y0 + spanY; j++) {
-              if (i >= mCountX || j >= mCountY || mView.isOccupied(i, j)) {
-                fits = false;
-                break;
-              }
-            }
-          }
-          if (fits) {
-            return x0 + mCountX * y0;
-          }
-        }
-      }
-      return INVALID_POSITION;
-    } else {
-      // For an icon, we simply check the view directly below
-      View child = mView.getChildAt(x, y);
-      if (child == null || child == dragInfo.item) {
-        // Empty cell. Good for an icon or folder.
-        return id;
-      } else if (dragInfo.dragType != DragType.FOLDER) {
-        // For icons, we can consider cells that have another icon or a folder.
-        ItemInfo info = (ItemInfo)child.getTag();
-        if (info instanceof AppInfo || info instanceof FolderInfo ||
-            info instanceof ShortcutInfo) {
-          return id;
-        }
-      }
-      return INVALID_POSITION;
-    }
-  }
+				for (int i = x0; i < x0 + spanX; i++) {
+					if (!fits)
+						break;
+					for (int j = y0; j < y0 + spanY; j++) {
+						if (i >= mCountX || j >= mCountY || mView.isOccupied(i, j)) {
+							fits = false;
+							break;
+						}
+					}
+				}
+				if (fits) {
+					return x0 + mCountX * y0;
+				}
+			}
+		}
+		return INVALID_POSITION;
+	} else {
+		// For an icon, we simply check the view directly below
+		View child = mView.getChildAt(x, y);
+		if (child == null || child == dragInfo.item) {
+			// Empty cell. Good for an icon or folder.
+			return id;
+		} else if (dragInfo.dragType != DragType.FOLDER) {
+			// For icons, we can consider cells that have another icon or a folder.
+			ItemInfo info = (ItemInfo)child.getTag();
+			if (info instanceof AppInfo || info instanceof FolderInfo ||
+			    info instanceof ShortcutInfo) {
+				return id;
+			}
+		}
+		return INVALID_POSITION;
+	}
+}
 
-  @Override
-  protected String getConfirmationForIconDrop(final int id) {
-    int x = id % mView.getCountX();
-    int y = id / mView.getCountX();
-    LauncherAccessibilityDelegate.DragInfo dragInfo = mDelegate.getDragInfo();
+@Override
+protected String getConfirmationForIconDrop(final int id) {
+	int x = id % mView.getCountX();
+	int y = id / mView.getCountX();
+	LauncherAccessibilityDelegate.DragInfo dragInfo = mDelegate.getDragInfo();
 
-    View child = mView.getChildAt(x, y);
-    if (child == null || child == dragInfo.item) {
-      return mContext.getString(R.string.item_moved);
-    } else {
-      ItemInfo info = (ItemInfo)child.getTag();
-      if (info instanceof AppInfo || info instanceof ShortcutInfo) {
-        return mContext.getString(R.string.folder_created);
+	View child = mView.getChildAt(x, y);
+	if (child == null || child == dragInfo.item) {
+		return mContext.getString(R.string.item_moved);
+	} else {
+		ItemInfo info = (ItemInfo)child.getTag();
+		if (info instanceof AppInfo || info instanceof ShortcutInfo) {
+			return mContext.getString(R.string.folder_created);
 
-      } else if (info instanceof FolderInfo) {
-        return mContext.getString(R.string.added_to_folder);
-      }
-    }
-    return "";
-  }
+		} else if (info instanceof FolderInfo) {
+			return mContext.getString(R.string.added_to_folder);
+		}
+	}
+	return "";
+}
 
-  @Override
-  protected void
-  onPopulateNodeForVirtualView(final int id,
-                               final AccessibilityNodeInfoCompat node) {
-    super.onPopulateNodeForVirtualView(id, node);
+@Override
+protected void
+onPopulateNodeForVirtualView(final int id,
+                             final AccessibilityNodeInfoCompat node) {
+	super.onPopulateNodeForVirtualView(id, node);
 
-    // ExploreByTouchHelper does not currently handle view scale.
-    // Update BoundsInScreen to appropriate value.
-    DragLayer dragLayer =
-        Launcher.getLauncher(mView.getContext()).getDragLayer();
-    mTempCords[0] = mTempCords[1] = 0;
-    float scale = dragLayer.getDescendantCoordRelativeToSelf(mView, mTempCords);
+	// ExploreByTouchHelper does not currently handle view scale.
+	// Update BoundsInScreen to appropriate value.
+	DragLayer dragLayer =
+		Launcher.getLauncher(mView.getContext()).getDragLayer();
+	mTempCords[0] = mTempCords[1] = 0;
+	float scale = dragLayer.getDescendantCoordRelativeToSelf(mView, mTempCords);
 
-    node.getBoundsInParent(mTempRect);
-    mTempRect.left = mTempCords[0] + (int)(mTempRect.left * scale);
-    mTempRect.right = mTempCords[0] + (int)(mTempRect.right * scale);
-    mTempRect.top = mTempCords[1] + (int)(mTempRect.top * scale);
-    mTempRect.bottom = mTempCords[1] + (int)(mTempRect.bottom * scale);
-    node.setBoundsInScreen(mTempRect);
-  }
+	node.getBoundsInParent(mTempRect);
+	mTempRect.left = mTempCords[0] + (int)(mTempRect.left * scale);
+	mTempRect.right = mTempCords[0] + (int)(mTempRect.right * scale);
+	mTempRect.top = mTempCords[1] + (int)(mTempRect.top * scale);
+	mTempRect.bottom = mTempCords[1] + (int)(mTempRect.bottom * scale);
+	node.setBoundsInScreen(mTempRect);
+}
 
-  @Override
-  protected String getLocationDescriptionForIconDrop(final int id) {
-    int x = id % mView.getCountX();
-    int y = id / mView.getCountX();
-    LauncherAccessibilityDelegate.DragInfo dragInfo = mDelegate.getDragInfo();
+@Override
+protected String getLocationDescriptionForIconDrop(final int id) {
+	int x = id % mView.getCountX();
+	int y = id / mView.getCountX();
+	LauncherAccessibilityDelegate.DragInfo dragInfo = mDelegate.getDragInfo();
 
-    View child = mView.getChildAt(x, y);
-    if (child == null || child == dragInfo.item) {
-      return mView.getItemMoveDescription(x, y);
-    } else {
-      return getDescriptionForDropOver(child, mContext);
-    }
-  }
+	View child = mView.getChildAt(x, y);
+	if (child == null || child == dragInfo.item) {
+		return mView.getItemMoveDescription(x, y);
+	} else {
+		return getDescriptionForDropOver(child, mContext);
+	}
+}
 }

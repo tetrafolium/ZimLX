@@ -28,53 +28,56 @@ import java.util.List;
  */
 public class AnimatorSetBuilder {
 
-  public static final int ANIM_VERTICAL_PROGRESS = 0;
-  public static final int ANIM_WORKSPACE_SCALE = 1;
-  public static final int ANIM_WORKSPACE_FADE = 2;
-  public static final int ANIM_OVERVIEW_SCALE = 3;
-  public static final int ANIM_OVERVIEW_FADE = 4;
-  public static final int ANIM_ALL_APPS_FADE = 5;
+public static final int ANIM_VERTICAL_PROGRESS = 0;
+public static final int ANIM_WORKSPACE_SCALE = 1;
+public static final int ANIM_WORKSPACE_FADE = 2;
+public static final int ANIM_OVERVIEW_SCALE = 3;
+public static final int ANIM_OVERVIEW_FADE = 4;
+public static final int ANIM_ALL_APPS_FADE = 5;
 
-  protected final ArrayList<Animator> mAnims = new ArrayList<>();
+protected final ArrayList<Animator> mAnims = new ArrayList<>();
 
-  private final SparseArray<Interpolator> mInterpolators = new SparseArray<>();
-  private List<Runnable> mOnFinishRunnables = new ArrayList<>();
+private final SparseArray<Interpolator> mInterpolators = new SparseArray<>();
+private List<Runnable> mOnFinishRunnables = new ArrayList<>();
 
-  /**
-   * Associates a tag with all the animations added after this call.
-   */
-  public void startTag(final Object obj) {}
+/**
+ * Associates a tag with all the animations added after this call.
+ */
+public void startTag(final Object obj) {
+}
 
-  public void play(final Animator anim) { mAnims.add(anim); }
+public void play(final Animator anim) {
+	mAnims.add(anim);
+}
 
-  public void addOnFinishRunnable(final Runnable onFinishRunnable) {
-    mOnFinishRunnables.add(onFinishRunnable);
-  }
+public void addOnFinishRunnable(final Runnable onFinishRunnable) {
+	mOnFinishRunnables.add(onFinishRunnable);
+}
 
-  public AnimatorSet build() {
-    AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
-    anim.playTogether(mAnims);
-    if (!mOnFinishRunnables.isEmpty()) {
-      anim.addListener(new AnimationSuccessListener() {
-        @Override
-        public void onAnimationSuccess(final Animator animation) {
-          for (Runnable onFinishRunnable : mOnFinishRunnables) {
-            onFinishRunnable.run();
-          }
-          mOnFinishRunnables.clear();
-        }
-      });
-    }
-    return anim;
-  }
+public AnimatorSet build() {
+	AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
+	anim.playTogether(mAnims);
+	if (!mOnFinishRunnables.isEmpty()) {
+		anim.addListener(new AnimationSuccessListener() {
+				@Override
+				public void onAnimationSuccess(final Animator animation) {
+				        for (Runnable onFinishRunnable : mOnFinishRunnables) {
+				                onFinishRunnable.run();
+					}
+				        mOnFinishRunnables.clear();
+				}
+			});
+	}
+	return anim;
+}
 
-  public Interpolator getInterpolator(final int animId,
-                                      final Interpolator fallback) {
-    return mInterpolators.get(animId, fallback);
-  }
+public Interpolator getInterpolator(final int animId,
+                                    final Interpolator fallback) {
+	return mInterpolators.get(animId, fallback);
+}
 
-  public void setInterpolator(final int animId,
-                              final Interpolator interpolator) {
-    mInterpolators.put(animId, interpolator);
-  }
+public void setInterpolator(final int animId,
+                            final Interpolator interpolator) {
+	mInterpolators.put(animId, interpolator);
+}
 }

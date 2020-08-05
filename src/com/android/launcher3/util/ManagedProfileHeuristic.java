@@ -46,220 +46,220 @@ import java.util.List;
  */
 public class ManagedProfileHeuristic {
 
-  private static final String USER_FOLDER_ID_PREFIX = "user_folder_";
+private static final String USER_FOLDER_ID_PREFIX = "user_folder_";
 
-  /**
-   * Duration (in milliseconds) for which app shortcuts will be added to work
-   * folder.
-   */
-  private static final long AUTO_ADD_TO_FOLDER_DURATION = 8 * 60 * 60 * 1000;
+/**
+ * Duration (in milliseconds) for which app shortcuts will be added to work
+ * folder.
+ */
+private static final long AUTO_ADD_TO_FOLDER_DURATION = 8 * 60 * 60 * 1000;
 
-  public static void onAllAppsLoaded(final Context context,
-                                     final List<LauncherActivityInfo> apps,
-                                     final UserHandle user) {
-    if (Process.myUserHandle().equals(user)) {
-      return;
-    }
+public static void onAllAppsLoaded(final Context context,
+                                   final List<LauncherActivityInfo> apps,
+                                   final UserHandle user) {
+	if (Process.myUserHandle().equals(user)) {
+		return;
+	}
 
-    UserFolderInfo ufi = new UserFolderInfo(context, user, null);
-    // We only handle folder creation once. Later icon additions are handled
-    // using package or session events.
-    if (ufi.folderAlreadyCreated) {
-      return;
-    }
+	UserFolderInfo ufi = new UserFolderInfo(context, user, null);
+	// We only handle folder creation once. Later icon additions are handled
+	// using package or session events.
+	if (ufi.folderAlreadyCreated) {
+		return;
+	}
 
-    if (Utilities.ATLEAST_OREO && !SessionCommitReceiver.isEnabled(context)) {
-      // Just mark the folder id preference to avoid new folder creation later.
-      ufi.prefs.edit().putLong(ufi.folderIdKey, ItemInfo.NO_ID).apply();
-      return;
-    }
+	if (Utilities.ATLEAST_OREO && !SessionCommitReceiver.isEnabled(context)) {
+		// Just mark the folder id preference to avoid new folder creation later.
+		ufi.prefs.edit().putLong(ufi.folderIdKey, ItemInfo.NO_ID).apply();
+		return;
+	}
 
-    InstallShortcutReceiver.enableInstallQueue(
-        InstallShortcutReceiver.FLAG_BULK_ADD);
-    for (LauncherActivityInfo app : apps) {
-      // Queue all items which should go in the work folder.
-      if (app.getFirstInstallTime() < ufi.addIconToFolderTime) {
-        InstallShortcutReceiver.queueActivityInfo(app, context);
-      }
-    }
-    // Post the queue update on next frame, so that the loader gets finished.
-    new Handler(LauncherModel.getWorkerLooper()).post(new Runnable() {
-      @Override
-      public void run() {
-        InstallShortcutReceiver.disableAndFlushInstallQueue(
-            InstallShortcutReceiver.FLAG_BULK_ADD, context);
-      }
-    });
-  }
+	InstallShortcutReceiver.enableInstallQueue(
+		InstallShortcutReceiver.FLAG_BULK_ADD);
+	for (LauncherActivityInfo app : apps) {
+		// Queue all items which should go in the work folder.
+		if (app.getFirstInstallTime() < ufi.addIconToFolderTime) {
+			InstallShortcutReceiver.queueActivityInfo(app, context);
+		}
+	}
+	// Post the queue update on next frame, so that the loader gets finished.
+	new Handler(LauncherModel.getWorkerLooper()).post(new Runnable() {
+			@Override
+			public void run() {
+			        InstallShortcutReceiver.disableAndFlushInstallQueue(
+					InstallShortcutReceiver.FLAG_BULK_ADD, context);
+			}
+		});
+}
 
-  /**
-   * Verifies that entries corresponding to {@param users} exist and removes all
-   * invalid entries.
-   */
-  public static void processAllUsers(final List<UserHandle> users,
-                                     final Context context) {
-    UserManagerCompat userManager = UserManagerCompat.getInstance(context);
-    HashSet<String> validKeys = new HashSet<>();
-    for (UserHandle user : users) {
-      validKeys.add(USER_FOLDER_ID_PREFIX +
-                    userManager.getSerialNumberForUser(user));
-    }
+/**
+ * Verifies that entries corresponding to {@param users} exist and removes all
+ * invalid entries.
+ */
+public static void processAllUsers(final List<UserHandle> users,
+                                   final Context context) {
+	UserManagerCompat userManager = UserManagerCompat.getInstance(context);
+	HashSet<String> validKeys = new HashSet<>();
+	for (UserHandle user : users) {
+		validKeys.add(USER_FOLDER_ID_PREFIX +
+		              userManager.getSerialNumberForUser(user));
+	}
 
-    SharedPreferences prefs = prefs(context);
-    SharedPreferences.Editor editor = prefs.edit();
-    for (String key : prefs.getAll().keySet()) {
-      if (!validKeys.contains(key)) {
-        editor.remove(key);
-      }
-    }
-    editor.apply();
-  }
+	SharedPreferences prefs = prefs(context);
+	SharedPreferences.Editor editor = prefs.edit();
+	for (String key : prefs.getAll().keySet()) {
+		if (!validKeys.contains(key)) {
+			editor.remove(key);
+		}
+	}
+	editor.apply();
+}
 
-  /**
-   * For each user, if a work folder has not been created, mark it such that the
-   * folder will never get created.
-   */
-  public static void
-  markExistingUsersForNoFolderCreation(final Context context) {
-    UserManagerCompat userManager = UserManagerCompat.getInstance(context);
-    UserHandle myUser = Process.myUserHandle();
+/**
+ * For each user, if a work folder has not been created, mark it such that the
+ * folder will never get created.
+ */
+public static void
+markExistingUsersForNoFolderCreation(final Context context) {
+	UserManagerCompat userManager = UserManagerCompat.getInstance(context);
+	UserHandle myUser = Process.myUserHandle();
 
-    SharedPreferences prefs = null;
-    for (UserHandle user : userManager.getUserProfiles()) {
-      if (myUser.equals(user)) {
-        continue;
-      }
-      if (prefs == null) {
-        prefs = prefs(context);
-      }
-      String folderIdKey =
-          USER_FOLDER_ID_PREFIX + userManager.getSerialNumberForUser(user);
-      if (!prefs.contains(folderIdKey)) {
-        prefs.edit().putLong(folderIdKey, ItemInfo.NO_ID).apply();
-      }
-    }
-  }
+	SharedPreferences prefs = null;
+	for (UserHandle user : userManager.getUserProfiles()) {
+		if (myUser.equals(user)) {
+			continue;
+		}
+		if (prefs == null) {
+			prefs = prefs(context);
+		}
+		String folderIdKey =
+			USER_FOLDER_ID_PREFIX + userManager.getSerialNumberForUser(user);
+		if (!prefs.contains(folderIdKey)) {
+			prefs.edit().putLong(folderIdKey, ItemInfo.NO_ID).apply();
+		}
+	}
+}
 
-  public static SharedPreferences prefs(final Context context) {
-    return context.getSharedPreferences(
-        LauncherFiles.MANAGED_USER_PREFERENCES_KEY, Context.MODE_PRIVATE);
-  }
+public static SharedPreferences prefs(final Context context) {
+	return context.getSharedPreferences(
+		LauncherFiles.MANAGED_USER_PREFERENCES_KEY, Context.MODE_PRIVATE);
+}
 
-  /**
-   * Utility class to help workspace icon addition.
-   */
-  public static class UserFolderInfo {
+/**
+ * Utility class to help workspace icon addition.
+ */
+public static class UserFolderInfo {
 
-    final ArrayList<ShortcutInfo> pendingShortcuts = new ArrayList<>();
+final ArrayList<ShortcutInfo> pendingShortcuts = new ArrayList<>();
 
-    final UserHandle user;
+final UserHandle user;
 
-    final long userSerial;
-    // Time until which icons will be added to folder instead.
-    final long addIconToFolderTime;
+final long userSerial;
+// Time until which icons will be added to folder instead.
+final long addIconToFolderTime;
 
-    final String folderIdKey;
-    final SharedPreferences prefs;
+final String folderIdKey;
+final SharedPreferences prefs;
 
-    final boolean folderAlreadyCreated;
-    final FolderInfo folderInfo;
+final boolean folderAlreadyCreated;
+final FolderInfo folderInfo;
 
-    boolean folderPendingAddition;
+boolean folderPendingAddition;
 
-    public UserFolderInfo(final Context context, final UserHandle user,
-                          final BgDataModel dataModel) {
-      this.user = user;
+public UserFolderInfo(final Context context, final UserHandle user,
+                      final BgDataModel dataModel) {
+	this.user = user;
 
-      UserManagerCompat um = UserManagerCompat.getInstance(context);
-      userSerial = um.getSerialNumberForUser(user);
-      addIconToFolderTime =
-          um.getUserCreationTime(user) + AUTO_ADD_TO_FOLDER_DURATION;
+	UserManagerCompat um = UserManagerCompat.getInstance(context);
+	userSerial = um.getSerialNumberForUser(user);
+	addIconToFolderTime =
+		um.getUserCreationTime(user) + AUTO_ADD_TO_FOLDER_DURATION;
 
-      folderIdKey = USER_FOLDER_ID_PREFIX + userSerial;
-      prefs = prefs(context);
+	folderIdKey = USER_FOLDER_ID_PREFIX + userSerial;
+	prefs = prefs(context);
 
-      folderAlreadyCreated = prefs.contains(folderIdKey);
-      if (dataModel != null) {
-        if (folderAlreadyCreated) {
-          long folderId = prefs.getLong(folderIdKey, ItemInfo.NO_ID);
-          folderInfo = dataModel.folders.get(folderId);
-        } else {
-          folderInfo = new FolderInfo();
-          folderInfo.title = context.getText(R.string.work_folder_name);
-          folderInfo.setOption(FolderInfo.FLAG_WORK_FOLDER, true, null);
-          folderPendingAddition = true;
-        }
-      } else {
-        folderInfo = null;
-      }
-    }
+	folderAlreadyCreated = prefs.contains(folderIdKey);
+	if (dataModel != null) {
+		if (folderAlreadyCreated) {
+			long folderId = prefs.getLong(folderIdKey, ItemInfo.NO_ID);
+			folderInfo = dataModel.folders.get(folderId);
+		} else {
+			folderInfo = new FolderInfo();
+			folderInfo.title = context.getText(R.string.work_folder_name);
+			folderInfo.setOption(FolderInfo.FLAG_WORK_FOLDER, true, null);
+			folderPendingAddition = true;
+		}
+	} else {
+		folderInfo = null;
+	}
+}
 
-    /**
-     * Returns the ItemInfo which should be added to the workspace. In case the
-     * the provided
-     * {@link ShortcutInfo} or a wrapped {@link FolderInfo} or null.
-     */
-    public ItemInfo
-    convertToWorkspaceItem(final ShortcutInfo shortcut,
-                           final LauncherActivityInfo activityInfo) {
-      if (activityInfo.getFirstInstallTime() >= addIconToFolderTime) {
-        return shortcut;
-      }
+/**
+ * Returns the ItemInfo which should be added to the workspace. In case the
+ * the provided
+ * {@link ShortcutInfo} or a wrapped {@link FolderInfo} or null.
+ */
+public ItemInfo
+convertToWorkspaceItem(final ShortcutInfo shortcut,
+                       final LauncherActivityInfo activityInfo) {
+	if (activityInfo.getFirstInstallTime() >= addIconToFolderTime) {
+		return shortcut;
+	}
 
-      if (folderAlreadyCreated) {
-        if (folderInfo == null) {
-          // Work folder was deleted by user, add icon to home screen.
-          return shortcut;
-        } else {
-          // Add item to work folder instead. Nothing needs to be added
-          // on the homescreen.
-          pendingShortcuts.add(shortcut);
-          return null;
-        }
-      }
+	if (folderAlreadyCreated) {
+		if (folderInfo == null) {
+			// Work folder was deleted by user, add icon to home screen.
+			return shortcut;
+		} else {
+			// Add item to work folder instead. Nothing needs to be added
+			// on the homescreen.
+			pendingShortcuts.add(shortcut);
+			return null;
+		}
+	}
 
-      pendingShortcuts.add(shortcut);
-      folderInfo.add(shortcut, false);
-      if (folderPendingAddition) {
-        folderPendingAddition = false;
-        return folderInfo;
-      } else {
-        // WorkFolder already requested to be added. Nothing new needs to be
-        // added.
-        return null;
-      }
-    }
+	pendingShortcuts.add(shortcut);
+	folderInfo.add(shortcut, false);
+	if (folderPendingAddition) {
+		folderPendingAddition = false;
+		return folderInfo;
+	} else {
+		// WorkFolder already requested to be added. Nothing new needs to be
+		// added.
+		return null;
+	}
+}
 
-    public void applyPendingState(final ModelWriter writer) {
-      if (folderInfo == null) {
-        return;
-      }
+public void applyPendingState(final ModelWriter writer) {
+	if (folderInfo == null) {
+		return;
+	}
 
-      int startingRank = 0;
-      if (folderAlreadyCreated) {
-        startingRank = folderInfo.contents.size();
-      }
+	int startingRank = 0;
+	if (folderAlreadyCreated) {
+		startingRank = folderInfo.contents.size();
+	}
 
-      for (ShortcutInfo info : pendingShortcuts) {
-        info.rank = startingRank++;
-        writer.addItemToDatabase(info, folderInfo.id, 0, 0, 0);
-      }
+	for (ShortcutInfo info : pendingShortcuts) {
+		info.rank = startingRank++;
+		writer.addItemToDatabase(info, folderInfo.id, 0, 0, 0);
+	}
 
-      if (folderAlreadyCreated) {
-        // FolderInfo could already be bound. We need to add shortcuts on the UI
-        // thread.
-        new MainThreadExecutor().execute(new Runnable() {
-          @Override
-          public void run() {
-            folderInfo.prepareAutoUpdate();
-            for (ShortcutInfo info : pendingShortcuts) {
-              folderInfo.add(info, false);
-            }
-          }
-        });
-      } else {
-        prefs.edit().putLong(folderIdKey, folderInfo.id).apply();
-      }
-    }
-  }
+	if (folderAlreadyCreated) {
+		// FolderInfo could already be bound. We need to add shortcuts on the UI
+		// thread.
+		new MainThreadExecutor().execute(new Runnable() {
+					@Override
+					public void run() {
+					        folderInfo.prepareAutoUpdate();
+					        for (ShortcutInfo info : pendingShortcuts) {
+					                folderInfo.add(info, false);
+						}
+					}
+				});
+	} else {
+		prefs.edit().putLong(folderIdKey, folderInfo.id).apply();
+	}
+}
+}
 }

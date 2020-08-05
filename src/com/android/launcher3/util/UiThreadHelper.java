@@ -29,51 +29,51 @@ import android.view.inputmethod.InputMethodManager;
  */
 public class UiThreadHelper {
 
-  private static HandlerThread sHandlerThread;
-  private static Handler sHandler;
+private static HandlerThread sHandlerThread;
+private static Handler sHandler;
 
-  private static final int MSG_HIDE_KEYBOARD = 1;
+private static final int MSG_HIDE_KEYBOARD = 1;
 
-  public static Looper getBackgroundLooper() {
-    if (sHandlerThread == null) {
-      sHandlerThread = new HandlerThread("UiThreadHelper",
-                                         Process.THREAD_PRIORITY_FOREGROUND);
-      sHandlerThread.start();
-    }
-    return sHandlerThread.getLooper();
-  }
+public static Looper getBackgroundLooper() {
+	if (sHandlerThread == null) {
+		sHandlerThread = new HandlerThread("UiThreadHelper",
+		                                   Process.THREAD_PRIORITY_FOREGROUND);
+		sHandlerThread.start();
+	}
+	return sHandlerThread.getLooper();
+}
 
-  private static Handler getHandler(final Context context) {
-    if (sHandler == null) {
-      sHandler = new Handler(getBackgroundLooper(),
-                             new UiCallbacks(context.getApplicationContext()));
-    }
-    return sHandler;
-  }
+private static Handler getHandler(final Context context) {
+	if (sHandler == null) {
+		sHandler = new Handler(getBackgroundLooper(),
+		                       new UiCallbacks(context.getApplicationContext()));
+	}
+	return sHandler;
+}
 
-  public static void hideKeyboardAsync(final Context context,
-                                       final IBinder token) {
-    Message.obtain(getHandler(context), MSG_HIDE_KEYBOARD, token)
-        .sendToTarget();
-  }
+public static void hideKeyboardAsync(final Context context,
+                                     final IBinder token) {
+	Message.obtain(getHandler(context), MSG_HIDE_KEYBOARD, token)
+	.sendToTarget();
+}
 
-  private static class UiCallbacks implements Handler.Callback {
+private static class UiCallbacks implements Handler.Callback {
 
-    private final InputMethodManager mIMM;
+private final InputMethodManager mIMM;
 
-    UiCallbacks(final Context context) {
-      mIMM = (InputMethodManager)context.getSystemService(
-          Context.INPUT_METHOD_SERVICE);
-    }
+UiCallbacks(final Context context) {
+	mIMM = (InputMethodManager)context.getSystemService(
+		Context.INPUT_METHOD_SERVICE);
+}
 
-    @Override
-    public boolean handleMessage(final Message message) {
-      switch (message.what) {
-      case MSG_HIDE_KEYBOARD:
-        mIMM.hideSoftInputFromWindow((IBinder)message.obj, 0);
-        return true;
-      }
-      return false;
-    }
-  }
+@Override
+public boolean handleMessage(final Message message) {
+	switch (message.what) {
+	case MSG_HIDE_KEYBOARD:
+		mIMM.hideSoftInputFromWindow((IBinder)message.obj, 0);
+		return true;
+	}
+	return false;
+}
+}
 }

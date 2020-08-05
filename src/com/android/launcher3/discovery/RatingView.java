@@ -30,64 +30,66 @@ import com.android.launcher3.R;
  */
 public class RatingView extends View {
 
-  private static final float WIDTH_FACTOR = 0.9f;
-  private static final int MAX_LEVEL = 10000;
-  private static final int MAX_STARS = 5;
+private static final float WIDTH_FACTOR = 0.9f;
+private static final int MAX_LEVEL = 10000;
+private static final int MAX_STARS = 5;
 
-  private final Drawable mStarDrawable;
-  private final int mColorGray;
-  private final int mColorHighlight;
+private final Drawable mStarDrawable;
+private final int mColorGray;
+private final int mColorHighlight;
 
-  private float rating;
+private float rating;
 
-  public RatingView(final Context context) { this(context, null); }
+public RatingView(final Context context) {
+	this(context, null);
+}
 
-  public RatingView(final Context context, final AttributeSet attrs) {
-    this(context, attrs, 0);
-  }
+public RatingView(final Context context, final AttributeSet attrs) {
+	this(context, attrs, 0);
+}
 
-  public RatingView(final Context context, final AttributeSet attrs,
-                    final int defStyle) {
-    super(context, attrs, defStyle);
-    mStarDrawable = getResources().getDrawable(R.drawable.ic_star_rating, null);
-    mColorGray = 0x1E000000;
-    mColorHighlight = 0x8A000000;
-  }
+public RatingView(final Context context, final AttributeSet attrs,
+                  final int defStyle) {
+	super(context, attrs, defStyle);
+	mStarDrawable = getResources().getDrawable(R.drawable.ic_star_rating, null);
+	mColorGray = 0x1E000000;
+	mColorHighlight = 0x8A000000;
+}
 
-  public void setRating(final float rating) {
-    this.rating = Math.min(Math.max(rating, 0), MAX_STARS);
-  }
+public void setRating(final float rating) {
+	this.rating = Math.min(Math.max(rating, 0), MAX_STARS);
+}
 
-  @Override
-  protected void onDraw(final Canvas canvas) {
-    drawStars(canvas, MAX_STARS, mColorGray);
-    drawStars(canvas, rating, mColorHighlight);
-  }
+@Override
+protected void onDraw(final Canvas canvas) {
+	drawStars(canvas, MAX_STARS, mColorGray);
+	drawStars(canvas, rating, mColorHighlight);
+}
 
-  private void drawStars(final Canvas canvas, final float stars,
-                         final int color) {
-    int fullWidth = getLayoutParams().width;
-    int cellWidth = fullWidth / MAX_STARS;
-    int starWidth = (int)(cellWidth * WIDTH_FACTOR);
-    int padding = cellWidth - starWidth;
-    int fullStars = (int)stars;
-    float partialStarFactor = stars - fullStars;
+private void drawStars(final Canvas canvas, final float stars,
+                       final int color) {
+	int fullWidth = getLayoutParams().width;
+	int cellWidth = fullWidth / MAX_STARS;
+	int starWidth = (int)(cellWidth * WIDTH_FACTOR);
+	int padding = cellWidth - starWidth;
+	int fullStars = (int)stars;
+	float partialStarFactor = stars - fullStars;
 
-    for (int i = 0; i < fullStars; i++) {
-      int x = i * cellWidth + padding;
-      Drawable star = mStarDrawable.getConstantState().newDrawable().mutate();
-      star.setTint(color);
-      star.setBounds(x, padding, x + starWidth, padding + starWidth);
-      star.draw(canvas);
-    }
-    if (partialStarFactor > 0f) {
-      int x = fullStars * cellWidth + padding;
-      ClipDrawable star = new ClipDrawable(mStarDrawable, Gravity.LEFT,
-                                           ClipDrawable.HORIZONTAL);
-      star.setTint(color);
-      star.setLevel((int)(MAX_LEVEL * partialStarFactor));
-      star.setBounds(x, padding, x + starWidth, padding + starWidth);
-      star.draw(canvas);
-    }
-  }
+	for (int i = 0; i < fullStars; i++) {
+		int x = i * cellWidth + padding;
+		Drawable star = mStarDrawable.getConstantState().newDrawable().mutate();
+		star.setTint(color);
+		star.setBounds(x, padding, x + starWidth, padding + starWidth);
+		star.draw(canvas);
+	}
+	if (partialStarFactor > 0f) {
+		int x = fullStars * cellWidth + padding;
+		ClipDrawable star = new ClipDrawable(mStarDrawable, Gravity.LEFT,
+		                                     ClipDrawable.HORIZONTAL);
+		star.setTint(color);
+		star.setLevel((int)(MAX_LEVEL * partialStarFactor));
+		star.setBounds(x, padding, x + starWidth, padding + starWidth);
+		star.draw(canvas);
+	}
+}
 }

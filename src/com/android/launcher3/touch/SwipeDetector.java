@@ -34,341 +34,355 @@ import androidx.annotation.VisibleForTesting;
  */
 public class SwipeDetector {
 
-  private static final boolean DBG = false;
-  private static final String TAG = "SwipeDetector";
+private static final boolean DBG = false;
+private static final String TAG = "SwipeDetector";
 
-  private int mScrollConditions;
-  public static final int DIRECTION_POSITIVE = 1 << 0;
-  public static final int DIRECTION_NEGATIVE = 1 << 1;
-  public static final int DIRECTION_BOTH =
-      DIRECTION_NEGATIVE | DIRECTION_POSITIVE;
+private int mScrollConditions;
+public static final int DIRECTION_POSITIVE = 1 << 0;
+public static final int DIRECTION_NEGATIVE = 1 << 1;
+public static final int DIRECTION_BOTH =
+	DIRECTION_NEGATIVE | DIRECTION_POSITIVE;
 
-  private static final float ANIMATION_DURATION = 1200;
+private static final float ANIMATION_DURATION = 1200;
 
-  protected int mActivePointerId = INVALID_POINTER_ID;
+protected int mActivePointerId = INVALID_POINTER_ID;
 
-  /**
-   * The minimum release velocity in pixels per millisecond that triggers
-   * fling..
-   */
-  public static final float RELEASE_VELOCITY_PX_MS = 1.0f;
+/**
+ * The minimum release velocity in pixels per millisecond that triggers
+ * fling..
+ */
+public static final float RELEASE_VELOCITY_PX_MS = 1.0f;
 
-  /**
-   * The time constant used to calculate dampening in the low-pass filter of
-   * scroll velocity. Cutoff frequency is set at 10 Hz.
-   */
-  public static final float SCROLL_VELOCITY_DAMPENING_RC =
-      1000f / (2f * (float)Math.PI * 10);
+/**
+ * The time constant used to calculate dampening in the low-pass filter of
+ * scroll velocity. Cutoff frequency is set at 10 Hz.
+ */
+public static final float SCROLL_VELOCITY_DAMPENING_RC =
+	1000f / (2f * (float)Math.PI * 10);
 
-  /* Scroll state, this is set to true during dragging and animation. */
-  private ScrollState mState = ScrollState.IDLE;
+/* Scroll state, this is set to true during dragging and animation. */
+private ScrollState mState = ScrollState.IDLE;
 
-  enum ScrollState {
-    IDLE,
-    DRAGGING, // onDragStart, onDrag
-    SETTLING  // onDragEnd
-  }
+enum ScrollState {
+	IDLE,
+	DRAGGING, // onDragStart, onDrag
+	SETTLING // onDragEnd
+}
 
-  public static abstract class Direction {
+public static abstract class Direction {
 
-    abstract float getDisplacement(MotionEvent ev, int pointerIndex,
-                                   PointF refPoint);
+abstract float getDisplacement(MotionEvent ev, int pointerIndex,
+                               PointF refPoint);
 
-    /**
-     * Distance in pixels a touch can wander before we think the user is
-     * scrolling.
-     */
-    abstract float getActiveTouchSlop(MotionEvent ev, int pointerIndex,
-                                      PointF downPos);
-  }
+/**
+ * Distance in pixels a touch can wander before we think the user is
+ * scrolling.
+ */
+abstract float getActiveTouchSlop(MotionEvent ev, int pointerIndex,
+                                  PointF downPos);
+}
 
-  public static final Direction VERTICAL = new Direction() {
-    @Override
-    float getDisplacement(final MotionEvent ev, final int pointerIndex,
-                          final PointF refPoint) {
-      return ev.getY(pointerIndex) - refPoint.y;
-    }
+public static final Direction VERTICAL = new Direction() {
+	@Override
+	float getDisplacement(final MotionEvent ev, final int pointerIndex,
+	                      final PointF refPoint) {
+		return ev.getY(pointerIndex) - refPoint.y;
+	}
 
-    @Override
-    float getActiveTouchSlop(final MotionEvent ev, final int pointerIndex,
-                             final PointF downPos) {
-      return Math.abs(ev.getX(pointerIndex) - downPos.x);
-    }
-  };
+	@Override
+	float getActiveTouchSlop(final MotionEvent ev, final int pointerIndex,
+	                         final PointF downPos) {
+		return Math.abs(ev.getX(pointerIndex) - downPos.x);
+	}
+};
 
-  public static final Direction HORIZONTAL = new Direction() {
-    @Override
-    float getDisplacement(final MotionEvent ev, final int pointerIndex,
-                          final PointF refPoint) {
-      return ev.getX(pointerIndex) - refPoint.x;
-    }
+public static final Direction HORIZONTAL = new Direction() {
+	@Override
+	float getDisplacement(final MotionEvent ev, final int pointerIndex,
+	                      final PointF refPoint) {
+		return ev.getX(pointerIndex) - refPoint.x;
+	}
 
-    @Override
-    float getActiveTouchSlop(final MotionEvent ev, final int pointerIndex,
-                             final PointF downPos) {
-      return Math.abs(ev.getY(pointerIndex) - downPos.y);
-    }
-  };
+	@Override
+	float getActiveTouchSlop(final MotionEvent ev, final int pointerIndex,
+	                         final PointF downPos) {
+		return Math.abs(ev.getY(pointerIndex) - downPos.y);
+	}
+};
 
-  //------------------- ScrollState transition diagram
-  //-----------------------------------
-  //
-  // IDLE ->      (mDisplacement > mTouchSlop) -> DRAGGING
-  // DRAGGING -> (MotionEvent#ACTION_UP, MotionEvent#ACTION_CANCEL) -> SETTLING
-  // SETTLING -> (MotionEvent#ACTION_DOWN) -> DRAGGING
-  // SETTLING -> (View settled) -> IDLE
+//------------------- ScrollState transition diagram
+//-----------------------------------
+//
+// IDLE ->      (mDisplacement > mTouchSlop) -> DRAGGING
+// DRAGGING -> (MotionEvent#ACTION_UP, MotionEvent#ACTION_CANCEL) -> SETTLING
+// SETTLING -> (MotionEvent#ACTION_DOWN) -> DRAGGING
+// SETTLING -> (View settled) -> IDLE
 
-  private void setState(final ScrollState newState) {
-    if (DBG) {
-      Log.d(TAG, "setState:" + mState + "->" + newState);
-    }
-    // onDragStart and onDragEnd is reported ONLY on state transition
-    if (newState == ScrollState.DRAGGING) {
-      initializeDragging();
-      if (mState == ScrollState.IDLE) {
-        reportDragStart(false /* recatch */);
-      } else if (mState == ScrollState.SETTLING) {
-        reportDragStart(true /* recatch */);
-      }
-    }
-    if (newState == ScrollState.SETTLING) {
-      reportDragEnd();
-    }
+private void setState(final ScrollState newState) {
+	if (DBG) {
+		Log.d(TAG, "setState:" + mState + "->" + newState);
+	}
+	// onDragStart and onDragEnd is reported ONLY on state transition
+	if (newState == ScrollState.DRAGGING) {
+		initializeDragging();
+		if (mState == ScrollState.IDLE) {
+			reportDragStart(false /* recatch */);
+		} else if (mState == ScrollState.SETTLING) {
+			reportDragStart(true /* recatch */);
+		}
+	}
+	if (newState == ScrollState.SETTLING) {
+		reportDragEnd();
+	}
 
-    mState = newState;
-  }
+	mState = newState;
+}
 
-  public boolean isDraggingOrSettling() {
-    return mState == ScrollState.DRAGGING || mState == ScrollState.SETTLING;
-  }
+public boolean isDraggingOrSettling() {
+	return mState == ScrollState.DRAGGING || mState == ScrollState.SETTLING;
+}
 
-  /**
-   * There's no touch and there's no animation.
-   */
-  public boolean isIdleState() { return mState == ScrollState.IDLE; }
+/**
+ * There's no touch and there's no animation.
+ */
+public boolean isIdleState() {
+	return mState == ScrollState.IDLE;
+}
 
-  public boolean isSettlingState() { return mState == ScrollState.SETTLING; }
+public boolean isSettlingState() {
+	return mState == ScrollState.SETTLING;
+}
 
-  public boolean isDraggingState() { return mState == ScrollState.DRAGGING; }
+public boolean isDraggingState() {
+	return mState == ScrollState.DRAGGING;
+}
 
-  private final PointF mDownPos = new PointF();
-  private final PointF mLastPos = new PointF();
-  private Direction mDir;
+private final PointF mDownPos = new PointF();
+private final PointF mLastPos = new PointF();
+private Direction mDir;
 
-  private final float mTouchSlop;
+private final float mTouchSlop;
 
-  /* Client of this gesture detector can register a callback. */
-  private final Listener mListener;
+/* Client of this gesture detector can register a callback. */
+private final Listener mListener;
 
-  private long mCurrentMillis;
+private long mCurrentMillis;
 
-  private float mVelocity;
-  private float mLastDisplacement;
-  private float mDisplacement;
+private float mVelocity;
+private float mLastDisplacement;
+private float mDisplacement;
 
-  private float mSubtractDisplacement;
-  private boolean mIgnoreSlopWhenSettling;
+private float mSubtractDisplacement;
+private boolean mIgnoreSlopWhenSettling;
 
-  public interface Listener {
-    void onDragStart(boolean start);
+public interface Listener {
+void onDragStart(boolean start);
 
-    boolean onDrag(float displacement, float velocity);
+boolean onDrag(float displacement, float velocity);
 
-    void onDragEnd(float velocity, boolean fling);
-  }
+void onDragEnd(float velocity, boolean fling);
+}
 
-  public SwipeDetector(final @NonNull Context context,
-                       final @NonNull Listener l,
-                       final @NonNull Direction dir) {
-    this(ViewConfiguration.get(context).getScaledTouchSlop(), l, dir);
-  }
+public SwipeDetector(final @NonNull Context context,
+                     final @NonNull Listener l,
+                     final @NonNull Direction dir) {
+	this(ViewConfiguration.get(context).getScaledTouchSlop(), l, dir);
+}
 
-  @VisibleForTesting
-  protected SwipeDetector(final float touchSlope, final @NonNull Listener l,
-                          final @NonNull Direction dir) {
-    mTouchSlop = touchSlope;
-    mListener = l;
-    mDir = dir;
-  }
+@VisibleForTesting
+protected SwipeDetector(final float touchSlope, final @NonNull Listener l,
+                        final @NonNull Direction dir) {
+	mTouchSlop = touchSlope;
+	mListener = l;
+	mDir = dir;
+}
 
-  public void updateDirection(final Direction dir) { mDir = dir; }
+public void updateDirection(final Direction dir) {
+	mDir = dir;
+}
 
-  public void setDetectableScrollConditions(final int scrollDirectionFlags,
-                                            final boolean ignoreSlop) {
-    mScrollConditions = scrollDirectionFlags;
-    mIgnoreSlopWhenSettling = ignoreSlop;
-  }
+public void setDetectableScrollConditions(final int scrollDirectionFlags,
+                                          final boolean ignoreSlop) {
+	mScrollConditions = scrollDirectionFlags;
+	mIgnoreSlopWhenSettling = ignoreSlop;
+}
 
-  public int getScrollDirections() { return mScrollConditions; }
+public int getScrollDirections() {
+	return mScrollConditions;
+}
 
-  private boolean shouldScrollStart(final MotionEvent ev,
-                                    final int pointerIndex) {
-    // reject cases where the angle or slop condition is not met.
-    if (Math.max(mDir.getActiveTouchSlop(ev, pointerIndex, mDownPos),
-                 mTouchSlop) > Math.abs(mDisplacement)) {
-      return false;
-    }
+private boolean shouldScrollStart(final MotionEvent ev,
+                                  final int pointerIndex) {
+	// reject cases where the angle or slop condition is not met.
+	if (Math.max(mDir.getActiveTouchSlop(ev, pointerIndex, mDownPos),
+	             mTouchSlop) > Math.abs(mDisplacement)) {
+		return false;
+	}
 
-    // Check if the client is interested in scroll in current direction.
-    return ((mScrollConditions & DIRECTION_NEGATIVE) > 0 &&
-            mDisplacement > 0) ||
-        ((mScrollConditions & DIRECTION_POSITIVE) > 0 && mDisplacement < 0);
-  }
+	// Check if the client is interested in scroll in current direction.
+	return ((mScrollConditions & DIRECTION_NEGATIVE) > 0 &&
+	        mDisplacement > 0) ||
+	       ((mScrollConditions & DIRECTION_POSITIVE) > 0 && mDisplacement < 0);
+}
 
-  public boolean onTouchEvent(final MotionEvent ev) {
-    switch (ev.getActionMasked()) {
-    case MotionEvent.ACTION_DOWN:
-      mActivePointerId = ev.getPointerId(0);
-      mDownPos.set(ev.getX(), ev.getY());
-      mLastPos.set(mDownPos);
-      mLastDisplacement = 0;
-      mDisplacement = 0;
-      mVelocity = 0;
+public boolean onTouchEvent(final MotionEvent ev) {
+	switch (ev.getActionMasked()) {
+	case MotionEvent.ACTION_DOWN:
+		mActivePointerId = ev.getPointerId(0);
+		mDownPos.set(ev.getX(), ev.getY());
+		mLastPos.set(mDownPos);
+		mLastDisplacement = 0;
+		mDisplacement = 0;
+		mVelocity = 0;
 
-      if (mState == ScrollState.SETTLING && mIgnoreSlopWhenSettling) {
-        setState(ScrollState.DRAGGING);
-      }
-      break;
-    // case MotionEvent.ACTION_POINTER_DOWN:
-    case MotionEvent.ACTION_POINTER_UP:
-      int ptrIdx = ev.getActionIndex();
-      int ptrId = ev.getPointerId(ptrIdx);
-      if (ptrId == mActivePointerId) {
-        final int newPointerIdx = ptrIdx == 0 ? 1 : 0;
-        mDownPos.set(ev.getX(newPointerIdx) - (mLastPos.x - mDownPos.x),
-                     ev.getY(newPointerIdx) - (mLastPos.y - mDownPos.y));
-        mLastPos.set(ev.getX(newPointerIdx), ev.getY(newPointerIdx));
-        mActivePointerId = ev.getPointerId(newPointerIdx);
-      }
-      break;
-    case MotionEvent.ACTION_MOVE:
-      int pointerIndex = ev.findPointerIndex(mActivePointerId);
-      if (pointerIndex == INVALID_POINTER_ID) {
-        break;
-      }
-      mDisplacement = mDir.getDisplacement(ev, pointerIndex, mDownPos);
-      computeVelocity(mDir.getDisplacement(ev, pointerIndex, mLastPos),
-                      ev.getEventTime());
+		if (mState == ScrollState.SETTLING && mIgnoreSlopWhenSettling) {
+			setState(ScrollState.DRAGGING);
+		}
+		break;
+	// case MotionEvent.ACTION_POINTER_DOWN:
+	case MotionEvent.ACTION_POINTER_UP:
+		int ptrIdx = ev.getActionIndex();
+		int ptrId = ev.getPointerId(ptrIdx);
+		if (ptrId == mActivePointerId) {
+			final int newPointerIdx = ptrIdx == 0 ? 1 : 0;
+			mDownPos.set(ev.getX(newPointerIdx) - (mLastPos.x - mDownPos.x),
+			             ev.getY(newPointerIdx) - (mLastPos.y - mDownPos.y));
+			mLastPos.set(ev.getX(newPointerIdx), ev.getY(newPointerIdx));
+			mActivePointerId = ev.getPointerId(newPointerIdx);
+		}
+		break;
+	case MotionEvent.ACTION_MOVE:
+		int pointerIndex = ev.findPointerIndex(mActivePointerId);
+		if (pointerIndex == INVALID_POINTER_ID) {
+			break;
+		}
+		mDisplacement = mDir.getDisplacement(ev, pointerIndex, mDownPos);
+		computeVelocity(mDir.getDisplacement(ev, pointerIndex, mLastPos),
+		                ev.getEventTime());
 
-      // handle state and listener calls.
-      if (mState != ScrollState.DRAGGING &&
-          shouldScrollStart(ev, pointerIndex)) {
-        setState(ScrollState.DRAGGING);
-      }
-      if (mState == ScrollState.DRAGGING) {
-        reportDragging();
-      }
-      mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
-      break;
-    case MotionEvent.ACTION_CANCEL:
-    case MotionEvent.ACTION_UP:
-      // These are synthetic events and there is no need to update internal
-      // values.
-      if (mState == ScrollState.DRAGGING) {
-        setState(ScrollState.SETTLING);
-      }
-      break;
-    default:
-      break;
-    }
-    return true;
-  }
+		// handle state and listener calls.
+		if (mState != ScrollState.DRAGGING &&
+		    shouldScrollStart(ev, pointerIndex)) {
+			setState(ScrollState.DRAGGING);
+		}
+		if (mState == ScrollState.DRAGGING) {
+			reportDragging();
+		}
+		mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
+		break;
+	case MotionEvent.ACTION_CANCEL:
+	case MotionEvent.ACTION_UP:
+		// These are synthetic events and there is no need to update internal
+		// values.
+		if (mState == ScrollState.DRAGGING) {
+			setState(ScrollState.SETTLING);
+		}
+		break;
+	default:
+		break;
+	}
+	return true;
+}
 
-  public void finishedScrolling() { setState(ScrollState.IDLE); }
+public void finishedScrolling() {
+	setState(ScrollState.IDLE);
+}
 
-  private boolean reportDragStart(final boolean recatch) {
-    mListener.onDragStart(!recatch);
-    if (DBG) {
-      Log.d(TAG, "onDragStart recatch:" + recatch);
-    }
-    return true;
-  }
+private boolean reportDragStart(final boolean recatch) {
+	mListener.onDragStart(!recatch);
+	if (DBG) {
+		Log.d(TAG, "onDragStart recatch:" + recatch);
+	}
+	return true;
+}
 
-  private void initializeDragging() {
-    if (mState == ScrollState.SETTLING && mIgnoreSlopWhenSettling) {
-      mSubtractDisplacement = 0;
-    }
-    if (mDisplacement > 0) {
-      mSubtractDisplacement = mTouchSlop;
-    } else {
-      mSubtractDisplacement = -mTouchSlop;
-    }
-  }
+private void initializeDragging() {
+	if (mState == ScrollState.SETTLING && mIgnoreSlopWhenSettling) {
+		mSubtractDisplacement = 0;
+	}
+	if (mDisplacement > 0) {
+		mSubtractDisplacement = mTouchSlop;
+	} else {
+		mSubtractDisplacement = -mTouchSlop;
+	}
+}
 
-  /**
-   * Returns if the start drag was towards the positive direction or negative.
-   *
-   * @see #setDetectableScrollConditions(int, boolean)
-   * @see #DIRECTION_BOTH
-   */
-  public boolean wasInitialTouchPositive() { return mSubtractDisplacement < 0; }
+/**
+ * Returns if the start drag was towards the positive direction or negative.
+ *
+ * @see #setDetectableScrollConditions(int, boolean)
+ * @see #DIRECTION_BOTH
+ */
+public boolean wasInitialTouchPositive() {
+	return mSubtractDisplacement < 0;
+}
 
-  private boolean reportDragging() {
-    if (mDisplacement != mLastDisplacement) {
-      if (DBG) {
-        Log.d(TAG, String.format("onDrag disp=%.1f, velocity=%.1f",
-                                 mDisplacement, mVelocity));
-      }
+private boolean reportDragging() {
+	if (mDisplacement != mLastDisplacement) {
+		if (DBG) {
+			Log.d(TAG, String.format("onDrag disp=%.1f, velocity=%.1f",
+			                         mDisplacement, mVelocity));
+		}
 
-      mLastDisplacement = mDisplacement;
-      return mListener.onDrag(mDisplacement - mSubtractDisplacement, mVelocity);
-    }
-    return true;
-  }
+		mLastDisplacement = mDisplacement;
+		return mListener.onDrag(mDisplacement - mSubtractDisplacement, mVelocity);
+	}
+	return true;
+}
 
-  private void reportDragEnd() {
-    if (DBG) {
-      Log.d(TAG, String.format("onScrollEnd disp=%.1f, velocity=%.1f",
-                               mDisplacement, mVelocity));
-    }
-    mListener.onDragEnd(mVelocity,
-                        Math.abs(mVelocity) > RELEASE_VELOCITY_PX_MS);
-  }
+private void reportDragEnd() {
+	if (DBG) {
+		Log.d(TAG, String.format("onScrollEnd disp=%.1f, velocity=%.1f",
+		                         mDisplacement, mVelocity));
+	}
+	mListener.onDragEnd(mVelocity,
+	                    Math.abs(mVelocity) > RELEASE_VELOCITY_PX_MS);
+}
 
-  /**
-   * Computes the damped velocity.
-   */
-  public float computeVelocity(final float delta, final long currentMillis) {
-    long previousMillis = mCurrentMillis;
-    mCurrentMillis = currentMillis;
+/**
+ * Computes the damped velocity.
+ */
+public float computeVelocity(final float delta, final long currentMillis) {
+	long previousMillis = mCurrentMillis;
+	mCurrentMillis = currentMillis;
 
-    float deltaTimeMillis = mCurrentMillis - previousMillis;
-    float velocity = (deltaTimeMillis > 0) ? (delta / deltaTimeMillis) : 0;
-    if (Math.abs(mVelocity) < 0.001f) {
-      mVelocity = velocity;
-    } else {
-      float alpha = computeDampeningFactor(deltaTimeMillis);
-      mVelocity = interpolate(mVelocity, velocity, alpha);
-    }
-    return mVelocity;
-  }
+	float deltaTimeMillis = mCurrentMillis - previousMillis;
+	float velocity = (deltaTimeMillis > 0) ? (delta / deltaTimeMillis) : 0;
+	if (Math.abs(mVelocity) < 0.001f) {
+		mVelocity = velocity;
+	} else {
+		float alpha = computeDampeningFactor(deltaTimeMillis);
+		mVelocity = interpolate(mVelocity, velocity, alpha);
+	}
+	return mVelocity;
+}
 
-  /**
-   * Returns a time-dependent dampening factor using delta time.
-   */
-  private static float computeDampeningFactor(final float deltaTime) {
-    return deltaTime / (SCROLL_VELOCITY_DAMPENING_RC + deltaTime);
-  }
+/**
+ * Returns a time-dependent dampening factor using delta time.
+ */
+private static float computeDampeningFactor(final float deltaTime) {
+	return deltaTime / (SCROLL_VELOCITY_DAMPENING_RC + deltaTime);
+}
 
-  /**
-   * Returns the linear interpolation between two values
-   */
-  public static float interpolate(final float from, final float to,
-                                  final float alpha) {
-    return (1.0f - alpha) * from + alpha * to;
-  }
+/**
+ * Returns the linear interpolation between two values
+ */
+public static float interpolate(final float from, final float to,
+                                final float alpha) {
+	return (1.0f - alpha) * from + alpha * to;
+}
 
-  public static long calculateDuration(final float velocity,
-                                       final float progressNeeded) {
-    // TODO: make these values constants after tuning.
-    float velocityDivisor = Math.max(2f, Math.abs(0.5f * velocity));
-    float travelDistance = Math.max(0.2f, progressNeeded);
-    long duration = (long)Math.max(100, ANIMATION_DURATION / velocityDivisor *
-                                            travelDistance);
-    if (DBG) {
-      Log.d(TAG, String.format("calculateDuration=%d, v=%f, d=%f", duration,
-                               velocity, progressNeeded));
-    }
-    return duration;
-  }
+public static long calculateDuration(final float velocity,
+                                     final float progressNeeded) {
+	// TODO: make these values constants after tuning.
+	float velocityDivisor = Math.max(2f, Math.abs(0.5f * velocity));
+	float travelDistance = Math.max(0.2f, progressNeeded);
+	long duration = (long)Math.max(100, ANIMATION_DURATION / velocityDivisor *
+	                               travelDistance);
+	if (DBG) {
+		Log.d(TAG, String.format("calculateDuration=%d, v=%f, d=%f", duration,
+		                         velocity, progressNeeded));
+	}
+	return duration;
+}
 }

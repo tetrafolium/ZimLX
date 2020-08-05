@@ -22,111 +22,111 @@ import java.util.WeakHashMap;
 
 @TargetApi(26)
 public class CustomClock {
-  private final Context mContext;
-  private final Set<AutoUpdateClock> mUpdaters =
-      Collections.newSetFromMap(new WeakHashMap<AutoUpdateClock, Boolean>());
+private final Context mContext;
+private final Set<AutoUpdateClock> mUpdaters =
+	Collections.newSetFromMap(new WeakHashMap<AutoUpdateClock, Boolean>());
 
-  public CustomClock(final Context context) {
-    mContext = context;
+public CustomClock(final Context context) {
+	mContext = context;
 
-    mContext.registerReceiver(
-        new BroadcastReceiver() {
-          @Override
-          public void onReceive(final Context context, final Intent intent) {
-            loadTimeZone(intent.getStringExtra("time-zone"));
-          }
-        },
-        new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED), null,
-        new Handler(Looper.getMainLooper()));
-  }
+	mContext.registerReceiver(
+		new BroadcastReceiver() {
+			@Override
+			public void onReceive(final Context context, final Intent intent) {
+			        loadTimeZone(intent.getStringExtra("time-zone"));
+			}
+		},
+		new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED), null,
+		new Handler(Looper.getMainLooper()));
+}
 
-  public static Drawable getClock(final Context context,
-                                  final Drawable drawable,
-                                  final Metadata metadata, final int iconDpi) {
-    ClockLayers clone =
-        getClockLayers(context, drawable, metadata, iconDpi, false).clone();
-    if (clone != null) {
-      clone.updateAngles();
-      return clone.mDrawable;
-    }
-    return null;
-  }
+public static Drawable getClock(final Context context,
+                                final Drawable drawable,
+                                final Metadata metadata, final int iconDpi) {
+	ClockLayers clone =
+		getClockLayers(context, drawable, metadata, iconDpi, false).clone();
+	if (clone != null) {
+		clone.updateAngles();
+		return clone.mDrawable;
+	}
+	return null;
+}
 
-  private static ClockLayers getClockLayers(final Context context,
-                                            final Drawable drawableForDensity,
-                                            final Metadata metadata,
-                                            final int iconDpi,
-                                            final boolean normalizeIcon) {
-    Preconditions.assertWorkerThread();
-    ClockLayers layers = new ClockLayers();
-    layers.mDrawable = drawableForDensity.mutate();
-    layers.mHourIndex = metadata.HOUR_LAYER_INDEX;
-    layers.mMinuteIndex = metadata.MINUTE_LAYER_INDEX;
-    layers.mSecondIndex = metadata.SECOND_LAYER_INDEX;
-    layers.mDefaultHour = metadata.DEFAULT_HOUR;
-    layers.mDefaultMinute = metadata.DEFAULT_MINUTE;
-    layers.mDefaultSecond = metadata.DEFAULT_SECOND;
-    if (normalizeIcon) {
-      layers.scale = IconNormalizer.getInstance(context).getScale(
-          layers.mDrawable, null, null, null);
-    }
+private static ClockLayers getClockLayers(final Context context,
+                                          final Drawable drawableForDensity,
+                                          final Metadata metadata,
+                                          final int iconDpi,
+                                          final boolean normalizeIcon) {
+	Preconditions.assertWorkerThread();
+	ClockLayers layers = new ClockLayers();
+	layers.mDrawable = drawableForDensity.mutate();
+	layers.mHourIndex = metadata.HOUR_LAYER_INDEX;
+	layers.mMinuteIndex = metadata.MINUTE_LAYER_INDEX;
+	layers.mSecondIndex = metadata.SECOND_LAYER_INDEX;
+	layers.mDefaultHour = metadata.DEFAULT_HOUR;
+	layers.mDefaultMinute = metadata.DEFAULT_MINUTE;
+	layers.mDefaultSecond = metadata.DEFAULT_SECOND;
+	if (normalizeIcon) {
+		layers.scale = IconNormalizer.getInstance(context).getScale(
+			layers.mDrawable, null, null, null);
+	}
 
-    LayerDrawable layerDrawable = layers.getLayerDrawable();
-    int numberOfLayers = layerDrawable.getNumberOfLayers();
+	LayerDrawable layerDrawable = layers.getLayerDrawable();
+	int numberOfLayers = layerDrawable.getNumberOfLayers();
 
-    if (layers.mHourIndex < 0 || layers.mHourIndex >= numberOfLayers) {
-      layers.mHourIndex = -1;
-    }
-    if (layers.mMinuteIndex < 0 || layers.mMinuteIndex >= numberOfLayers) {
-      layers.mMinuteIndex = -1;
-    }
-    if (layers.mSecondIndex < 0 || layers.mSecondIndex >= numberOfLayers) {
-      layers.mSecondIndex = -1;
-    }
+	if (layers.mHourIndex < 0 || layers.mHourIndex >= numberOfLayers) {
+		layers.mHourIndex = -1;
+	}
+	if (layers.mMinuteIndex < 0 || layers.mMinuteIndex >= numberOfLayers) {
+		layers.mMinuteIndex = -1;
+	}
+	if (layers.mSecondIndex < 0 || layers.mSecondIndex >= numberOfLayers) {
+		layers.mSecondIndex = -1;
+	}
 
-    return layers;
-  }
+	return layers;
+}
 
-  public FastBitmapDrawable drawIcon(final Bitmap bitmap,
-                                     final Drawable drawableForDensity,
-                                     final Metadata metadata) {
-    final AutoUpdateClock updater = new AutoUpdateClock(
-        bitmap,
-        getClockLayers(mContext, drawableForDensity, metadata,
-                       LauncherAppState.getIDP(mContext).fillResIconDpi,
-                       !FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION)
-            .clone());
-    mUpdaters.add(updater);
-    return updater;
-  }
+public FastBitmapDrawable drawIcon(final Bitmap bitmap,
+                                   final Drawable drawableForDensity,
+                                   final Metadata metadata) {
+	final AutoUpdateClock updater = new AutoUpdateClock(
+		bitmap,
+		getClockLayers(mContext, drawableForDensity, metadata,
+		               LauncherAppState.getIDP(mContext).fillResIconDpi,
+		               !FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION)
+		.clone());
+	mUpdaters.add(updater);
+	return updater;
+}
 
-  private void loadTimeZone(final String timeZoneId) {
-    TimeZone timeZone = timeZoneId == null ? TimeZone.getDefault()
-                                           : TimeZone.getTimeZone(timeZoneId);
+private void loadTimeZone(final String timeZoneId) {
+	TimeZone timeZone = timeZoneId == null ? TimeZone.getDefault()
+	                                   : TimeZone.getTimeZone(timeZoneId);
 
-    for (AutoUpdateClock a : mUpdaters) {
-      a.setTimeZone(timeZone);
-    }
-  }
+	for (AutoUpdateClock a : mUpdaters) {
+		a.setTimeZone(timeZone);
+	}
+}
 
-  public static class Metadata {
-    final int HOUR_LAYER_INDEX;
-    final int MINUTE_LAYER_INDEX;
-    final int SECOND_LAYER_INDEX;
+public static class Metadata {
+final int HOUR_LAYER_INDEX;
+final int MINUTE_LAYER_INDEX;
+final int SECOND_LAYER_INDEX;
 
-    final int DEFAULT_HOUR;
-    final int DEFAULT_MINUTE;
-    final int DEFAULT_SECOND;
+final int DEFAULT_HOUR;
+final int DEFAULT_MINUTE;
+final int DEFAULT_SECOND;
 
-    public Metadata(final int hourIndex, final int minuteIndex,
-                    final int secondIndex, final int defaultHour,
-                    final int defaultMinute, final int defaultSecond) {
-      HOUR_LAYER_INDEX = hourIndex;
-      MINUTE_LAYER_INDEX = minuteIndex;
-      SECOND_LAYER_INDEX = secondIndex;
-      DEFAULT_HOUR = defaultHour;
-      DEFAULT_MINUTE = defaultMinute;
-      DEFAULT_SECOND = defaultSecond;
-    }
-  }
+public Metadata(final int hourIndex, final int minuteIndex,
+                final int secondIndex, final int defaultHour,
+                final int defaultMinute, final int defaultSecond) {
+	HOUR_LAYER_INDEX = hourIndex;
+	MINUTE_LAYER_INDEX = minuteIndex;
+	SECOND_LAYER_INDEX = secondIndex;
+	DEFAULT_HOUR = defaultHour;
+	DEFAULT_MINUTE = defaultMinute;
+	DEFAULT_SECOND = defaultSecond;
+}
+}
 }

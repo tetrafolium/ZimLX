@@ -32,62 +32,62 @@ import com.android.launcher3.config.FeatureFlags;
  */
 public class TraceHelper {
 
-  private static final boolean ENABLED = FeatureFlags.IS_DOGFOOD_BUILD;
+private static final boolean ENABLED = FeatureFlags.IS_DOGFOOD_BUILD;
 
-  private static final boolean SYSTEM_TRACE = false;
-  private static final ArrayMap<String, MutableLong> sUpTimes =
-      ENABLED ? new ArrayMap<>() : null;
+private static final boolean SYSTEM_TRACE = false;
+private static final ArrayMap<String, MutableLong> sUpTimes =
+	ENABLED ? new ArrayMap<>() : null;
 
-  public static void beginSection(final String sectionName) {
-    if (ENABLED) {
-      MutableLong time = sUpTimes.get(sectionName);
-      if (time == null) {
-        time = new MutableLong(isLoggable(sectionName, VERBOSE) ? 0 : -1);
-        sUpTimes.put(sectionName, time);
-      }
-      if (time.value >= 0) {
-        if (SYSTEM_TRACE) {
-          Trace.beginSection(sectionName);
-        }
-        time.value = SystemClock.uptimeMillis();
-      }
-    }
-  }
+public static void beginSection(final String sectionName) {
+	if (ENABLED) {
+		MutableLong time = sUpTimes.get(sectionName);
+		if (time == null) {
+			time = new MutableLong(isLoggable(sectionName, VERBOSE) ? 0 : -1);
+			sUpTimes.put(sectionName, time);
+		}
+		if (time.value >= 0) {
+			if (SYSTEM_TRACE) {
+				Trace.beginSection(sectionName);
+			}
+			time.value = SystemClock.uptimeMillis();
+		}
+	}
+}
 
-  public static void partitionSection(final String sectionName,
-                                      final String partition) {
-    if (ENABLED) {
-      MutableLong time = sUpTimes.get(sectionName);
-      if (time != null && time.value >= 0) {
+public static void partitionSection(final String sectionName,
+                                    final String partition) {
+	if (ENABLED) {
+		MutableLong time = sUpTimes.get(sectionName);
+		if (time != null && time.value >= 0) {
 
-        if (SYSTEM_TRACE) {
-          Trace.endSection();
-          Trace.beginSection(sectionName);
-        }
+			if (SYSTEM_TRACE) {
+				Trace.endSection();
+				Trace.beginSection(sectionName);
+			}
 
-        long now = SystemClock.uptimeMillis();
-        Log.d(sectionName, partition + " : " + (now - time.value));
-        time.value = now;
-      }
-    }
-  }
+			long now = SystemClock.uptimeMillis();
+			Log.d(sectionName, partition + " : " + (now - time.value));
+			time.value = now;
+		}
+	}
+}
 
-  public static void endSection(final String sectionName) {
-    if (ENABLED) {
-      endSection(sectionName, "End");
-    }
-  }
+public static void endSection(final String sectionName) {
+	if (ENABLED) {
+		endSection(sectionName, "End");
+	}
+}
 
-  public static void endSection(final String sectionName, final String msg) {
-    if (ENABLED) {
-      MutableLong time = sUpTimes.get(sectionName);
-      if (time != null && time.value >= 0) {
-        if (SYSTEM_TRACE) {
-          Trace.endSection();
-        }
-        Log.d(sectionName,
-              msg + " : " + (SystemClock.uptimeMillis() - time.value));
-      }
-    }
-  }
+public static void endSection(final String sectionName, final String msg) {
+	if (ENABLED) {
+		MutableLong time = sUpTimes.get(sectionName);
+		if (time != null && time.value >= 0) {
+			if (SYSTEM_TRACE) {
+				Trace.endSection();
+			}
+			Log.d(sectionName,
+			      msg + " : " + (SystemClock.uptimeMillis() - time.value));
+		}
+	}
+}
 }

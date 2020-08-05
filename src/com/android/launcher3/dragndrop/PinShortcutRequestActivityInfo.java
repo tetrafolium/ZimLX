@@ -42,68 +42,68 @@ import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 @TargetApi(Build.VERSION_CODES.O)
 class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
 
-  // Class name used in the target component, such that it will never represent
-  // an actual existing class.
-  private static final String DUMMY_COMPONENT_CLASS = "pinned-shortcut";
+// Class name used in the target component, such that it will never represent
+// an actual existing class.
+private static final String DUMMY_COMPONENT_CLASS = "pinned-shortcut";
 
-  private final PinItemRequest mRequest;
-  private final ShortcutInfo mInfo;
-  private final Context mContext;
+private final PinItemRequest mRequest;
+private final ShortcutInfo mInfo;
+private final Context mContext;
 
-  public PinShortcutRequestActivityInfo(final PinItemRequest request,
-                                        final Context context) {
-    super(new ComponentName(request.getShortcutInfo().getPackage(),
-                            DUMMY_COMPONENT_CLASS),
-          request.getShortcutInfo().getUserHandle());
-    mRequest = request;
-    mInfo = request.getShortcutInfo();
-    mContext = context;
-  }
+public PinShortcutRequestActivityInfo(final PinItemRequest request,
+                                      final Context context) {
+	super(new ComponentName(request.getShortcutInfo().getPackage(),
+	                        DUMMY_COMPONENT_CLASS),
+	      request.getShortcutInfo().getUserHandle());
+	mRequest = request;
+	mInfo = request.getShortcutInfo();
+	mContext = context;
+}
 
-  @Override
-  public int getItemType() {
-    return LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
-  }
+@Override
+public int getItemType() {
+	return LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+}
 
-  @Override
-  public CharSequence getLabel() {
-    return mInfo.getShortLabel();
-  }
+@Override
+public CharSequence getLabel() {
+	return mInfo.getShortLabel();
+}
 
-  @Override
-  public Drawable getFullResIcon(final IconCache cache) {
-    Drawable d =
-        mContext.getSystemService(LauncherApps.class)
-            .getShortcutIconDrawable(
-                mInfo, LauncherAppState.getIDP(mContext).fillResIconDpi);
-    if (d == null) {
-      d = new FastBitmapDrawable(cache.getDefaultIcon(Process.myUserHandle()));
-    }
-    return d;
-  }
+@Override
+public Drawable getFullResIcon(final IconCache cache) {
+	Drawable d =
+		mContext.getSystemService(LauncherApps.class)
+		.getShortcutIconDrawable(
+			mInfo, LauncherAppState.getIDP(mContext).fillResIconDpi);
+	if (d == null) {
+		d = new FastBitmapDrawable(cache.getDefaultIcon(Process.myUserHandle()));
+	}
+	return d;
+}
 
-  @Override
-  public com.android.launcher3.ShortcutInfo createShortcutInfo() {
-    // Total duration for the drop animation to complete.
-    long duration = mContext.getResources().getInteger(
-                        R.integer.config_dropAnimMaxDuration) +
-                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT +
-                    mContext.getResources().getInteger(
-                        R.integer.config_overlayTransitionTime) /
-                        2;
-    // Delay the actual accept() call until the drop animation is complete.
-    return LauncherAppsCompatVO.createShortcutInfoFromPinItemRequest(
-        mContext, mRequest, duration);
-  }
+@Override
+public com.android.launcher3.ShortcutInfo createShortcutInfo() {
+	// Total duration for the drop animation to complete.
+	long duration = mContext.getResources().getInteger(
+		R.integer.config_dropAnimMaxDuration) +
+	                Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT +
+	                mContext.getResources().getInteger(
+		R.integer.config_overlayTransitionTime) /
+	                2;
+	// Delay the actual accept() call until the drop animation is complete.
+	return LauncherAppsCompatVO.createShortcutInfoFromPinItemRequest(
+		mContext, mRequest, duration);
+}
 
-  @Override
-  public boolean startConfigActivity(final Activity activity,
-                                     final int requestCode) {
-    return false;
-  }
+@Override
+public boolean startConfigActivity(final Activity activity,
+                                   final int requestCode) {
+	return false;
+}
 
-  @Override
-  public boolean isPersistable() {
-    return false;
-  }
+@Override
+public boolean isPersistable() {
+	return false;
+}
 }

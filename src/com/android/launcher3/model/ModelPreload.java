@@ -29,40 +29,41 @@ import java.util.concurrent.Executor;
  */
 public class ModelPreload implements ModelUpdateTask {
 
-  private static final String TAG = "ModelPreload";
+private static final String TAG = "ModelPreload";
 
-  private LauncherAppState mApp;
-  private LauncherModel mModel;
-  private BgDataModel mBgDataModel;
-  private AllAppsList mAllAppsList;
+private LauncherAppState mApp;
+private LauncherModel mModel;
+private BgDataModel mBgDataModel;
+private AllAppsList mAllAppsList;
 
-  @Override
-  public final void init(final LauncherAppState app, final LauncherModel model,
-                         final BgDataModel dataModel,
-                         final AllAppsList allAppsList,
-                         final Executor uiExecutor) {
-    mApp = app;
-    mModel = model;
-    mBgDataModel = dataModel;
-    mAllAppsList = allAppsList;
-  }
+@Override
+public final void init(final LauncherAppState app, final LauncherModel model,
+                       final BgDataModel dataModel,
+                       final AllAppsList allAppsList,
+                       final Executor uiExecutor) {
+	mApp = app;
+	mModel = model;
+	mBgDataModel = dataModel;
+	mAllAppsList = allAppsList;
+}
 
-  @Override
-  public final void run() {
-    mModel.startLoaderForResultsIfNotLoaded(
-        new LoaderResults(mApp, mBgDataModel, mAllAppsList, 0, null));
-    Log.d(TAG, "Preload completed : " + mModel.isModelLoaded());
-    onComplete(mModel.isModelLoaded());
-  }
+@Override
+public final void run() {
+	mModel.startLoaderForResultsIfNotLoaded(
+		new LoaderResults(mApp, mBgDataModel, mAllAppsList, 0, null));
+	Log.d(TAG, "Preload completed : " + mModel.isModelLoaded());
+	onComplete(mModel.isModelLoaded());
+}
 
-  /**
-   * Called when the task is complete
-   */
-  @WorkerThread
-  public void onComplete(final boolean isSuccess) {}
+/**
+ * Called when the task is complete
+ */
+@WorkerThread
+public void onComplete(final boolean isSuccess) {
+}
 
-  public void start(final Context context) {
-    LauncherAppState.getInstance(context).getModel().enqueueModelUpdateTask(
-        this);
-  }
+public void start(final Context context) {
+	LauncherAppState.getInstance(context).getModel().enqueueModelUpdateTask(
+		this);
+}
 }

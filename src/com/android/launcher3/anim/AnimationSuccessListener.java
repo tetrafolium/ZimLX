@@ -25,19 +25,19 @@ import android.animation.AnimatorListenerAdapter;
  */
 public abstract class AnimationSuccessListener extends AnimatorListenerAdapter {
 
-  protected boolean mCancelled = false;
+protected boolean mCancelled = false;
 
-  @Override
-  public void onAnimationCancel(final Animator animation) {
-    mCancelled = true;
-  }
+@Override
+public void onAnimationCancel(final Animator animation) {
+	mCancelled = true;
+}
 
-  @Override
-  public void onAnimationEnd(final Animator animation) {
-    if (!mCancelled) {
-      onAnimationSuccess(animation);
-    }
-  }
+@Override
+public void onAnimationEnd(final Animator animation) {
+	if (!mCancelled) {
+		onAnimationSuccess(animation);
+	}
+}
 
-  public abstract void onAnimationSuccess(Animator animator);
+public abstract void onAnimationSuccess(Animator animator);
 }

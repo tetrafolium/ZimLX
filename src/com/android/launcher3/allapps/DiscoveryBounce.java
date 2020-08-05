@@ -39,160 +39,162 @@ import com.android.launcher3.states.InternalStateHandler;
  */
 public class DiscoveryBounce extends AbstractFloatingView {
 
-  private static final long DELAY_MS = 450;
+private static final long DELAY_MS = 450;
 
-  public static final String HOME_BOUNCE_SEEN = "launcher.apps_view_shown";
-  public static final String SHELF_BOUNCE_SEEN = "launcher.shelf_bounce_seen";
+public static final String HOME_BOUNCE_SEEN = "launcher.apps_view_shown";
+public static final String SHELF_BOUNCE_SEEN = "launcher.shelf_bounce_seen";
 
-  private final Launcher mLauncher;
-  private final Animator mDiscoBounceAnimation;
+private final Launcher mLauncher;
+private final Animator mDiscoBounceAnimation;
 
-  public DiscoveryBounce(final Launcher launcher, final float delta) {
-    super(launcher, null);
-    mLauncher = launcher;
-    AllAppsTransitionController controller = mLauncher.getAllAppsController();
+public DiscoveryBounce(final Launcher launcher, final float delta) {
+	super(launcher, null);
+	mLauncher = launcher;
+	AllAppsTransitionController controller = mLauncher.getAllAppsController();
 
-    mDiscoBounceAnimation =
-        AnimatorInflater.loadAnimator(launcher, R.animator.discovery_bounce);
-    mDiscoBounceAnimation.setTarget(
-        new VerticalProgressWrapper(controller, delta));
-    mDiscoBounceAnimation.addListener(new AnimatorListenerAdapter() {
-      @Override
-      public void onAnimationEnd(final Animator animation) {
-        handleClose(false);
-      }
-    });
-    mDiscoBounceAnimation.addListener(controller.getProgressAnimatorListener());
-  }
+	mDiscoBounceAnimation =
+		AnimatorInflater.loadAnimator(launcher, R.animator.discovery_bounce);
+	mDiscoBounceAnimation.setTarget(
+		new VerticalProgressWrapper(controller, delta));
+	mDiscoBounceAnimation.addListener(new AnimatorListenerAdapter() {
+			@Override
+			public void onAnimationEnd(final Animator animation) {
+			        handleClose(false);
+			}
+		});
+	mDiscoBounceAnimation.addListener(controller.getProgressAnimatorListener());
+}
 
-  @Override
-  protected void onAttachedToWindow() {
-    super.onAttachedToWindow();
-    mDiscoBounceAnimation.start();
-  }
+@Override
+protected void onAttachedToWindow() {
+	super.onAttachedToWindow();
+	mDiscoBounceAnimation.start();
+}
 
-  @Override
-  protected void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
-    if (mDiscoBounceAnimation.isRunning()) {
-      mDiscoBounceAnimation.end();
-    }
-  }
+@Override
+protected void onDetachedFromWindow() {
+	super.onDetachedFromWindow();
+	if (mDiscoBounceAnimation.isRunning()) {
+		mDiscoBounceAnimation.end();
+	}
+}
 
-  @Override
-  public boolean onBackPressed() {
-    super.onBackPressed();
-    // Go back to the previous state (from a user's perspective this floating
-    // view isn't something to go back from).
-    return false;
-  }
+@Override
+public boolean onBackPressed() {
+	super.onBackPressed();
+	// Go back to the previous state (from a user's perspective this floating
+	// view isn't something to go back from).
+	return false;
+}
 
-  @Override
-  public boolean onControllerInterceptTouchEvent(final MotionEvent ev) {
-    handleClose(false);
-    return false;
-  }
+@Override
+public boolean onControllerInterceptTouchEvent(final MotionEvent ev) {
+	handleClose(false);
+	return false;
+}
 
-  @Override
-  protected void handleClose(final boolean animate) {
-    if (mIsOpen) {
-      mIsOpen = false;
-      mLauncher.getDragLayer().removeView(this);
-      // Reset the all-apps progress to what ever it was previously.
-      mLauncher.getAllAppsController().setProgress(
-          mLauncher.getStateManager().getState().getVerticalProgress(
-              mLauncher));
-    }
-  }
+@Override
+protected void handleClose(final boolean animate) {
+	if (mIsOpen) {
+		mIsOpen = false;
+		mLauncher.getDragLayer().removeView(this);
+		// Reset the all-apps progress to what ever it was previously.
+		mLauncher.getAllAppsController().setProgress(
+			mLauncher.getStateManager().getState().getVerticalProgress(
+				mLauncher));
+	}
+}
 
-  @Override
-  public void logActionCommand(final int command) {
-    // Since this is on-boarding popup, it is not a user controlled action.
-  }
+@Override
+public void logActionCommand(final int command) {
+	// Since this is on-boarding popup, it is not a user controlled action.
+}
 
-  @Override
-  protected boolean isOfType(final int type) {
-    return (type & TYPE_DISCOVERY_BOUNCE) != 0;
-  }
+@Override
+protected boolean isOfType(final int type) {
+	return (type & TYPE_DISCOVERY_BOUNCE) != 0;
+}
 
-  private void show(final int containerType) {
-    mIsOpen = true;
-    mLauncher.getDragLayer().addView(this);
-    mLauncher.getUserEventDispatcher().logActionBounceTip(containerType);
-  }
+private void show(final int containerType) {
+	mIsOpen = true;
+	mLauncher.getDragLayer().addView(this);
+	mLauncher.getUserEventDispatcher().logActionBounceTip(containerType);
+}
 
-  public static void showForHomeIfNeeded(final Launcher launcher) {
-    showForHomeIfNeeded(launcher, true);
-  }
+public static void showForHomeIfNeeded(final Launcher launcher) {
+	showForHomeIfNeeded(launcher, true);
+}
 
-  private static void showForHomeIfNeeded(final Launcher launcher,
-                                          final boolean withDelay) {
-    if (!launcher.isInState(NORMAL) ||
-        launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false) ||
-        AbstractFloatingView.getTopOpenView(launcher) != null ||
-        UserManagerCompat.getInstance(launcher).isDemoUser() ||
-        ActivityManager.isRunningInTestHarness()) {
-      return;
-    }
+private static void showForHomeIfNeeded(final Launcher launcher,
+                                        final boolean withDelay) {
+	if (!launcher.isInState(NORMAL) ||
+	    launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false) ||
+	    AbstractFloatingView.getTopOpenView(launcher) != null ||
+	    UserManagerCompat.getInstance(launcher).isDemoUser() ||
+	    ActivityManager.isRunningInTestHarness()) {
+		return;
+	}
 
-    if (withDelay) {
-      new Handler().postDelayed(
-          () -> showForHomeIfNeeded(launcher, false), DELAY_MS);
-      return;
-    }
+	if (withDelay) {
+		new Handler().postDelayed(
+			()->showForHomeIfNeeded(launcher, false), DELAY_MS);
+		return;
+	}
 
-    new DiscoveryBounce(launcher, 0).show(HOTSEAT);
-  }
+	new DiscoveryBounce(launcher, 0).show(HOTSEAT);
+}
 
-  public static void showForOverviewIfNeeded(final Launcher launcher) {
-    showForOverviewIfNeeded(launcher, true);
-  }
+public static void showForOverviewIfNeeded(final Launcher launcher) {
+	showForOverviewIfNeeded(launcher, true);
+}
 
-  private static void showForOverviewIfNeeded(final Launcher launcher,
-                                              final boolean withDelay) {
-    if (!launcher.isInState(OVERVIEW) || !launcher.hasBeenResumed() ||
-        launcher.isForceInvisible() ||
-        launcher.getDeviceProfile().isVerticalBarLayout() ||
-        launcher.getSharedPrefs().getBoolean(SHELF_BOUNCE_SEEN, false) ||
-        UserManagerCompat.getInstance(launcher).isDemoUser() ||
-        ActivityManager.isRunningInTestHarness()) {
-      return;
-    }
+private static void showForOverviewIfNeeded(final Launcher launcher,
+                                            final boolean withDelay) {
+	if (!launcher.isInState(OVERVIEW) || !launcher.hasBeenResumed() ||
+	    launcher.isForceInvisible() ||
+	    launcher.getDeviceProfile().isVerticalBarLayout() ||
+	    launcher.getSharedPrefs().getBoolean(SHELF_BOUNCE_SEEN, false) ||
+	    UserManagerCompat.getInstance(launcher).isDemoUser() ||
+	    ActivityManager.isRunningInTestHarness()) {
+		return;
+	}
 
-    if (withDelay) {
-      new Handler().postDelayed(
-          () -> showForOverviewIfNeeded(launcher, false), DELAY_MS);
-      return;
-    } else if (InternalStateHandler.hasPending() ||
-               AbstractFloatingView.getTopOpenView(launcher) != null) {
-      // TODO: Move these checks to the top and call this method after
-      // invalidate handler.
-      return;
-    }
+	if (withDelay) {
+		new Handler().postDelayed(
+			()->showForOverviewIfNeeded(launcher, false), DELAY_MS);
+		return;
+	} else if (InternalStateHandler.hasPending() ||
+	           AbstractFloatingView.getTopOpenView(launcher) != null) {
+		// TODO: Move these checks to the top and call this method after
+		// invalidate handler.
+		return;
+	}
 
-    new DiscoveryBounce(launcher, (1 - OVERVIEW.getVerticalProgress(launcher)))
-        .show(PREDICTION);
-  }
+	new DiscoveryBounce(launcher, (1 - OVERVIEW.getVerticalProgress(launcher)))
+	.show(PREDICTION);
+}
 
-  /**
-   * A wrapper around {@link AllAppsTransitionController} allowing a fixed shift
-   * in the value.
-   */
-  public static class VerticalProgressWrapper {
+/**
+ * A wrapper around {@link AllAppsTransitionController} allowing a fixed shift
+ * in the value.
+ */
+public static class VerticalProgressWrapper {
 
-    private final float mDelta;
-    private final AllAppsTransitionController mController;
+private final float mDelta;
+private final AllAppsTransitionController mController;
 
-    private VerticalProgressWrapper(
-        final AllAppsTransitionController controller, final float delta) {
-      mController = controller;
-      mDelta = delta;
-    }
+private VerticalProgressWrapper(
+	final AllAppsTransitionController controller, final float delta) {
+	mController = controller;
+	mDelta = delta;
+}
 
-    public float getProgress() { return mController.getProgress() + mDelta; }
+public float getProgress() {
+	return mController.getProgress() + mDelta;
+}
 
-    public void setProgress(final float progress) {
-      mController.setProgress(progress - mDelta);
-    }
-  }
+public void setProgress(final float progress) {
+	mController.setProgress(progress - mDelta);
+}
+}
 }

@@ -32,47 +32,47 @@ import java.util.ArrayList;
  */
 public interface LauncherCallbacks {
 
-  /*
-   * Activity life-cycle methods. These methods are triggered after
-   * the code in the corresponding Launcher method is executed.
-   */
-  void onCreate(Bundle savedInstanceState);
-  void onResume();
-  void onStart();
-  void onStop();
-  void onPause();
-  void onDestroy();
-  void onSaveInstanceState(Bundle outState);
-  void onActivityResult(int requestCode, int resultCode, Intent data);
-  void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                  int[] grantResults);
-  void onAttachedToWindow();
-  void onDetachedFromWindow();
-  void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args);
+/*
+ * Activity life-cycle methods. These methods are triggered after
+ * the code in the corresponding Launcher method is executed.
+ */
+void onCreate(Bundle savedInstanceState);
+void onResume();
+void onStart();
+void onStop();
+void onPause();
+void onDestroy();
+void onSaveInstanceState(Bundle outState);
+void onActivityResult(int requestCode, int resultCode, Intent data);
+void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                int[] grantResults);
+void onAttachedToWindow();
+void onDetachedFromWindow();
+void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args);
 
-  void onHomeIntent(boolean internalStateHandled);
-  boolean handleBackPressed();
-  void onTrimMemory(int level);
+void onHomeIntent(boolean internalStateHandled);
+boolean handleBackPressed();
+void onTrimMemory(int level);
 
-  /*
-   * Extension points for providing custom behavior on certain user
-   * interactions.
-   */
-  void onLauncherProviderChange();
-  void bindAllApplications(ArrayList<AppInfo> apps);
+/*
+ * Extension points for providing custom behavior on certain user
+ * interactions.
+ */
+void onLauncherProviderChange();
+void bindAllApplications(ArrayList<AppInfo> apps);
 
-  /**
-   * Starts a search with {@param initialQuery}. Return false if search was not
-   * started.
-   */
-  boolean startSearch(String initialQuery, boolean selectInitialQuery,
-                      Bundle appSearchData);
+/**
+ * Starts a search with {@param initialQuery}. Return false if search was not
+ * started.
+ */
+boolean startSearch(String initialQuery, boolean selectInitialQuery,
+                    Bundle appSearchData);
 
-  /*
-   * Extensions points for adding / replacing some other aspects of the Launcher
-   * experience.
-   */
-  boolean hasSettings();
+/*
+ * Extensions points for adding / replacing some other aspects of the Launcher
+ * experience.
+ */
+boolean hasSettings();
 
-  // List<ComponentKeyMapper> getPredictedApps();
+// List<ComponentKeyMapper> getPredictedApps();
 }

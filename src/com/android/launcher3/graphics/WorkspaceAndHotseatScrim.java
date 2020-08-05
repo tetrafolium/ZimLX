@@ -51,286 +51,288 @@ import org.zimmob.zimlx.theme.ThemeManager;
  * View scrim which draws behind hotseat and workspace
  */
 public class WorkspaceAndHotseatScrim
-    implements View.OnAttachStateChangeListener,
-               WallpaperColorInfo.OnChangeListener {
+	implements View.OnAttachStateChangeListener,
+	           WallpaperColorInfo.OnChangeListener {
 
-  public static Property<WorkspaceAndHotseatScrim, Float> SCRIM_PROGRESS =
-      new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE,
-                                                    "scrimProgress") {
-        @Override
-        public Float get(final WorkspaceAndHotseatScrim scrim) {
-          return scrim.mScrimProgress;
-        }
+public static Property<WorkspaceAndHotseatScrim, Float> SCRIM_PROGRESS =
+	new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE,
+	                                              "scrimProgress") {
+	@Override
+	public Float get(final WorkspaceAndHotseatScrim scrim) {
+		return scrim.mScrimProgress;
+	}
 
-        @Override
-        public void set(final WorkspaceAndHotseatScrim scrim,
-                        final Float value) {
-          scrim.setScrimProgress(value);
-        }
-      };
+	@Override
+	public void set(final WorkspaceAndHotseatScrim scrim,
+	                final Float value) {
+		scrim.setScrimProgress(value);
+	}
+};
 
-  public static Property<WorkspaceAndHotseatScrim, Float> SYSUI_PROGRESS =
-      new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE,
-                                                    "sysUiProgress") {
-        @Override
-        public Float get(final WorkspaceAndHotseatScrim scrim) {
-          return scrim.mSysUiProgress;
-        }
+public static Property<WorkspaceAndHotseatScrim, Float> SYSUI_PROGRESS =
+	new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE,
+	                                              "sysUiProgress") {
+	@Override
+	public Float get(final WorkspaceAndHotseatScrim scrim) {
+		return scrim.mSysUiProgress;
+	}
 
-        @Override
-        public void set(final WorkspaceAndHotseatScrim scrim,
-                        final Float value) {
-          scrim.setSysUiProgress(value);
-        }
-      };
+	@Override
+	public void set(final WorkspaceAndHotseatScrim scrim,
+	                final Float value) {
+		scrim.setSysUiProgress(value);
+	}
+};
 
-  private static Property<WorkspaceAndHotseatScrim, Float>
-      SYSUI_ANIM_MULTIPLIER = new Property<WorkspaceAndHotseatScrim, Float>(
-          Float.TYPE, "sysUiAnimMultiplier") {
-        @Override
-        public Float get(final WorkspaceAndHotseatScrim scrim) {
-          return scrim.mSysUiAnimMultiplier;
-        }
+private static Property<WorkspaceAndHotseatScrim, Float>
+SYSUI_ANIM_MULTIPLIER = new Property<WorkspaceAndHotseatScrim, Float>(
+	Float.TYPE, "sysUiAnimMultiplier") {
+	@Override
+	public Float get(final WorkspaceAndHotseatScrim scrim) {
+		return scrim.mSysUiAnimMultiplier;
+	}
 
-        @Override
-        public void set(final WorkspaceAndHotseatScrim scrim,
-                        final Float value) {
-          scrim.mSysUiAnimMultiplier = value;
-          scrim.reapplySysUiAlpha();
-        }
-      };
+	@Override
+	public void set(final WorkspaceAndHotseatScrim scrim,
+	                final Float value) {
+		scrim.mSysUiAnimMultiplier = value;
+		scrim.reapplySysUiAlpha();
+	}
+};
 
-  private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-    @Override
-    public void onReceive(final Context context, final Intent intent) {
-      final String action = intent.getAction();
-      if (ACTION_SCREEN_OFF.equals(action)) {
-        mAnimateScrimOnNextDraw = true;
-      } else if (ACTION_USER_PRESENT.equals(action)) {
-        // ACTION_USER_PRESENT is sent after onStart/onResume. This covers the
-        // case where the user unlocked and the Launcher is not in the
-        // foreground.
-        mAnimateScrimOnNextDraw = false;
-      }
-    }
-  };
+private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+	@Override
+	public void onReceive(final Context context, final Intent intent) {
+		final String action = intent.getAction();
+		if (ACTION_SCREEN_OFF.equals(action)) {
+			mAnimateScrimOnNextDraw = true;
+		} else if (ACTION_USER_PRESENT.equals(action)) {
+			// ACTION_USER_PRESENT is sent after onStart/onResume. This covers the
+			// case where the user unlocked and the Launcher is not in the
+			// foreground.
+			mAnimateScrimOnNextDraw = false;
+		}
+	}
+};
 
-  private static final int DARK_SCRIM_COLOR = 0x55000000;
-  private static final int MAX_HOTSEAT_SCRIM_ALPHA = 100;
-  private static final int ALPHA_MASK_HEIGHT_DP = 500;
-  private static final int ALPHA_MASK_BITMAP_DP = 200;
-  private static final int ALPHA_MASK_WIDTH_DP = 2;
+private static final int DARK_SCRIM_COLOR = 0x55000000;
+private static final int MAX_HOTSEAT_SCRIM_ALPHA = 100;
+private static final int ALPHA_MASK_HEIGHT_DP = 500;
+private static final int ALPHA_MASK_BITMAP_DP = 200;
+private static final int ALPHA_MASK_WIDTH_DP = 2;
 
-  private final Rect mHighlightRect = new Rect();
-  private final Launcher mLauncher;
-  private final WallpaperColorInfo mWallpaperColorInfo;
-  private final View mRoot;
+private final Rect mHighlightRect = new Rect();
+private final Launcher mLauncher;
+private final WallpaperColorInfo mWallpaperColorInfo;
+private final View mRoot;
 
-  private Workspace mWorkspace;
+private Workspace mWorkspace;
 
-  private final boolean mHasSysUiScrim;
-  private boolean mDrawTopScrim, mDrawBottomScrim;
+private final boolean mHasSysUiScrim;
+private boolean mDrawTopScrim, mDrawBottomScrim;
 
-  private final RectF mFinalMaskRect = new RectF();
-  private final Paint mBottomMaskPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
-  private final Bitmap mBottomMask;
-  private final int mMaskHeight;
+private final RectF mFinalMaskRect = new RectF();
+private final Paint mBottomMaskPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+private final Bitmap mBottomMask;
+private final int mMaskHeight;
 
-  private final Drawable mTopScrim;
+private final Drawable mTopScrim;
 
-  private int mFullScrimColor;
+private int mFullScrimColor;
 
-  private float mScrimProgress;
-  private int mScrimAlpha = 0;
+private float mScrimProgress;
+private int mScrimAlpha = 0;
 
-  private float mSysUiProgress = 1;
-  private boolean mHideSysUiScrim;
+private float mSysUiProgress = 1;
+private boolean mHideSysUiScrim;
 
-  private boolean mAnimateScrimOnNextDraw = false;
-  private float mSysUiAnimMultiplier = 1;
+private boolean mAnimateScrimOnNextDraw = false;
+private float mSysUiAnimMultiplier = 1;
 
-  public WorkspaceAndHotseatScrim(final View view) {
-    mRoot = view;
-    mLauncher = Launcher.getLauncher(view.getContext());
-    mWallpaperColorInfo = WallpaperColorInfo.getInstance(mLauncher);
+public WorkspaceAndHotseatScrim(final View view) {
+	mRoot = view;
+	mLauncher = Launcher.getLauncher(view.getContext());
+	mWallpaperColorInfo = WallpaperColorInfo.getInstance(mLauncher);
 
-    mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_BITMAP_DP,
-                                     view.getResources().getDisplayMetrics());
+	mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_BITMAP_DP,
+	                                 view.getResources().getDisplayMetrics());
 
-    mHasSysUiScrim =
-        !ThemeManager.Companion.getInstance(mLauncher).getSupportsDarkText() &&
-        Utilities.getZimPrefs(mLauncher).getShowTopShadow();
-    if (mHasSysUiScrim) {
-      mTopScrim = Themes.getAttrDrawable(view.getContext(),
-                                         R.attr.workspaceStatusBarScrim);
-      mBottomMask = createDitheredAlphaMask();
-    } else {
-      mTopScrim = null;
-      mBottomMask = null;
-    }
+	mHasSysUiScrim =
+		!ThemeManager.Companion.getInstance(mLauncher).getSupportsDarkText() &&
+		Utilities.getZimPrefs(mLauncher).getShowTopShadow();
+	if (mHasSysUiScrim) {
+		mTopScrim = Themes.getAttrDrawable(view.getContext(),
+		                                   R.attr.workspaceStatusBarScrim);
+		mBottomMask = createDitheredAlphaMask();
+	} else {
+		mTopScrim = null;
+		mBottomMask = null;
+	}
 
-    view.addOnAttachStateChangeListener(this);
-    onExtractedColorsChanged(mWallpaperColorInfo);
-  }
+	view.addOnAttachStateChangeListener(this);
+	onExtractedColorsChanged(mWallpaperColorInfo);
+}
 
-  public void setWorkspace(final Workspace workspace) {
-    mWorkspace = workspace;
-  }
+public void setWorkspace(final Workspace workspace) {
+	mWorkspace = workspace;
+}
 
-  public void draw(final Canvas canvas) {
-    // Draw the background below children.
-    if (mScrimAlpha > 0) {
-      // Update the scroll position first to ensure scrim cutout is in the right
-      // place.
-      mWorkspace.computeScrollWithoutInvalidation();
-      CellLayout currCellLayout = mWorkspace.getCurrentDragOverlappingLayout();
-      canvas.save();
-      if (currCellLayout != null &&
-          currCellLayout != mLauncher.getHotseat().getLayout()) {
-        // Cut a hole in the darkening scrim on the page that should be
-        // highlighted, if any.
-        mLauncher.getDragLayer().getDescendantRectRelativeToSelf(
-            currCellLayout, mHighlightRect);
-        canvas.clipRect(mHighlightRect, Region.Op.DIFFERENCE);
-      }
+public void draw(final Canvas canvas) {
+	// Draw the background below children.
+	if (mScrimAlpha > 0) {
+		// Update the scroll position first to ensure scrim cutout is in the right
+		// place.
+		mWorkspace.computeScrollWithoutInvalidation();
+		CellLayout currCellLayout = mWorkspace.getCurrentDragOverlappingLayout();
+		canvas.save();
+		if (currCellLayout != null &&
+		    currCellLayout != mLauncher.getHotseat().getLayout()) {
+			// Cut a hole in the darkening scrim on the page that should be
+			// highlighted, if any.
+			mLauncher.getDragLayer().getDescendantRectRelativeToSelf(
+				currCellLayout, mHighlightRect);
+			canvas.clipRect(mHighlightRect, Region.Op.DIFFERENCE);
+		}
 
-      canvas.drawColor(
-          ColorUtils.setAlphaComponent(mFullScrimColor, mScrimAlpha));
-      canvas.restore();
-    }
+		canvas.drawColor(
+			ColorUtils.setAlphaComponent(mFullScrimColor, mScrimAlpha));
+		canvas.restore();
+	}
 
-    if (!mHideSysUiScrim && mHasSysUiScrim) {
-      if (mSysUiProgress <= 0) {
-        mAnimateScrimOnNextDraw = false;
-        return;
-      }
+	if (!mHideSysUiScrim && mHasSysUiScrim) {
+		if (mSysUiProgress <= 0) {
+			mAnimateScrimOnNextDraw = false;
+			return;
+		}
 
-      if (mAnimateScrimOnNextDraw) {
-        mSysUiAnimMultiplier = 0;
-        reapplySysUiAlphaNoInvalidate();
+		if (mAnimateScrimOnNextDraw) {
+			mSysUiAnimMultiplier = 0;
+			reapplySysUiAlphaNoInvalidate();
 
-        ObjectAnimator anim =
-            ObjectAnimator.ofFloat(this, SYSUI_ANIM_MULTIPLIER, 1);
-        anim.setAutoCancel(true);
-        anim.setDuration(600);
-        anim.setStartDelay(
-            mLauncher.getWindow().getTransitionBackgroundFadeDuration());
-        anim.start();
-        mAnimateScrimOnNextDraw = false;
-      }
+			ObjectAnimator anim =
+				ObjectAnimator.ofFloat(this, SYSUI_ANIM_MULTIPLIER, 1);
+			anim.setAutoCancel(true);
+			anim.setDuration(600);
+			anim.setStartDelay(
+				mLauncher.getWindow().getTransitionBackgroundFadeDuration());
+			anim.start();
+			mAnimateScrimOnNextDraw = false;
+		}
 
-      if (mDrawTopScrim) {
-        mTopScrim.draw(canvas);
-      }
-      if (mDrawBottomScrim) {
-        canvas.drawBitmap(mBottomMask, null, mFinalMaskRect, mBottomMaskPaint);
-      }
-    }
-  }
+		if (mDrawTopScrim) {
+			mTopScrim.draw(canvas);
+		}
+		if (mDrawBottomScrim) {
+			canvas.drawBitmap(mBottomMask, null, mFinalMaskRect, mBottomMaskPaint);
+		}
+	}
+}
 
-  public void onInsetsChanged(final Rect insets) {
-    mDrawTopScrim = insets.top > 0;
-    mDrawBottomScrim = !mLauncher.getDeviceProfile().isVerticalBarLayout();
-  }
+public void onInsetsChanged(final Rect insets) {
+	mDrawTopScrim = insets.top > 0;
+	mDrawBottomScrim = !mLauncher.getDeviceProfile().isVerticalBarLayout();
+}
 
-  private void setScrimProgress(final float progress) {
-    if (mScrimProgress != progress) {
-      mScrimProgress = progress;
-      mScrimAlpha = Math.round(255 * mScrimProgress);
-      invalidate();
-    }
-  }
+private void setScrimProgress(final float progress) {
+	if (mScrimProgress != progress) {
+		mScrimProgress = progress;
+		mScrimAlpha = Math.round(255 * mScrimProgress);
+		invalidate();
+	}
+}
 
-  @Override
-  public void onViewAttachedToWindow(final View view) {
-    mWallpaperColorInfo.addOnChangeListener(this);
-    onExtractedColorsChanged(mWallpaperColorInfo);
+@Override
+public void onViewAttachedToWindow(final View view) {
+	mWallpaperColorInfo.addOnChangeListener(this);
+	onExtractedColorsChanged(mWallpaperColorInfo);
 
-    if (mHasSysUiScrim) {
-      IntentFilter filter = new IntentFilter(ACTION_SCREEN_OFF);
-      filter.addAction(
-          ACTION_USER_PRESENT); // When the device wakes up + keyguard is gone
-      mRoot.getContext().registerReceiver(mReceiver, filter);
-    }
-  }
+	if (mHasSysUiScrim) {
+		IntentFilter filter = new IntentFilter(ACTION_SCREEN_OFF);
+		filter.addAction(
+			ACTION_USER_PRESENT); // When the device wakes up + keyguard is gone
+		mRoot.getContext().registerReceiver(mReceiver, filter);
+	}
+}
 
-  @Override
-  public void onViewDetachedFromWindow(final View view) {
-    mWallpaperColorInfo.removeOnChangeListener(this);
-    if (mHasSysUiScrim) {
-      mRoot.getContext().unregisterReceiver(mReceiver);
-    }
-  }
+@Override
+public void onViewDetachedFromWindow(final View view) {
+	mWallpaperColorInfo.removeOnChangeListener(this);
+	if (mHasSysUiScrim) {
+		mRoot.getContext().unregisterReceiver(mReceiver);
+	}
+}
 
-  @Override
-  public void
-  onExtractedColorsChanged(final WallpaperColorInfo wallpaperColorInfo) {
-    // for super light wallpaper it needs to be darken for contrast to workspace
-    // for dark wallpapers the text is white so darkening works as well
-    mBottomMaskPaint.setColor(ColorUtils.compositeColors(
-        DARK_SCRIM_COLOR, wallpaperColorInfo.getMainColor()));
-    reapplySysUiAlpha();
-    mFullScrimColor = wallpaperColorInfo.getMainColor();
-    if (mScrimAlpha > 0) {
-      invalidate();
-    }
-  }
+@Override
+public void
+onExtractedColorsChanged(final WallpaperColorInfo wallpaperColorInfo) {
+	// for super light wallpaper it needs to be darken for contrast to workspace
+	// for dark wallpapers the text is white so darkening works as well
+	mBottomMaskPaint.setColor(ColorUtils.compositeColors(
+					  DARK_SCRIM_COLOR, wallpaperColorInfo.getMainColor()));
+	reapplySysUiAlpha();
+	mFullScrimColor = wallpaperColorInfo.getMainColor();
+	if (mScrimAlpha > 0) {
+		invalidate();
+	}
+}
 
-  public void setSize(final int w, final int h) {
-    if (mHasSysUiScrim) {
-      mTopScrim.setBounds(0, 0, w, h);
-      mFinalMaskRect.set(0, h - mMaskHeight, w, h);
-    }
-  }
+public void setSize(final int w, final int h) {
+	if (mHasSysUiScrim) {
+		mTopScrim.setBounds(0, 0, w, h);
+		mFinalMaskRect.set(0, h - mMaskHeight, w, h);
+	}
+}
 
-  public void hideSysUiScrim(final boolean hideSysUiScrim) {
-    mHideSysUiScrim = hideSysUiScrim;
-    if (!hideSysUiScrim) {
-      mAnimateScrimOnNextDraw = true;
-    }
-    invalidate();
-  }
+public void hideSysUiScrim(final boolean hideSysUiScrim) {
+	mHideSysUiScrim = hideSysUiScrim;
+	if (!hideSysUiScrim) {
+		mAnimateScrimOnNextDraw = true;
+	}
+	invalidate();
+}
 
-  private void setSysUiProgress(final float progress) {
-    if (progress != mSysUiProgress) {
-      mSysUiProgress = progress;
-      reapplySysUiAlpha();
-    }
-  }
+private void setSysUiProgress(final float progress) {
+	if (progress != mSysUiProgress) {
+		mSysUiProgress = progress;
+		reapplySysUiAlpha();
+	}
+}
 
-  private void reapplySysUiAlpha() {
-    if (mHasSysUiScrim) {
-      reapplySysUiAlphaNoInvalidate();
-      if (!mHideSysUiScrim) {
-        invalidate();
-      }
-    }
-  }
+private void reapplySysUiAlpha() {
+	if (mHasSysUiScrim) {
+		reapplySysUiAlphaNoInvalidate();
+		if (!mHideSysUiScrim) {
+			invalidate();
+		}
+	}
+}
 
-  private void reapplySysUiAlphaNoInvalidate() {
-    float factor = mSysUiProgress * mSysUiAnimMultiplier;
-    mBottomMaskPaint.setAlpha(Math.round(MAX_HOTSEAT_SCRIM_ALPHA * factor));
-    mTopScrim.setAlpha(Math.round(255 * factor));
-  }
+private void reapplySysUiAlphaNoInvalidate() {
+	float factor = mSysUiProgress * mSysUiAnimMultiplier;
+	mBottomMaskPaint.setAlpha(Math.round(MAX_HOTSEAT_SCRIM_ALPHA * factor));
+	mTopScrim.setAlpha(Math.round(255 * factor));
+}
 
-  public void invalidate() { mRoot.invalidate(); }
+public void invalidate() {
+	mRoot.invalidate();
+}
 
-  public Bitmap createDitheredAlphaMask() {
-    DisplayMetrics dm = mLauncher.getResources().getDisplayMetrics();
-    int width = Utilities.pxFromDp(ALPHA_MASK_WIDTH_DP, dm);
-    int gradientHeight = Utilities.pxFromDp(ALPHA_MASK_HEIGHT_DP, dm);
-    Bitmap dst = Bitmap.createBitmap(width, mMaskHeight, Bitmap.Config.ALPHA_8);
-    Canvas c = new Canvas(dst);
-    Paint paint = new Paint(Paint.DITHER_FLAG);
-    LinearGradient lg =
-        new LinearGradient(0, 0, 0, gradientHeight,
-                           new int[] {0x00FFFFFF,
-                                      ColorUtils.setAlphaComponent(
-                                          Color.WHITE, (int)(0xFF * 0.95)),
-                                      0xFFFFFFFF},
-                           new float[] {0f, 0.8f, 1f}, Shader.TileMode.CLAMP);
-    paint.setShader(lg);
-    c.drawRect(0, 0, width, gradientHeight, paint);
-    return dst;
-  }
+public Bitmap createDitheredAlphaMask() {
+	DisplayMetrics dm = mLauncher.getResources().getDisplayMetrics();
+	int width = Utilities.pxFromDp(ALPHA_MASK_WIDTH_DP, dm);
+	int gradientHeight = Utilities.pxFromDp(ALPHA_MASK_HEIGHT_DP, dm);
+	Bitmap dst = Bitmap.createBitmap(width, mMaskHeight, Bitmap.Config.ALPHA_8);
+	Canvas c = new Canvas(dst);
+	Paint paint = new Paint(Paint.DITHER_FLAG);
+	LinearGradient lg =
+		new LinearGradient(0, 0, 0, gradientHeight,
+		                   new int[] {0x00FFFFFF,
+		                              ColorUtils.setAlphaComponent(
+						      Color.WHITE, (int)(0xFF * 0.95)),
+		                              0xFFFFFFFF},
+		                   new float[] {0f, 0.8f, 1f}, Shader.TileMode.CLAMP);
+	paint.setShader(lg);
+	c.drawRect(0, 0, width, gradientHeight, paint);
+	return dst;
+}
 }

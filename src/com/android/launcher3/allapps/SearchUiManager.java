@@ -22,21 +22,21 @@ import android.view.KeyEvent;
  */
 public interface SearchUiManager {
 
-  /**
-   * Initializes the search manager.
-   */
-  void initialize(AllAppsContainerView containerView);
+/**
+ * Initializes the search manager.
+ */
+void initialize(AllAppsContainerView containerView);
 
-  /**
-   * Notifies the search manager to close any active search session.
-   */
-  void resetSearch();
+/**
+ * Notifies the search manager to close any active search session.
+ */
+void resetSearch();
 
-  /**
-   * Called before dispatching a key event, in case the search manager wants to
-   * initialize some UI beforehand.
-   */
-  void preDispatchKeyEvent(KeyEvent keyEvent);
+/**
+ * Called before dispatching a key event, in case the search manager wants to
+ * initialize some UI beforehand.
+ */
+void preDispatchKeyEvent(KeyEvent keyEvent);
 
-  void startSearch();
+void startSearch();
 }

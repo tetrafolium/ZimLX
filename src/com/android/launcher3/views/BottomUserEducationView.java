@@ -31,122 +31,122 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 
 public class BottomUserEducationView
-    extends AbstractSlideInView implements Insettable {
+	extends AbstractSlideInView implements Insettable {
 
-  private static final String KEY_SHOWED_BOTTOM_USER_EDUCATION =
-      "showed_bottom_user_education";
+private static final String KEY_SHOWED_BOTTOM_USER_EDUCATION =
+	"showed_bottom_user_education";
 
-  private static final int DEFAULT_CLOSE_DURATION = 200;
+private static final int DEFAULT_CLOSE_DURATION = 200;
 
-  private final Rect mInsets = new Rect();
+private final Rect mInsets = new Rect();
 
-  private View mCloseButton;
+private View mCloseButton;
 
-  public BottomUserEducationView(final Context context,
-                                 final AttributeSet attr) {
-    this(context, attr, 0);
-  }
+public BottomUserEducationView(final Context context,
+                               final AttributeSet attr) {
+	this(context, attr, 0);
+}
 
-  public BottomUserEducationView(final Context context,
-                                 final AttributeSet attrs,
-                                 final int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-    mContent = this;
-  }
+public BottomUserEducationView(final Context context,
+                               final AttributeSet attrs,
+                               final int defStyleAttr) {
+	super(context, attrs, defStyleAttr);
+	mContent = this;
+}
 
-  @Override
-  protected void onFinishInflate() {
-    super.onFinishInflate();
-    mCloseButton = findViewById(R.id.close_bottom_user_tip);
-    mCloseButton.setOnClickListener(view -> handleClose(true));
-  }
+@Override
+protected void onFinishInflate() {
+	super.onFinishInflate();
+	mCloseButton = findViewById(R.id.close_bottom_user_tip);
+	mCloseButton.setOnClickListener(view->handleClose(true));
+}
 
-  @Override
-  protected void onLayout(final boolean changed, final int l, final int t,
-                          final int r, final int b) {
-    super.onLayout(changed, l, t, r, b);
-    setTranslationShift(mTranslationShift);
-    expandTouchAreaOfCloseButton();
-  }
+@Override
+protected void onLayout(final boolean changed, final int l, final int t,
+                        final int r, final int b) {
+	super.onLayout(changed, l, t, r, b);
+	setTranslationShift(mTranslationShift);
+	expandTouchAreaOfCloseButton();
+}
 
-  @Override
-  public void logActionCommand(final int command) {
-    // Since this is on-boarding popup, it is not a user controlled action.
-  }
+@Override
+public void logActionCommand(final int command) {
+	// Since this is on-boarding popup, it is not a user controlled action.
+}
 
-  @Override
-  protected boolean isOfType(final int type) {
-    return (type & TYPE_ON_BOARD_POPUP) != 0;
-  }
+@Override
+protected boolean isOfType(final int type) {
+	return (type & TYPE_ON_BOARD_POPUP) != 0;
+}
 
-  @Override
-  public void setInsets(final Rect insets) {
-    // Extend behind left, right, and bottom insets.
-    int leftInset = insets.left - mInsets.left;
-    int rightInset = insets.right - mInsets.right;
-    int bottomInset = insets.bottom - mInsets.bottom;
-    mInsets.set(insets);
-    setPadding(getPaddingLeft() + leftInset, getPaddingTop(),
-               getPaddingRight() + rightInset,
-               getPaddingBottom() + bottomInset);
-  }
+@Override
+public void setInsets(final Rect insets) {
+	// Extend behind left, right, and bottom insets.
+	int leftInset = insets.left - mInsets.left;
+	int rightInset = insets.right - mInsets.right;
+	int bottomInset = insets.bottom - mInsets.bottom;
+	mInsets.set(insets);
+	setPadding(getPaddingLeft() + leftInset, getPaddingTop(),
+	           getPaddingRight() + rightInset,
+	           getPaddingBottom() + bottomInset);
+}
 
-  @Override
-  protected void handleClose(final boolean animate) {
-    handleClose(animate, DEFAULT_CLOSE_DURATION);
-    if (animate) {
-      // We animate only when the user is visible, which is a proxy for an
-      // explicit close action.
-      mLauncher.getSharedPrefs()
-          .edit()
-          .putBoolean(KEY_SHOWED_BOTTOM_USER_EDUCATION, true)
-          .apply();
-      sendCustomAccessibilityEvent(
-          BottomUserEducationView.this,
-          AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
-          getContext().getString(
-              R.string.bottom_work_tab_user_education_closed));
-    }
-  }
+@Override
+protected void handleClose(final boolean animate) {
+	handleClose(animate, DEFAULT_CLOSE_DURATION);
+	if (animate) {
+		// We animate only when the user is visible, which is a proxy for an
+		// explicit close action.
+		mLauncher.getSharedPrefs()
+		.edit()
+		.putBoolean(KEY_SHOWED_BOTTOM_USER_EDUCATION, true)
+		.apply();
+		sendCustomAccessibilityEvent(
+			BottomUserEducationView.this,
+			AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
+			getContext().getString(
+				R.string.bottom_work_tab_user_education_closed));
+	}
+}
 
-  private void open(final boolean animate) {
-    if (mIsOpen || mOpenCloseAnimator.isRunning()) {
-      return;
-    }
-    mIsOpen = true;
-    if (animate) {
-      mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
-          TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-      mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
-      mOpenCloseAnimator.start();
-    } else {
-      setTranslationShift(TRANSLATION_SHIFT_OPENED);
-    }
-  }
+private void open(final boolean animate) {
+	if (mIsOpen || mOpenCloseAnimator.isRunning()) {
+		return;
+	}
+	mIsOpen = true;
+	if (animate) {
+		mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
+						     TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
+		mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
+		mOpenCloseAnimator.start();
+	} else {
+		setTranslationShift(TRANSLATION_SHIFT_OPENED);
+	}
+}
 
-  public static void showIfNeeded(final Launcher launcher) {
-    if (launcher.getSharedPrefs().getBoolean(KEY_SHOWED_BOTTOM_USER_EDUCATION,
-                                             false)) {
-      return;
-    }
+public static void showIfNeeded(final Launcher launcher) {
+	if (launcher.getSharedPrefs().getBoolean(KEY_SHOWED_BOTTOM_USER_EDUCATION,
+	                                         false)) {
+		return;
+	}
 
-    LayoutInflater layoutInflater = LayoutInflater.from(launcher);
-    BottomUserEducationView bottomUserEducationView =
-        (BottomUserEducationView)layoutInflater.inflate(
-            R.layout.work_tab_bottom_user_education_view,
-            launcher.getDragLayer(), false);
-    launcher.getDragLayer().addView(bottomUserEducationView);
-    bottomUserEducationView.open(true);
-  }
+	LayoutInflater layoutInflater = LayoutInflater.from(launcher);
+	BottomUserEducationView bottomUserEducationView =
+		(BottomUserEducationView)layoutInflater.inflate(
+			R.layout.work_tab_bottom_user_education_view,
+			launcher.getDragLayer(), false);
+	launcher.getDragLayer().addView(bottomUserEducationView);
+	bottomUserEducationView.open(true);
+}
 
-  private void expandTouchAreaOfCloseButton() {
-    Rect hitRect = new Rect();
-    mCloseButton.getHitRect(hitRect);
-    hitRect.left -= mCloseButton.getWidth();
-    hitRect.top -= mCloseButton.getHeight();
-    hitRect.right += mCloseButton.getWidth();
-    hitRect.bottom += mCloseButton.getHeight();
-    View parent = (View)mCloseButton.getParent();
-    parent.setTouchDelegate(new TouchDelegate(hitRect, mCloseButton));
-  }
+private void expandTouchAreaOfCloseButton() {
+	Rect hitRect = new Rect();
+	mCloseButton.getHitRect(hitRect);
+	hitRect.left -= mCloseButton.getWidth();
+	hitRect.top -= mCloseButton.getHeight();
+	hitRect.right += mCloseButton.getWidth();
+	hitRect.bottom += mCloseButton.getHeight();
+	View parent = (View)mCloseButton.getParent();
+	parent.setTouchDelegate(new TouchDelegate(hitRect, mCloseButton));
+}
 }

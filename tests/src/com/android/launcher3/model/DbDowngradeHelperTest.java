@@ -44,151 +44,155 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class DbDowngradeHelperTest {
 
-  private static final String SCHEMA_FILE = "test_schema.json";
-  private static final String DB_FILE = "test.db";
+private static final String SCHEMA_FILE = "test_schema.json";
+private static final String DB_FILE = "test.db";
 
-  private Context mContext;
-  private File mSchemaFile;
-  private File mDbFile;
+private Context mContext;
+private File mSchemaFile;
+private File mDbFile;
 
-  @Before
-  public void setup() {
-    mContext = InstrumentationRegistry.getTargetContext();
-    mSchemaFile = mContext.getFileStreamPath(SCHEMA_FILE);
-    mDbFile = mContext.getDatabasePath(DB_FILE);
-  }
+@Before
+public void setup() {
+	mContext = InstrumentationRegistry.getTargetContext();
+	mSchemaFile = mContext.getFileStreamPath(SCHEMA_FILE);
+	mDbFile = mContext.getDatabasePath(DB_FILE);
+}
 
-  @Test
-  public void testUpdateSchemaFile() throws Exception {
-    Context myContext = InstrumentationRegistry.getContext();
-    int testResId = myContext.getResources().getIdentifier(
-        "db_schema_v10", "raw", myContext.getPackageName());
-    mSchemaFile.delete();
-    assertFalse(mSchemaFile.exists());
+@Test
+public void testUpdateSchemaFile() throws Exception {
+	Context myContext = InstrumentationRegistry.getContext();
+	int testResId = myContext.getResources().getIdentifier(
+		"db_schema_v10", "raw", myContext.getPackageName());
+	mSchemaFile.delete();
+	assertFalse(mSchemaFile.exists());
 
-    DbDowngradeHelper.updateSchemaFile(mSchemaFile, 10, myContext, testResId);
-    assertTrue(mSchemaFile.exists());
-    assertEquals(10, DbDowngradeHelper.parse(mSchemaFile).version);
+	DbDowngradeHelper.updateSchemaFile(mSchemaFile, 10, myContext, testResId);
+	assertTrue(mSchemaFile.exists());
+	assertEquals(10, DbDowngradeHelper.parse(mSchemaFile).version);
 
-    // Schema is updated on version upgrade
-    assertTrue(mSchemaFile.setLastModified(0));
-    DbDowngradeHelper.updateSchemaFile(mSchemaFile, 11, myContext, testResId);
-    assertNotSame(0, mSchemaFile.lastModified());
+	// Schema is updated on version upgrade
+	assertTrue(mSchemaFile.setLastModified(0));
+	DbDowngradeHelper.updateSchemaFile(mSchemaFile, 11, myContext, testResId);
+	assertNotSame(0, mSchemaFile.lastModified());
 
-    // Schema is not updated when version is same
-    assertTrue(mSchemaFile.setLastModified(0));
-    DbDowngradeHelper.updateSchemaFile(mSchemaFile, 10, myContext, testResId);
-    assertEquals(0, mSchemaFile.lastModified());
+	// Schema is not updated when version is same
+	assertTrue(mSchemaFile.setLastModified(0));
+	DbDowngradeHelper.updateSchemaFile(mSchemaFile, 10, myContext, testResId);
+	assertEquals(0, mSchemaFile.lastModified());
 
-    // Schema is not updated on version downgrade
-    DbDowngradeHelper.updateSchemaFile(mSchemaFile, 3, myContext, testResId);
-    assertEquals(0, mSchemaFile.lastModified());
-  }
+	// Schema is not updated on version downgrade
+	DbDowngradeHelper.updateSchemaFile(mSchemaFile, 3, myContext, testResId);
+	assertEquals(0, mSchemaFile.lastModified());
+}
 
-  @Test
-  public void testDowngrade_success_v24() throws Exception {
-    setupTestDb();
+@Test
+public void testDowngrade_success_v24() throws Exception {
+	setupTestDb();
 
-    TestOpenHelper helper = new TestOpenHelper(24);
-    assertEquals(24, helper.getReadableDatabase().getVersion());
-    helper.close();
-  }
+	TestOpenHelper helper = new TestOpenHelper(24);
+	assertEquals(24, helper.getReadableDatabase().getVersion());
+	helper.close();
+}
 
-  @Test
-  public void testDowngrade_success_v22() throws Exception {
-    setupTestDb();
+@Test
+public void testDowngrade_success_v22() throws Exception {
+	setupTestDb();
 
-    SQLiteOpenHelper helper = new TestOpenHelper(22);
-    assertEquals(22, helper.getWritableDatabase().getVersion());
+	SQLiteOpenHelper helper = new TestOpenHelper(22);
+	assertEquals(22, helper.getWritableDatabase().getVersion());
 
-    // Check column does not exist
-    try (Cursor c = helper.getWritableDatabase().query(
-             Favorites.TABLE_NAME, null, null, null, null, null, null)) {
-      assertEquals(-1, c.getColumnIndex(Favorites.OPTIONS));
+	// Check column does not exist
+	try (Cursor c = helper.getWritableDatabase().query(
+		     Favorites.TABLE_NAME, null, null, null, null, null, null)) {
+		assertEquals(-1, c.getColumnIndex(Favorites.OPTIONS));
 
-      // Check data is present
-      assertEquals(10, c.getCount());
-    }
-    helper.close();
+		// Check data is present
+		assertEquals(10, c.getCount());
+	}
+	helper.close();
 
-    helper = new DatabaseHelper(mContext, null, DB_FILE) {
-      @Override
-      public void onOpen(final SQLiteDatabase db) {}
-    };
-    assertEquals(LauncherProvider.SCHEMA_VERSION,
-                 helper.getWritableDatabase().getVersion());
+	helper = new DatabaseHelper(mContext, null, DB_FILE) {
+		@Override
+		public void onOpen(final SQLiteDatabase db) {
+		}
+	};
+	assertEquals(LauncherProvider.SCHEMA_VERSION,
+	             helper.getWritableDatabase().getVersion());
 
-    try (Cursor c = helper.getWritableDatabase().query(
-             Favorites.TABLE_NAME, null, null, null, null, null, null)) {
-      // Check column exists
-      assertNotSame(-1, c.getColumnIndex(Favorites.OPTIONS));
+	try (Cursor c = helper.getWritableDatabase().query(
+		     Favorites.TABLE_NAME, null, null, null, null, null, null)) {
+		// Check column exists
+		assertNotSame(-1, c.getColumnIndex(Favorites.OPTIONS));
 
-      // Check data is present
-      assertEquals(10, c.getCount());
-    }
-    helper.close();
-  }
+		// Check data is present
+		assertEquals(10, c.getCount());
+	}
+	helper.close();
+}
 
-  @Test(expected = DowngradeFailException.class)
-  public void testDowngrade_fail_v20() throws Exception {
-    setupTestDb();
+@Test(expected = DowngradeFailException.class)
+public void testDowngrade_fail_v20() throws Exception {
+	setupTestDb();
 
-    TestOpenHelper helper = new TestOpenHelper(20);
-    helper.getReadableDatabase().getVersion();
-  }
+	TestOpenHelper helper = new TestOpenHelper(20);
+	helper.getReadableDatabase().getVersion();
+}
 
-  private void setupTestDb() {
-    mSchemaFile.delete();
-    mDbFile.delete();
+private void setupTestDb() {
+	mSchemaFile.delete();
+	mDbFile.delete();
 
-    DbDowngradeHelper.updateSchemaFile(mSchemaFile,
-                                       LauncherProvider.SCHEMA_VERSION,
-                                       mContext, R.raw.downgrade_schema);
+	DbDowngradeHelper.updateSchemaFile(mSchemaFile,
+	                                   LauncherProvider.SCHEMA_VERSION,
+	                                   mContext, R.raw.downgrade_schema);
 
-    DatabaseHelper dbHelper = new DatabaseHelper(mContext, null, DB_FILE) {
-      @Override
-      public void onOpen(final SQLiteDatabase db) {}
-    };
-    // Insert dummy data
-    for (int i = 0; i < 10; i++) {
-      ContentValues values = new ContentValues();
-      values.put(Favorites._ID, i);
-      values.put(Favorites.TITLE, "title " + i);
-      dbHelper.getWritableDatabase().insert(Favorites.TABLE_NAME, null, values);
-    }
-    dbHelper.close();
-  }
+	DatabaseHelper dbHelper = new DatabaseHelper(mContext, null, DB_FILE) {
+		@Override
+		public void onOpen(final SQLiteDatabase db) {
+		}
+	};
+	// Insert dummy data
+	for (int i = 0; i < 10; i++) {
+		ContentValues values = new ContentValues();
+		values.put(Favorites._ID, i);
+		values.put(Favorites.TITLE, "title " + i);
+		dbHelper.getWritableDatabase().insert(Favorites.TABLE_NAME, null, values);
+	}
+	dbHelper.close();
+}
 
-  private static class DowngradeFailException extends RuntimeException {
-    public DowngradeFailException(final Exception e) { super(e); }
-  }
+private static class DowngradeFailException extends RuntimeException {
+public DowngradeFailException(final Exception e) {
+	super(e);
+}
+}
 
-  private class TestOpenHelper extends SQLiteOpenHelper {
+private class TestOpenHelper extends SQLiteOpenHelper {
 
-    public TestOpenHelper(final int version) {
-      super(mContext, DB_FILE, null, version);
-    }
+public TestOpenHelper(final int version) {
+	super(mContext, DB_FILE, null, version);
+}
 
-    @Override
-    public void onCreate(final SQLiteDatabase sqLiteDatabase) {
-      throw new RuntimeException("DB should already be created");
-    }
+@Override
+public void onCreate(final SQLiteDatabase sqLiteDatabase) {
+	throw new RuntimeException("DB should already be created");
+}
 
-    @Override
-    public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
-                          final int newVersion) {
-      throw new RuntimeException("Only downgrade supported");
-    }
+@Override
+public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
+                      final int newVersion) {
+	throw new RuntimeException("Only downgrade supported");
+}
 
-    @Override
-    public void onDowngrade(final SQLiteDatabase db, final int oldVersion,
-                            final int newVersion) {
-      try {
-        DbDowngradeHelper.parse(mSchemaFile)
-            .onDowngrade(db, oldVersion, newVersion);
-      } catch (Exception e) {
-        throw new DowngradeFailException(e);
-      }
-    }
-  }
+@Override
+public void onDowngrade(final SQLiteDatabase db, final int oldVersion,
+                        final int newVersion) {
+	try {
+		DbDowngradeHelper.parse(mSchemaFile)
+		.onDowngrade(db, oldVersion, newVersion);
+	} catch (Exception e) {
+		throw new DowngradeFailException(e);
+	}
+}
+}
 }

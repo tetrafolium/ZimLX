@@ -33,180 +33,181 @@ import org.zimmob.zimlx.smartspace.ZimSmartspaceController;
  * A simple view used to show the region blocked by QSB during drag and drop.
  */
 public class QsbBlockerView extends FrameLayout
-    implements OnStateChangeListener, ZimSmartspaceController.Listener,
-               View.OnLongClickListener, View.OnClickListener {
-  // public static final Property<QsbBlockerView, Integer>
-  // QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
-  private ZimSmartspaceController mController;
-  private int mState = 0;
-  private View mView;
+	implements OnStateChangeListener, ZimSmartspaceController.Listener,
+	                            View.OnLongClickListener, View.OnClickListener {
+// public static final Property<QsbBlockerView, Integer>
+// QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
+private ZimSmartspaceController mController;
+private int mState = 0;
+private View mView;
 
-  private BubbleTextView mDummyBubbleTextView;
+private BubbleTextView mDummyBubbleTextView;
 
-  private final Paint mBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+private final Paint mBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-  public QsbBlockerView(final Context context, final AttributeSet attrs) {
-    super(context, attrs);
+public QsbBlockerView(final Context context, final AttributeSet attrs) {
+	super(context, attrs);
 
-    mBgPaint.setColor(Color.WHITE);
-    mBgPaint.setAlpha(0);
+	mBgPaint.setColor(Color.WHITE);
+	mBgPaint.setAlpha(0);
 
-    mController = ZimAppKt.getZimApp(getContext()).getSmartspace();
-  }
+	mController = ZimAppKt.getZimApp(getContext()).getSmartspace();
+}
 
-  @Override
-  protected void onFinishInflate() {
-    super.onFinishInflate();
+@Override
+protected void onFinishInflate() {
+	super.onFinishInflate();
 
-    mDummyBubbleTextView = findViewById(R.id.dummyBubbleTextView);
-    mDummyBubbleTextView.setTag(new ItemInfo() {
-      @Override
-      public ComponentName getTargetComponent() {
-        return new ComponentName(getContext(), "");
-      }
-    });
-    mDummyBubbleTextView.setContentDescription("");
-  }
+	mDummyBubbleTextView = findViewById(R.id.dummyBubbleTextView);
+	mDummyBubbleTextView.setTag(new ItemInfo() {
+			@Override
+			public ComponentName getTargetComponent() {
+			        return new ComponentName(getContext(), "");
+			}
+		});
+	mDummyBubbleTextView.setContentDescription("");
+}
 
-  @Override
-  protected void onMeasure(final int widthMeasureSpec,
-                           final int heightMeasureSpec) {
-    if (mView != null && mState == 2) {
-      Launcher launcher = ZimUtilsKt.getLauncherOrNull(getContext());
-      int size;
-      if (launcher != null) {
-        DeviceProfile deviceProfile = launcher.getDeviceProfile();
-        if (launcher.useVerticalBarLayout()) {
-          size = ((MeasureSpec.getSize(widthMeasureSpec) /
-                   deviceProfile.inv.numColumns) -
-                  deviceProfile.iconSizePx) /
-                 2;
-        } else {
-          size = 0;
-        }
-      } else {
-        size = getResources().getDimensionPixelSize(
-            R.dimen.smartspace_preview_widget_margin);
-      }
-      LayoutParams layoutParams = (LayoutParams)mView.getLayoutParams();
-      layoutParams.leftMargin = layoutParams.rightMargin = size;
-    }
+@Override
+protected void onMeasure(final int widthMeasureSpec,
+                         final int heightMeasureSpec) {
+	if (mView != null && mState == 2) {
+		Launcher launcher = ZimUtilsKt.getLauncherOrNull(getContext());
+		int size;
+		if (launcher != null) {
+			DeviceProfile deviceProfile = launcher.getDeviceProfile();
+			if (launcher.useVerticalBarLayout()) {
+				size = ((MeasureSpec.getSize(widthMeasureSpec) /
+				         deviceProfile.inv.numColumns) -
+				        deviceProfile.iconSizePx) /
+				       2;
+			} else {
+				size = 0;
+			}
+		} else {
+			size = getResources().getDimensionPixelSize(
+				R.dimen.smartspace_preview_widget_margin);
+		}
+		LayoutParams layoutParams = (LayoutParams)mView.getLayoutParams();
+		layoutParams.leftMargin = layoutParams.rightMargin = size;
+	}
 
-    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-  }
+	super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+}
 
-  @Override
-  protected void onAttachedToWindow() {
-    super.onAttachedToWindow();
+@Override
+protected void onAttachedToWindow() {
+	super.onAttachedToWindow();
 
-    if (mController != null)
-      mController.addListener(this);
-  }
+	if (mController != null)
+		mController.addListener(this);
+}
 
-  @Override
-  protected void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
+@Override
+protected void onDetachedFromWindow() {
+	super.onDetachedFromWindow();
 
-    if (mController != null)
-      mController.removeListener(this);
-  }
+	if (mController != null)
+		mController.removeListener(this);
+}
 
-  @Override
-  public void prepareStateChange(final AnimatorSetBuilder builder) {}
+@Override
+public void prepareStateChange(final AnimatorSetBuilder builder) {
+}
 
-  @Override
-  protected void onDraw(final Canvas canvas) {
-    canvas.drawPaint(mBgPaint);
-  }
+@Override
+protected void onDraw(final Canvas canvas) {
+	canvas.drawPaint(mBgPaint);
+}
 
-  @Override
-  public void onDataUpdated(final @Nullable WeatherData weather,
-                            final @Nullable CardData card) {
-    final int oldState = mState;
-    final View oldView = mView;
+@Override
+public void onDataUpdated(final @Nullable WeatherData weather,
+                          final @Nullable CardData card) {
+	final int oldState = mState;
+	final View oldView = mView;
 
-    if (!Utilities.getZimPrefs(getContext()).getUsePillQsb()) {
-      return;
-    }
+	if (!Utilities.getZimPrefs(getContext()).getUsePillQsb()) {
+		return;
+	}
 
-    if (weather == null) {
-      mState = 1;
-      mView = oldView != null && oldState == 1
-                  ? oldView
-                  : LayoutInflater.from(getContext())
-                        .inflate(R.layout.date_widget, this, false);
-    } else {
-      mState = 2;
-      mView = oldView != null && oldState == 2
-                  ? oldView
-                  : LayoutInflater.from(getContext())
-                        .inflate(R.layout.weather_widget, this, false);
-      applyWeather(mView, weather);
-      mView.setOnClickListener(this);
-    }
+	if (weather == null) {
+		mState = 1;
+		mView = oldView != null && oldState == 1
+		  ? oldView
+		  : LayoutInflater.from(getContext())
+		        .inflate(R.layout.date_widget, this, false);
+	} else {
+		mState = 2;
+		mView = oldView != null && oldState == 2
+		  ? oldView
+		  : LayoutInflater.from(getContext())
+		        .inflate(R.layout.weather_widget, this, false);
+		applyWeather(mView, weather);
+		mView.setOnClickListener(this);
+	}
 
-    if (oldState != mState) {
-      if (oldView != null) {
-        oldView.animate().setDuration(200L).alpha(0f).withEndAction(
-            () -> removeView(oldView));
-      }
-      addView(mView);
-      mView.setAlpha(0f);
-      mView.animate().setDuration(200L).alpha(1f);
-    } else if (oldView != mView) {
-      if (oldView != null) {
-        removeView(oldView);
-      }
-      addView(mView);
-    }
+	if (oldState != mState) {
+		if (oldView != null) {
+			oldView.animate().setDuration(200L).alpha(0f).withEndAction(
+				()->removeView(oldView));
+		}
+		addView(mView);
+		mView.setAlpha(0f);
+		mView.animate().setDuration(200L).alpha(1f);
+	} else if (oldView != mView) {
+		if (oldView != null) {
+			removeView(oldView);
+		}
+		addView(mView);
+	}
 
-    mView.setOnLongClickListener(this);
-  }
+	mView.setOnLongClickListener(this);
+}
 
-  private void applyWeather(final View view, final WeatherData weather) {
-    ImageView weatherIcon = view.findViewById(R.id.weather_widget_icon);
-    weatherIcon.setImageBitmap(weather.getIcon());
-    TextView weatherTemperature =
-        view.findViewById(R.id.weather_widget_temperature);
-    weatherTemperature.setText(
-        weather.getTitle(Utilities.getZimPrefs(getContext()).getWeatherUnit()));
-  }
+private void applyWeather(final View view, final WeatherData weather) {
+	ImageView weatherIcon = view.findViewById(R.id.weather_widget_icon);
+	weatherIcon.setImageBitmap(weather.getIcon());
+	TextView weatherTemperature =
+		view.findViewById(R.id.weather_widget_temperature);
+	weatherTemperature.setText(
+		weather.getTitle(Utilities.getZimPrefs(getContext()).getWeatherUnit()));
+}
 
-  @Override
-  public void setPadding(final int left, final int top, final int right,
-                         final int bottom) {
-    super.setPadding(0, 0, 0, 0);
-  }
+@Override
+public void setPadding(final int left, final int top, final int right,
+                       final int bottom) {
+	super.setPadding(0, 0, 0, 0);
+}
 
-  @Override
-  public void onClick(final View v) {
-    if (mController != null)
-      mController.openWeather(v);
-  }
+@Override
+public void onClick(final View v) {
+	if (mController != null)
+		mController.openWeather(v);
+}
 
-  @Override
-  public boolean onLongClick(final View v) {
-    // TODO: move it to below the widget view
-    ZimUtilsKt.openPopupMenu(mView, null, new SmartspacePreferencesShortcut());
-    return true;
-  }
+@Override
+public boolean onLongClick(final View v) {
+	// TODO: move it to below the widget view
+	ZimUtilsKt.openPopupMenu(mView, null, new SmartspacePreferencesShortcut());
+	return true;
+}
 
-  static class QsbBlockerViewAlpha extends Property<QsbBlockerView, Integer> {
+static class QsbBlockerViewAlpha extends Property<QsbBlockerView, Integer> {
 
-    public QsbBlockerViewAlpha(final Class<Integer> type, final String name) {
-      super(type, name);
-    }
+public QsbBlockerViewAlpha(final Class<Integer> type, final String name) {
+	super(type, name);
+}
 
-    @Override
-    public void set(final QsbBlockerView qsbBlockerView, final Integer num) {
-      qsbBlockerView.mBgPaint.setAlpha(num);
-      qsbBlockerView.setWillNotDraw(num == 0);
-      qsbBlockerView.invalidate();
-    }
+@Override
+public void set(final QsbBlockerView qsbBlockerView, final Integer num) {
+	qsbBlockerView.mBgPaint.setAlpha(num);
+	qsbBlockerView.setWillNotDraw(num == 0);
+	qsbBlockerView.invalidate();
+}
 
-    @Override
-    public Integer get(final QsbBlockerView obj) {
-      return obj.mBgPaint.getAlpha();
-    }
-  }
+@Override
+public Integer get(final QsbBlockerView obj) {
+	return obj.mBgPaint.getAlpha();
+}
+}
 }

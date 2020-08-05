@@ -17,43 +17,45 @@ import org.xmlpull.v1.XmlPullParser;
 @TargetApi(Build.VERSION_CODES.N)
 public class FixedScaleDrawable extends DrawableWrapper {
 
-  // TODO b/33553066 use the constant defined in MaskableIconDrawable
-  public static final float LEGACY_ICON_SCALE = .7f * .6667f;
-  private float mScaleX, mScaleY;
+// TODO b/33553066 use the constant defined in MaskableIconDrawable
+public static final float LEGACY_ICON_SCALE = .7f * .6667f;
+private float mScaleX, mScaleY;
 
-  public FixedScaleDrawable() {
-    super(new ColorDrawable());
-    mScaleX = LEGACY_ICON_SCALE;
-    mScaleY = LEGACY_ICON_SCALE;
-  }
+public FixedScaleDrawable() {
+	super(new ColorDrawable());
+	mScaleX = LEGACY_ICON_SCALE;
+	mScaleY = LEGACY_ICON_SCALE;
+}
 
-  @Override
-  public void draw(final Canvas canvas) {
-    // int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
-    int saveCount = canvas.save();
-    canvas.scale(mScaleX, mScaleY, getBounds().exactCenterX(),
-                 getBounds().exactCenterY());
-    super.draw(canvas);
-    canvas.restoreToCount(saveCount);
-  }
+@Override
+public void draw(final Canvas canvas) {
+	// int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+	int saveCount = canvas.save();
+	canvas.scale(mScaleX, mScaleY, getBounds().exactCenterX(),
+	             getBounds().exactCenterY());
+	super.draw(canvas);
+	canvas.restoreToCount(saveCount);
+}
 
-  @Override
-  public void inflate(final Resources r, final XmlPullParser parser,
-                      final AttributeSet attrs) {}
+@Override
+public void inflate(final Resources r, final XmlPullParser parser,
+                    final AttributeSet attrs) {
+}
 
-  @Override
-  public void inflate(final Resources r, final XmlPullParser parser,
-                      final AttributeSet attrs, final Theme theme) {}
+@Override
+public void inflate(final Resources r, final XmlPullParser parser,
+                    final AttributeSet attrs, final Theme theme) {
+}
 
-  public void setScale(final float scale) {
-    float h = getIntrinsicHeight();
-    float w = getIntrinsicWidth();
-    mScaleX = scale * LEGACY_ICON_SCALE;
-    mScaleY = scale * LEGACY_ICON_SCALE;
-    if (h > w && w > 0) {
-      mScaleX *= w / h;
-    } else if (w > h && h > 0) {
-      mScaleY *= h / w;
-    }
-  }
+public void setScale(final float scale) {
+	float h = getIntrinsicHeight();
+	float w = getIntrinsicWidth();
+	mScaleX = scale * LEGACY_ICON_SCALE;
+	mScaleY = scale * LEGACY_ICON_SCALE;
+	if (h > w && w > 0) {
+		mScaleX *= w / h;
+	} else if (w > h && h > 0) {
+		mScaleY *= h / w;
+	}
+}
 }

@@ -49,199 +49,203 @@ import com.android.launcher3.model.WidgetItem;
  */
 public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
-  private static final String TAG = "WidgetCell";
-  private static final boolean DEBUG = false;
+private static final String TAG = "WidgetCell";
+private static final boolean DEBUG = false;
 
-  private static final int FADE_IN_DURATION_MS = 90;
+private static final int FADE_IN_DURATION_MS = 90;
 
-  /**
-   * Widget cell width is calculated by multiplying this factor to grid cell
-   * width.
-   */
-  private static final float WIDTH_SCALE = 2.6f;
+/**
+ * Widget cell width is calculated by multiplying this factor to grid cell
+ * width.
+ */
+private static final float WIDTH_SCALE = 2.6f;
 
-  /**
-   * Widget preview width is calculated by multiplying this factor to the
-   * widget cell width.
-   */
-  private static final float PREVIEW_SCALE = 0.8f;
+/**
+ * Widget preview width is calculated by multiplying this factor to the
+ * widget cell width.
+ */
+private static final float PREVIEW_SCALE = 0.8f;
 
-  protected int mPresetPreviewSize;
-  private int mCellSize;
+protected int mPresetPreviewSize;
+private int mCellSize;
 
-  private WidgetImageView mWidgetImage;
-  private TextView mWidgetName;
-  private TextView mWidgetDims;
+private WidgetImageView mWidgetImage;
+private TextView mWidgetName;
+private TextView mWidgetDims;
 
-  protected WidgetItem mItem;
+protected WidgetItem mItem;
 
-  private WidgetPreviewLoader mWidgetPreviewLoader;
-  private StylusEventHelper mStylusEventHelper;
+private WidgetPreviewLoader mWidgetPreviewLoader;
+private StylusEventHelper mStylusEventHelper;
 
-  protected CancellationSignal mActiveRequest;
-  private boolean mAnimatePreview = true;
+protected CancellationSignal mActiveRequest;
+private boolean mAnimatePreview = true;
 
-  private boolean mApplyBitmapDeferred = false;
-  private Bitmap mDeferredBitmap;
+private boolean mApplyBitmapDeferred = false;
+private Bitmap mDeferredBitmap;
 
-  protected final BaseActivity mActivity;
+protected final BaseActivity mActivity;
 
-  public WidgetCell(final Context context) { this(context, null); }
+public WidgetCell(final Context context) {
+	this(context, null);
+}
 
-  public WidgetCell(final Context context, final AttributeSet attrs) {
-    this(context, attrs, 0);
-  }
+public WidgetCell(final Context context, final AttributeSet attrs) {
+	this(context, attrs, 0);
+}
 
-  public WidgetCell(final Context context, final AttributeSet attrs,
-                    final int defStyle) {
-    super(context, attrs, defStyle);
+public WidgetCell(final Context context, final AttributeSet attrs,
+                  final int defStyle) {
+	super(context, attrs, defStyle);
 
-    mActivity = BaseActivity.fromContext(context);
-    mStylusEventHelper =
-        new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
+	mActivity = BaseActivity.fromContext(context);
+	mStylusEventHelper =
+		new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
-    setContainerWidth();
-    setWillNotDraw(false);
-    setClipToPadding(false);
-    setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
-  }
+	setContainerWidth();
+	setWillNotDraw(false);
+	setClipToPadding(false);
+	setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
+}
 
-  private void setContainerWidth() {
-    DeviceProfile profile = mActivity.getDeviceProfile();
-    mCellSize = (int)(profile.cellWidthPx * WIDTH_SCALE);
-    mPresetPreviewSize = (int)(mCellSize * PREVIEW_SCALE);
-  }
+private void setContainerWidth() {
+	DeviceProfile profile = mActivity.getDeviceProfile();
+	mCellSize = (int)(profile.cellWidthPx * WIDTH_SCALE);
+	mPresetPreviewSize = (int)(mCellSize * PREVIEW_SCALE);
+}
 
-  @Override
-  protected void onFinishInflate() {
-    super.onFinishInflate();
+@Override
+protected void onFinishInflate() {
+	super.onFinishInflate();
 
-    mWidgetImage = findViewById(R.id.widget_preview);
-    mWidgetName = findViewById(R.id.widget_name);
-    mWidgetDims = findViewById(R.id.widget_dims);
-  }
+	mWidgetImage = findViewById(R.id.widget_preview);
+	mWidgetName = findViewById(R.id.widget_name);
+	mWidgetDims = findViewById(R.id.widget_dims);
+}
 
-  /**
-   * Called to clear the view and free attached resources. (e.g., {@link Bitmap}
-   */
-  public void clear() {
-    if (DEBUG) {
-      Log.d(TAG, "reset called on:" + mWidgetName.getText());
-    }
-    mWidgetImage.animate().cancel();
-    mWidgetImage.setBitmap(null, null);
-    mWidgetName.setText(null);
-    mWidgetDims.setText(null);
+/**
+ * Called to clear the view and free attached resources. (e.g., {@link Bitmap}
+ */
+public void clear() {
+	if (DEBUG) {
+		Log.d(TAG, "reset called on:" + mWidgetName.getText());
+	}
+	mWidgetImage.animate().cancel();
+	mWidgetImage.setBitmap(null, null);
+	mWidgetName.setText(null);
+	mWidgetDims.setText(null);
 
-    if (mActiveRequest != null) {
-      mActiveRequest.cancel();
-      mActiveRequest = null;
-    }
-  }
+	if (mActiveRequest != null) {
+		mActiveRequest.cancel();
+		mActiveRequest = null;
+	}
+}
 
-  public void applyFromCellItem(final WidgetItem item,
-                                final WidgetPreviewLoader loader) {
-    mItem = item;
-    mWidgetName.setText(mItem.label);
-    mWidgetDims.setText(getContext().getString(R.string.widget_dims_format,
-                                               mItem.spanX, mItem.spanY));
-    mWidgetDims.setContentDescription(getContext().getString(
-        R.string.widget_accessible_dims_format, mItem.spanX, mItem.spanY));
-    mWidgetPreviewLoader = loader;
+public void applyFromCellItem(final WidgetItem item,
+                              final WidgetPreviewLoader loader) {
+	mItem = item;
+	mWidgetName.setText(mItem.label);
+	mWidgetDims.setText(getContext().getString(R.string.widget_dims_format,
+	                                           mItem.spanX, mItem.spanY));
+	mWidgetDims.setContentDescription(getContext().getString(
+						  R.string.widget_accessible_dims_format, mItem.spanX, mItem.spanY));
+	mWidgetPreviewLoader = loader;
 
-    if (item.activityInfo != null) {
-      setTag(new PendingAddShortcutInfo(item.activityInfo));
-    } else {
-      setTag(new PendingAddWidgetInfo(item.widgetInfo));
-    }
-  }
+	if (item.activityInfo != null) {
+		setTag(new PendingAddShortcutInfo(item.activityInfo));
+	} else {
+		setTag(new PendingAddWidgetInfo(item.widgetInfo));
+	}
+}
 
-  public WidgetImageView getWidgetView() { return mWidgetImage; }
+public WidgetImageView getWidgetView() {
+	return mWidgetImage;
+}
 
-  /**
-   * Sets if applying bitmap preview should be deferred. The UI will still load
-   * the bitmap, but will not cause invalidate, so that when deferring is
-   * disabled later, all the bitmaps are ready. This prevents invalidates while
-   * the animation is running.
-   */
-  public void setApplyBitmapDeferred(final boolean isDeferred) {
-    if (mApplyBitmapDeferred != isDeferred) {
-      mApplyBitmapDeferred = isDeferred;
-      if (!mApplyBitmapDeferred && mDeferredBitmap != null) {
-        applyPreview(mDeferredBitmap);
-        mDeferredBitmap = null;
-      }
-    }
-  }
+/**
+ * Sets if applying bitmap preview should be deferred. The UI will still load
+ * the bitmap, but will not cause invalidate, so that when deferring is
+ * disabled later, all the bitmaps are ready. This prevents invalidates while
+ * the animation is running.
+ */
+public void setApplyBitmapDeferred(final boolean isDeferred) {
+	if (mApplyBitmapDeferred != isDeferred) {
+		mApplyBitmapDeferred = isDeferred;
+		if (!mApplyBitmapDeferred && mDeferredBitmap != null) {
+			applyPreview(mDeferredBitmap);
+			mDeferredBitmap = null;
+		}
+	}
+}
 
-  public void setAnimatePreview(final boolean shouldAnimate) {
-    mAnimatePreview = shouldAnimate;
-  }
+public void setAnimatePreview(final boolean shouldAnimate) {
+	mAnimatePreview = shouldAnimate;
+}
 
-  public void applyPreview(final Bitmap bitmap) {
-    if (mApplyBitmapDeferred) {
-      mDeferredBitmap = bitmap;
-      return;
-    }
-    if (bitmap != null) {
-      mWidgetImage.setBitmap(bitmap,
-                             DrawableFactory.get(getContext())
-                                 .getBadgeForUser(mItem.user, getContext()));
-      if (mAnimatePreview) {
-        mWidgetImage.setAlpha(0f);
-        ViewPropertyAnimator anim = mWidgetImage.animate();
-        anim.alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
-      } else {
-        mWidgetImage.setAlpha(1f);
-      }
-    }
-  }
+public void applyPreview(final Bitmap bitmap) {
+	if (mApplyBitmapDeferred) {
+		mDeferredBitmap = bitmap;
+		return;
+	}
+	if (bitmap != null) {
+		mWidgetImage.setBitmap(bitmap,
+		                       DrawableFactory.get(getContext())
+		                       .getBadgeForUser(mItem.user, getContext()));
+		if (mAnimatePreview) {
+			mWidgetImage.setAlpha(0f);
+			ViewPropertyAnimator anim = mWidgetImage.animate();
+			anim.alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
+		} else {
+			mWidgetImage.setAlpha(1f);
+		}
+	}
+}
 
-  public void ensurePreview() {
-    if (mActiveRequest != null) {
-      return;
-    }
-    mActiveRequest = mWidgetPreviewLoader.getPreview(mItem, mPresetPreviewSize,
-                                                     mPresetPreviewSize, this);
-  }
+public void ensurePreview() {
+	if (mActiveRequest != null) {
+		return;
+	}
+	mActiveRequest = mWidgetPreviewLoader.getPreview(mItem, mPresetPreviewSize,
+	                                                 mPresetPreviewSize, this);
+}
 
-  @Override
-  public void onLayoutChange(final View v, final int left, final int top,
-                             final int right, final int bottom,
-                             final int oldLeft, final int oldTop,
-                             final int oldRight, final int oldBottom) {
-    removeOnLayoutChangeListener(this);
-    ensurePreview();
-  }
+@Override
+public void onLayoutChange(final View v, final int left, final int top,
+                           final int right, final int bottom,
+                           final int oldLeft, final int oldTop,
+                           final int oldRight, final int oldBottom) {
+	removeOnLayoutChangeListener(this);
+	ensurePreview();
+}
 
-  @Override
-  public boolean onTouchEvent(final MotionEvent ev) {
-    boolean handled = super.onTouchEvent(ev);
-    if (mStylusEventHelper.onMotionEvent(ev)) {
-      return true;
-    }
-    return handled;
-  }
+@Override
+public boolean onTouchEvent(final MotionEvent ev) {
+	boolean handled = super.onTouchEvent(ev);
+	if (mStylusEventHelper.onMotionEvent(ev)) {
+		return true;
+	}
+	return handled;
+}
 
-  /**
-   * Helper method to get the string info of the tag.
-   */
-  private String getTagToString() {
-    if (getTag() instanceof PendingAddWidgetInfo ||
-        getTag() instanceof PendingAddShortcutInfo) {
-      return getTag().toString();
-    }
-    return "";
-  }
+/**
+ * Helper method to get the string info of the tag.
+ */
+private String getTagToString() {
+	if (getTag() instanceof PendingAddWidgetInfo ||
+	    getTag() instanceof PendingAddShortcutInfo) {
+		return getTag().toString();
+	}
+	return "";
+}
 
-  @Override
-  public void setLayoutParams(final ViewGroup.LayoutParams params) {
-    params.width = params.height = mCellSize;
-    super.setLayoutParams(params);
-  }
+@Override
+public void setLayoutParams(final ViewGroup.LayoutParams params) {
+	params.width = params.height = mCellSize;
+	super.setLayoutParams(params);
+}
 
-  @Override
-  public CharSequence getAccessibilityClassName() {
-    return WidgetCell.class.getName();
-  }
+@Override
+public CharSequence getAccessibilityClassName() {
+	return WidgetCell.class.getName();
+}
 }

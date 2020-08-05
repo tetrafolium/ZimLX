@@ -32,31 +32,33 @@ import java.util.function.Consumer;
 @TargetApi(Build.VERSION_CODES.O)
 public class PendingAnimation {
 
-  private final ArrayList<Consumer<OnEndListener>> mEndListeners =
-      new ArrayList<>();
+private final ArrayList<Consumer<OnEndListener> > mEndListeners =
+	new ArrayList<>();
 
-  public final AnimatorSet anim;
+public final AnimatorSet anim;
 
-  public PendingAnimation(final AnimatorSet anim) { this.anim = anim; }
+public PendingAnimation(final AnimatorSet anim) {
+	this.anim = anim;
+}
 
-  public void finish(final boolean isSuccess, final int logAction) {
-    for (Consumer<OnEndListener> listeners : mEndListeners) {
-      listeners.accept(new OnEndListener(isSuccess, logAction));
-    }
-    mEndListeners.clear();
-  }
+public void finish(final boolean isSuccess, final int logAction) {
+	for (Consumer<OnEndListener> listeners : mEndListeners) {
+		listeners.accept(new OnEndListener(isSuccess, logAction));
+	}
+	mEndListeners.clear();
+}
 
-  public void addEndListener(final Consumer<OnEndListener> listener) {
-    mEndListeners.add(listener);
-  }
+public void addEndListener(final Consumer<OnEndListener> listener) {
+	mEndListeners.add(listener);
+}
 
-  public static class OnEndListener {
-    public boolean isSuccess;
-    public int logAction;
+public static class OnEndListener {
+public boolean isSuccess;
+public int logAction;
 
-    public OnEndListener(final boolean isSuccess, final int logAction) {
-      this.isSuccess = isSuccess;
-      this.logAction = logAction;
-    }
-  }
+public OnEndListener(final boolean isSuccess, final int logAction) {
+	this.isSuccess = isSuccess;
+	this.logAction = logAction;
+}
+}
 }

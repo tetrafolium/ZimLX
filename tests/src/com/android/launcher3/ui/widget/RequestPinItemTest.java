@@ -59,169 +59,171 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class RequestPinItemTest extends AbstractLauncherUiTest {
 
-  @Rule
-  public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
-  @Rule
-  public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
-  @Rule
-  public ShellCommandRule mDefaultLauncherRule =
-      ShellCommandRule.setDefaultLauncher();
+@Rule
+public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
+@Rule
+public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
+@Rule
+public ShellCommandRule mDefaultLauncherRule =
+	ShellCommandRule.setDefaultLauncher();
 
-  private String mCallbackAction;
-  private String mShortcutId;
-  private int mAppWidgetId;
+private String mCallbackAction;
+private String mShortcutId;
+private int mAppWidgetId;
 
-  @Override
-  @Before
-  public void setUp() throws Exception {
-    super.setUp();
-    mCallbackAction = UUID.randomUUID().toString();
-    mShortcutId = UUID.randomUUID().toString();
-  }
+@Override
+@Before
+public void setUp() throws Exception {
+	super.setUp();
+	mCallbackAction = UUID.randomUUID().toString();
+	mShortcutId = UUID.randomUUID().toString();
+}
 
-  @Test
-  public void testPinWidgetNoConfig() throws Throwable {
-    runTest("pinWidgetNoConfig", true, new ItemOperator() {
-      @Override
-      public boolean evaluate(final ItemInfo info, final View view) {
-        return info instanceof LauncherAppWidgetInfo &&
-            ((LauncherAppWidgetInfo)info).appWidgetId == mAppWidgetId &&
-            ((LauncherAppWidgetInfo)info)
-                .providerName.getClassName()
-                .equals(AppWidgetNoConfig.class.getName());
-      }
-    });
-  }
+@Test
+public void testPinWidgetNoConfig() throws Throwable {
+	runTest("pinWidgetNoConfig", true, new ItemOperator() {
+			@Override
+			public boolean evaluate(final ItemInfo info, final View view) {
+			        return info instanceof LauncherAppWidgetInfo &&
+			        ((LauncherAppWidgetInfo)info).appWidgetId == mAppWidgetId &&
+			        ((LauncherAppWidgetInfo)info)
+			        .providerName.getClassName()
+			        .equals(AppWidgetNoConfig.class.getName());
+			}
+		});
+}
 
-  @Test
-  public void testPinWidgetNoConfig_customPreview() throws Throwable {
-    // Command to set custom preview
-    Intent command =
-        RequestPinItemActivity
-            .getCommandIntent(RequestPinItemActivity.class,
-                              "setRemoteViewColor")
-            .putExtra(RequestPinItemActivity.EXTRA_PARAM + "0", Color.RED);
+@Test
+public void testPinWidgetNoConfig_customPreview() throws Throwable {
+	// Command to set custom preview
+	Intent command =
+		RequestPinItemActivity
+		.getCommandIntent(RequestPinItemActivity.class,
+		                  "setRemoteViewColor")
+		.putExtra(RequestPinItemActivity.EXTRA_PARAM + "0", Color.RED);
 
-    runTest("pinWidgetNoConfig", true, new ItemOperator() {
-      @Override
-      public boolean evaluate(final ItemInfo info, final View view) {
-        return info instanceof LauncherAppWidgetInfo &&
-            ((LauncherAppWidgetInfo)info).appWidgetId == mAppWidgetId &&
-            ((LauncherAppWidgetInfo)info)
-                .providerName.getClassName()
-                .equals(AppWidgetNoConfig.class.getName());
-      }
-    }, command);
-  }
+	runTest("pinWidgetNoConfig", true, new ItemOperator() {
+			@Override
+			public boolean evaluate(final ItemInfo info, final View view) {
+			        return info instanceof LauncherAppWidgetInfo &&
+			        ((LauncherAppWidgetInfo)info).appWidgetId == mAppWidgetId &&
+			        ((LauncherAppWidgetInfo)info)
+			        .providerName.getClassName()
+			        .equals(AppWidgetNoConfig.class.getName());
+			}
+		}, command);
+}
 
-  @Test
-  public void testPinWidgetWithConfig() throws Throwable {
-    runTest("pinWidgetWithConfig", true, new ItemOperator() {
-      @Override
-      public boolean evaluate(final ItemInfo info, final View view) {
-        return info instanceof LauncherAppWidgetInfo &&
-            ((LauncherAppWidgetInfo)info).appWidgetId == mAppWidgetId &&
-            ((LauncherAppWidgetInfo)info)
-                .providerName.getClassName()
-                .equals(AppWidgetWithConfig.class.getName());
-      }
-    });
-  }
+@Test
+public void testPinWidgetWithConfig() throws Throwable {
+	runTest("pinWidgetWithConfig", true, new ItemOperator() {
+			@Override
+			public boolean evaluate(final ItemInfo info, final View view) {
+			        return info instanceof LauncherAppWidgetInfo &&
+			        ((LauncherAppWidgetInfo)info).appWidgetId == mAppWidgetId &&
+			        ((LauncherAppWidgetInfo)info)
+			        .providerName.getClassName()
+			        .equals(AppWidgetWithConfig.class.getName());
+			}
+		});
+}
 
-  @Test
-  public void testPinShortcut() throws Throwable {
-    // Command to set the shortcut id
-    Intent command =
-        RequestPinItemActivity
-            .getCommandIntent(RequestPinItemActivity.class, "setShortcutId")
-            .putExtra(RequestPinItemActivity.EXTRA_PARAM + "0", mShortcutId);
+@Test
+public void testPinShortcut() throws Throwable {
+	// Command to set the shortcut id
+	Intent command =
+		RequestPinItemActivity
+		.getCommandIntent(RequestPinItemActivity.class, "setShortcutId")
+		.putExtra(RequestPinItemActivity.EXTRA_PARAM + "0", mShortcutId);
 
-    runTest("pinShortcut", false, new ItemOperator() {
-      @Override
-      public boolean evaluate(final ItemInfo info, final View view) {
-        return info instanceof ShortcutInfo &&
-            info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
-            ShortcutKey.fromItemInfo(info).getId().equals(mShortcutId);
-      }
-    }, command);
-  }
+	runTest("pinShortcut", false, new ItemOperator() {
+			@Override
+			public boolean evaluate(final ItemInfo info, final View view) {
+			        return info instanceof ShortcutInfo &&
+			        info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
+			        ShortcutKey.fromItemInfo(info).getId().equals(mShortcutId);
+			}
+		}, command);
+}
 
-  private void runTest(final String activityMethod, final boolean isWidget,
-                       final ItemOperator itemMatcher,
-                       final Intent... commandIntents) throws Throwable {
-    if (!Utilities.ATLEAST_OREO) {
-      return;
-    }
-    lockRotation(true);
+private void runTest(final String activityMethod, final boolean isWidget,
+                     final ItemOperator itemMatcher,
+                     final Intent... commandIntents) throws Throwable {
+	if (!Utilities.ATLEAST_OREO) {
+		return;
+	}
+	lockRotation(true);
 
-    clearHomescreen();
-    mActivityMonitor.startLauncher();
+	clearHomescreen();
+	mActivityMonitor.startLauncher();
 
-    // Open all apps and wait for load complete
-    final UiObject2 appsContainer = openAllApps();
-    assertTrue(Wait.atMost(Condition.minChildCount(appsContainer, 2),
-                           DEFAULT_UI_TIMEOUT));
+	// Open all apps and wait for load complete
+	final UiObject2 appsContainer = openAllApps();
+	assertTrue(Wait.atMost(Condition.minChildCount(appsContainer, 2),
+	                       DEFAULT_UI_TIMEOUT));
 
-    // Open Pin item activity
-    BlockingBroadcastReceiver openMonitor =
-        new BlockingBroadcastReceiver(RequestPinItemActivity.class.getName());
-    scrollAndFind(appsContainer, By.text("Test Pin Item")).click();
-    assertNotNull(openMonitor.blockingGetExtraIntent());
+	// Open Pin item activity
+	BlockingBroadcastReceiver openMonitor =
+		new BlockingBroadcastReceiver(RequestPinItemActivity.class.getName());
+	scrollAndFind(appsContainer, By.text("Test Pin Item")).click();
+	assertNotNull(openMonitor.blockingGetExtraIntent());
 
-    // Set callback
-    PendingIntent callback = PendingIntent.getBroadcast(
-        mTargetContext, 0, new Intent(mCallbackAction),
-        PendingIntent.FLAG_ONE_SHOT);
-    mTargetContext.sendBroadcast(
-        RequestPinItemActivity
-            .getCommandIntent(RequestPinItemActivity.class, "setCallback")
-            .putExtra(RequestPinItemActivity.EXTRA_PARAM + "0", callback));
+	// Set callback
+	PendingIntent callback = PendingIntent.getBroadcast(
+		mTargetContext, 0, new Intent(mCallbackAction),
+		PendingIntent.FLAG_ONE_SHOT);
+	mTargetContext.sendBroadcast(
+		RequestPinItemActivity
+		.getCommandIntent(RequestPinItemActivity.class, "setCallback")
+		.putExtra(RequestPinItemActivity.EXTRA_PARAM + "0", callback));
 
-    for (Intent command : commandIntents) {
-      mTargetContext.sendBroadcast(command);
-    }
+	for (Intent command : commandIntents) {
+		mTargetContext.sendBroadcast(command);
+	}
 
-    // call the requested method to start the flow
-    mTargetContext.sendBroadcast(RequestPinItemActivity.getCommandIntent(
-        RequestPinItemActivity.class, activityMethod));
-    UiObject2 widgetCell = mDevice.wait(
-        Until.findObject(By.clazz(WidgetCell.class)), DEFAULT_ACTIVITY_TIMEOUT);
-    assertNotNull(widgetCell);
+	// call the requested method to start the flow
+	mTargetContext.sendBroadcast(RequestPinItemActivity.getCommandIntent(
+					     RequestPinItemActivity.class, activityMethod));
+	UiObject2 widgetCell = mDevice.wait(
+		Until.findObject(By.clazz(WidgetCell.class)), DEFAULT_ACTIVITY_TIMEOUT);
+	assertNotNull(widgetCell);
 
-    // Accept confirmation:
-    BlockingBroadcastReceiver resultReceiver =
-        new BlockingBroadcastReceiver(mCallbackAction);
-    mDevice
-        .wait(Until.findObject(
-                  By.text(mTargetContext.getString(R.string.place_automatically)
-                              .toUpperCase())),
-              DEFAULT_UI_TIMEOUT)
-        .click();
-    Intent result = resultReceiver.blockingGetIntent();
-    assertNotNull(result);
-    mAppWidgetId = result.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-    if (isWidget) {
-      assertNotSame(-1, mAppWidgetId);
-    }
+	// Accept confirmation:
+	BlockingBroadcastReceiver resultReceiver =
+		new BlockingBroadcastReceiver(mCallbackAction);
+	mDevice
+	.wait(Until.findObject(
+		      By.text(mTargetContext.getString(R.string.place_automatically)
+		              .toUpperCase())),
+	      DEFAULT_UI_TIMEOUT)
+	.click();
+	Intent result = resultReceiver.blockingGetIntent();
+	assertNotNull(result);
+	mAppWidgetId = result.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+	if (isWidget) {
+		assertNotSame(-1, mAppWidgetId);
+	}
 
-    // Go back to home
-    mActivityMonitor.returnToHome();
-    assertTrue(Wait.atMost(new ItemSearchCondition(itemMatcher),
-                           DEFAULT_ACTIVITY_TIMEOUT));
-  }
+	// Go back to home
+	mActivityMonitor.returnToHome();
+	assertTrue(Wait.atMost(new ItemSearchCondition(itemMatcher),
+	                       DEFAULT_ACTIVITY_TIMEOUT));
+}
 
-  /**
-   * Condition for for an item
-   */
-  private class ItemSearchCondition extends Condition {
+/**
+ * Condition for for an item
+ */
+private class ItemSearchCondition extends Condition {
 
-    private final ItemOperator mOp;
+private final ItemOperator mOp;
 
-    ItemSearchCondition(final ItemOperator op) { mOp = op; }
+ItemSearchCondition(final ItemOperator op) {
+	mOp = op;
+}
 
-    @Override
-    public boolean isTrue() throws Throwable {
-      return mMainThreadExecutor.submit(mActivityMonitor.itemExists(mOp)).get();
-    }
-  }
+@Override
+public boolean isTrue() throws Throwable {
+	return mMainThreadExecutor.submit(mActivityMonitor.itemExists(mOp)).get();
+}
+}
 }

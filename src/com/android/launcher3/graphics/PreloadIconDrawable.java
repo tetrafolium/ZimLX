@@ -40,261 +40,263 @@ import java.lang.ref.WeakReference;
  */
 public class PreloadIconDrawable extends FastBitmapDrawable {
 
-  private static final Property<PreloadIconDrawable, Float> INTERNAL_STATE =
-      new Property<PreloadIconDrawable, Float>(Float.TYPE,
-                                               "internalStateProgress") {
-        @Override
-        public Float get(final PreloadIconDrawable object) {
-          return object.mInternalStateProgress;
-        }
+private static final Property<PreloadIconDrawable, Float> INTERNAL_STATE =
+	new Property<PreloadIconDrawable, Float>(Float.TYPE,
+	                                         "internalStateProgress") {
+	@Override
+	public Float get(final PreloadIconDrawable object) {
+		return object.mInternalStateProgress;
+	}
 
-        @Override
-        public void set(final PreloadIconDrawable object, final Float value) {
-          object.setInternalProgress(value);
-        }
-      };
+	@Override
+	public void set(final PreloadIconDrawable object, final Float value) {
+		object.setInternalProgress(value);
+	}
+};
 
-  public static final int PATH_SIZE = 100;
+public static final int PATH_SIZE = 100;
 
-  private static final float PROGRESS_WIDTH = 7;
-  private static final float PROGRESS_GAP = 2;
-  private static final int MAX_PAINT_ALPHA = 255;
+private static final float PROGRESS_WIDTH = 7;
+private static final float PROGRESS_GAP = 2;
+private static final int MAX_PAINT_ALPHA = 255;
 
-  private static final long DURATION_SCALE = 500;
+private static final long DURATION_SCALE = 500;
 
-  // The smaller the number, the faster the animation would be.
-  // Duration = COMPLETE_ANIM_FRACTION * DURATION_SCALE
-  private static final float COMPLETE_ANIM_FRACTION = 0.3f;
+// The smaller the number, the faster the animation would be.
+// Duration = COMPLETE_ANIM_FRACTION * DURATION_SCALE
+private static final float COMPLETE_ANIM_FRACTION = 0.3f;
 
-  private static final int COLOR_TRACK = 0x77EEEEEE;
-  private static final int COLOR_SHADOW = 0x55000000;
+private static final int COLOR_TRACK = 0x77EEEEEE;
+private static final int COLOR_SHADOW = 0x55000000;
 
-  private static final float SMALL_SCALE = 0.6f;
+private static final float SMALL_SCALE = 0.6f;
 
-  private static final SparseArray<WeakReference<Bitmap>> sShadowCache =
-      new SparseArray<>();
+private static final SparseArray<WeakReference<Bitmap> > sShadowCache =
+	new SparseArray<>();
 
-  private final Matrix mTmpMatrix = new Matrix();
-  private final PathMeasure mPathMeasure = new PathMeasure();
+private final Matrix mTmpMatrix = new Matrix();
+private final PathMeasure mPathMeasure = new PathMeasure();
 
-  private final ItemInfoWithIcon mItem;
+private final ItemInfoWithIcon mItem;
 
-  // Path in [0, 100] bounds.
-  private final Path mProgressPath;
+// Path in [0, 100] bounds.
+private final Path mProgressPath;
 
-  private final Path mScaledTrackPath;
-  private final Path mScaledProgressPath;
-  private final Paint mProgressPaint;
+private final Path mScaledTrackPath;
+private final Path mScaledProgressPath;
+private final Paint mProgressPaint;
 
-  private Bitmap mShadowBitmap;
-  private final int mIndicatorColor;
+private Bitmap mShadowBitmap;
+private final int mIndicatorColor;
 
-  private int mTrackAlpha;
-  private float mTrackLength;
-  private float mIconScale;
+private int mTrackAlpha;
+private float mTrackLength;
+private float mIconScale;
 
-  private boolean mRanFinishAnimation;
+private boolean mRanFinishAnimation;
 
-  // Progress of the internal state. [0, 1] indicates the fraction of completed
-  // progress, [1, (1 + COMPLETE_ANIM_FRACTION)] indicates the progress of zoom
-  // animation.
-  private float mInternalStateProgress;
+// Progress of the internal state. [0, 1] indicates the fraction of completed
+// progress, [1, (1 + COMPLETE_ANIM_FRACTION)] indicates the progress of zoom
+// animation.
+private float mInternalStateProgress;
 
-  private ObjectAnimator mCurrentAnim;
+private ObjectAnimator mCurrentAnim;
 
-  /**
-   * @param progressPath fixed path in the bounds [0, 0, 100, 100] representing
-   *     a progress bar.
-   */
-  public PreloadIconDrawable(final ItemInfoWithIcon info,
-                             final Path progressPath, final Context context) {
-    super(info);
-    mItem = info;
-    mProgressPath = progressPath;
-    mScaledTrackPath = new Path();
-    mScaledProgressPath = new Path();
+/**
+ * @param progressPath fixed path in the bounds [0, 0, 100, 100] representing
+ *     a progress bar.
+ */
+public PreloadIconDrawable(final ItemInfoWithIcon info,
+                           final Path progressPath, final Context context) {
+	super(info);
+	mItem = info;
+	mProgressPath = progressPath;
+	mScaledTrackPath = new Path();
+	mScaledProgressPath = new Path();
 
-    mProgressPaint =
-        new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-    mProgressPaint.setStyle(Paint.Style.STROKE);
-    mProgressPaint.setStrokeCap(Paint.Cap.ROUND);
-    mIndicatorColor = IconPalette.getPreloadProgressColor(context, mIconColor);
+	mProgressPaint =
+		new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+	mProgressPaint.setStyle(Paint.Style.STROKE);
+	mProgressPaint.setStrokeCap(Paint.Cap.ROUND);
+	mIndicatorColor = IconPalette.getPreloadProgressColor(context, mIconColor);
 
-    setInternalProgress(0);
-  }
+	setInternalProgress(0);
+}
 
-  @Override
-  protected void onBoundsChange(final Rect bounds) {
-    super.onBoundsChange(bounds);
-    mTmpMatrix.setScale(
-        (bounds.width() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE,
-        (bounds.height() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE);
-    mTmpMatrix.postTranslate(bounds.left + PROGRESS_WIDTH + PROGRESS_GAP,
-                             bounds.top + PROGRESS_WIDTH + PROGRESS_GAP);
+@Override
+protected void onBoundsChange(final Rect bounds) {
+	super.onBoundsChange(bounds);
+	mTmpMatrix.setScale(
+		(bounds.width() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE,
+		(bounds.height() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE);
+	mTmpMatrix.postTranslate(bounds.left + PROGRESS_WIDTH + PROGRESS_GAP,
+	                         bounds.top + PROGRESS_WIDTH + PROGRESS_GAP);
 
-    mProgressPath.transform(mTmpMatrix, mScaledTrackPath);
-    float scale = bounds.width() / PATH_SIZE;
-    mProgressPaint.setStrokeWidth(PROGRESS_WIDTH * scale);
+	mProgressPath.transform(mTmpMatrix, mScaledTrackPath);
+	float scale = bounds.width() / PATH_SIZE;
+	mProgressPaint.setStrokeWidth(PROGRESS_WIDTH * scale);
 
-    mShadowBitmap =
-        getShadowBitmap(bounds.width(), bounds.height(), (PROGRESS_GAP)*scale);
-    mPathMeasure.setPath(mScaledTrackPath, true);
-    mTrackLength = mPathMeasure.getLength();
+	mShadowBitmap =
+		getShadowBitmap(bounds.width(), bounds.height(), (PROGRESS_GAP)*scale);
+	mPathMeasure.setPath(mScaledTrackPath, true);
+	mTrackLength = mPathMeasure.getLength();
 
-    setInternalProgress(mInternalStateProgress);
-  }
+	setInternalProgress(mInternalStateProgress);
+}
 
-  private Bitmap getShadowBitmap(final int width, final int height,
-                                 final float shadowRadius) {
-    int key = (width << 16) | height;
-    WeakReference<Bitmap> shadowRef = sShadowCache.get(key);
-    Bitmap shadow = shadowRef != null ? shadowRef.get() : null;
-    if (shadow != null) {
-      return shadow;
-    }
-    shadow = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-    Canvas c = new Canvas(shadow);
-    mProgressPaint.setShadowLayer(shadowRadius, 0, 0, COLOR_SHADOW);
-    mProgressPaint.setColor(COLOR_TRACK);
-    mProgressPaint.setAlpha(MAX_PAINT_ALPHA);
-    c.drawPath(mScaledTrackPath, mProgressPaint);
-    mProgressPaint.clearShadowLayer();
-    c.setBitmap(null);
+private Bitmap getShadowBitmap(final int width, final int height,
+                               final float shadowRadius) {
+	int key = (width << 16) | height;
+	WeakReference<Bitmap> shadowRef = sShadowCache.get(key);
+	Bitmap shadow = shadowRef != null ? shadowRef.get() : null;
+	if (shadow != null) {
+		return shadow;
+	}
+	shadow = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+	Canvas c = new Canvas(shadow);
+	mProgressPaint.setShadowLayer(shadowRadius, 0, 0, COLOR_SHADOW);
+	mProgressPaint.setColor(COLOR_TRACK);
+	mProgressPaint.setAlpha(MAX_PAINT_ALPHA);
+	c.drawPath(mScaledTrackPath, mProgressPaint);
+	mProgressPaint.clearShadowLayer();
+	c.setBitmap(null);
 
-    sShadowCache.put(key, new WeakReference<>(shadow));
-    return shadow;
-  }
+	sShadowCache.put(key, new WeakReference<>(shadow));
+	return shadow;
+}
 
-  @Override
-  public void drawInternal(final Canvas canvas, final Rect bounds) {
-    if (mRanFinishAnimation) {
-      super.drawInternal(canvas, bounds);
-      return;
-    }
+@Override
+public void drawInternal(final Canvas canvas, final Rect bounds) {
+	if (mRanFinishAnimation) {
+		super.drawInternal(canvas, bounds);
+		return;
+	}
 
-    // Draw track.
-    mProgressPaint.setColor(mIndicatorColor);
-    mProgressPaint.setAlpha(mTrackAlpha);
-    if (mShadowBitmap != null) {
-      canvas.drawBitmap(mShadowBitmap, bounds.left, bounds.top, mProgressPaint);
-    }
-    canvas.drawPath(mScaledProgressPath, mProgressPaint);
+	// Draw track.
+	mProgressPaint.setColor(mIndicatorColor);
+	mProgressPaint.setAlpha(mTrackAlpha);
+	if (mShadowBitmap != null) {
+		canvas.drawBitmap(mShadowBitmap, bounds.left, bounds.top, mProgressPaint);
+	}
+	canvas.drawPath(mScaledProgressPath, mProgressPaint);
 
-    int saveCount = canvas.save();
-    canvas.scale(mIconScale, mIconScale, bounds.exactCenterX(),
-                 bounds.exactCenterY());
-    super.drawInternal(canvas, bounds);
-    canvas.restoreToCount(saveCount);
-  }
+	int saveCount = canvas.save();
+	canvas.scale(mIconScale, mIconScale, bounds.exactCenterX(),
+	             bounds.exactCenterY());
+	super.drawInternal(canvas, bounds);
+	canvas.restoreToCount(saveCount);
+}
 
-  /**
-   * Updates the install progress based on the level
-   */
-  @Override
-  protected boolean onLevelChange(final int level) {
-    // Run the animation if we have already been bound.
-    updateInternalState(level * 0.01f, getBounds().width() > 0, false);
-    return true;
-  }
+/**
+ * Updates the install progress based on the level
+ */
+@Override
+protected boolean onLevelChange(final int level) {
+	// Run the animation if we have already been bound.
+	updateInternalState(level * 0.01f, getBounds().width() > 0, false);
+	return true;
+}
 
-  /**
-   * Runs the finish animation if it is has not been run after last call to
-   * {@link #onLevelChange}
-   */
-  public void maybePerformFinishedAnimation() {
-    // If the drawable was recently initialized, skip the progress animation.
-    if (mInternalStateProgress == 0) {
-      mInternalStateProgress = 1;
-    }
-    updateInternalState(1 + COMPLETE_ANIM_FRACTION, true, true);
-  }
+/**
+ * Runs the finish animation if it is has not been run after last call to
+ * {@link #onLevelChange}
+ */
+public void maybePerformFinishedAnimation() {
+	// If the drawable was recently initialized, skip the progress animation.
+	if (mInternalStateProgress == 0) {
+		mInternalStateProgress = 1;
+	}
+	updateInternalState(1 + COMPLETE_ANIM_FRACTION, true, true);
+}
 
-  public boolean hasNotCompleted() { return !mRanFinishAnimation; }
+public boolean hasNotCompleted() {
+	return !mRanFinishAnimation;
+}
 
-  private void updateInternalState(final float finalProgress,
-                                   final boolean shouldAnimate,
-                                   final boolean isFinish) {
-    if (mCurrentAnim != null) {
-      mCurrentAnim.cancel();
-      mCurrentAnim = null;
-    }
+private void updateInternalState(final float finalProgress,
+                                 final boolean shouldAnimate,
+                                 final boolean isFinish) {
+	if (mCurrentAnim != null) {
+		mCurrentAnim.cancel();
+		mCurrentAnim = null;
+	}
 
-    if (Float.compare(finalProgress, mInternalStateProgress) == 0) {
-      return;
-    }
-    if (finalProgress < mInternalStateProgress) {
-      shouldAnimate = false;
-    }
-    if (!shouldAnimate || mRanFinishAnimation) {
-      setInternalProgress(finalProgress);
-    } else {
-      mCurrentAnim =
-          ObjectAnimator.ofFloat(this, INTERNAL_STATE, finalProgress);
-      mCurrentAnim.setDuration(
-          (long)((finalProgress - mInternalStateProgress) * DURATION_SCALE));
-      mCurrentAnim.setInterpolator(Interpolators.LINEAR);
-      if (isFinish) {
-        mCurrentAnim.addListener(new AnimatorListenerAdapter() {
-          @Override
-          public void onAnimationEnd(final Animator animation) {
-            mRanFinishAnimation = true;
-          }
-        });
-      }
-      mCurrentAnim.start();
-    }
-  }
+	if (Float.compare(finalProgress, mInternalStateProgress) == 0) {
+		return;
+	}
+	if (finalProgress < mInternalStateProgress) {
+		shouldAnimate = false;
+	}
+	if (!shouldAnimate || mRanFinishAnimation) {
+		setInternalProgress(finalProgress);
+	} else {
+		mCurrentAnim =
+			ObjectAnimator.ofFloat(this, INTERNAL_STATE, finalProgress);
+		mCurrentAnim.setDuration(
+			(long)((finalProgress - mInternalStateProgress) * DURATION_SCALE));
+		mCurrentAnim.setInterpolator(Interpolators.LINEAR);
+		if (isFinish) {
+			mCurrentAnim.addListener(new AnimatorListenerAdapter() {
+					@Override
+					public void onAnimationEnd(final Animator animation) {
+					        mRanFinishAnimation = true;
+					}
+				});
+		}
+		mCurrentAnim.start();
+	}
+}
 
-  /**
-   * Sets the internal progress and updates the UI accordingly
-   *   for progress <= 0:
-   *     - icon in the small scale and disabled state
-   *     - progress track is visible
-   *     - progress bar is not visible
-   *   for 0 < progress < 1
-   *     - icon in the small scale and disabled state
-   *     - progress track is visible
-   *     - progress bar is visible with dominant color. Progress bar is drawn as
-   * a fraction of
-   *       {@link #mScaledTrackPath}.
-   *       @see PathMeasure#getSegment(float, float, Path, boolean)
-   *   for 1 <= progress < (1 + COMPLETE_ANIM_FRACTION)
-   *     - we calculate fraction of progress in the above range
-   *     - progress track is drawn with alpha based on fraction
-   *     - progress bar is drawn at 100% with alpha based on fraction
-   *     - icon is scaled up based on fraction and is drawn in enabled state
-   *   for progress >= (1 + COMPLETE_ANIM_FRACTION)
-   *     - only icon is drawn in normal state
-   */
-  private void setInternalProgress(final float progress) {
-    mInternalStateProgress = progress;
-    if (progress <= 0) {
-      mIconScale = SMALL_SCALE;
-      mScaledTrackPath.reset();
-      mTrackAlpha = MAX_PAINT_ALPHA;
-      setIsDisabled(true);
-    }
+/**
+ * Sets the internal progress and updates the UI accordingly
+ *   for progress <= 0:
+ *     - icon in the small scale and disabled state
+ *     - progress track is visible
+ *     - progress bar is not visible
+ *   for 0 < progress < 1
+ *     - icon in the small scale and disabled state
+ *     - progress track is visible
+ *     - progress bar is visible with dominant color. Progress bar is drawn as
+ * a fraction of
+ *       {@link #mScaledTrackPath}.
+ *       @see PathMeasure#getSegment(float, float, Path, boolean)
+ *   for 1 <= progress < (1 + COMPLETE_ANIM_FRACTION)
+ *     - we calculate fraction of progress in the above range
+ *     - progress track is drawn with alpha based on fraction
+ *     - progress bar is drawn at 100% with alpha based on fraction
+ *     - icon is scaled up based on fraction and is drawn in enabled state
+ *   for progress >= (1 + COMPLETE_ANIM_FRACTION)
+ *     - only icon is drawn in normal state
+ */
+private void setInternalProgress(final float progress) {
+	mInternalStateProgress = progress;
+	if (progress <= 0) {
+		mIconScale = SMALL_SCALE;
+		mScaledTrackPath.reset();
+		mTrackAlpha = MAX_PAINT_ALPHA;
+		setIsDisabled(true);
+	}
 
-    if (progress < 1 && progress > 0) {
-      mPathMeasure.getSegment(0, progress * mTrackLength, mScaledProgressPath,
-                              true);
-      mIconScale = SMALL_SCALE;
-      mTrackAlpha = MAX_PAINT_ALPHA;
-      setIsDisabled(true);
-    } else if (progress >= 1) {
-      setIsDisabled(mItem.isDisabled());
-      mScaledTrackPath.set(mScaledProgressPath);
-      float fraction = (progress - 1) / COMPLETE_ANIM_FRACTION;
+	if (progress < 1 && progress > 0) {
+		mPathMeasure.getSegment(0, progress * mTrackLength, mScaledProgressPath,
+		                        true);
+		mIconScale = SMALL_SCALE;
+		mTrackAlpha = MAX_PAINT_ALPHA;
+		setIsDisabled(true);
+	} else if (progress >= 1) {
+		setIsDisabled(mItem.isDisabled());
+		mScaledTrackPath.set(mScaledProgressPath);
+		float fraction = (progress - 1) / COMPLETE_ANIM_FRACTION;
 
-      if (fraction >= 1) {
-        // Animation has completed
-        mIconScale = 1;
-        mTrackAlpha = 0;
-      } else {
-        mTrackAlpha = Math.round((1 - fraction) * MAX_PAINT_ALPHA);
-        mIconScale = SMALL_SCALE + (1 - SMALL_SCALE) * fraction;
-      }
-    }
-    invalidateSelf();
-  }
+		if (fraction >= 1) {
+			// Animation has completed
+			mIconScale = 1;
+			mTrackAlpha = 0;
+		} else {
+			mTrackAlpha = Math.round((1 - fraction) * MAX_PAINT_ALPHA);
+			mIconScale = SMALL_SCALE + (1 - SMALL_SCALE) * fraction;
+		}
+	}
+	invalidateSelf();
+}
 }

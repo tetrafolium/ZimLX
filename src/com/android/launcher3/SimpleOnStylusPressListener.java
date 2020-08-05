@@ -9,13 +9,17 @@ import com.android.launcher3.StylusEventHelper.StylusButtonListener;
  * press.
  */
 public class SimpleOnStylusPressListener implements StylusButtonListener {
-  private View mView;
+private View mView;
 
-  public SimpleOnStylusPressListener(final View view) { mView = view; }
+public SimpleOnStylusPressListener(final View view) {
+	mView = view;
+}
 
-  public boolean onPressed(final MotionEvent event) {
-    return mView.isLongClickable() && mView.performLongClick();
-  }
+public boolean onPressed(final MotionEvent event) {
+	return mView.isLongClickable() && mView.performLongClick();
+}
 
-  public boolean onReleased(final MotionEvent event) { return false; }
+public boolean onReleased(final MotionEvent event) {
+	return false;
+}
 }

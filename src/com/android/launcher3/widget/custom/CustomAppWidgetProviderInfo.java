@@ -29,86 +29,87 @@ import com.android.launcher3.Utilities;
  * extra functionality by allowing custom code and views.
  */
 public class CustomAppWidgetProviderInfo
-    extends LauncherAppWidgetProviderInfo implements Parcelable {
+	extends LauncherAppWidgetProviderInfo implements Parcelable {
 
-  public final int providerId;
-  public final boolean noPadding;
-  public int customizeTitle;
-  public int customizeScreen;
-  public boolean customizeHasPreview;
+public final int providerId;
+public final boolean noPadding;
+public int customizeTitle;
+public int customizeScreen;
+public boolean customizeHasPreview;
 
-  protected CustomAppWidgetProviderInfo(final Parcel parcel,
-                                        final boolean readSelf,
-                                        final int providerId,
-                                        final boolean noPadding) {
-    super(parcel);
-    if (readSelf) {
-      this.providerId = parcel.readInt();
-      this.noPadding = parcel.readByte() != 0;
-      this.customizeTitle = parcel.readInt();
-      this.customizeScreen = parcel.readInt();
-      this.customizeHasPreview = parcel.readByte() != 0;
+protected CustomAppWidgetProviderInfo(final Parcel parcel,
+                                      final boolean readSelf,
+                                      final int providerId,
+                                      final boolean noPadding) {
+	super(parcel);
+	if (readSelf) {
+		this.providerId = parcel.readInt();
+		this.noPadding = parcel.readByte() != 0;
+		this.customizeTitle = parcel.readInt();
+		this.customizeScreen = parcel.readInt();
+		this.customizeHasPreview = parcel.readByte() != 0;
 
-      provider = new ComponentName(parcel.readString(),
-                                   CLS_CUSTOM_WIDGET_PREFIX + providerId);
+		provider = new ComponentName(parcel.readString(),
+		                             CLS_CUSTOM_WIDGET_PREFIX + providerId);
 
-      label = parcel.readString();
-      initialLayout = parcel.readInt();
-      icon = parcel.readInt();
-      previewImage = parcel.readInt();
+		label = parcel.readString();
+		initialLayout = parcel.readInt();
+		icon = parcel.readInt();
+		previewImage = parcel.readInt();
 
-      resizeMode = parcel.readInt();
-      spanX = parcel.readInt();
-      spanY = parcel.readInt();
-      minSpanX = parcel.readInt();
-      minSpanY = parcel.readInt();
-    } else {
-      this.providerId = providerId;
-      this.noPadding = noPadding;
-    }
-  }
+		resizeMode = parcel.readInt();
+		spanX = parcel.readInt();
+		spanY = parcel.readInt();
+		minSpanX = parcel.readInt();
+		minSpanY = parcel.readInt();
+	} else {
+		this.providerId = providerId;
+		this.noPadding = noPadding;
+	}
+}
 
-  @Override
-  public void initSpans(final Context context) {}
+@Override
+public void initSpans(final Context context) {
+}
 
-  @Override
-  public String getLabel(final PackageManager packageManager) {
-    return Utilities.trim(label);
-  }
+@Override
+public String getLabel(final PackageManager packageManager) {
+	return Utilities.trim(label);
+}
 
-  @Override
-  public String toString() {
-    return "WidgetProviderInfo(" + provider + ")";
-  }
+@Override
+public String toString() {
+	return "WidgetProviderInfo(" + provider + ")";
+}
 
-  @Override
-  public void writeToParcel(final Parcel out, final int flags) {
-    super.writeToParcel(out, flags);
-    out.writeInt(providerId);
-    out.writeString(provider.getPackageName());
+@Override
+public void writeToParcel(final Parcel out, final int flags) {
+	super.writeToParcel(out, flags);
+	out.writeInt(providerId);
+	out.writeString(provider.getPackageName());
 
-    out.writeString(label);
-    out.writeInt(initialLayout);
-    out.writeInt(icon);
-    out.writeInt(previewImage);
+	out.writeString(label);
+	out.writeInt(initialLayout);
+	out.writeInt(icon);
+	out.writeInt(previewImage);
 
-    out.writeInt(resizeMode);
-    out.writeInt(spanX);
-    out.writeInt(spanY);
-    out.writeInt(minSpanX);
-    out.writeInt(minSpanY);
-  }
+	out.writeInt(resizeMode);
+	out.writeInt(spanX);
+	out.writeInt(spanY);
+	out.writeInt(minSpanX);
+	out.writeInt(minSpanY);
+}
 
-  public static final Parcelable.Creator<CustomAppWidgetProviderInfo> CREATOR =
-      new Parcelable.Creator<CustomAppWidgetProviderInfo>() {
-        @Override
-        public CustomAppWidgetProviderInfo createFromParcel(
-            final Parcel parcel) {
-          return new CustomAppWidgetProviderInfo(parcel, true, 0, false);
-        }
-        @Override
-        public CustomAppWidgetProviderInfo[] newArray(final int size) {
-          return new CustomAppWidgetProviderInfo[size];
-        }
-      };
+public static final Parcelable.Creator<CustomAppWidgetProviderInfo> CREATOR =
+	new Parcelable.Creator<CustomAppWidgetProviderInfo>() {
+	@Override
+	public CustomAppWidgetProviderInfo createFromParcel(
+		final Parcel parcel) {
+		return new CustomAppWidgetProviderInfo(parcel, true, 0, false);
+	}
+	@Override
+	public CustomAppWidgetProviderInfo[] newArray(final int size) {
+		return new CustomAppWidgetProviderInfo[size];
+	}
+};
 }

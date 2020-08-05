@@ -8,64 +8,64 @@ import com.android.launcher3.FastBitmapDrawable;
 import java.util.TimeZone;
 
 public class AutoUpdateClock extends FastBitmapDrawable implements Runnable {
-  private ClockLayers mLayers;
+private ClockLayers mLayers;
 
-  AutoUpdateClock(final Bitmap bitmap, final ClockLayers layers) {
-    super(bitmap);
-    mLayers = layers;
-  }
+AutoUpdateClock(final Bitmap bitmap, final ClockLayers layers) {
+	super(bitmap);
+	mLayers = layers;
+}
 
-  private void rescheduleUpdate() {
-    long millisInSecond = 1000L;
-    unscheduleSelf(this);
-    long uptimeMillis = SystemClock.uptimeMillis();
-    scheduleSelf(this,
-                 uptimeMillis - uptimeMillis % millisInSecond + millisInSecond);
-  }
+private void rescheduleUpdate() {
+	long millisInSecond = 1000L;
+	unscheduleSelf(this);
+	long uptimeMillis = SystemClock.uptimeMillis();
+	scheduleSelf(this,
+	             uptimeMillis - uptimeMillis % millisInSecond + millisInSecond);
+}
 
-  void updateLayers(final ClockLayers layers) {
-    mLayers = layers;
-    if (mLayers != null) {
-      mLayers.mDrawable.setBounds(getBounds());
-    }
-    invalidateSelf();
-  }
+void updateLayers(final ClockLayers layers) {
+	mLayers = layers;
+	if (mLayers != null) {
+		mLayers.mDrawable.setBounds(getBounds());
+	}
+	invalidateSelf();
+}
 
-  void setTimeZone(final TimeZone timeZone) {
-    if (mLayers != null) {
-      mLayers.setTimeZone(timeZone);
-      invalidateSelf();
-    }
-  }
+void setTimeZone(final TimeZone timeZone) {
+	if (mLayers != null) {
+		mLayers.setTimeZone(timeZone);
+		invalidateSelf();
+	}
+}
 
-  @Override
-  public void draw(final Canvas canvas) {
-    super.draw(canvas);
-    if (mLayers == null) {
-      return;
-    }
-    mLayers.updateAngles();
-    Rect bounds = getBounds();
-    canvas.scale(mLayers.scale, mLayers.scale, bounds.exactCenterX(),
-                 bounds.exactCenterY());
-    mLayers.mDrawable.draw(canvas);
-    rescheduleUpdate();
-  }
+@Override
+public void draw(final Canvas canvas) {
+	super.draw(canvas);
+	if (mLayers == null) {
+		return;
+	}
+	mLayers.updateAngles();
+	Rect bounds = getBounds();
+	canvas.scale(mLayers.scale, mLayers.scale, bounds.exactCenterX(),
+	             bounds.exactCenterY());
+	mLayers.mDrawable.draw(canvas);
+	rescheduleUpdate();
+}
 
-  @Override
-  protected void onBoundsChange(final Rect bounds) {
-    super.onBoundsChange(bounds);
-    if (mLayers != null) {
-      mLayers.mDrawable.setBounds(bounds);
-    }
-  }
+@Override
+protected void onBoundsChange(final Rect bounds) {
+	super.onBoundsChange(bounds);
+	if (mLayers != null) {
+		mLayers.mDrawable.setBounds(bounds);
+	}
+}
 
-  @Override
-  public void run() {
-    if (mLayers.updateAngles()) {
-      invalidateSelf();
-    } else {
-      rescheduleUpdate();
-    }
-  }
+@Override
+public void run() {
+	if (mLayers.updateAngles()) {
+		invalidateSelf();
+	} else {
+		rescheduleUpdate();
+	}
+}
 }

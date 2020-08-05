@@ -17,118 +17,118 @@ import com.android.launcher3.config.FeatureFlags;
  * version change causes a DB reset.
  */
 public abstract class SQLiteCacheHelper {
-  private static final String TAG = "SQLiteCacheHelper";
+private static final String TAG = "SQLiteCacheHelper";
 
-  private static final boolean NO_ICON_CACHE =
-      FeatureFlags.IS_DOGFOOD_BUILD &&
-      Utilities.isPropertyEnabled(LogConfig.MEMORY_ONLY_ICON_CACHE);
+private static final boolean NO_ICON_CACHE =
+	FeatureFlags.IS_DOGFOOD_BUILD &&
+	Utilities.isPropertyEnabled(LogConfig.MEMORY_ONLY_ICON_CACHE);
 
-  private final String mTableName;
-  private final MySQLiteOpenHelper mOpenHelper;
+private final String mTableName;
+private final MySQLiteOpenHelper mOpenHelper;
 
-  private boolean mIgnoreWrites;
+private boolean mIgnoreWrites;
 
-  public SQLiteCacheHelper(final Context context, final String name,
-                           final int version, final String tableName) {
-    if (NO_ICON_CACHE) {
-      name = null;
-    }
-    mTableName = tableName;
-    mOpenHelper = new MySQLiteOpenHelper(context, name, version);
+public SQLiteCacheHelper(final Context context, final String name,
+                         final int version, final String tableName) {
+	if (NO_ICON_CACHE) {
+		name = null;
+	}
+	mTableName = tableName;
+	mOpenHelper = new MySQLiteOpenHelper(context, name, version);
 
-    mIgnoreWrites = false;
-  }
+	mIgnoreWrites = false;
+}
 
-  /**
-   * @see SQLiteDatabase#delete(String, String, String[])
-   */
-  public void delete(final String whereClause, final String[] whereArgs) {
-    if (mIgnoreWrites) {
-      return;
-    }
-    try {
-      mOpenHelper.getWritableDatabase().delete(mTableName, whereClause,
-                                               whereArgs);
-    } catch (SQLiteFullException e) {
-      onDiskFull(e);
-    } catch (SQLiteException e) {
-      Log.d(TAG, "Ignoring sqlite exception", e);
-    }
-  }
+/**
+ * @see SQLiteDatabase#delete(String, String, String[])
+ */
+public void delete(final String whereClause, final String[] whereArgs) {
+	if (mIgnoreWrites) {
+		return;
+	}
+	try {
+		mOpenHelper.getWritableDatabase().delete(mTableName, whereClause,
+		                                         whereArgs);
+	} catch (SQLiteFullException e) {
+		onDiskFull(e);
+	} catch (SQLiteException e) {
+		Log.d(TAG, "Ignoring sqlite exception", e);
+	}
+}
 
-  /**
-   * @see SQLiteDatabase#insertWithOnConflict(String, String, ContentValues,
-   *     int)
-   */
-  public void insertOrReplace(final ContentValues values) {
-    if (mIgnoreWrites) {
-      return;
-    }
-    try {
-      mOpenHelper.getWritableDatabase().insertWithOnConflict(
-          mTableName, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-    } catch (SQLiteFullException e) {
-      onDiskFull(e);
-    } catch (SQLiteException e) {
-      Log.d(TAG, "Ignoring sqlite exception", e);
-    }
-  }
+/**
+ * @see SQLiteDatabase#insertWithOnConflict(String, String, ContentValues,
+ *     int)
+ */
+public void insertOrReplace(final ContentValues values) {
+	if (mIgnoreWrites) {
+		return;
+	}
+	try {
+		mOpenHelper.getWritableDatabase().insertWithOnConflict(
+			mTableName, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+	} catch (SQLiteFullException e) {
+		onDiskFull(e);
+	} catch (SQLiteException e) {
+		Log.d(TAG, "Ignoring sqlite exception", e);
+	}
+}
 
-  private void onDiskFull(final SQLiteFullException e) {
-    Log.e(TAG, "Disk full, all write operations will be ignored", e);
-    mIgnoreWrites = true;
-  }
+private void onDiskFull(final SQLiteFullException e) {
+	Log.e(TAG, "Disk full, all write operations will be ignored", e);
+	mIgnoreWrites = true;
+}
 
-  /**
-   * @see SQLiteDatabase#query(String, String[], String, String[], String,
-   *     String, String)
-   */
-  public Cursor query(final String[] columns, final String selection,
-                      final String[] selectionArgs) {
-    return mOpenHelper.getReadableDatabase().query(
-        mTableName, columns, selection, selectionArgs, null, null, null);
-  }
+/**
+ * @see SQLiteDatabase#query(String, String[], String, String[], String,
+ *     String, String)
+ */
+public Cursor query(final String[] columns, final String selection,
+                    final String[] selectionArgs) {
+	return mOpenHelper.getReadableDatabase().query(
+		mTableName, columns, selection, selectionArgs, null, null, null);
+}
 
-  public void clear() {
-    mOpenHelper.clearDB(mOpenHelper.getWritableDatabase());
-  }
+public void clear() {
+	mOpenHelper.clearDB(mOpenHelper.getWritableDatabase());
+}
 
-  protected abstract void onCreateTable(SQLiteDatabase db);
+protected abstract void onCreateTable(SQLiteDatabase db);
 
-  /**
-   * A private inner class to prevent direct DB access.
-   */
-  private class MySQLiteOpenHelper extends SQLiteOpenHelper {
+/**
+ * A private inner class to prevent direct DB access.
+ */
+private class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
-    public MySQLiteOpenHelper(final Context context, final String name,
-                              final int version) {
-      super(new NoLocaleSqliteContext(context), name, null, version);
-    }
+public MySQLiteOpenHelper(final Context context, final String name,
+                          final int version) {
+	super(new NoLocaleSqliteContext(context), name, null, version);
+}
 
-    @Override
-    public void onCreate(final SQLiteDatabase db) {
-      onCreateTable(db);
-    }
+@Override
+public void onCreate(final SQLiteDatabase db) {
+	onCreateTable(db);
+}
 
-    @Override
-    public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
-                          final int newVersion) {
-      if (oldVersion != newVersion) {
-        clearDB(db);
-      }
-    }
+@Override
+public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
+                      final int newVersion) {
+	if (oldVersion != newVersion) {
+		clearDB(db);
+	}
+}
 
-    @Override
-    public void onDowngrade(final SQLiteDatabase db, final int oldVersion,
-                            final int newVersion) {
-      if (oldVersion != newVersion) {
-        clearDB(db);
-      }
-    }
+@Override
+public void onDowngrade(final SQLiteDatabase db, final int oldVersion,
+                        final int newVersion) {
+	if (oldVersion != newVersion) {
+		clearDB(db);
+	}
+}
 
-    private void clearDB(final SQLiteDatabase db) {
-      db.execSQL("DROP TABLE IF EXISTS " + mTableName);
-      onCreate(db);
-    }
-  }
+private void clearDB(final SQLiteDatabase db) {
+	db.execSQL("DROP TABLE IF EXISTS " + mTableName);
+	onCreate(db);
+}
+}
 }

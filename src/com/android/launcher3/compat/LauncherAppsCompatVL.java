@@ -40,186 +40,186 @@ import java.util.List;
 
 public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
-  protected final LauncherApps mLauncherApps;
-  protected final Context mContext;
+protected final LauncherApps mLauncherApps;
+protected final Context mContext;
 
-  private final ArrayMap<OnAppsChangedCallbackCompat, WrappedCallback>
-      mCallbacks = new ArrayMap<>();
+private final ArrayMap<OnAppsChangedCallbackCompat, WrappedCallback>
+mCallbacks = new ArrayMap<>();
 
-  LauncherAppsCompatVL(final Context context) {
-    mContext = context;
-    mLauncherApps =
-        (LauncherApps)context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
-  }
+LauncherAppsCompatVL(final Context context) {
+	mContext = context;
+	mLauncherApps =
+		(LauncherApps)context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+}
 
-  @Override
-  public List<LauncherActivityInfo> getActivityList(final String packageName,
-                                                    final UserHandle user) {
-    return mLauncherApps.getActivityList(packageName, user);
-  }
+@Override
+public List<LauncherActivityInfo> getActivityList(final String packageName,
+                                                  final UserHandle user) {
+	return mLauncherApps.getActivityList(packageName, user);
+}
 
-  @Override
-  public LauncherActivityInfo resolveActivity(final Intent intent,
-                                              final UserHandle user) {
-    return mLauncherApps.resolveActivity(intent, user);
-  }
-
-  @Override
-  public void
-  startActivityForProfile(final ComponentName component, final UserHandle user,
-                          final Rect sourceBounds, final Bundle opts) {
-    mLauncherApps.startMainActivity(component, user, sourceBounds, opts);
-  }
-
-  @Override
-  public ApplicationInfo getApplicationInfo(final String packageName,
-                                            final int flags,
+@Override
+public LauncherActivityInfo resolveActivity(final Intent intent,
                                             final UserHandle user) {
-    final boolean isPrimaryUser = Process.myUserHandle().equals(user);
-    if (!isPrimaryUser && (flags == 0)) {
-      // We are looking for an installed app on a secondary profile. Prior to O,
-      // the only entry point for work profiles is through the LauncherActivity.
-      List<LauncherActivityInfo> activityList =
-          mLauncherApps.getActivityList(packageName, user);
-      return activityList.size() > 0 ? activityList.get(0).getApplicationInfo()
-                                     : null;
-    }
-    try {
-      ApplicationInfo info =
-          mContext.getPackageManager().getApplicationInfo(packageName, flags);
-      // There is no way to check if the app is installed for managed profile.
-      // But for primary profile, we can still have this check.
-      if (isPrimaryUser &&
-              ((info.flags & ApplicationInfo.FLAG_INSTALLED) == 0) ||
-          !info.enabled) {
-        return null;
-      }
-      return info;
-    } catch (PackageManager.NameNotFoundException e) {
-      // Package not found
-      return null;
-    }
-  }
+	return mLauncherApps.resolveActivity(intent, user);
+}
 
-  @Override
-  public void
-  showAppDetailsForProfile(final ComponentName component, final UserHandle user,
-                           final Rect sourceBounds, final Bundle opts) {
-    mLauncherApps.startAppDetailsActivity(component, user, sourceBounds, opts);
-  }
+@Override
+public void
+startActivityForProfile(final ComponentName component, final UserHandle user,
+                        final Rect sourceBounds, final Bundle opts) {
+	mLauncherApps.startMainActivity(component, user, sourceBounds, opts);
+}
 
-  @Override
-  public void addOnAppsChangedCallback(
-      final LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
-    WrappedCallback wrappedCallback = new WrappedCallback(callback);
-    synchronized (mCallbacks) { mCallbacks.put(callback, wrappedCallback); }
-    mLauncherApps.registerCallback(wrappedCallback);
-  }
+@Override
+public ApplicationInfo getApplicationInfo(final String packageName,
+                                          final int flags,
+                                          final UserHandle user) {
+	final boolean isPrimaryUser = Process.myUserHandle().equals(user);
+	if (!isPrimaryUser && (flags == 0)) {
+		// We are looking for an installed app on a secondary profile. Prior to O,
+		// the only entry point for work profiles is through the LauncherActivity.
+		List<LauncherActivityInfo> activityList =
+			mLauncherApps.getActivityList(packageName, user);
+		return activityList.size() > 0 ? activityList.get(0).getApplicationInfo()
+		                     : null;
+	}
+	try {
+		ApplicationInfo info =
+			mContext.getPackageManager().getApplicationInfo(packageName, flags);
+		// There is no way to check if the app is installed for managed profile.
+		// But for primary profile, we can still have this check.
+		if (isPrimaryUser &&
+		    ((info.flags & ApplicationInfo.FLAG_INSTALLED) == 0) ||
+		    !info.enabled) {
+			return null;
+		}
+		return info;
+	} catch (PackageManager.NameNotFoundException e) {
+		// Package not found
+		return null;
+	}
+}
 
-  @Override
-  public void
-  removeOnAppsChangedCallback(final OnAppsChangedCallbackCompat callback) {
-    final WrappedCallback wrappedCallback;
-    synchronized (mCallbacks) { wrappedCallback = mCallbacks.remove(callback); }
-    if (wrappedCallback != null) {
-      mLauncherApps.unregisterCallback(wrappedCallback);
-    }
-  }
+@Override
+public void
+showAppDetailsForProfile(final ComponentName component, final UserHandle user,
+                         final Rect sourceBounds, final Bundle opts) {
+	mLauncherApps.startAppDetailsActivity(component, user, sourceBounds, opts);
+}
 
-  @Override
-  public boolean isPackageEnabledForProfile(final String packageName,
-                                            final UserHandle user) {
-    return mLauncherApps.isPackageEnabled(packageName, user);
-  }
+@Override
+public void addOnAppsChangedCallback(
+	final LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
+	WrappedCallback wrappedCallback = new WrappedCallback(callback);
+	synchronized (mCallbacks) { mCallbacks.put(callback, wrappedCallback); }
+	mLauncherApps.registerCallback(wrappedCallback);
+}
 
-  @Override
-  public boolean isActivityEnabledForProfile(final ComponentName component,
-                                             final UserHandle user) {
-    return mLauncherApps.isActivityEnabled(component, user);
-  }
+@Override
+public void
+removeOnAppsChangedCallback(final OnAppsChangedCallbackCompat callback) {
+	final WrappedCallback wrappedCallback;
+	synchronized (mCallbacks) { wrappedCallback = mCallbacks.remove(callback); }
+	if (wrappedCallback != null) {
+		mLauncherApps.unregisterCallback(wrappedCallback);
+	}
+}
 
-  @Override
-  public List<ShortcutConfigActivityInfo>
-  getCustomShortcutActivityList(final @Nullable PackageUserKey packageUser) {
-    List<ShortcutConfigActivityInfo> result = new ArrayList<>();
-    if (packageUser != null &&
-        !packageUser.mUser.equals(Process.myUserHandle())) {
-      return result;
-    }
-    PackageManager pm = mContext.getPackageManager();
-    for (ResolveInfo info : pm.queryIntentActivities(
-             new Intent(Intent.ACTION_CREATE_SHORTCUT), 0)) {
-      if (packageUser == null ||
-          packageUser.mPackageName.equals(info.activityInfo.packageName)) {
-        result.add(new ShortcutConfigActivityInfoVL(info.activityInfo, pm));
-      }
-    }
-    return result;
-  }
+@Override
+public boolean isPackageEnabledForProfile(final String packageName,
+                                          final UserHandle user) {
+	return mLauncherApps.isPackageEnabled(packageName, user);
+}
 
-  private static class WrappedCallback extends LauncherApps.Callback {
-    private final LauncherAppsCompat.OnAppsChangedCallbackCompat mCallback;
+@Override
+public boolean isActivityEnabledForProfile(final ComponentName component,
+                                           final UserHandle user) {
+	return mLauncherApps.isActivityEnabled(component, user);
+}
 
-    public WrappedCallback(
-        final LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
-      mCallback = callback;
-    }
+@Override
+public List<ShortcutConfigActivityInfo>
+getCustomShortcutActivityList(final @Nullable PackageUserKey packageUser) {
+	List<ShortcutConfigActivityInfo> result = new ArrayList<>();
+	if (packageUser != null &&
+	    !packageUser.mUser.equals(Process.myUserHandle())) {
+		return result;
+	}
+	PackageManager pm = mContext.getPackageManager();
+	for (ResolveInfo info : pm.queryIntentActivities(
+		     new Intent(Intent.ACTION_CREATE_SHORTCUT), 0)) {
+		if (packageUser == null ||
+		    packageUser.mPackageName.equals(info.activityInfo.packageName)) {
+			result.add(new ShortcutConfigActivityInfoVL(info.activityInfo, pm));
+		}
+	}
+	return result;
+}
 
-    @Override
-    public void onPackageRemoved(final String packageName,
-                                 final UserHandle user) {
-      mCallback.onPackageRemoved(packageName, user);
-    }
+private static class WrappedCallback extends LauncherApps.Callback {
+private final LauncherAppsCompat.OnAppsChangedCallbackCompat mCallback;
 
-    @Override
-    public void onPackageAdded(final String packageName,
-                               final UserHandle user) {
-      mCallback.onPackageAdded(packageName, user);
-    }
+public WrappedCallback(
+	final LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
+	mCallback = callback;
+}
 
-    @Override
-    public void onPackageChanged(final String packageName,
-                                 final UserHandle user) {
-      mCallback.onPackageChanged(packageName, user);
-    }
+@Override
+public void onPackageRemoved(final String packageName,
+                             final UserHandle user) {
+	mCallback.onPackageRemoved(packageName, user);
+}
 
-    @Override
-    public void onPackagesAvailable(final String[] packageNames,
-                                    final UserHandle user,
-                                    final boolean replacing) {
-      mCallback.onPackagesAvailable(packageNames, user, replacing);
-    }
+@Override
+public void onPackageAdded(final String packageName,
+                           final UserHandle user) {
+	mCallback.onPackageAdded(packageName, user);
+}
 
-    @Override
-    public void onPackagesUnavailable(final String[] packageNames,
-                                      final UserHandle user,
-                                      final boolean replacing) {
-      mCallback.onPackagesUnavailable(packageNames, user, replacing);
-    }
+@Override
+public void onPackageChanged(final String packageName,
+                             final UserHandle user) {
+	mCallback.onPackageChanged(packageName, user);
+}
 
-    @Override
-    public void onPackagesSuspended(final String[] packageNames,
-                                    final UserHandle user) {
-      mCallback.onPackagesSuspended(packageNames, user);
-    }
+@Override
+public void onPackagesAvailable(final String[] packageNames,
+                                final UserHandle user,
+                                final boolean replacing) {
+	mCallback.onPackagesAvailable(packageNames, user, replacing);
+}
 
-    @Override
-    public void onPackagesUnsuspended(final String[] packageNames,
-                                      final UserHandle user) {
-      mCallback.onPackagesUnsuspended(packageNames, user);
-    }
+@Override
+public void onPackagesUnavailable(final String[] packageNames,
+                                  final UserHandle user,
+                                  final boolean replacing) {
+	mCallback.onPackagesUnavailable(packageNames, user, replacing);
+}
 
-    @Override
-    public void onShortcutsChanged(final @NonNull String packageName,
-                                   final @NonNull List<ShortcutInfo> shortcuts,
-                                   final @NonNull UserHandle user) {
-      List<ShortcutInfoCompat> shortcutInfoCompats =
-          new ArrayList<>(shortcuts.size());
-      for (ShortcutInfo shortcutInfo : shortcuts) {
-        shortcutInfoCompats.add(new ShortcutInfoCompat(shortcutInfo));
-      }
+@Override
+public void onPackagesSuspended(final String[] packageNames,
+                                final UserHandle user) {
+	mCallback.onPackagesSuspended(packageNames, user);
+}
 
-      mCallback.onShortcutsChanged(packageName, shortcutInfoCompats, user);
-    }
-  }
+@Override
+public void onPackagesUnsuspended(final String[] packageNames,
+                                  final UserHandle user) {
+	mCallback.onPackagesUnsuspended(packageNames, user);
+}
+
+@Override
+public void onShortcutsChanged(final @NonNull String packageName,
+                               final @NonNull List<ShortcutInfo> shortcuts,
+                               final @NonNull UserHandle user) {
+	List<ShortcutInfoCompat> shortcutInfoCompats =
+		new ArrayList<>(shortcuts.size());
+	for (ShortcutInfo shortcutInfo : shortcuts) {
+		shortcutInfoCompats.add(new ShortcutInfoCompat(shortcutInfo));
+	}
+
+	mCallback.onShortcutsChanged(packageName, shortcutInfoCompats, user);
+}
+}
 }

@@ -29,56 +29,56 @@ import com.android.launcher3.util.Themes;
  */
 public class TopRoundedCornerView extends SpringRelativeLayout {
 
-  private final RectF mRect = new RectF();
-  private final Path mClipPath = new Path();
-  private float[] mRadii;
+private final RectF mRect = new RectF();
+private final Path mClipPath = new Path();
+private float[] mRadii;
 
-  private final Paint mNavBarScrimPaint;
-  private int mNavBarScrimHeight = 0;
+private final Paint mNavBarScrimPaint;
+private int mNavBarScrimHeight = 0;
 
-  public TopRoundedCornerView(final Context context, final AttributeSet attrs,
-                              final int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
+public TopRoundedCornerView(final Context context, final AttributeSet attrs,
+                            final int defStyleAttr) {
+	super(context, attrs, defStyleAttr);
 
-    int radius =
-        getResources().getDimensionPixelSize(R.dimen.bg_round_rect_radius);
-    mRadii = new float[] {radius, radius, radius, radius, 0, 0, 0, 0};
+	int radius =
+		getResources().getDimensionPixelSize(R.dimen.bg_round_rect_radius);
+	mRadii = new float[] {radius, radius, radius, radius, 0, 0, 0, 0};
 
-    mNavBarScrimPaint = new Paint();
-    mNavBarScrimPaint.setColor(
-        Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
-  }
+	mNavBarScrimPaint = new Paint();
+	mNavBarScrimPaint.setColor(
+		Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
+}
 
-  public TopRoundedCornerView(final Context context, final AttributeSet attrs) {
-    this(context, attrs, 0);
-  }
+public TopRoundedCornerView(final Context context, final AttributeSet attrs) {
+	this(context, attrs, 0);
+}
 
-  public void setNavBarScrimHeight(final int height) {
-    if (mNavBarScrimHeight != height) {
-      mNavBarScrimHeight = height;
-      invalidate();
-    }
-  }
+public void setNavBarScrimHeight(final int height) {
+	if (mNavBarScrimHeight != height) {
+		mNavBarScrimHeight = height;
+		invalidate();
+	}
+}
 
-  @Override
-  public void draw(final Canvas canvas) {
-    canvas.save();
-    canvas.clipPath(mClipPath);
-    super.draw(canvas);
-    canvas.restore();
+@Override
+public void draw(final Canvas canvas) {
+	canvas.save();
+	canvas.clipPath(mClipPath);
+	super.draw(canvas);
+	canvas.restore();
 
-    if (mNavBarScrimHeight > 0) {
-      canvas.drawRect(0, getHeight() - mNavBarScrimHeight, getWidth(),
-                      getHeight(), mNavBarScrimPaint);
-    }
-  }
+	if (mNavBarScrimHeight > 0) {
+		canvas.drawRect(0, getHeight() - mNavBarScrimHeight, getWidth(),
+		                getHeight(), mNavBarScrimPaint);
+	}
+}
 
-  @Override
-  protected void onMeasure(final int widthMeasureSpec,
-                           final int heightMeasureSpec) {
-    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    mRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
-    mClipPath.reset();
-    mClipPath.addRoundRect(mRect, mRadii, Path.Direction.CW);
-  }
+@Override
+protected void onMeasure(final int widthMeasureSpec,
+                         final int heightMeasureSpec) {
+	super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+	mRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
+	mClipPath.reset();
+	mClipPath.addRoundRect(mRect, mRadii, Path.Direction.CW);
+}
 }

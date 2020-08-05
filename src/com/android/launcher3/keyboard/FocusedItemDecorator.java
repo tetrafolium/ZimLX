@@ -29,22 +29,24 @@ import androidx.recyclerview.widget.RecyclerView.State;
  */
 public class FocusedItemDecorator extends ItemDecoration {
 
-  private FocusIndicatorHelper mHelper;
+private FocusIndicatorHelper mHelper;
 
-  public FocusedItemDecorator(final View container) {
-    mHelper = new FocusIndicatorHelper(container) {
-      @Override
-      public void viewToRect(final View v, final Rect outRect) {
-        outRect.set(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
-      }
-    };
-  }
+public FocusedItemDecorator(final View container) {
+	mHelper = new FocusIndicatorHelper(container) {
+		@Override
+		public void viewToRect(final View v, final Rect outRect) {
+			outRect.set(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+		}
+	};
+}
 
-  public OnFocusChangeListener getFocusListener() { return mHelper; }
+public OnFocusChangeListener getFocusListener() {
+	return mHelper;
+}
 
-  @Override
-  public void onDraw(final Canvas c, final RecyclerView parent,
-                     final State state) {
-    mHelper.draw(c);
-  }
+@Override
+public void onDraw(final Canvas c, final RecyclerView parent,
+                   final State state) {
+	mHelper.draw(c);
+}
 }

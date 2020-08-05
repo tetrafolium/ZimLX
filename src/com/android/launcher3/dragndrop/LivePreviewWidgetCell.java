@@ -18,85 +18,89 @@ import com.android.launcher3.widget.WidgetCell;
  */
 public class LivePreviewWidgetCell extends WidgetCell {
 
-  private RemoteViews mPreview;
+private RemoteViews mPreview;
 
-  public LivePreviewWidgetCell(final Context context) { this(context, null); }
+public LivePreviewWidgetCell(final Context context) {
+	this(context, null);
+}
 
-  public LivePreviewWidgetCell(final Context context,
-                               final AttributeSet attrs) {
-    this(context, attrs, 0);
-  }
+public LivePreviewWidgetCell(final Context context,
+                             final AttributeSet attrs) {
+	this(context, attrs, 0);
+}
 
-  public LivePreviewWidgetCell(final Context context, final AttributeSet attrs,
-                               final int defStyle) {
-    super(context, attrs, defStyle);
-  }
+public LivePreviewWidgetCell(final Context context, final AttributeSet attrs,
+                             final int defStyle) {
+	super(context, attrs, defStyle);
+}
 
-  /**
-   * Generates a bitmap by inflating {@param views}.
-   *
-   * @see com.android.launcher3.WidgetPreviewLoader#generateWidgetPreview
-   * <p>
-   * TODO: Consider moving this to the background thread.
-   */
-  public static Bitmap
-  generateFromRemoteViews(final BaseActivity activity, final RemoteViews views,
-                          final LauncherAppWidgetProviderInfo info,
-                          final int previewSize,
-                          final int[] preScaledWidthOut) {
+/**
+ * Generates a bitmap by inflating {@param views}.
+ *
+ * @see com.android.launcher3.WidgetPreviewLoader#generateWidgetPreview
+ * <p>
+ * TODO: Consider moving this to the background thread.
+ */
+public static Bitmap
+generateFromRemoteViews(final BaseActivity activity, final RemoteViews views,
+                        final LauncherAppWidgetProviderInfo info,
+                        final int previewSize,
+                        final int[] preScaledWidthOut) {
 
-    DeviceProfile dp = activity.getDeviceProfile();
-    int viewWidth = dp.cellWidthPx * info.spanX;
-    int viewHeight = dp.cellHeightPx * info.spanY;
+	DeviceProfile dp = activity.getDeviceProfile();
+	int viewWidth = dp.cellWidthPx * info.spanX;
+	int viewHeight = dp.cellHeightPx * info.spanY;
 
-    final View v;
-    try {
-      v = views.apply(activity, new FrameLayout(activity));
-      v.measure(MeasureSpec.makeMeasureSpec(viewWidth, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(viewHeight, MeasureSpec.EXACTLY));
+	final View v;
+	try {
+		v = views.apply(activity, new FrameLayout(activity));
+		v.measure(MeasureSpec.makeMeasureSpec(viewWidth, MeasureSpec.EXACTLY),
+		          MeasureSpec.makeMeasureSpec(viewHeight, MeasureSpec.EXACTLY));
 
-      viewWidth = v.getMeasuredWidth();
-      viewHeight = v.getMeasuredHeight();
-      v.layout(0, 0, viewWidth, viewHeight);
-    } catch (Exception e) {
-      return null;
-    }
+		viewWidth = v.getMeasuredWidth();
+		viewHeight = v.getMeasuredHeight();
+		v.layout(0, 0, viewWidth, viewHeight);
+	} catch (Exception e) {
+		return null;
+	}
 
-    preScaledWidthOut[0] = viewWidth;
-    final int bitmapWidth, bitmapHeight;
-    final float scale;
-    if (viewWidth > previewSize) {
-      scale = ((float)previewSize) / viewWidth;
-      bitmapWidth = previewSize;
-      bitmapHeight = (int)(viewHeight * scale);
-    } else {
-      scale = 1;
-      bitmapWidth = viewWidth;
-      bitmapHeight = viewHeight;
-    }
+	preScaledWidthOut[0] = viewWidth;
+	final int bitmapWidth, bitmapHeight;
+	final float scale;
+	if (viewWidth > previewSize) {
+		scale = ((float)previewSize) / viewWidth;
+		bitmapWidth = previewSize;
+		bitmapHeight = (int)(viewHeight * scale);
+	} else {
+		scale = 1;
+		bitmapWidth = viewWidth;
+		bitmapHeight = viewHeight;
+	}
 
-    Bitmap preview =
-        Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
-    Canvas c = new Canvas(preview);
-    c.scale(scale, scale);
-    v.draw(c);
-    c.setBitmap(null);
-    return preview;
-  }
+	Bitmap preview =
+		Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
+	Canvas c = new Canvas(preview);
+	c.scale(scale, scale);
+	v.draw(c);
+	c.setBitmap(null);
+	return preview;
+}
 
-  public void setPreview(final RemoteViews view) { mPreview = view; }
+public void setPreview(final RemoteViews view) {
+	mPreview = view;
+}
 
-  @Override
-  public void ensurePreview() {
-    if (mPreview != null && mActiveRequest == null) {
-      Bitmap preview =
-          generateFromRemoteViews(mActivity, mPreview, mItem.widgetInfo,
-                                  mPresetPreviewSize, new int[1]);
-      if (preview != null) {
-        applyPreview(preview);
-        return;
-      }
-    }
-    super.ensurePreview();
-  }
+@Override
+public void ensurePreview() {
+	if (mPreview != null && mActiveRequest == null) {
+		Bitmap preview =
+			generateFromRemoteViews(mActivity, mPreview, mItem.widgetInfo,
+			                        mPresetPreviewSize, new int[1]);
+		if (preview != null) {
+			applyPreview(preview);
+			return;
+		}
+	}
+	super.ensurePreview();
+}
 }

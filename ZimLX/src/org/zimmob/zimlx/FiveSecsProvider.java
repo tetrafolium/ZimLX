@@ -34,70 +34,70 @@ import androidx.annotation.Nullable;
 //      https://help.kustom.rocks/i194-launchers-touch-features-support-aka-remove-5-secs-delay
 public class FiveSecsProvider extends ContentProvider {
 
-  /**
-   * Path used by Kustom to ask a 5 secs delay reset
-   */
-  private final static String PATH_RESET_5SEC_DELAY = "reset5secs";
+/**
+ * Path used by Kustom to ask a 5 secs delay reset
+ */
+private final static String PATH_RESET_5SEC_DELAY = "reset5secs";
 
-  @Override
-  public boolean onCreate() {
-    return true;
-  }
+@Override
+public boolean onCreate() {
+	return true;
+}
 
-  @Nullable
-  @Override
-  public Cursor query(final @NonNull Uri uri, final String[] projection,
-                      final String selection, final String[] selectionArgs,
-                      final String sortOrder) {
-    throw new UnsupportedOperationException("Unsupported");
-  }
+@Nullable
+@Override
+public Cursor query(final @NonNull Uri uri, final String[] projection,
+                    final String selection, final String[] selectionArgs,
+                    final String sortOrder) {
+	throw new UnsupportedOperationException("Unsupported");
+}
 
-  @Nullable
-  @Override
-  public String getType(final @NonNull Uri uri) {
-    // Not supported
-    return null;
-  }
+@Nullable
+@Override
+public String getType(final @NonNull Uri uri) {
+	// Not supported
+	return null;
+}
 
-  @Nullable
-  @Override
-  public Uri insert(final @NonNull Uri uri, final ContentValues values) {
-    // Not supported
-    throw new UnsupportedOperationException("Unsupported");
-  }
+@Nullable
+@Override
+public Uri insert(final @NonNull Uri uri, final ContentValues values) {
+	// Not supported
+	throw new UnsupportedOperationException("Unsupported");
+}
 
-  @Override
-  public int delete(final @NonNull Uri uri, final String selection,
-                    final String[] selectionArgs) {
-    checkCallingPackage();
-    if (PATH_RESET_5SEC_DELAY.equals(uri.getLastPathSegment())) {
-      getContext().startActivity(new Intent(getContext(), BlankActivity.class));
-      return 1;
-    }
-    return 0;
-  }
+@Override
+public int delete(final @NonNull Uri uri, final String selection,
+                  final String[] selectionArgs) {
+	checkCallingPackage();
+	if (PATH_RESET_5SEC_DELAY.equals(uri.getLastPathSegment())) {
+		getContext().startActivity(new Intent(getContext(), BlankActivity.class));
+		return 1;
+	}
+	return 0;
+}
 
-  @Override
-  public int update(final @NonNull Uri uri, final ContentValues values,
-                    final String selection, final String[] selectionArgs) {
-    // Not supported
-    throw new UnsupportedOperationException("Unsupported");
-  }
+@Override
+public int update(final @NonNull Uri uri, final ContentValues values,
+                  final String selection, final String[] selectionArgs) {
+	// Not supported
+	throw new UnsupportedOperationException("Unsupported");
+}
 
-  /**
-   * Will check weather or not calling pkg is authorized to talk with this
-   * provider
-   *
-   * @throws SecurityException
-   */
-  private void checkCallingPackage() throws SecurityException {
-    String callingPkg = getCallingPackage();
-    WallpaperInfo info =
-        WallpaperManager.getInstance(getContext()).getWallpaperInfo();
-    if ((info != null) && (info.getPackageName().equals(callingPkg)))
-      return;
-    if ("org.kustom.widget".equals(callingPkg))
-      return;
-    throw new SecurityException("Unauthorized");
-  }
+/**
+ * Will check weather or not calling pkg is authorized to talk with this
+ * provider
+ *
+ * @throws SecurityException
+ */
+private void checkCallingPackage() throws SecurityException {
+	String callingPkg = getCallingPackage();
+	WallpaperInfo info =
+		WallpaperManager.getInstance(getContext()).getWallpaperInfo();
+	if ((info != null) && (info.getPackageName().equals(callingPkg)))
+		return;
+	if ("org.kustom.widget".equals(callingPkg))
+		return;
+	throw new SecurityException("Unauthorized");
+}
 }

@@ -28,82 +28,84 @@ import android.view.View;
  * available during layout, this avoids new object creation during every layout.
  */
 public class TransformingTouchDelegate extends TouchDelegate {
-  private static final Rect sTempRect = new Rect();
+private static final Rect sTempRect = new Rect();
 
-  private final RectF mBounds;
+private final RectF mBounds;
 
-  private final RectF mTouchCheckBounds;
-  private float mTouchExtension;
-  private boolean mWasTouchOutsideBounds;
+private final RectF mTouchCheckBounds;
+private float mTouchExtension;
+private boolean mWasTouchOutsideBounds;
 
-  private View mDelegateView;
-  private boolean mDelegateTargeted;
+private View mDelegateView;
+private boolean mDelegateTargeted;
 
-  public TransformingTouchDelegate(final View delegateView) {
-    super(sTempRect, delegateView);
+public TransformingTouchDelegate(final View delegateView) {
+	super(sTempRect, delegateView);
 
-    mDelegateView = delegateView;
-    mBounds = new RectF();
-    mTouchCheckBounds = new RectF();
-  }
+	mDelegateView = delegateView;
+	mBounds = new RectF();
+	mTouchCheckBounds = new RectF();
+}
 
-  public void setBounds(final int left, final int top, final int right,
-                        final int bottom) {
-    mBounds.set(left, top, right, bottom);
-    updateTouchBounds();
-  }
+public void setBounds(final int left, final int top, final int right,
+                      final int bottom) {
+	mBounds.set(left, top, right, bottom);
+	updateTouchBounds();
+}
 
-  public void extendTouchBounds(final float extension) {
-    mTouchExtension = extension;
-    updateTouchBounds();
-  }
+public void extendTouchBounds(final float extension) {
+	mTouchExtension = extension;
+	updateTouchBounds();
+}
 
-  private void updateTouchBounds() {
-    mTouchCheckBounds.set(mBounds);
-    mTouchCheckBounds.inset(-mTouchExtension, -mTouchExtension);
-  }
+private void updateTouchBounds() {
+	mTouchCheckBounds.set(mBounds);
+	mTouchCheckBounds.inset(-mTouchExtension, -mTouchExtension);
+}
 
-  public void setDelegateView(final View view) { mDelegateView = view; }
+public void setDelegateView(final View view) {
+	mDelegateView = view;
+}
 
-  /**
-   * Will forward touch events to the delegate view if the event is within the
-   * bounds specified in the constructor.
-   *
-   * @param event The touch event to forward
-   * @return True if the event was forwarded to the delegate, false otherwise.
-   */
-  public boolean onTouchEvent(final MotionEvent event) {
-    boolean sendToDelegate = false;
-    switch (event.getAction()) {
-    case MotionEvent.ACTION_DOWN:
-      mDelegateTargeted =
-          mTouchCheckBounds.contains(event.getX(), event.getY());
-      if (mDelegateTargeted) {
-        mWasTouchOutsideBounds = !mBounds.contains(event.getX(), event.getY());
-        sendToDelegate = true;
-      }
-      break;
-    case MotionEvent.ACTION_MOVE:
-      sendToDelegate = mDelegateTargeted;
-      break;
-    case MotionEvent.ACTION_UP:
-    case MotionEvent.ACTION_CANCEL:
-      sendToDelegate = mDelegateTargeted;
-      mDelegateTargeted = false;
-      break;
-    }
-    boolean handled = false;
-    if (sendToDelegate) {
-      float x = event.getX();
-      float y = event.getY();
-      if (mWasTouchOutsideBounds) {
-        event.setLocation(mBounds.centerX(), mBounds.centerY());
-      } else {
-        event.offsetLocation(-mBounds.left, -mBounds.top);
-      }
-      handled = mDelegateView.dispatchTouchEvent(event);
-      event.setLocation(x, y);
-    }
-    return handled;
-  }
+/**
+ * Will forward touch events to the delegate view if the event is within the
+ * bounds specified in the constructor.
+ *
+ * @param event The touch event to forward
+ * @return True if the event was forwarded to the delegate, false otherwise.
+ */
+public boolean onTouchEvent(final MotionEvent event) {
+	boolean sendToDelegate = false;
+	switch (event.getAction()) {
+	case MotionEvent.ACTION_DOWN:
+		mDelegateTargeted =
+			mTouchCheckBounds.contains(event.getX(), event.getY());
+		if (mDelegateTargeted) {
+			mWasTouchOutsideBounds = !mBounds.contains(event.getX(), event.getY());
+			sendToDelegate = true;
+		}
+		break;
+	case MotionEvent.ACTION_MOVE:
+		sendToDelegate = mDelegateTargeted;
+		break;
+	case MotionEvent.ACTION_UP:
+	case MotionEvent.ACTION_CANCEL:
+		sendToDelegate = mDelegateTargeted;
+		mDelegateTargeted = false;
+		break;
+	}
+	boolean handled = false;
+	if (sendToDelegate) {
+		float x = event.getX();
+		float y = event.getY();
+		if (mWasTouchOutsideBounds) {
+			event.setLocation(mBounds.centerX(), mBounds.centerY());
+		} else {
+			event.offsetLocation(-mBounds.left, -mBounds.top);
+		}
+		handled = mDelegateView.dispatchTouchEvent(event);
+		event.setLocation(x, y);
+	}
+	return handled;
+}
 }

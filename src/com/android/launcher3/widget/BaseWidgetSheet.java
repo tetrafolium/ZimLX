@@ -42,111 +42,112 @@ import com.android.launcher3.views.AbstractSlideInView;
  * Base class for various widgets popup
  */
 abstract class BaseWidgetSheet extends AbstractSlideInView
-    implements OnClickListener, OnLongClickListener, DragSource {
+	implements OnClickListener, OnLongClickListener, DragSource {
 
-  /* Touch handling related member variables. */
-  private Toast mWidgetInstructionToast;
+/* Touch handling related member variables. */
+private Toast mWidgetInstructionToast;
 
-  protected final ColorScrim mColorScrim;
+protected final ColorScrim mColorScrim;
 
-  public BaseWidgetSheet(final Context context, final AttributeSet attrs,
-                         final int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-    mColorScrim = ColorScrim.createExtractedColorScrim(this);
-  }
+public BaseWidgetSheet(final Context context, final AttributeSet attrs,
+                       final int defStyleAttr) {
+	super(context, attrs, defStyleAttr);
+	mColorScrim = ColorScrim.createExtractedColorScrim(this);
+}
 
-  @Override
-  public final void onClick(final View v) {
-    // Let the user know that they have to long press to add a widget
-    if (mWidgetInstructionToast != null) {
-      mWidgetInstructionToast.cancel();
-    }
+@Override
+public final void onClick(final View v) {
+	// Let the user know that they have to long press to add a widget
+	if (mWidgetInstructionToast != null) {
+		mWidgetInstructionToast.cancel();
+	}
 
-    CharSequence msg = Utilities.wrapForTts(
-        getContext().getText(R.string.long_press_widget_to_add),
-        getContext().getString(R.string.long_accessible_way_to_add));
-    mWidgetInstructionToast =
-        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT);
-    mWidgetInstructionToast.show();
-  }
+	CharSequence msg = Utilities.wrapForTts(
+		getContext().getText(R.string.long_press_widget_to_add),
+		getContext().getString(R.string.long_accessible_way_to_add));
+	mWidgetInstructionToast =
+		Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT);
+	mWidgetInstructionToast.show();
+}
 
-  @Override
-  public final boolean onLongClick(final View v) {
-    if (!ItemLongClickListener.canStartDrag(mLauncher))
-      return false;
+@Override
+public final boolean onLongClick(final View v) {
+	if (!ItemLongClickListener.canStartDrag(mLauncher))
+		return false;
 
-    if (v instanceof WidgetCell) {
-      return beginDraggingWidget((WidgetCell)v);
-    }
-    return true;
-  }
+	if (v instanceof WidgetCell) {
+		return beginDraggingWidget((WidgetCell)v);
+	}
+	return true;
+}
 
-  protected void setTranslationShift(final float translationShift) {
-    super.setTranslationShift(translationShift);
-    mColorScrim.setProgress(1 - mTranslationShift);
-  }
+protected void setTranslationShift(final float translationShift) {
+	super.setTranslationShift(translationShift);
+	mColorScrim.setProgress(1 - mTranslationShift);
+}
 
-  private boolean beginDraggingWidget(final WidgetCell v) {
-    // Get the widget preview as the drag representation
-    WidgetImageView image = v.getWidgetView();
+private boolean beginDraggingWidget(final WidgetCell v) {
+	// Get the widget preview as the drag representation
+	WidgetImageView image = v.getWidgetView();
 
-    // If the ImageView doesn't have a drawable yet, the widget preview hasn't
-    // been loaded and we abort the drag.
-    if (image.getBitmap() == null) {
-      return false;
-    }
+	// If the ImageView doesn't have a drawable yet, the widget preview hasn't
+	// been loaded and we abort the drag.
+	if (image.getBitmap() == null) {
+		return false;
+	}
 
-    int[] loc = new int[2];
-    mLauncher.getDragLayer().getLocationInDragLayer(image, loc);
+	int[] loc = new int[2];
+	mLauncher.getDragLayer().getLocationInDragLayer(image, loc);
 
-    new PendingItemDragHelper(v).startDrag(
-        image.getBitmapBounds(), image.getBitmap().getWidth(), image.getWidth(),
-        new Point(loc[0], loc[1]), this, new DragOptions());
-    close(true);
-    return true;
-  }
+	new PendingItemDragHelper(v).startDrag(
+		image.getBitmapBounds(), image.getBitmap().getWidth(), image.getWidth(),
+		new Point(loc[0], loc[1]), this, new DragOptions());
+	close(true);
+	return true;
+}
 
-  //
-  // Drag related handling methods that implement {@link DragSource} interface.
-  //
+//
+// Drag related handling methods that implement {@link DragSource} interface.
+//
 
-  @Override
-  public void onDropCompleted(final View target, final DragObject d,
-                              final boolean success) {}
+@Override
+public void onDropCompleted(final View target, final DragObject d,
+                            final boolean success) {
+}
 
-  protected void onCloseComplete() {
-    super.onCloseComplete();
-    clearNavBarColor();
-  }
+protected void onCloseComplete() {
+	super.onCloseComplete();
+	clearNavBarColor();
+}
 
-  protected void clearNavBarColor() {
-    mLauncher.getSystemUiController().updateUiState(
-        SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
-  }
+protected void clearNavBarColor() {
+	mLauncher.getSystemUiController().updateUiState(
+		SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
+}
 
-  protected void setupNavBarColor() {
-    boolean isSheetDark =
-        Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
-    mLauncher.getSystemUiController().updateUiState(
-        SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
-        isSheetDark ? SystemUiController.FLAG_DARK_NAV
-                    : SystemUiController.FLAG_LIGHT_NAV);
-  }
+protected void setupNavBarColor() {
+	boolean isSheetDark =
+		Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
+	mLauncher.getSystemUiController().updateUiState(
+		SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
+		isSheetDark ? SystemUiController.FLAG_DARK_NAV
+		    : SystemUiController.FLAG_LIGHT_NAV);
+}
 
-  @Override
-  public void fillInLogContainerData(final View v, final ItemInfo info,
-                                     final Target target,
-                                     final Target targetParent) {
-    targetParent.containerType = ContainerType.WIDGETS;
-    targetParent.cardinality = getElementsRowCount();
-  }
+@Override
+public void fillInLogContainerData(final View v, final ItemInfo info,
+                                   final Target target,
+                                   final Target targetParent) {
+	targetParent.containerType = ContainerType.WIDGETS;
+	targetParent.cardinality = getElementsRowCount();
+}
 
-  @Override
-  public final void logActionCommand(final int command) {
-    Target target = newContainerTarget(ContainerType.WIDGETS);
-    target.cardinality = getElementsRowCount();
-    mLauncher.getUserEventDispatcher().logActionCommand(command, target);
-  }
+@Override
+public final void logActionCommand(final int command) {
+	Target target = newContainerTarget(ContainerType.WIDGETS);
+	target.cardinality = getElementsRowCount();
+	mLauncher.getUserEventDispatcher().logActionCommand(command, target);
+}
 
-  protected abstract int getElementsRowCount();
+protected abstract int getElementsRowCount();
 }

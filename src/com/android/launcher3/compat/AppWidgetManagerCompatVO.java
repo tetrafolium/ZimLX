@@ -26,21 +26,23 @@ import java.util.List;
 
 class AppWidgetManagerCompatVO extends AppWidgetManagerCompatVL {
 
-  AppWidgetManagerCompatVO(final Context context) { super(context); }
+AppWidgetManagerCompatVO(final Context context) {
+	super(context);
+}
 
-  @Override
-  public List<AppWidgetProviderInfo>
-  getAllProviders(final @Nullable PackageUserKey packageUser) {
-    if (FeatureFlags.GO_DISABLE_WIDGETS) {
-      return Collections.emptyList();
-    }
-    if (packageUser == null) {
-      return super.getAllProviders(null);
-    }
-    if (isBlacklisted(packageUser.mPackageName)) {
-      return Collections.emptyList();
-    }
-    return mAppWidgetManager.getInstalledProvidersForPackage(
-        packageUser.mPackageName, packageUser.mUser);
-  }
+@Override
+public List<AppWidgetProviderInfo>
+getAllProviders(final @Nullable PackageUserKey packageUser) {
+	if (FeatureFlags.GO_DISABLE_WIDGETS) {
+		return Collections.emptyList();
+	}
+	if (packageUser == null) {
+		return super.getAllProviders(null);
+	}
+	if (isBlacklisted(packageUser.mPackageName)) {
+		return Collections.emptyList();
+	}
+	return mAppWidgetManager.getInstalledProvidersForPackage(
+		packageUser.mPackageName, packageUser.mUser);
+}
 }

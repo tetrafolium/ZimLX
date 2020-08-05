@@ -37,90 +37,90 @@ import com.android.launcher3.folder.Folder;
  */
 public class ItemLongClickListener {
 
-  public static OnLongClickListener INSTANCE_WORKSPACE =
-      ItemLongClickListener::onWorkspaceItemLongClick;
+public static OnLongClickListener INSTANCE_WORKSPACE =
+	ItemLongClickListener::onWorkspaceItemLongClick;
 
-  public static OnLongClickListener INSTANCE_ALL_APPS =
-      ItemLongClickListener::onAllAppsItemLongClick;
+public static OnLongClickListener INSTANCE_ALL_APPS =
+	ItemLongClickListener::onAllAppsItemLongClick;
 
-  private static boolean onWorkspaceItemLongClick(final View v) {
-    Launcher launcher = Launcher.getLauncher(v.getContext());
-    if (!canStartDrag(launcher))
-      return false;
-    if (!launcher.isInState(NORMAL) && !launcher.isInState(OVERVIEW))
-      return false;
-    if (!(v.getTag() instanceof ItemInfo))
-      return false;
+private static boolean onWorkspaceItemLongClick(final View v) {
+	Launcher launcher = Launcher.getLauncher(v.getContext());
+	if (!canStartDrag(launcher))
+		return false;
+	if (!launcher.isInState(NORMAL) && !launcher.isInState(OVERVIEW))
+		return false;
+	if (!(v.getTag() instanceof ItemInfo))
+		return false;
 
-    launcher.setWaitingForResult(null);
-    beginDrag(v, launcher, (ItemInfo)v.getTag(), new DragOptions());
-    return true;
-  }
+	launcher.setWaitingForResult(null);
+	beginDrag(v, launcher, (ItemInfo)v.getTag(), new DragOptions());
+	return true;
+}
 
-  public static void beginDrag(final View v, final Launcher launcher,
-                               final ItemInfo info,
-                               final DragOptions dragOptions) {
-    if (info.container >= 0) {
-      Folder folder = Folder.getOpen(launcher);
-      if (folder != null) {
-        if (!folder.getItemsInReadingOrder().contains(v)) {
-          folder.close(true);
-        } else {
-          folder.startDrag(v, dragOptions);
-          return;
-        }
-      }
-    }
+public static void beginDrag(final View v, final Launcher launcher,
+                             final ItemInfo info,
+                             final DragOptions dragOptions) {
+	if (info.container >= 0) {
+		Folder folder = Folder.getOpen(launcher);
+		if (folder != null) {
+			if (!folder.getItemsInReadingOrder().contains(v)) {
+				folder.close(true);
+			} else {
+				folder.startDrag(v, dragOptions);
+				return;
+			}
+		}
+	}
 
-    CellLayout.CellInfo longClickCellInfo = new CellLayout.CellInfo(v, info);
-    launcher.getWorkspace().startDrag(longClickCellInfo, dragOptions);
-  }
+	CellLayout.CellInfo longClickCellInfo = new CellLayout.CellInfo(v, info);
+	launcher.getWorkspace().startDrag(longClickCellInfo, dragOptions);
+}
 
-  private static boolean onAllAppsItemLongClick(final View v) {
-    Launcher launcher = Launcher.getLauncher(v.getContext());
-    if (!canStartDrag(launcher))
-      return false;
-    // When we have exited all apps or are in transition, disregard long clicks
-    if (!launcher.isInState(ALL_APPS) && !launcher.isInState(OVERVIEW))
-      return false;
-    if (launcher.getWorkspace().isSwitchingState())
-      return false;
+private static boolean onAllAppsItemLongClick(final View v) {
+	Launcher launcher = Launcher.getLauncher(v.getContext());
+	if (!canStartDrag(launcher))
+		return false;
+	// When we have exited all apps or are in transition, disregard long clicks
+	if (!launcher.isInState(ALL_APPS) && !launcher.isInState(OVERVIEW))
+		return false;
+	if (launcher.getWorkspace().isSwitchingState())
+		return false;
 
-    // Start the drag
-    final DragController dragController = launcher.getDragController();
-    dragController.addDragListener(new DragController.DragListener() {
-      @Override
-      public void onDragStart(final DropTarget.DragObject dragObject,
-                              final DragOptions options) {
-        v.setVisibility(INVISIBLE);
-      }
+	// Start the drag
+	final DragController dragController = launcher.getDragController();
+	dragController.addDragListener(new DragController.DragListener() {
+			@Override
+			public void onDragStart(final DropTarget.DragObject dragObject,
+			                        final DragOptions options) {
+			        v.setVisibility(INVISIBLE);
+			}
 
-      @Override
-      public void onDragEnd() {
-        v.setVisibility(VISIBLE);
-        dragController.removeDragListener(this);
-      }
-    });
+			@Override
+			public void onDragEnd() {
+			        v.setVisibility(VISIBLE);
+			        dragController.removeDragListener(this);
+			}
+		});
 
-    DeviceProfile grid = launcher.getDeviceProfile();
-    DragOptions options = new DragOptions();
-    options.intrinsicIconScaleFactor =
-        (float)grid.allAppsIconSizePx / grid.iconSizePx;
-    launcher.getWorkspace().beginDragShared(v, launcher.getAppsView(), options);
-    return false;
-  }
+	DeviceProfile grid = launcher.getDeviceProfile();
+	DragOptions options = new DragOptions();
+	options.intrinsicIconScaleFactor =
+		(float)grid.allAppsIconSizePx / grid.iconSizePx;
+	launcher.getWorkspace().beginDragShared(v, launcher.getAppsView(), options);
+	return false;
+}
 
-  public static boolean canStartDrag(final Launcher launcher) {
-    if (launcher == null) {
-      return false;
-    }
-    // We prevent dragging when we are loading the workspace as it is possible
-    // to pick up a view that is subsequently removed from the workspace in
-    // startBinding().
-    if (launcher.isWorkspaceLocked())
-      return false;
-    // Return early if an item is already being dragged (e.g. when long-pressing
-    // two shortcuts)
-    return !launcher.getDragController().isDragging();
-  }
+public static boolean canStartDrag(final Launcher launcher) {
+	if (launcher == null) {
+		return false;
+	}
+	// We prevent dragging when we are loading the workspace as it is possible
+	// to pick up a view that is subsequently removed from the workspace in
+	// startBinding().
+	if (launcher.isWorkspaceLocked())
+		return false;
+	// Return early if an item is already being dragged (e.g. when long-pressing
+	// two shortcuts)
+	return !launcher.getDragController().isDragging();
+}
 }

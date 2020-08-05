@@ -10,41 +10,44 @@ import com.android.launcher3.LauncherProvider;
  */
 public class TestLauncherProvider extends LauncherProvider {
 
-  @Override
-  public boolean onCreate() {
-    return true;
-  }
+@Override
+public boolean onCreate() {
+	return true;
+}
 
-  @Override
-  protected synchronized void createDbIfNotExists() {
-    if (mOpenHelper == null) {
-      mOpenHelper = new MyDatabaseHelper(getContext());
-    }
-  }
+@Override
+protected synchronized void createDbIfNotExists() {
+	if (mOpenHelper == null) {
+		mOpenHelper = new MyDatabaseHelper(getContext());
+	}
+}
 
-  public SQLiteOpenHelper getHelper() {
-    createDbIfNotExists();
-    return mOpenHelper;
-  }
+public SQLiteOpenHelper getHelper() {
+	createDbIfNotExists();
+	return mOpenHelper;
+}
 
-  @Override
-  protected void notifyListeners() {}
+@Override
+protected void notifyListeners() {
+}
 
-  private static class MyDatabaseHelper extends DatabaseHelper {
-    public MyDatabaseHelper(final Context context) {
-      super(context, null, null);
-      initIds();
-    }
+private static class MyDatabaseHelper extends DatabaseHelper {
+public MyDatabaseHelper(final Context context) {
+	super(context, null, null);
+	initIds();
+}
 
-    @Override
-    public long getDefaultUserSerial() {
-      return 0;
-    }
+@Override
+public long getDefaultUserSerial() {
+	return 0;
+}
 
-    @Override
-    protected void onEmptyDbCreated() {}
+@Override
+protected void onEmptyDbCreated() {
+}
 
-    @Override
-    protected void handleOneTimeDataUpgrade(final SQLiteDatabase db) {}
-  }
+@Override
+protected void handleOneTimeDataUpgrade(final SQLiteDatabase db) {
+}
+}
 }

@@ -24,32 +24,32 @@ import com.android.launcher3.util.PackageManagerHelper;
 
 public class PromiseAppInfo extends AppInfo {
 
-  public int level = 0;
+public int level = 0;
 
-  public PromiseAppInfo(
-      final @NonNull PackageInstallerCompat.PackageInstallInfo installInfo) {
-    componentName = installInfo.componentName;
-    intent = new Intent(Intent.ACTION_MAIN)
-                 .addCategory(Intent.CATEGORY_LAUNCHER)
-                 .setComponent(componentName)
-                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                           Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-  }
+public PromiseAppInfo(
+	final @NonNull PackageInstallerCompat.PackageInstallInfo installInfo) {
+	componentName = installInfo.componentName;
+	intent = new Intent(Intent.ACTION_MAIN)
+	         .addCategory(Intent.CATEGORY_LAUNCHER)
+	         .setComponent(componentName)
+	         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+	                   Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+}
 
-  @Override
-  public ShortcutInfo makeShortcut() {
-    ShortcutInfo shortcut = new ShortcutInfo(this);
-    shortcut.setInstallProgress(level);
-    // We need to update the component name when the apk is installed
-    shortcut.status |= ShortcutInfo.FLAG_AUTOINSTALL_ICON;
-    // Since the user is manually placing it on homescreen, it should not be
-    // auto-removed later
-    shortcut.status |= ShortcutInfo.FLAG_RESTORE_STARTED;
-    return shortcut;
-  }
+@Override
+public ShortcutInfo makeShortcut() {
+	ShortcutInfo shortcut = new ShortcutInfo(this);
+	shortcut.setInstallProgress(level);
+	// We need to update the component name when the apk is installed
+	shortcut.status |= ShortcutInfo.FLAG_AUTOINSTALL_ICON;
+	// Since the user is manually placing it on homescreen, it should not be
+	// auto-removed later
+	shortcut.status |= ShortcutInfo.FLAG_RESTORE_STARTED;
+	return shortcut;
+}
 
-  public Intent getMarketIntent(final Context context) {
-    return new PackageManagerHelper(context).getMarketIntent(
-        componentName.getPackageName());
-  }
+public Intent getMarketIntent(final Context context) {
+	return new PackageManagerHelper(context).getMarketIntent(
+		componentName.getPackageName());
+}
 }

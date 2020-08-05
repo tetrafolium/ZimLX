@@ -10,65 +10,66 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 
 public class QsbActionMode implements ActionMode.Callback {
-  private final String clipboardText;
-  private final Intent settingsBroadcast;
-  private final Intent settingsIntent;
-  final /* synthetic */ AbstractQsbLayout qsbLayout;
+private final String clipboardText;
+private final Intent settingsBroadcast;
+private final Intent settingsIntent;
+final /* synthetic */ AbstractQsbLayout qsbLayout;
 
-  public QsbActionMode(final AbstractQsbLayout layout,
-                       final String clipboardText,
-                       final Intent settingBroadcast,
-                       final Intent settingsIntent) {
-    this.qsbLayout = layout;
-    this.clipboardText = clipboardText;
-    this.settingsBroadcast = settingBroadcast;
-    this.settingsIntent = settingsIntent;
-  }
+public QsbActionMode(final AbstractQsbLayout layout,
+                     final String clipboardText,
+                     final Intent settingBroadcast,
+                     final Intent settingsIntent) {
+	this.qsbLayout = layout;
+	this.clipboardText = clipboardText;
+	this.settingsBroadcast = settingBroadcast;
+	this.settingsIntent = settingsIntent;
+}
 
-  @SuppressLint("ResourceType")
-  public boolean onCreateActionMode(final ActionMode actionMode,
-                                    final Menu menu) {
-    actionMode.setTitle(null);
-    actionMode.setSubtitle(null);
-    actionMode.setTitleOptionalHint(true);
-    actionMode.setTag(Launcher.AUTO_CANCEL_ACTION_MODE);
-    if (clipboardText != null) {
-      menu.add(0, 16908322, 0, 17039371).setShowAsAction(1);
-    }
-    if (settingsBroadcast != null || settingsIntent != null) {
-      menu.add(0, R.id.hotseat_qsb_menu_item, 0,
-               R.string.hotseat_qsb_preferences)
-          .setShowAsAction(8);
-    }
-    return clipboardText != null || settingsBroadcast != null ||
-        settingsIntent != null;
-  }
+@SuppressLint("ResourceType")
+public boolean onCreateActionMode(final ActionMode actionMode,
+                                  final Menu menu) {
+	actionMode.setTitle(null);
+	actionMode.setSubtitle(null);
+	actionMode.setTitleOptionalHint(true);
+	actionMode.setTag(Launcher.AUTO_CANCEL_ACTION_MODE);
+	if (clipboardText != null) {
+		menu.add(0, 16908322, 0, 17039371).setShowAsAction(1);
+	}
+	if (settingsBroadcast != null || settingsIntent != null) {
+		menu.add(0, R.id.hotseat_qsb_menu_item, 0,
+		         R.string.hotseat_qsb_preferences)
+		.setShowAsAction(8);
+	}
+	return clipboardText != null || settingsBroadcast != null ||
+	       settingsIntent != null;
+}
 
-  public boolean onPrepareActionMode(final ActionMode actionMode,
-                                     final Menu menu) {
-    return true;
-  }
+public boolean onPrepareActionMode(final ActionMode actionMode,
+                                   final Menu menu) {
+	return true;
+}
 
-  public boolean onActionItemClicked(final ActionMode actionMode,
-                                     final MenuItem menuItem) {
-    if (menuItem.getItemId() == 16908322 &&
-        !TextUtils.isEmpty(this.clipboardText)) {
-      this.qsbLayout.startSearch(this.clipboardText, 3);
-      actionMode.finish();
-      return true;
-    } else if (menuItem.getItemId() == R.id.hotseat_qsb_menu_item &&
-               !(this.settingsBroadcast == null &&
-                 this.settingsIntent == null)) {
-      if (settingsBroadcast != null) {
-        this.qsbLayout.getContext().sendBroadcast(this.settingsBroadcast);
-      } else if (settingsIntent != null) {
-        this.qsbLayout.getContext().startActivity(settingsIntent);
-      }
-      actionMode.finish();
-      return true;
-    }
-    return false;
-  }
+public boolean onActionItemClicked(final ActionMode actionMode,
+                                   final MenuItem menuItem) {
+	if (menuItem.getItemId() == 16908322 &&
+	    !TextUtils.isEmpty(this.clipboardText)) {
+		this.qsbLayout.startSearch(this.clipboardText, 3);
+		actionMode.finish();
+		return true;
+	} else if (menuItem.getItemId() == R.id.hotseat_qsb_menu_item &&
+	           !(this.settingsBroadcast == null &&
+	             this.settingsIntent == null)) {
+		if (settingsBroadcast != null) {
+			this.qsbLayout.getContext().sendBroadcast(this.settingsBroadcast);
+		} else if (settingsIntent != null) {
+			this.qsbLayout.getContext().startActivity(settingsIntent);
+		}
+		actionMode.finish();
+		return true;
+	}
+	return false;
+}
 
-  public void onDestroyActionMode(final ActionMode actionMode) {}
+public void onDestroyActionMode(final ActionMode actionMode) {
+}
 }

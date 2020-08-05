@@ -27,53 +27,55 @@ import java.util.concurrent.TimeUnit;
  */
 public class LooperExecutor extends AbstractExecutorService {
 
-  private final Handler mHandler;
+private final Handler mHandler;
 
-  public LooperExecutor(final Looper looper) { mHandler = new Handler(looper); }
+public LooperExecutor(final Looper looper) {
+	mHandler = new Handler(looper);
+}
 
-  @Override
-  public void execute(final Runnable runnable) {
-    if (mHandler.getLooper() == Looper.myLooper()) {
-      runnable.run();
-    } else {
-      mHandler.post(runnable);
-    }
-  }
+@Override
+public void execute(final Runnable runnable) {
+	if (mHandler.getLooper() == Looper.myLooper()) {
+		runnable.run();
+	} else {
+		mHandler.post(runnable);
+	}
+}
 
-  /**
-   * Not supported and throws an exception when used.
-   */
-  @Override
-  @Deprecated
-  public void shutdown() {
-    throw new UnsupportedOperationException();
-  }
+/**
+ * Not supported and throws an exception when used.
+ */
+@Override
+@Deprecated
+public void shutdown() {
+	throw new UnsupportedOperationException();
+}
 
-  /**
-   * Not supported and throws an exception when used.
-   */
-  @Override
-  @Deprecated
-  public List<Runnable> shutdownNow() {
-    throw new UnsupportedOperationException();
-  }
+/**
+ * Not supported and throws an exception when used.
+ */
+@Override
+@Deprecated
+public List<Runnable> shutdownNow() {
+	throw new UnsupportedOperationException();
+}
 
-  @Override
-  public boolean isShutdown() {
-    return false;
-  }
+@Override
+public boolean isShutdown() {
+	return false;
+}
 
-  @Override
-  public boolean isTerminated() {
-    return false;
-  }
+@Override
+public boolean isTerminated() {
+	return false;
+}
 
-  /**
-   * Not supported and throws an exception when used.
-   */
-  @Override
-  @Deprecated
-  public boolean awaitTermination(final long l, final TimeUnit timeUnit) {
-    throw new UnsupportedOperationException();
-  }
+/**
+ * Not supported and throws an exception when used.
+ */
+@Override
+@Deprecated
+public boolean awaitTermination(final long l, final TimeUnit timeUnit) {
+	throw new UnsupportedOperationException();
+}
 }

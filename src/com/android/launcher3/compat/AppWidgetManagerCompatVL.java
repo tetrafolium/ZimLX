@@ -38,123 +38,123 @@ import java.util.List;
 
 class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
-  private final UserManager mUserManager;
+private final UserManager mUserManager;
 
-  AppWidgetManagerCompatVL(final Context context) {
-    super(context);
-    mUserManager = (UserManager)context.getSystemService(Context.USER_SERVICE);
-  }
+AppWidgetManagerCompatVL(final Context context) {
+	super(context);
+	mUserManager = (UserManager)context.getSystemService(Context.USER_SERVICE);
+}
 
-  @Override
-  public List<AppWidgetProviderInfo>
-  getAllProviders(final @Nullable PackageUserKey packageUser) {
-    if (FeatureFlags.GO_DISABLE_WIDGETS) {
-      return Collections.emptyList();
-    }
-    if (packageUser == null) {
-      ArrayList<AppWidgetProviderInfo> providers =
-          new ArrayList<AppWidgetProviderInfo>();
-      for (UserHandle user : mUserManager.getUserProfiles()) {
-        providers.addAll(
-            mAppWidgetManager.getInstalledProvidersForProfile(user));
-      }
-      Iterator<AppWidgetProviderInfo> iterator = providers.iterator();
-      while (iterator.hasNext()) {
-        if (isBlacklisted(iterator.next().provider.getPackageName())) {
-          iterator.remove();
-        }
-      }
+@Override
+public List<AppWidgetProviderInfo>
+getAllProviders(final @Nullable PackageUserKey packageUser) {
+	if (FeatureFlags.GO_DISABLE_WIDGETS) {
+		return Collections.emptyList();
+	}
+	if (packageUser == null) {
+		ArrayList<AppWidgetProviderInfo> providers =
+			new ArrayList<AppWidgetProviderInfo>();
+		for (UserHandle user : mUserManager.getUserProfiles()) {
+			providers.addAll(
+				mAppWidgetManager.getInstalledProvidersForProfile(user));
+		}
+		Iterator<AppWidgetProviderInfo> iterator = providers.iterator();
+		while (iterator.hasNext()) {
+			if (isBlacklisted(iterator.next().provider.getPackageName())) {
+				iterator.remove();
+			}
+		}
 
-      if (FeatureFlags.ENABLE_CUSTOM_WIDGETS) {
-        providers.addAll(CustomWidgetParser.getCustomWidgets(mContext));
-      }
-      return providers;
-    }
+		if (FeatureFlags.ENABLE_CUSTOM_WIDGETS) {
+			providers.addAll(CustomWidgetParser.getCustomWidgets(mContext));
+		}
+		return providers;
+	}
 
-    if (isBlacklisted(packageUser.mPackageName)) {
-      return Collections.emptyList();
-    }
+	if (isBlacklisted(packageUser.mPackageName)) {
+		return Collections.emptyList();
+	}
 
-    // Only get providers for the given package/user.
-    List<AppWidgetProviderInfo> providers = new ArrayList<>(
-        mAppWidgetManager.getInstalledProvidersForProfile(packageUser.mUser));
-    Iterator<AppWidgetProviderInfo> iterator = providers.iterator();
-    while (iterator.hasNext()) {
-      if (!iterator.next().provider.getPackageName().equals(
-              packageUser.mPackageName)) {
-        iterator.remove();
-      }
-    }
+	// Only get providers for the given package/user.
+	List<AppWidgetProviderInfo> providers = new ArrayList<>(
+		mAppWidgetManager.getInstalledProvidersForProfile(packageUser.mUser));
+	Iterator<AppWidgetProviderInfo> iterator = providers.iterator();
+	while (iterator.hasNext()) {
+		if (!iterator.next().provider.getPackageName().equals(
+			    packageUser.mPackageName)) {
+			iterator.remove();
+		}
+	}
 
-    if (FeatureFlags.ENABLE_CUSTOM_WIDGETS &&
-        Process.myUserHandle().equals(packageUser.mUser) &&
-        mContext.getPackageName().equals(packageUser.mPackageName)) {
-      providers.addAll(CustomWidgetParser.getCustomWidgets(mContext));
-    }
-    return providers;
-  }
+	if (FeatureFlags.ENABLE_CUSTOM_WIDGETS &&
+	    Process.myUserHandle().equals(packageUser.mUser) &&
+	    mContext.getPackageName().equals(packageUser.mPackageName)) {
+		providers.addAll(CustomWidgetParser.getCustomWidgets(mContext));
+	}
+	return providers;
+}
 
-  @Override
-  public boolean bindAppWidgetIdIfAllowed(final int appWidgetId,
-                                          final AppWidgetProviderInfo info,
-                                          final Bundle options) {
-    if (FeatureFlags.GO_DISABLE_WIDGETS) {
-      return false;
-    }
+@Override
+public boolean bindAppWidgetIdIfAllowed(final int appWidgetId,
+                                        final AppWidgetProviderInfo info,
+                                        final Bundle options) {
+	if (FeatureFlags.GO_DISABLE_WIDGETS) {
+		return false;
+	}
 
-    if (FeatureFlags.ENABLE_CUSTOM_WIDGETS &&
-        appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
-      return true;
-    }
-    return mAppWidgetManager.bindAppWidgetIdIfAllowed(
-        appWidgetId, info.getProfile(), info.provider, options);
-  }
+	if (FeatureFlags.ENABLE_CUSTOM_WIDGETS &&
+	    appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
+		return true;
+	}
+	return mAppWidgetManager.bindAppWidgetIdIfAllowed(
+		appWidgetId, info.getProfile(), info.provider, options);
+}
 
-  @Override
-  public LauncherAppWidgetProviderInfo
-  findProvider(final ComponentName provider, final UserHandle user) {
-    if (FeatureFlags.GO_DISABLE_WIDGETS) {
-      return null;
-    }
-    for (AppWidgetProviderInfo info :
-         getAllProviders(new PackageUserKey(provider.getPackageName(), user))) {
-      if (info.provider.equals(provider)) {
-        return LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
-      }
-    }
+@Override
+public LauncherAppWidgetProviderInfo
+findProvider(final ComponentName provider, final UserHandle user) {
+	if (FeatureFlags.GO_DISABLE_WIDGETS) {
+		return null;
+	}
+	for (AppWidgetProviderInfo info :
+	     getAllProviders(new PackageUserKey(provider.getPackageName(), user))) {
+		if (info.provider.equals(provider)) {
+			return LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
+		}
+	}
 
-    if (FeatureFlags.ENABLE_CUSTOM_WIDGETS &&
-        Process.myUserHandle().equals(user)) {
-      for (LauncherAppWidgetProviderInfo info :
-           CustomWidgetParser.getCustomWidgets(mContext)) {
-        if (info.provider.equals(provider)) {
-          return info;
-        }
-      }
-    }
-    return null;
-  }
+	if (FeatureFlags.ENABLE_CUSTOM_WIDGETS &&
+	    Process.myUserHandle().equals(user)) {
+		for (LauncherAppWidgetProviderInfo info :
+		     CustomWidgetParser.getCustomWidgets(mContext)) {
+			if (info.provider.equals(provider)) {
+				return info;
+			}
+		}
+	}
+	return null;
+}
 
-  @Override
-  public HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap() {
-    HashMap<ComponentKey, AppWidgetProviderInfo> result = new HashMap<>();
-    if (FeatureFlags.GO_DISABLE_WIDGETS) {
-      return result;
-    }
-    for (UserHandle user : mUserManager.getUserProfiles()) {
-      for (AppWidgetProviderInfo info :
-           mAppWidgetManager.getInstalledProvidersForProfile(user)) {
-        if (!isBlacklisted(info.provider.getPackageName()))
-          result.put(new ComponentKey(info.provider, user), info);
-      }
-    }
+@Override
+public HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap() {
+	HashMap<ComponentKey, AppWidgetProviderInfo> result = new HashMap<>();
+	if (FeatureFlags.GO_DISABLE_WIDGETS) {
+		return result;
+	}
+	for (UserHandle user : mUserManager.getUserProfiles()) {
+		for (AppWidgetProviderInfo info :
+		     mAppWidgetManager.getInstalledProvidersForProfile(user)) {
+			if (!isBlacklisted(info.provider.getPackageName()))
+				result.put(new ComponentKey(info.provider, user), info);
+		}
+	}
 
-    if (FeatureFlags.ENABLE_CUSTOM_WIDGETS) {
-      for (LauncherAppWidgetProviderInfo info :
-           CustomWidgetParser.getCustomWidgets(mContext)) {
-        result.put(new ComponentKey(info.provider, info.getProfile()), info);
-      }
-    }
-    return result;
-  }
+	if (FeatureFlags.ENABLE_CUSTOM_WIDGETS) {
+		for (LauncherAppWidgetProviderInfo info :
+		     CustomWidgetParser.getCustomWidgets(mContext)) {
+			result.put(new ComponentKey(info.provider, info.getProfile()), info);
+		}
+	}
+	return result;
+}
 }

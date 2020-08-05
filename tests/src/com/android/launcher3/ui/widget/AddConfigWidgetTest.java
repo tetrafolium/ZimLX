@@ -50,142 +50,142 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
-  @Rule
-  public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
-  @Rule
-  public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
+@Rule
+public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
+@Rule
+public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
 
-  private LauncherAppWidgetProviderInfo mWidgetInfo;
-  private AppWidgetManager mAppWidgetManager;
+private LauncherAppWidgetProviderInfo mWidgetInfo;
+private AppWidgetManager mAppWidgetManager;
 
-  private int mWidgetId;
+private int mWidgetId;
 
-  @Override
-  @Before
-  public void setUp() throws Exception {
-    super.setUp();
-    mWidgetInfo = findWidgetProvider(true /* hasConfigureScreen */);
-    mAppWidgetManager = AppWidgetManager.getInstance(mTargetContext);
-  }
+@Override
+@Before
+public void setUp() throws Exception {
+	super.setUp();
+	mWidgetInfo = findWidgetProvider(true /* hasConfigureScreen */);
+	mAppWidgetManager = AppWidgetManager.getInstance(mTargetContext);
+}
 
-  @Test
-  public void testWidgetConfig() throws Throwable {
-    runTest(false, true);
-  }
+@Test
+public void testWidgetConfig() throws Throwable {
+	runTest(false, true);
+}
 
-  @Test
-  public void testWidgetConfig_rotate() throws Throwable {
-    runTest(true, true);
-  }
+@Test
+public void testWidgetConfig_rotate() throws Throwable {
+	runTest(true, true);
+}
 
-  @Test
-  public void testConfigCancelled() throws Throwable {
-    runTest(false, false);
-  }
+@Test
+public void testConfigCancelled() throws Throwable {
+	runTest(false, false);
+}
 
-  @Test
-  public void testConfigCancelled_rotate() throws Throwable {
-    runTest(true, false);
-  }
+@Test
+public void testConfigCancelled_rotate() throws Throwable {
+	runTest(true, false);
+}
 
-  /**
-   * @param rotateConfig should the config screen be rotated
-   * @param acceptConfig accept the config activity
-   */
-  private void runTest(final boolean rotateConfig, final boolean acceptConfig)
-      throws Throwable {
-    lockRotation(true);
+/**
+ * @param rotateConfig should the config screen be rotated
+ * @param acceptConfig accept the config activity
+ */
+private void runTest(final boolean rotateConfig, final boolean acceptConfig)
+throws Throwable {
+	lockRotation(true);
 
-    clearHomescreen();
-    mActivityMonitor.startLauncher();
+	clearHomescreen();
+	mActivityMonitor.startLauncher();
 
-    // Open widget tray and wait for load complete.
-    final UiObject2 widgetContainer = openWidgetsTray();
-    assertTrue(Wait.atMost(Condition.minChildCount(widgetContainer, 2),
-                           DEFAULT_UI_TIMEOUT));
+	// Open widget tray and wait for load complete.
+	final UiObject2 widgetContainer = openWidgetsTray();
+	assertTrue(Wait.atMost(Condition.minChildCount(widgetContainer, 2),
+	                       DEFAULT_UI_TIMEOUT));
 
-    // Drag widget to homescreen
-    WidgetConfigStartupMonitor monitor = new WidgetConfigStartupMonitor();
-    UiObject2 widget = scrollAndFind(
-        widgetContainer, By.clazz(WidgetCell.class)
-                             .hasDescendant(By.text(mWidgetInfo.getLabel(
-                                 mTargetContext.getPackageManager()))));
-    dragToWorkspace(widget, false);
-    // Widget id for which the config activity was opened
-    mWidgetId = monitor.getWidgetId();
+	// Drag widget to homescreen
+	WidgetConfigStartupMonitor monitor = new WidgetConfigStartupMonitor();
+	UiObject2 widget = scrollAndFind(
+		widgetContainer, By.clazz(WidgetCell.class)
+		.hasDescendant(By.text(mWidgetInfo.getLabel(
+					       mTargetContext.getPackageManager()))));
+	dragToWorkspace(widget, false);
+	// Widget id for which the config activity was opened
+	mWidgetId = monitor.getWidgetId();
 
-    if (rotateConfig) {
-      // Rotate the screen and verify that the config activity is recreated
-      monitor = new WidgetConfigStartupMonitor();
-      lockRotation(false);
-      assertEquals(mWidgetId, monitor.getWidgetId());
-    }
+	if (rotateConfig) {
+		// Rotate the screen and verify that the config activity is recreated
+		monitor = new WidgetConfigStartupMonitor();
+		lockRotation(false);
+		assertEquals(mWidgetId, monitor.getWidgetId());
+	}
 
-    // Verify that the widget id is valid and bound
-    assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
+	// Verify that the widget id is valid and bound
+	assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
 
-    setResult(acceptConfig);
-    if (acceptConfig) {
-      assertTrue(
-          Wait.atMost(new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT));
-      assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
-    } else {
-      // Verify that the widget id is deleted.
-      assertTrue(Wait.atMost(new Condition() {
-        @Override
-        public boolean isTrue() {
-          return mAppWidgetManager.getAppWidgetInfo(mWidgetId) == null;
-        }
-      }, DEFAULT_ACTIVITY_TIMEOUT));
-    }
-  }
+	setResult(acceptConfig);
+	if (acceptConfig) {
+		assertTrue(
+			Wait.atMost(new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT));
+		assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
+	} else {
+		// Verify that the widget id is deleted.
+		assertTrue(Wait.atMost(new Condition() {
+				@Override
+				public boolean isTrue() {
+				        return mAppWidgetManager.getAppWidgetInfo(mWidgetId) == null;
+				}
+			}, DEFAULT_ACTIVITY_TIMEOUT));
+	}
+}
 
-  private void setResult(final boolean success) {
+private void setResult(final boolean success) {
 
-    getInstrumentation().getTargetContext().sendBroadcast(
-        WidgetConfigActivity.getCommandIntent(
-            WidgetConfigActivity.class, success ? "clickOK" : "clickCancel"));
-  }
+	getInstrumentation().getTargetContext().sendBroadcast(
+		WidgetConfigActivity.getCommandIntent(
+			WidgetConfigActivity.class, success ? "clickOK" : "clickCancel"));
+}
 
-  /**
-   * Condition for searching widget id
-   */
-  private class WidgetSearchCondition
-      extends Condition implements Workspace.ItemOperator {
+/**
+ * Condition for searching widget id
+ */
+private class WidgetSearchCondition
+	extends Condition implements Workspace.ItemOperator {
 
-    @Override
-    public boolean isTrue() throws Throwable {
-      return mMainThreadExecutor.submit(mActivityMonitor.itemExists(this))
-          .get();
-    }
+@Override
+public boolean isTrue() throws Throwable {
+	return mMainThreadExecutor.submit(mActivityMonitor.itemExists(this))
+	       .get();
+}
 
-    @Override
-    public boolean evaluate(final ItemInfo info, final View view) {
-      return info instanceof LauncherAppWidgetInfo &&
-          ((LauncherAppWidgetInfo)info)
-              .providerName.equals(mWidgetInfo.provider) &&
-          ((LauncherAppWidgetInfo)info).appWidgetId == mWidgetId;
-    }
-  }
+@Override
+public boolean evaluate(final ItemInfo info, final View view) {
+	return info instanceof LauncherAppWidgetInfo &&
+	       ((LauncherAppWidgetInfo)info)
+	       .providerName.equals(mWidgetInfo.provider) &&
+	       ((LauncherAppWidgetInfo)info).appWidgetId == mWidgetId;
+}
+}
 
-  /**
-   * Broadcast receiver for receiving widget config activity status.
-   */
-  private class WidgetConfigStartupMonitor extends BlockingBroadcastReceiver {
+/**
+ * Broadcast receiver for receiving widget config activity status.
+ */
+private class WidgetConfigStartupMonitor extends BlockingBroadcastReceiver {
 
-    public WidgetConfigStartupMonitor() {
-      super(WidgetConfigActivity.class.getName());
-    }
+public WidgetConfigStartupMonitor() {
+	super(WidgetConfigActivity.class.getName());
+}
 
-    public int getWidgetId() throws InterruptedException {
-      Intent intent = blockingGetExtraIntent();
-      assertNotNull(intent);
-      assertEquals(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE,
-                   intent.getAction());
-      int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                                        LauncherAppWidgetInfo.NO_ID);
-      assertNotSame(widgetId, LauncherAppWidgetInfo.NO_ID);
-      return widgetId;
-    }
-  }
+public int getWidgetId() throws InterruptedException {
+	Intent intent = blockingGetExtraIntent();
+	assertNotNull(intent);
+	assertEquals(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE,
+	             intent.getAction());
+	int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+	                                  LauncherAppWidgetInfo.NO_ID);
+	assertNotSame(widgetId, LauncherAppWidgetInfo.NO_ID);
+	return widgetId;
+}
+}
 }

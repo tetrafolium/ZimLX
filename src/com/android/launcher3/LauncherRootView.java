@@ -16,155 +16,155 @@ import android.view.View;
 import android.view.ViewDebug;
 
 public class LauncherRootView extends InsettableFrameLayout {
-  private final Launcher mLauncher;
+private final Launcher mLauncher;
 
-  private final Paint mOpaquePaint;
-  @ViewDebug.ExportedProperty(category = "launcher")
-  private final Rect mConsumedInsets = new Rect();
+private final Paint mOpaquePaint;
+@ViewDebug.ExportedProperty(category = "launcher")
+private final Rect mConsumedInsets = new Rect();
 
-  private View mAlignedView;
-  private WindowStateListener mWindowStateListener;
+private View mAlignedView;
+private WindowStateListener mWindowStateListener;
 
-  public LauncherRootView(final Context context, final AttributeSet attrs) {
-    super(context, attrs);
+public LauncherRootView(final Context context, final AttributeSet attrs) {
+	super(context, attrs);
 
-    mOpaquePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    mOpaquePaint.setColor(Color.BLACK);
-    mOpaquePaint.setStyle(Paint.Style.FILL);
+	mOpaquePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+	mOpaquePaint.setColor(Color.BLACK);
+	mOpaquePaint.setStyle(Paint.Style.FILL);
 
-    mLauncher = Launcher.getLauncher(context);
-  }
+	mLauncher = Launcher.getLauncher(context);
+}
 
-  @Override
-  protected void onFinishInflate() {
-    if (getChildCount() > 0) {
-      // LauncherRootView contains only one child, which should be aligned
-      // based on the horizontal insets.
-      mAlignedView = getChildAt(0);
-    }
-    super.onFinishInflate();
-  }
+@Override
+protected void onFinishInflate() {
+	if (getChildCount() > 0) {
+		// LauncherRootView contains only one child, which should be aligned
+		// based on the horizontal insets.
+		mAlignedView = getChildAt(0);
+	}
+	super.onFinishInflate();
+}
 
-  @TargetApi(Build.VERSION_CODES.M)
-  @Override
-  protected boolean fitSystemWindows(final Rect insets) {
-    boolean rawInsetsChanged = !mInsets.equals(insets);
-    mConsumedInsets.setEmpty();
-    boolean drawInsetBar = false;
-    if (mLauncher.isInMultiWindowModeCompat() &&
-        (insets.left > 0 || insets.right > 0 || insets.bottom > 0)) {
-      mConsumedInsets.left = insets.left;
-      mConsumedInsets.right = insets.right;
-      mConsumedInsets.bottom = insets.bottom;
-      insets = new Rect(0, insets.top, 0, insets.bottom);
-      drawInsetBar = true;
-    } else if ((insets.right > 0 || insets.left > 0) &&
-               (!Utilities.ATLEAST_MARSHMALLOW ||
-                getContext()
-                    .getSystemService(ActivityManager.class)
-                    .isLowRamDevice())) {
-      mConsumedInsets.left = insets.left;
-      mConsumedInsets.right = insets.right;
-      insets = new Rect(0, insets.top, 0, insets.bottom);
-      drawInsetBar = true;
-    }
+@TargetApi(Build.VERSION_CODES.M)
+@Override
+protected boolean fitSystemWindows(final Rect insets) {
+	boolean rawInsetsChanged = !mInsets.equals(insets);
+	mConsumedInsets.setEmpty();
+	boolean drawInsetBar = false;
+	if (mLauncher.isInMultiWindowModeCompat() &&
+	    (insets.left > 0 || insets.right > 0 || insets.bottom > 0)) {
+		mConsumedInsets.left = insets.left;
+		mConsumedInsets.right = insets.right;
+		mConsumedInsets.bottom = insets.bottom;
+		insets = new Rect(0, insets.top, 0, insets.bottom);
+		drawInsetBar = true;
+	} else if ((insets.right > 0 || insets.left > 0) &&
+	           (!Utilities.ATLEAST_MARSHMALLOW ||
+	            getContext()
+	            .getSystemService(ActivityManager.class)
+	            .isLowRamDevice())) {
+		mConsumedInsets.left = insets.left;
+		mConsumedInsets.right = insets.right;
+		insets = new Rect(0, insets.top, 0, insets.bottom);
+		drawInsetBar = true;
+	}
 
-    mLauncher.getSystemUiController().updateUiState(
-        UI_STATE_ROOT_VIEW, drawInsetBar ? FLAG_DARK_NAV : 0);
+	mLauncher.getSystemUiController().updateUiState(
+		UI_STATE_ROOT_VIEW, drawInsetBar ? FLAG_DARK_NAV : 0);
 
-    // Update device profile before notifying th children.
-    mLauncher.getDeviceProfile().updateInsets(insets);
-    boolean resetState = !insets.equals(mInsets);
-    setInsets(insets);
+	// Update device profile before notifying th children.
+	mLauncher.getDeviceProfile().updateInsets(insets);
+	boolean resetState = !insets.equals(mInsets);
+	setInsets(insets);
 
-    if (mAlignedView != null) {
-      // Apply margins on aligned view to handle consumed insets.
-      MarginLayoutParams lp =
-          (MarginLayoutParams)mAlignedView.getLayoutParams();
-      if (lp.leftMargin != mConsumedInsets.left ||
-          lp.rightMargin != mConsumedInsets.right ||
-          lp.bottomMargin != mConsumedInsets.bottom) {
-        lp.leftMargin = mConsumedInsets.left;
-        lp.rightMargin = mConsumedInsets.right;
-        lp.topMargin = mConsumedInsets.top;
-        lp.bottomMargin = mConsumedInsets.bottom;
-        mAlignedView.setLayoutParams(lp);
-      }
-    }
-    if (rawInsetsChanged) {
-      // Update the grid again
-      Launcher launcher = Launcher.getLauncher(getContext());
-      launcher.onInsetsChanged(insets);
-    }
+	if (mAlignedView != null) {
+		// Apply margins on aligned view to handle consumed insets.
+		MarginLayoutParams lp =
+			(MarginLayoutParams)mAlignedView.getLayoutParams();
+		if (lp.leftMargin != mConsumedInsets.left ||
+		    lp.rightMargin != mConsumedInsets.right ||
+		    lp.bottomMargin != mConsumedInsets.bottom) {
+			lp.leftMargin = mConsumedInsets.left;
+			lp.rightMargin = mConsumedInsets.right;
+			lp.topMargin = mConsumedInsets.top;
+			lp.bottomMargin = mConsumedInsets.bottom;
+			mAlignedView.setLayoutParams(lp);
+		}
+	}
+	if (rawInsetsChanged) {
+		// Update the grid again
+		Launcher launcher = Launcher.getLauncher(getContext());
+		launcher.onInsetsChanged(insets);
+	}
 
-    return true; // I'll take it from here
-  }
+	return true; // I'll take it from here
+}
 
-  @Override
-  public void setInsets(final Rect insets) {
-    // If the insets haven't changed, this is a no-op. Avoid unnecessary layout
-    // caused by modifying child layout params.
+@Override
+public void setInsets(final Rect insets) {
+	// If the insets haven't changed, this is a no-op. Avoid unnecessary layout
+	// caused by modifying child layout params.
 
-    if (!insets.equals(mInsets)) {
-      super.setInsets(insets);
-    }
-  }
+	if (!insets.equals(mInsets)) {
+		super.setInsets(insets);
+	}
+}
 
-  public void dispatchInsets() {
-    mLauncher.getDeviceProfile().updateInsets(mInsets);
-    super.setInsets(mInsets);
-  }
+public void dispatchInsets() {
+	mLauncher.getDeviceProfile().updateInsets(mInsets);
+	super.setInsets(mInsets);
+}
 
-  public boolean isInMultiWindowModeCompat() {
-    return false;
-    // return Utilities.ATLEAST_NOUGAT && isInMultiWindowMode();
-  }
+public boolean isInMultiWindowModeCompat() {
+	return false;
+	// return Utilities.ATLEAST_NOUGAT && isInMultiWindowMode();
+}
 
-  @Override
-  protected void dispatchDraw(final Canvas canvas) {
-    super.dispatchDraw(canvas);
+@Override
+protected void dispatchDraw(final Canvas canvas) {
+	super.dispatchDraw(canvas);
 
-    // If the right inset is opaque, draw a black rectangle to ensure that is
-    // stays opaque.
-    if (mConsumedInsets.right > 0) {
-      int width = getWidth();
-      canvas.drawRect(width - mConsumedInsets.right, 0, width, getHeight(),
-                      mOpaquePaint);
-    }
-    if (mConsumedInsets.left > 0) {
-      canvas.drawRect(0, 0, mConsumedInsets.left, getHeight(), mOpaquePaint);
-    }
-    if (mConsumedInsets.bottom > 0) {
-      int height = getHeight();
-      canvas.drawRect(0, height - mConsumedInsets.bottom, getWidth(), height,
-                      mOpaquePaint);
-    }
-  }
+	// If the right inset is opaque, draw a black rectangle to ensure that is
+	// stays opaque.
+	if (mConsumedInsets.right > 0) {
+		int width = getWidth();
+		canvas.drawRect(width - mConsumedInsets.right, 0, width, getHeight(),
+		                mOpaquePaint);
+	}
+	if (mConsumedInsets.left > 0) {
+		canvas.drawRect(0, 0, mConsumedInsets.left, getHeight(), mOpaquePaint);
+	}
+	if (mConsumedInsets.bottom > 0) {
+		int height = getHeight();
+		canvas.drawRect(0, height - mConsumedInsets.bottom, getWidth(), height,
+		                mOpaquePaint);
+	}
+}
 
-  public void setWindowStateListener(final WindowStateListener listener) {
-    mWindowStateListener = listener;
-  }
+public void setWindowStateListener(final WindowStateListener listener) {
+	mWindowStateListener = listener;
+}
 
-  @Override
-  public void onWindowFocusChanged(final boolean hasWindowFocus) {
-    super.onWindowFocusChanged(hasWindowFocus);
-    if (mWindowStateListener != null) {
-      mWindowStateListener.onWindowFocusChanged(hasWindowFocus);
-    }
-  }
+@Override
+public void onWindowFocusChanged(final boolean hasWindowFocus) {
+	super.onWindowFocusChanged(hasWindowFocus);
+	if (mWindowStateListener != null) {
+		mWindowStateListener.onWindowFocusChanged(hasWindowFocus);
+	}
+}
 
-  @Override
-  protected void onWindowVisibilityChanged(final int visibility) {
-    super.onWindowVisibilityChanged(visibility);
-    if (mWindowStateListener != null) {
-      mWindowStateListener.onWindowVisibilityChanged(visibility);
-    }
-  }
+@Override
+protected void onWindowVisibilityChanged(final int visibility) {
+	super.onWindowVisibilityChanged(visibility);
+	if (mWindowStateListener != null) {
+		mWindowStateListener.onWindowVisibilityChanged(visibility);
+	}
+}
 
-  public interface WindowStateListener {
+public interface WindowStateListener {
 
-    void onWindowFocusChanged(boolean hasFocus);
+void onWindowFocusChanged(boolean hasFocus);
 
-    void onWindowVisibilityChanged(int visibility);
-  }
+void onWindowVisibilityChanged(int visibility);
+}
 }

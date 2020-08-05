@@ -83,793 +83,814 @@ import org.zimmob.zimlx.groups.DrawerFolderInfo;
  * An icon that can appear on in the workspace representing an {@link Folder}.
  */
 public class FolderIcon
-    extends FrameLayout implements FolderListener, Launcher.OnResumeCallback {
-  @Thunk Launcher mLauncher;
-  @Thunk Folder mFolder;
-  private FolderInfo mInfo;
-  @Thunk static boolean sStaticValuesDirty = true;
-
-  private CheckLongPressHelper mLongPressHelper;
-  private StylusEventHelper mStylusEventHelper;
-
-  static final int DROP_IN_ANIMATION_DURATION = 400;
-
-  // Flag whether the folder should open itself when an item is dragged over is
-  // enabled.
-  public static final boolean SPRING_LOADING_ENABLED = true;
-
-  // Delay when drag enters until the folder opens, in miliseconds.
-  private static final int ON_OPEN_DELAY = 800;
-
-  @Thunk BubbleTextView mFolderName;
-
-  PreviewBackground mBackground = new PreviewBackground();
-  private boolean mBackgroundIsVisible = true;
-
-  FolderIconPreviewVerifier mPreviewVerifier;
-  ClippedFolderIconLayoutRule mPreviewLayoutRule;
-  private PreviewItemManager mPreviewItemManager;
-  private PreviewItemDrawingParams mTmpParams =
-      new PreviewItemDrawingParams(0, 0, 0, 0);
-  private List<BubbleTextView> mCurrentPreviewItems = new ArrayList<>();
-
-  boolean mAnimating = false;
-  private Rect mTempBounds = new Rect();
-
-  private float mSlop;
-
-  private Alarm mOpenAlarm = new Alarm();
-
-  private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
-  private BadgeRenderer mBadgeRenderer;
-  private float mBadgeScale;
-  private Point mTempSpaceForBadgeOffset = new Point();
-
-  private GestureHandler mSwipeUpHandler;
-
-  public boolean isCustomIcon = false;
-  private boolean mIsTextVisible = true;
-
-  private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY =
-      new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
-        @Override
-        public Float get(final FolderIcon folderIcon) {
-          return folderIcon.mBadgeScale;
-        }
-
-        @Override
-        public void set(final FolderIcon folderIcon, final Float value) {
-          folderIcon.mBadgeScale = value;
-          folderIcon.invalidate();
-        }
-      };
-
-  public FolderIcon(final Context context, final AttributeSet attrs) {
-    super(context, attrs);
-    init();
-  }
-
-  public FolderIcon(final Context context) {
-    super(context);
-    init();
-  }
-
-  private void init() {
-    mLongPressHelper = new CheckLongPressHelper(this);
-    mStylusEventHelper =
-        new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
-    mPreviewLayoutRule = new ClippedFolderIconLayoutRule();
-    mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-    mPreviewItemManager = new PreviewItemManager(this);
-  }
-
-  public static FolderIcon fromXml(final int resId, final Launcher launcher,
-                                   final ViewGroup group,
-                                   final FolderInfo folderInfo) {
-    @SuppressWarnings("all") // suppress dead code warning
-    final boolean error =
-        INITIAL_ITEM_ANIMATION_DURATION >= DROP_IN_ANIMATION_DURATION;
-    if (error) {
-      throw new IllegalStateException(
-          "DROP_IN_ANIMATION_DURATION must be greater than "
-          +
-          "INITIAL_ITEM_ANIMATION_DURATION, as sequencing of adding first two items "
-          + "is dependent on this");
-    }
-
-    DeviceProfile grid = launcher.getDeviceProfile();
-    FolderIcon icon = (FolderIcon)LayoutInflater.from(group.getContext())
-                          .inflate(resId, group, false);
-
-    icon.setClipToPadding(false);
-    icon.mFolderName = icon.findViewById(R.id.folder_icon_name);
-    icon.mFolderName.setText(folderInfo.getIconTitle());
-    icon.mFolderName.setCompoundDrawablePadding(0);
-    FrameLayout.LayoutParams lp =
-        (FrameLayout.LayoutParams)icon.mFolderName.getLayoutParams();
-    lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
-    if (folderInfo instanceof DrawerFolderInfo) {
-      lp.topMargin = grid.allAppsIconSizePx + grid.allAppsIconDrawablePaddingPx;
-      icon.mBackground = new PreviewBackground(true);
-      ((DrawerFolderInfo)folderInfo).getAppsStore().registerFolderIcon(icon);
-    } else {
-      lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
-    }
-    icon.setTag(folderInfo);
-    icon.setOnClickListener(ItemClickHandler.INSTANCE);
-    icon.mInfo = folderInfo;
-    icon.mLauncher = launcher;
-    icon.mBadgeRenderer = launcher.getDeviceProfile().mBadgeRenderer;
-    icon.setContentDescription(
-        launcher.getString(R.string.folder_name_format, folderInfo.title));
-    Folder folder = Folder.fromXml(launcher);
-    folder.setDragController(launcher.getDragController());
-    folder.setFolderIcon(icon);
-    folder.bind(folderInfo);
-    icon.setFolder(folder);
-    icon.setAccessibilityDelegate(launcher.getAccessibilityDelegate());
-
-    folderInfo.addListener(icon);
-
-    icon.setOnFocusChangeListener(launcher.mFocusHandler);
-    icon.onIconChanged();
-    icon.applySwipeUpAction(folderInfo);
-
-    return icon;
-  }
-
-  public void unbind() {
-    if (mInfo != null) {
-      mInfo.removeListener(this);
-      mInfo.removeListener(mFolder);
-      mInfo = null;
-    }
-  }
-
-  @Override
-  public void onIconChanged() {
-    applySwipeUpAction(mInfo);
-    setOnClickListener(mInfo.isCoverMode()
-                           ? ItemClickHandler.FOLDER_COVER_INSTANCE
-                           : ItemClickHandler.INSTANCE);
-
-    FrameLayout.LayoutParams lp =
-        (FrameLayout.LayoutParams)mFolderName.getLayoutParams();
-    DeviceProfile grid = mLauncher.getDeviceProfile();
-    mFolderName.setTag(null);
-
-    if (mInfo.useIconMode(mLauncher)) {
-      lp.topMargin = 0;
-      if (isInAppDrawer()) {
-        mFolderName.setCompoundDrawablePadding(
-            grid.allAppsIconDrawablePaddingPx);
-      } else {
-        mFolderName.setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
-      }
-
-      isCustomIcon = true;
-
-      if (mInfo.isCoverMode()) {
-        ItemInfoWithIcon coverInfo = mInfo.getCoverInfo();
-        mFolderName.setTag(coverInfo);
-        mFolderName.applyIcon(coverInfo);
-        applyCoverBadgeState(coverInfo, false);
-      } else {
-        BitmapInfo info = BitmapInfo.fromBitmap(
-            Utilities.drawableToBitmap(mInfo.getIcon(getContext())));
-        mFolderName.applyIcon(info);
-        mFolderName.applyBadgeState(mInfo, false);
-      }
-      mBackground.setStartOpacity(0f);
-    } else {
-      if (isInAppDrawer()) {
-        lp.topMargin =
-            grid.allAppsIconSizePx + grid.allAppsIconDrawablePaddingPx;
-      } else {
-        lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
-      }
-      mFolderName.setCompoundDrawablePadding(0);
-      mFolderName.applyBadgeState(mInfo, false);
-
-      isCustomIcon = false;
-      mFolderName.clearIcon();
-      mBackground.setStartOpacity(1f);
-    }
-    mFolderName.setText(mInfo.getIconTitle());
-    requestLayout();
-  }
-
-  @Override
-  protected Parcelable onSaveInstanceState() {
-    sStaticValuesDirty = true;
-    return super.onSaveInstanceState();
-  }
-
-  public Folder getFolder() { return mFolder; }
-
-  private void setFolder(final Folder folder) {
-    mFolder = folder;
-    mPreviewVerifier =
-        new FolderIconPreviewVerifier(mLauncher.getDeviceProfile().inv);
-    updatePreviewItems(false);
-  }
-
-  private boolean willAcceptItem(final ItemInfo item) {
-    final int itemType = item.itemType;
-    return ((itemType == Favorites.ITEM_TYPE_APPLICATION ||
-             itemType == Favorites.ITEM_TYPE_SHORTCUT ||
-             itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) &&
-            item != mInfo && !mFolder.isOpen());
-  }
-
-  public boolean acceptDrop(final ItemInfo dragInfo) {
-    return !mFolder.isDestroyed() && willAcceptItem(dragInfo);
-  }
-
-  public void addItem(final ShortcutInfo item) { addItem(item, true); }
-
-  public void addItem(final ShortcutInfo item, final boolean animate) {
-    mInfo.add(item, animate);
-  }
-
-  public void removeItem(final ShortcutInfo item, final boolean animate) {
-    mInfo.remove(item, animate);
-  }
-
-  public void onDragEnter(final ItemInfo dragInfo) {
-    if (mFolder.isDestroyed() || !willAcceptItem(dragInfo))
-      return;
-    CellLayout.LayoutParams lp = (CellLayout.LayoutParams)getLayoutParams();
-    CellLayout cl = (CellLayout)getParent().getParent();
-
-    mBackground.animateToAccept(cl, lp.cellX, lp.cellY);
-    mOpenAlarm.setOnAlarmListener(mOnOpenListener);
-    if (SPRING_LOADING_ENABLED &&
-        ((dragInfo instanceof AppInfo) || (dragInfo instanceof ShortcutInfo) ||
-         (dragInfo instanceof PendingAddShortcutInfo))) {
-      mOpenAlarm.setAlarm(ON_OPEN_DELAY);
-    }
-  }
-
-  OnAlarmListener mOnOpenListener = new OnAlarmListener() {
-    public void onAlarm(final Alarm alarm) {
-      mFolder.beginExternalDrag();
-      mFolder.animateOpen();
-    }
-  };
-
-  public Drawable prepareCreateAnimation(final View destView) {
-    return mPreviewItemManager.prepareCreateAnimation(destView);
-  }
-
-  public void performCreateAnimation(final ShortcutInfo destInfo,
-                                     final View destView,
-                                     final ShortcutInfo srcInfo,
-                                     final DragView srcView, final Rect dstRect,
-                                     final float scaleRelativeToDragLayer) {
-    prepareCreateAnimation(destView);
-    addItem(destInfo);
-    // This will animate the first item from it's position as an icon into its
-    // position as the first item in the preview
-    mPreviewItemManager.createFirstItemAnimation(false /* reverse */, null)
-        .start();
-
-    // This will animate the dragView (srcView) into the new folder
-    onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1,
-           false /* itemReturnedOnFailedDrop */);
-  }
-
-  public void performDestroyAnimation(final Runnable onCompleteRunnable) {
-    // This will animate the final item in the preview to be full size.
-    mPreviewItemManager
-        .createFirstItemAnimation(true /* reverse */, onCompleteRunnable)
-        .start();
-  }
-
-  public void onDragExit() {
-    mBackground.animateToRest();
-    mOpenAlarm.cancelAlarm();
-  }
-
-  private void onDrop(final ShortcutInfo item, final DragView animateView,
-                      final Rect finalRect,
-                      final float scaleRelativeToDragLayer, final int index,
-                      final boolean itemReturnedOnFailedDrop) {
-    item.cellX = -1;
-    item.cellY = -1;
-
-    // Typically, the animateView corresponds to the DragView; however, if this
-    // is being done after a configuration activity (ie. for a Shortcut being
-    // dragged from AllApps) we will not have a view to animate
-    if (animateView != null) {
-      DragLayer dragLayer = mLauncher.getDragLayer();
-      Rect from = new Rect();
-      dragLayer.getViewRectRelativeToSelf(animateView, from);
-      Rect to = finalRect;
-      if (to == null) {
-        to = new Rect();
-        Workspace workspace = mLauncher.getWorkspace();
-        // Set cellLayout and this to it's final state to compute final
-        // animation locations
-        workspace.setFinalTransitionTransform();
-        float scaleX = getScaleX();
-        float scaleY = getScaleY();
-        setScaleX(1.0f);
-        setScaleY(1.0f);
-        scaleRelativeToDragLayer =
-            dragLayer.getDescendantRectRelativeToSelf(this, to);
-        // Finished computing final animation locations, restore current state
-        setScaleX(scaleX);
-        setScaleY(scaleY);
-        workspace.resetTransitionTransform();
-      }
-
-      int numItemsInPreview = Math.min(MAX_NUM_ITEMS_IN_PREVIEW, index + 1);
-      boolean itemAdded = false;
-      if (itemReturnedOnFailedDrop || index >= MAX_NUM_ITEMS_IN_PREVIEW) {
-        List<BubbleTextView> oldPreviewItems =
-            new ArrayList<>(mCurrentPreviewItems);
-        addItem(item, false);
-        mCurrentPreviewItems.clear();
-        mCurrentPreviewItems.addAll(getPreviewItems());
-
-        if (!oldPreviewItems.equals(mCurrentPreviewItems)) {
-          for (int i = 0; i < mCurrentPreviewItems.size(); ++i) {
-            if (mCurrentPreviewItems.get(i).getTag().equals(item)) {
-              // If the item dropped is going to be in the preview, we update
-              // the index here to reflect its position in the preview.
-              index = i;
-            }
-          }
-
-          mPreviewItemManager.hidePreviewItem(index, true);
-          mPreviewItemManager.onDrop(oldPreviewItems, mCurrentPreviewItems,
-                                     item);
-          itemAdded = true;
-        } else {
-          removeItem(item, false);
-        }
-      }
-
-      if (!itemAdded) {
-        addItem(item);
-      }
-
-      int[] center = new int[2];
-      float scale = getLocalCenterForIndex(index, numItemsInPreview, center);
-      center[0] = Math.round(scaleRelativeToDragLayer * center[0]);
-      center[1] = Math.round(scaleRelativeToDragLayer * center[1]);
-
-      to.offset(center[0] - animateView.getMeasuredWidth() / 2,
-                center[1] - animateView.getMeasuredHeight() / 2);
-
-      float finalAlpha = index < MAX_NUM_ITEMS_IN_PREVIEW ? 0.5f : 0f;
-
-      float finalScale = scale * scaleRelativeToDragLayer;
-      dragLayer.animateView(animateView, from, to, finalAlpha, 1, 1, finalScale,
-                            finalScale, DROP_IN_ANIMATION_DURATION,
-                            Interpolators.DEACCEL_2, Interpolators.ACCEL_2,
-                            null, DragLayer.ANIMATION_END_DISAPPEAR, null);
-
-      mFolder.hideItem(item);
-
-      if (!itemAdded)
-        mPreviewItemManager.hidePreviewItem(index, true);
-      final int finalIndex = index;
-      postDelayed(() -> {
-        mPreviewItemManager.hidePreviewItem(finalIndex, false);
-        mFolder.showItem(item);
-        invalidate();
-      }, DROP_IN_ANIMATION_DURATION);
-    } else {
-      addItem(item);
-    }
-  }
-
-  public void onDrop(final DragObject d,
-                     final boolean itemReturnedOnFailedDrop) {
-    ShortcutInfo item;
-    if (d.dragInfo instanceof AppInfo) {
-      // Came from all apps -- make a copy
-      item = ((AppInfo)d.dragInfo).makeShortcut();
-    } else if (d.dragSource instanceof BaseItemDragListener) {
-      // Came from a different window -- make a copy
-      item = new ShortcutInfo((ShortcutInfo)d.dragInfo);
-    } else {
-      item = (ShortcutInfo)d.dragInfo;
-    }
-    mFolder.notifyDrop();
-    onDrop(item, d.dragView, null, 1.0f, mInfo.contents.size(),
-           itemReturnedOnFailedDrop);
-  }
-
-  public void setBadgeInfo(final FolderBadgeInfo badgeInfo) {
-    updateBadgeScale(mBadgeInfo.hasBadge(), badgeInfo.hasBadge());
-    mBadgeInfo = badgeInfo;
-  }
-
-  public ShortcutInfo getCoverInfo() { return mInfo.getCoverInfo(); }
-
-  public void applyCoverBadgeState(final ItemInfo itemInfo,
-                                   final boolean animate) {
-    mFolderName.applyBadgeState(itemInfo, animate);
-  }
-
-  public ClippedFolderIconLayoutRule getLayoutRule() {
-    return mPreviewLayoutRule;
-  }
-
-  /**
-   * Sets mBadgeScale to 1 or 0, animating if wasBadged or isBadged is false
-   * (the badge is being added or removed).
-   */
-  private void updateBadgeScale(final boolean wasBadged,
-                                final boolean isBadged) {
-    float newBadgeScale = isBadged ? 1f : 0f;
-    // Animate when a badge is first added or when it is removed.
-    if ((wasBadged ^ isBadged) && isShown()) {
-      createBadgeScaleAnimator(newBadgeScale).start();
-    } else {
-      mBadgeScale = newBadgeScale;
-      invalidate();
-    }
-  }
-
-  public Animator createBadgeScaleAnimator(final float... badgeScales) {
-    return ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, badgeScales);
-  }
-
-  public boolean hasBadge() {
-    return mBadgeInfo != null && mBadgeInfo.hasBadge();
-  }
-
-  private float getLocalCenterForIndex(final int index, final int curNumItems,
-                                       final int[] center) {
-    mTmpParams = mPreviewItemManager.computePreviewItemDrawingParams(
-        Math.min(MAX_NUM_ITEMS_IN_PREVIEW, index), curNumItems, mTmpParams);
-
-    mTmpParams.transX += mBackground.basePreviewOffsetX;
-    mTmpParams.transY += mBackground.basePreviewOffsetY;
-
-    float intrinsicIconSize = mPreviewItemManager.getIntrinsicIconSize();
-    float offsetX =
-        mTmpParams.transX + (mTmpParams.scale * intrinsicIconSize) / 2;
-    float offsetY =
-        mTmpParams.transY + (mTmpParams.scale * intrinsicIconSize) / 2;
-
-    center[0] = Math.round(offsetX);
-    center[1] = Math.round(offsetY);
-    return mTmpParams.scale;
-  }
-
-  public void setFolderBackground(final PreviewBackground bg) {
-    mBackground = bg;
-    mBackground.setInvalidateDelegate(this);
-  }
-
-  public void setBackgroundVisible(final boolean visible) {
-    mBackgroundIsVisible = visible;
-    invalidate();
-  }
-
-  public PreviewBackground getFolderBackground() { return mBackground; }
-
-  public PreviewItemManager getPreviewItemManager() {
-    return mPreviewItemManager;
-  }
-
-  @Override
-  protected void dispatchDraw(final Canvas canvas) {
-    super.dispatchDraw(canvas);
-
-    if (mBackgroundIsVisible) {
-      mPreviewItemManager.recomputePreviewDrawingParams();
-
-      if (!mBackground.drawingDelegated() && !isCustomIcon) {
-        mBackground.drawBackground(canvas);
-      }
-    } else if (!isCustomIcon || mInfo.container == Favorites.CONTAINER_HOTSEAT)
-      return;
-
-    if (isCustomIcon) {
-      return;
-    }
-
-    if (mFolder == null)
-      return;
-    if (mFolder.getItemCount() == 0 && !mAnimating)
-      return;
-
-    final int saveCount = canvas.save();
-    canvas.clipPath(mBackground.getClipPath());
-
-    mPreviewItemManager.draw(canvas);
-
-    canvas.restoreToCount(saveCount);
-
-    if (!mBackground.drawingDelegated()) {
-      mBackground.drawBackgroundStroke(canvas);
-    }
-
-    drawBadge(canvas);
-  }
-
-  public void drawBadge(final Canvas canvas) {
-    if ((mBadgeInfo != null && mBadgeInfo.hasBadge()) || mBadgeScale > 0) {
-      int offsetX = mBackground.getOffsetX();
-      int offsetY = mBackground.getOffsetY();
-      int previewSize = (int)(mBackground.previewSize * mBackground.mScale);
-      mTempBounds.set(offsetX, offsetY, offsetX + previewSize,
-                      offsetY + previewSize);
-
-      // If we are animating to the accepting state, animate the badge out.
-      float badgeScale =
-          Math.max(0, mBadgeScale - mBackground.getScaleProgress());
-      mTempSpaceForBadgeOffset.set(getWidth() - mTempBounds.right,
-                                   mTempBounds.top);
-      // IconPalette badgePalette =
-      // IconPalette.getFolderBadgePalette(getResources());
-      mBadgeRenderer.draw(canvas, mBadgeInfo, mTempBounds, badgeScale,
-                          mTempSpaceForBadgeOffset);
-    }
-  }
-
-  public void setTextVisible(final boolean visible) {
-    mIsTextVisible = visible;
-    mFolderName.setTextVisibility(visible);
-  }
-
-  public boolean getTextVisible() { return mIsTextVisible; }
-
-  /**
-   * Returns the list of preview items displayed in the icon.
-   */
-  public List<BubbleTextView> getPreviewItems() {
-    return getPreviewItemsOnPage(0);
-  }
-
-  /**
-   * Returns the list of "preview items" on {@param page}.
-   */
-  public List<BubbleTextView> getPreviewItemsOnPage(final int page) {
-    mPreviewVerifier.setFolderInfo(mFolder.getInfo());
-
-    List<BubbleTextView> itemsToDisplay = new ArrayList<>();
-    List<BubbleTextView> itemsOnPage = mFolder.getItemsOnPage(page);
-    int numItems = itemsOnPage.size();
-    for (int rank = 0; rank < numItems; ++rank) {
-      if (mPreviewVerifier.isItemInPreview(page, rank)) {
-        itemsToDisplay.add(itemsOnPage.get(rank));
-      }
-
-      if (itemsToDisplay.size() == MAX_NUM_ITEMS_IN_PREVIEW) {
-        break;
-      }
-    }
-    return itemsToDisplay;
-  }
-
-  public void verifyHighRes() {
-    int processedItemCount = 0;
-    List<BubbleTextView> itemsOnPage = mFolder.getItemsOnPage(0);
-    int numItems = itemsOnPage.size();
-    for (int rank = 0; rank < numItems; ++rank) {
-      if (mPreviewVerifier.isItemInPreview(0, rank)) {
-        BubbleTextView item = itemsOnPage.get(rank);
-        item.verifyHighRes(info -> {
-          item.reapplyItemInfo(info);
-          updatePreviewItems(false);
-          invalidate();
-        });
-        processedItemCount++;
-      }
-
-      if (processedItemCount == MAX_NUM_ITEMS_IN_PREVIEW) {
-        break;
-      }
-    }
-  }
-
-  @Override
-  protected boolean verifyDrawable(final @NonNull Drawable who) {
-    return mPreviewItemManager.verifyDrawable(who) || super.verifyDrawable(who);
-  }
-
-  @Override
-  public void onItemsChanged(final boolean animate) {
-    if (mInfo.isCoverMode()) {
-      onIconChanged();
-      mFolderName.setText(mInfo.getIconTitle());
-    }
-    updatePreviewItems(animate);
-    invalidate();
-    requestLayout();
-  }
-
-  private void updatePreviewItems(final boolean animate) {
-    mPreviewItemManager.updatePreviewItems(animate);
-    mCurrentPreviewItems.clear();
-    mCurrentPreviewItems.addAll(getPreviewItems());
-  }
-
-  @Override
-  public void prepareAutoUpdate() {}
-
-  @Override
-  public void onAdd(final ShortcutInfo item, final int rank) {
-    boolean wasBadged = mBadgeInfo.hasBadge();
-    mBadgeInfo.addBadgeInfo(mLauncher.getBadgeInfoForItem(item));
-    boolean isBadged = mBadgeInfo.hasBadge();
-    updateBadgeScale(wasBadged, isBadged);
-    invalidate();
-    requestLayout();
-  }
-
-  @Override
-  public void onRemove(final ShortcutInfo item) {
-    boolean wasBadged = mBadgeInfo.hasBadge();
-    mBadgeInfo.subtractBadgeInfo(mLauncher.getBadgeInfoForItem(item));
-    boolean isBadged = mBadgeInfo.hasBadge();
-    updateBadgeScale(wasBadged, isBadged);
-    invalidate();
-    requestLayout();
-  }
-
-  @Override
-  public void onTitleChanged(final CharSequence title) {
-    mFolderName.setText(title);
-    applySwipeUpAction(mInfo);
-    setContentDescription(
-        getContext().getString(R.string.folder_name_format, title));
-  }
-
-  @Override
-  public boolean onTouchEvent(final MotionEvent event) {
-    // Call the superclass onTouchEvent first, because sometimes it changes the
-    // state to isPressed() on an ACTION_UP
-    boolean result = super.onTouchEvent(event);
-
-    // Check for a stylus button press, if it occurs cancel any long press
-    // checks.
-    if (mStylusEventHelper.onMotionEvent(event)) {
-      mLongPressHelper.cancelLongPress();
-      return true;
-    }
-
-    switch (event.getAction()) {
-    case MotionEvent.ACTION_DOWN:
-      mLongPressHelper.postCheckForLongPress();
-      break;
-    case MotionEvent.ACTION_CANCEL:
-    case MotionEvent.ACTION_UP:
-      mLongPressHelper.cancelLongPress();
-      break;
-    case MotionEvent.ACTION_MOVE:
-      if (!Utilities.pointInView(this, event.getX(), event.getY(), mSlop)) {
-        mLongPressHelper.cancelLongPress();
-      }
-      break;
-    }
-
-    Launcher launcher = ZimUtilsKt.getLauncherOrNull(getContext());
-    if (launcher instanceof ZimLauncher && mSwipeUpHandler != null) {
-      ((ZimLauncher)launcher)
-          .getGestureController()
-          .setSwipeUpOverride(mSwipeUpHandler, event.getDownTime());
-    }
-    return result;
-  }
-
-  @Override
-  public void cancelLongPress() {
-    super.cancelLongPress();
-    mLongPressHelper.cancelLongPress();
-  }
-
-  public void removeListeners() {
-    mInfo.removeListener(this);
-    mInfo.removeListener(mFolder);
-  }
-
-  public void clearLeaveBehindIfExists() {
-    if (isInAppDrawer()) {
-      return;
-    }
-    ((CellLayout.LayoutParams)getLayoutParams()).canReorder = true;
-    if (mInfo.container == Favorites.CONTAINER_HOTSEAT) {
-      CellLayout cl = (CellLayout)getParent().getParent();
-      cl.clearFolderLeaveBehind();
-    }
-  }
-
-  public void drawLeaveBehindIfExists() {
-    if (isInAppDrawer()) {
-      return;
-    }
-    CellLayout.LayoutParams lp = (CellLayout.LayoutParams)getLayoutParams();
-    // While the folder is open, the position of the icon cannot change.
-    lp.canReorder = false;
-    if (mInfo.container == Favorites.CONTAINER_HOTSEAT) {
-      CellLayout cl = (CellLayout)getParent().getParent();
-      cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
-    }
-  }
-
-  public void onFolderClose(final int currentPage) {
-    mPreviewItemManager.onFolderClose(currentPage);
-  }
-
-  private void applySwipeUpAction(final FolderInfo info) {
-    if (info.isCoverMode()) {
-      mSwipeUpHandler = new RunnableGestureHandler(
-          getContext(), () -> ItemClickHandler.INSTANCE.onClick(this));
-    } else {
-      mSwipeUpHandler = GestureController.Companion.createGestureHandler(
-          getContext(), info.swipeUpAction,
-          new BlankGestureHandler(getContext(), null));
-    }
-    if (mSwipeUpHandler instanceof BlankGestureHandler) {
-      mSwipeUpHandler = null;
-    } else {
-      mSwipeUpHandler = new ViewSwipeUpGestureHandler(this, mSwipeUpHandler);
-    }
-  }
-
-  private float mIconScale = 1f;
-
-  public void setIconScale(final float scale) {
-    mIconScale = scale;
-    invalidate();
-  }
-
-  public float getIconScale() { return mIconScale; }
-
-  public static final Property<FolderIcon, Float> ICON_SCALE_PROPERTY =
-      new Property<FolderIcon, Float>(Float.class, "iconScale") {
-        @Override
-        public Float get(final FolderIcon icon) {
-          return icon.getIconScale();
-        }
-
-        @Override
-        public void set(final FolderIcon icon, final Float scale) {
-          icon.setIconScale(scale);
-        }
-      };
-
-  public boolean isInAppDrawer() { return mInfo instanceof DrawerFolderInfo; }
-
-  public boolean isCoverMode() { return mInfo.isCoverMode(); }
-
-  public BubbleTextView getFolderName() { return mFolderName; }
-
-  public void setStayPressed(final boolean stayPressed) {
-    mFolderName.setStayPressed(stayPressed);
-  }
-
-  @Override
-  public void onLauncherResume() {
-    // Reset the pressed state of icon that was locked in the press state while
-    // activity was launching
-    setStayPressed(false);
-  }
-
-  public void clearPressedBackground() { setStayPressed(false); }
-
-  public void updateIconBadges(final Set<PackageUserKey> updatedBadges,
-                               final PackageUserKey tmpKey) {
-    FolderBadgeInfo folderBadgeInfo = new FolderBadgeInfo();
-    for (ShortcutInfo si : mInfo.contents) {
-      folderBadgeInfo.addBadgeInfo(mLauncher.getBadgeInfoForItem(si));
-    }
-    setBadgeInfo(folderBadgeInfo);
-
-    if (isCoverMode()) {
-      ShortcutInfo coverInfo = getCoverInfo();
-      if (tmpKey.updateFromItemInfo(coverInfo) &&
-          updatedBadges.contains(tmpKey)) {
-        applyCoverBadgeState(coverInfo, true);
-      }
-    }
-  }
+	extends FrameLayout implements FolderListener, Launcher.OnResumeCallback {
+@Thunk Launcher mLauncher;
+@Thunk Folder mFolder;
+private FolderInfo mInfo;
+@Thunk static boolean sStaticValuesDirty = true;
+
+private CheckLongPressHelper mLongPressHelper;
+private StylusEventHelper mStylusEventHelper;
+
+static final int DROP_IN_ANIMATION_DURATION = 400;
+
+// Flag whether the folder should open itself when an item is dragged over is
+// enabled.
+public static final boolean SPRING_LOADING_ENABLED = true;
+
+// Delay when drag enters until the folder opens, in miliseconds.
+private static final int ON_OPEN_DELAY = 800;
+
+@Thunk BubbleTextView mFolderName;
+
+PreviewBackground mBackground = new PreviewBackground();
+private boolean mBackgroundIsVisible = true;
+
+FolderIconPreviewVerifier mPreviewVerifier;
+ClippedFolderIconLayoutRule mPreviewLayoutRule;
+private PreviewItemManager mPreviewItemManager;
+private PreviewItemDrawingParams mTmpParams =
+	new PreviewItemDrawingParams(0, 0, 0, 0);
+private List<BubbleTextView> mCurrentPreviewItems = new ArrayList<>();
+
+boolean mAnimating = false;
+private Rect mTempBounds = new Rect();
+
+private float mSlop;
+
+private Alarm mOpenAlarm = new Alarm();
+
+private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
+private BadgeRenderer mBadgeRenderer;
+private float mBadgeScale;
+private Point mTempSpaceForBadgeOffset = new Point();
+
+private GestureHandler mSwipeUpHandler;
+
+public boolean isCustomIcon = false;
+private boolean mIsTextVisible = true;
+
+private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY =
+	new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
+	@Override
+	public Float get(final FolderIcon folderIcon) {
+		return folderIcon.mBadgeScale;
+	}
+
+	@Override
+	public void set(final FolderIcon folderIcon, final Float value) {
+		folderIcon.mBadgeScale = value;
+		folderIcon.invalidate();
+	}
+};
+
+public FolderIcon(final Context context, final AttributeSet attrs) {
+	super(context, attrs);
+	init();
+}
+
+public FolderIcon(final Context context) {
+	super(context);
+	init();
+}
+
+private void init() {
+	mLongPressHelper = new CheckLongPressHelper(this);
+	mStylusEventHelper =
+		new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
+	mPreviewLayoutRule = new ClippedFolderIconLayoutRule();
+	mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+	mPreviewItemManager = new PreviewItemManager(this);
+}
+
+public static FolderIcon fromXml(final int resId, final Launcher launcher,
+                                 final ViewGroup group,
+                                 final FolderInfo folderInfo) {
+	@SuppressWarnings("all") // suppress dead code warning
+	final boolean error =
+		INITIAL_ITEM_ANIMATION_DURATION >= DROP_IN_ANIMATION_DURATION;
+	if (error) {
+		throw new IllegalStateException(
+			      "DROP_IN_ANIMATION_DURATION must be greater than "
+			      +
+			      "INITIAL_ITEM_ANIMATION_DURATION, as sequencing of adding first two items "
+			      + "is dependent on this");
+	}
+
+	DeviceProfile grid = launcher.getDeviceProfile();
+	FolderIcon icon = (FolderIcon)LayoutInflater.from(group.getContext())
+	                  .inflate(resId, group, false);
+
+	icon.setClipToPadding(false);
+	icon.mFolderName = icon.findViewById(R.id.folder_icon_name);
+	icon.mFolderName.setText(folderInfo.getIconTitle());
+	icon.mFolderName.setCompoundDrawablePadding(0);
+	FrameLayout.LayoutParams lp =
+		(FrameLayout.LayoutParams)icon.mFolderName.getLayoutParams();
+	lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+	if (folderInfo instanceof DrawerFolderInfo) {
+		lp.topMargin = grid.allAppsIconSizePx + grid.allAppsIconDrawablePaddingPx;
+		icon.mBackground = new PreviewBackground(true);
+		((DrawerFolderInfo)folderInfo).getAppsStore().registerFolderIcon(icon);
+	} else {
+		lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+	}
+	icon.setTag(folderInfo);
+	icon.setOnClickListener(ItemClickHandler.INSTANCE);
+	icon.mInfo = folderInfo;
+	icon.mLauncher = launcher;
+	icon.mBadgeRenderer = launcher.getDeviceProfile().mBadgeRenderer;
+	icon.setContentDescription(
+		launcher.getString(R.string.folder_name_format, folderInfo.title));
+	Folder folder = Folder.fromXml(launcher);
+	folder.setDragController(launcher.getDragController());
+	folder.setFolderIcon(icon);
+	folder.bind(folderInfo);
+	icon.setFolder(folder);
+	icon.setAccessibilityDelegate(launcher.getAccessibilityDelegate());
+
+	folderInfo.addListener(icon);
+
+	icon.setOnFocusChangeListener(launcher.mFocusHandler);
+	icon.onIconChanged();
+	icon.applySwipeUpAction(folderInfo);
+
+	return icon;
+}
+
+public void unbind() {
+	if (mInfo != null) {
+		mInfo.removeListener(this);
+		mInfo.removeListener(mFolder);
+		mInfo = null;
+	}
+}
+
+@Override
+public void onIconChanged() {
+	applySwipeUpAction(mInfo);
+	setOnClickListener(mInfo.isCoverMode()
+	                   ? ItemClickHandler.FOLDER_COVER_INSTANCE
+	                   : ItemClickHandler.INSTANCE);
+
+	FrameLayout.LayoutParams lp =
+		(FrameLayout.LayoutParams)mFolderName.getLayoutParams();
+	DeviceProfile grid = mLauncher.getDeviceProfile();
+	mFolderName.setTag(null);
+
+	if (mInfo.useIconMode(mLauncher)) {
+		lp.topMargin = 0;
+		if (isInAppDrawer()) {
+			mFolderName.setCompoundDrawablePadding(
+				grid.allAppsIconDrawablePaddingPx);
+		} else {
+			mFolderName.setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
+		}
+
+		isCustomIcon = true;
+
+		if (mInfo.isCoverMode()) {
+			ItemInfoWithIcon coverInfo = mInfo.getCoverInfo();
+			mFolderName.setTag(coverInfo);
+			mFolderName.applyIcon(coverInfo);
+			applyCoverBadgeState(coverInfo, false);
+		} else {
+			BitmapInfo info = BitmapInfo.fromBitmap(
+				Utilities.drawableToBitmap(mInfo.getIcon(getContext())));
+			mFolderName.applyIcon(info);
+			mFolderName.applyBadgeState(mInfo, false);
+		}
+		mBackground.setStartOpacity(0f);
+	} else {
+		if (isInAppDrawer()) {
+			lp.topMargin =
+				grid.allAppsIconSizePx + grid.allAppsIconDrawablePaddingPx;
+		} else {
+			lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+		}
+		mFolderName.setCompoundDrawablePadding(0);
+		mFolderName.applyBadgeState(mInfo, false);
+
+		isCustomIcon = false;
+		mFolderName.clearIcon();
+		mBackground.setStartOpacity(1f);
+	}
+	mFolderName.setText(mInfo.getIconTitle());
+	requestLayout();
+}
+
+@Override
+protected Parcelable onSaveInstanceState() {
+	sStaticValuesDirty = true;
+	return super.onSaveInstanceState();
+}
+
+public Folder getFolder() {
+	return mFolder;
+}
+
+private void setFolder(final Folder folder) {
+	mFolder = folder;
+	mPreviewVerifier =
+		new FolderIconPreviewVerifier(mLauncher.getDeviceProfile().inv);
+	updatePreviewItems(false);
+}
+
+private boolean willAcceptItem(final ItemInfo item) {
+	final int itemType = item.itemType;
+	return ((itemType == Favorites.ITEM_TYPE_APPLICATION ||
+	         itemType == Favorites.ITEM_TYPE_SHORTCUT ||
+	         itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) &&
+	        item != mInfo && !mFolder.isOpen());
+}
+
+public boolean acceptDrop(final ItemInfo dragInfo) {
+	return !mFolder.isDestroyed() && willAcceptItem(dragInfo);
+}
+
+public void addItem(final ShortcutInfo item) {
+	addItem(item, true);
+}
+
+public void addItem(final ShortcutInfo item, final boolean animate) {
+	mInfo.add(item, animate);
+}
+
+public void removeItem(final ShortcutInfo item, final boolean animate) {
+	mInfo.remove(item, animate);
+}
+
+public void onDragEnter(final ItemInfo dragInfo) {
+	if (mFolder.isDestroyed() || !willAcceptItem(dragInfo))
+		return;
+	CellLayout.LayoutParams lp = (CellLayout.LayoutParams)getLayoutParams();
+	CellLayout cl = (CellLayout)getParent().getParent();
+
+	mBackground.animateToAccept(cl, lp.cellX, lp.cellY);
+	mOpenAlarm.setOnAlarmListener(mOnOpenListener);
+	if (SPRING_LOADING_ENABLED &&
+	    ((dragInfo instanceof AppInfo) || (dragInfo instanceof ShortcutInfo) ||
+	     (dragInfo instanceof PendingAddShortcutInfo))) {
+		mOpenAlarm.setAlarm(ON_OPEN_DELAY);
+	}
+}
+
+OnAlarmListener mOnOpenListener = new OnAlarmListener() {
+	public void onAlarm(final Alarm alarm) {
+		mFolder.beginExternalDrag();
+		mFolder.animateOpen();
+	}
+};
+
+public Drawable prepareCreateAnimation(final View destView) {
+	return mPreviewItemManager.prepareCreateAnimation(destView);
+}
+
+public void performCreateAnimation(final ShortcutInfo destInfo,
+                                   final View destView,
+                                   final ShortcutInfo srcInfo,
+                                   final DragView srcView, final Rect dstRect,
+                                   final float scaleRelativeToDragLayer) {
+	prepareCreateAnimation(destView);
+	addItem(destInfo);
+	// This will animate the first item from it's position as an icon into its
+	// position as the first item in the preview
+	mPreviewItemManager.createFirstItemAnimation(false /* reverse */, null)
+	.start();
+
+	// This will animate the dragView (srcView) into the new folder
+	onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1,
+	       false /* itemReturnedOnFailedDrop */);
+}
+
+public void performDestroyAnimation(final Runnable onCompleteRunnable) {
+	// This will animate the final item in the preview to be full size.
+	mPreviewItemManager
+	.createFirstItemAnimation(true /* reverse */, onCompleteRunnable)
+	.start();
+}
+
+public void onDragExit() {
+	mBackground.animateToRest();
+	mOpenAlarm.cancelAlarm();
+}
+
+private void onDrop(final ShortcutInfo item, final DragView animateView,
+                    final Rect finalRect,
+                    final float scaleRelativeToDragLayer, final int index,
+                    final boolean itemReturnedOnFailedDrop) {
+	item.cellX = -1;
+	item.cellY = -1;
+
+	// Typically, the animateView corresponds to the DragView; however, if this
+	// is being done after a configuration activity (ie. for a Shortcut being
+	// dragged from AllApps) we will not have a view to animate
+	if (animateView != null) {
+		DragLayer dragLayer = mLauncher.getDragLayer();
+		Rect from = new Rect();
+		dragLayer.getViewRectRelativeToSelf(animateView, from);
+		Rect to = finalRect;
+		if (to == null) {
+			to = new Rect();
+			Workspace workspace = mLauncher.getWorkspace();
+			// Set cellLayout and this to it's final state to compute final
+			// animation locations
+			workspace.setFinalTransitionTransform();
+			float scaleX = getScaleX();
+			float scaleY = getScaleY();
+			setScaleX(1.0f);
+			setScaleY(1.0f);
+			scaleRelativeToDragLayer =
+				dragLayer.getDescendantRectRelativeToSelf(this, to);
+			// Finished computing final animation locations, restore current state
+			setScaleX(scaleX);
+			setScaleY(scaleY);
+			workspace.resetTransitionTransform();
+		}
+
+		int numItemsInPreview = Math.min(MAX_NUM_ITEMS_IN_PREVIEW, index + 1);
+		boolean itemAdded = false;
+		if (itemReturnedOnFailedDrop || index >= MAX_NUM_ITEMS_IN_PREVIEW) {
+			List<BubbleTextView> oldPreviewItems =
+				new ArrayList<>(mCurrentPreviewItems);
+			addItem(item, false);
+			mCurrentPreviewItems.clear();
+			mCurrentPreviewItems.addAll(getPreviewItems());
+
+			if (!oldPreviewItems.equals(mCurrentPreviewItems)) {
+				for (int i = 0; i < mCurrentPreviewItems.size(); ++i) {
+					if (mCurrentPreviewItems.get(i).getTag().equals(item)) {
+						// If the item dropped is going to be in the preview, we update
+						// the index here to reflect its position in the preview.
+						index = i;
+					}
+				}
+
+				mPreviewItemManager.hidePreviewItem(index, true);
+				mPreviewItemManager.onDrop(oldPreviewItems, mCurrentPreviewItems,
+				                           item);
+				itemAdded = true;
+			} else {
+				removeItem(item, false);
+			}
+		}
+
+		if (!itemAdded) {
+			addItem(item);
+		}
+
+		int[] center = new int[2];
+		float scale = getLocalCenterForIndex(index, numItemsInPreview, center);
+		center[0] = Math.round(scaleRelativeToDragLayer * center[0]);
+		center[1] = Math.round(scaleRelativeToDragLayer * center[1]);
+
+		to.offset(center[0] - animateView.getMeasuredWidth() / 2,
+		          center[1] - animateView.getMeasuredHeight() / 2);
+
+		float finalAlpha = index < MAX_NUM_ITEMS_IN_PREVIEW ? 0.5f : 0f;
+
+		float finalScale = scale * scaleRelativeToDragLayer;
+		dragLayer.animateView(animateView, from, to, finalAlpha, 1, 1, finalScale,
+		                      finalScale, DROP_IN_ANIMATION_DURATION,
+		                      Interpolators.DEACCEL_2, Interpolators.ACCEL_2,
+		                      null, DragLayer.ANIMATION_END_DISAPPEAR, null);
+
+		mFolder.hideItem(item);
+
+		if (!itemAdded)
+			mPreviewItemManager.hidePreviewItem(index, true);
+		final int finalIndex = index;
+		postDelayed(()->{
+				mPreviewItemManager.hidePreviewItem(finalIndex, false);
+				mFolder.showItem(item);
+				invalidate();
+			}, DROP_IN_ANIMATION_DURATION);
+	} else {
+		addItem(item);
+	}
+}
+
+public void onDrop(final DragObject d,
+                   final boolean itemReturnedOnFailedDrop) {
+	ShortcutInfo item;
+	if (d.dragInfo instanceof AppInfo) {
+		// Came from all apps -- make a copy
+		item = ((AppInfo)d.dragInfo).makeShortcut();
+	} else if (d.dragSource instanceof BaseItemDragListener) {
+		// Came from a different window -- make a copy
+		item = new ShortcutInfo((ShortcutInfo)d.dragInfo);
+	} else {
+		item = (ShortcutInfo)d.dragInfo;
+	}
+	mFolder.notifyDrop();
+	onDrop(item, d.dragView, null, 1.0f, mInfo.contents.size(),
+	       itemReturnedOnFailedDrop);
+}
+
+public void setBadgeInfo(final FolderBadgeInfo badgeInfo) {
+	updateBadgeScale(mBadgeInfo.hasBadge(), badgeInfo.hasBadge());
+	mBadgeInfo = badgeInfo;
+}
+
+public ShortcutInfo getCoverInfo() {
+	return mInfo.getCoverInfo();
+}
+
+public void applyCoverBadgeState(final ItemInfo itemInfo,
+                                 final boolean animate) {
+	mFolderName.applyBadgeState(itemInfo, animate);
+}
+
+public ClippedFolderIconLayoutRule getLayoutRule() {
+	return mPreviewLayoutRule;
+}
+
+/**
+ * Sets mBadgeScale to 1 or 0, animating if wasBadged or isBadged is false
+ * (the badge is being added or removed).
+ */
+private void updateBadgeScale(final boolean wasBadged,
+                              final boolean isBadged) {
+	float newBadgeScale = isBadged ? 1f : 0f;
+	// Animate when a badge is first added or when it is removed.
+	if ((wasBadged ^ isBadged) && isShown()) {
+		createBadgeScaleAnimator(newBadgeScale).start();
+	} else {
+		mBadgeScale = newBadgeScale;
+		invalidate();
+	}
+}
+
+public Animator createBadgeScaleAnimator(final float... badgeScales) {
+	return ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, badgeScales);
+}
+
+public boolean hasBadge() {
+	return mBadgeInfo != null && mBadgeInfo.hasBadge();
+}
+
+private float getLocalCenterForIndex(final int index, final int curNumItems,
+                                     final int[] center) {
+	mTmpParams = mPreviewItemManager.computePreviewItemDrawingParams(
+		Math.min(MAX_NUM_ITEMS_IN_PREVIEW, index), curNumItems, mTmpParams);
+
+	mTmpParams.transX += mBackground.basePreviewOffsetX;
+	mTmpParams.transY += mBackground.basePreviewOffsetY;
+
+	float intrinsicIconSize = mPreviewItemManager.getIntrinsicIconSize();
+	float offsetX =
+		mTmpParams.transX + (mTmpParams.scale * intrinsicIconSize) / 2;
+	float offsetY =
+		mTmpParams.transY + (mTmpParams.scale * intrinsicIconSize) / 2;
+
+	center[0] = Math.round(offsetX);
+	center[1] = Math.round(offsetY);
+	return mTmpParams.scale;
+}
+
+public void setFolderBackground(final PreviewBackground bg) {
+	mBackground = bg;
+	mBackground.setInvalidateDelegate(this);
+}
+
+public void setBackgroundVisible(final boolean visible) {
+	mBackgroundIsVisible = visible;
+	invalidate();
+}
+
+public PreviewBackground getFolderBackground() {
+	return mBackground;
+}
+
+public PreviewItemManager getPreviewItemManager() {
+	return mPreviewItemManager;
+}
+
+@Override
+protected void dispatchDraw(final Canvas canvas) {
+	super.dispatchDraw(canvas);
+
+	if (mBackgroundIsVisible) {
+		mPreviewItemManager.recomputePreviewDrawingParams();
+
+		if (!mBackground.drawingDelegated() && !isCustomIcon) {
+			mBackground.drawBackground(canvas);
+		}
+	} else if (!isCustomIcon || mInfo.container == Favorites.CONTAINER_HOTSEAT)
+		return;
+
+	if (isCustomIcon) {
+		return;
+	}
+
+	if (mFolder == null)
+		return;
+	if (mFolder.getItemCount() == 0 && !mAnimating)
+		return;
+
+	final int saveCount = canvas.save();
+	canvas.clipPath(mBackground.getClipPath());
+
+	mPreviewItemManager.draw(canvas);
+
+	canvas.restoreToCount(saveCount);
+
+	if (!mBackground.drawingDelegated()) {
+		mBackground.drawBackgroundStroke(canvas);
+	}
+
+	drawBadge(canvas);
+}
+
+public void drawBadge(final Canvas canvas) {
+	if ((mBadgeInfo != null && mBadgeInfo.hasBadge()) || mBadgeScale > 0) {
+		int offsetX = mBackground.getOffsetX();
+		int offsetY = mBackground.getOffsetY();
+		int previewSize = (int)(mBackground.previewSize * mBackground.mScale);
+		mTempBounds.set(offsetX, offsetY, offsetX + previewSize,
+		                offsetY + previewSize);
+
+		// If we are animating to the accepting state, animate the badge out.
+		float badgeScale =
+			Math.max(0, mBadgeScale - mBackground.getScaleProgress());
+		mTempSpaceForBadgeOffset.set(getWidth() - mTempBounds.right,
+		                             mTempBounds.top);
+		// IconPalette badgePalette =
+		// IconPalette.getFolderBadgePalette(getResources());
+		mBadgeRenderer.draw(canvas, mBadgeInfo, mTempBounds, badgeScale,
+		                    mTempSpaceForBadgeOffset);
+	}
+}
+
+public void setTextVisible(final boolean visible) {
+	mIsTextVisible = visible;
+	mFolderName.setTextVisibility(visible);
+}
+
+public boolean getTextVisible() {
+	return mIsTextVisible;
+}
+
+/**
+ * Returns the list of preview items displayed in the icon.
+ */
+public List<BubbleTextView> getPreviewItems() {
+	return getPreviewItemsOnPage(0);
+}
+
+/**
+ * Returns the list of "preview items" on {@param page}.
+ */
+public List<BubbleTextView> getPreviewItemsOnPage(final int page) {
+	mPreviewVerifier.setFolderInfo(mFolder.getInfo());
+
+	List<BubbleTextView> itemsToDisplay = new ArrayList<>();
+	List<BubbleTextView> itemsOnPage = mFolder.getItemsOnPage(page);
+	int numItems = itemsOnPage.size();
+	for (int rank = 0; rank < numItems; ++rank) {
+		if (mPreviewVerifier.isItemInPreview(page, rank)) {
+			itemsToDisplay.add(itemsOnPage.get(rank));
+		}
+
+		if (itemsToDisplay.size() == MAX_NUM_ITEMS_IN_PREVIEW) {
+			break;
+		}
+	}
+	return itemsToDisplay;
+}
+
+public void verifyHighRes() {
+	int processedItemCount = 0;
+	List<BubbleTextView> itemsOnPage = mFolder.getItemsOnPage(0);
+	int numItems = itemsOnPage.size();
+	for (int rank = 0; rank < numItems; ++rank) {
+		if (mPreviewVerifier.isItemInPreview(0, rank)) {
+			BubbleTextView item = itemsOnPage.get(rank);
+			item.verifyHighRes(info->{
+					item.reapplyItemInfo(info);
+					updatePreviewItems(false);
+					invalidate();
+				});
+			processedItemCount++;
+		}
+
+		if (processedItemCount == MAX_NUM_ITEMS_IN_PREVIEW) {
+			break;
+		}
+	}
+}
+
+@Override
+protected boolean verifyDrawable(final @NonNull Drawable who) {
+	return mPreviewItemManager.verifyDrawable(who) || super.verifyDrawable(who);
+}
+
+@Override
+public void onItemsChanged(final boolean animate) {
+	if (mInfo.isCoverMode()) {
+		onIconChanged();
+		mFolderName.setText(mInfo.getIconTitle());
+	}
+	updatePreviewItems(animate);
+	invalidate();
+	requestLayout();
+}
+
+private void updatePreviewItems(final boolean animate) {
+	mPreviewItemManager.updatePreviewItems(animate);
+	mCurrentPreviewItems.clear();
+	mCurrentPreviewItems.addAll(getPreviewItems());
+}
+
+@Override
+public void prepareAutoUpdate() {
+}
+
+@Override
+public void onAdd(final ShortcutInfo item, final int rank) {
+	boolean wasBadged = mBadgeInfo.hasBadge();
+	mBadgeInfo.addBadgeInfo(mLauncher.getBadgeInfoForItem(item));
+	boolean isBadged = mBadgeInfo.hasBadge();
+	updateBadgeScale(wasBadged, isBadged);
+	invalidate();
+	requestLayout();
+}
+
+@Override
+public void onRemove(final ShortcutInfo item) {
+	boolean wasBadged = mBadgeInfo.hasBadge();
+	mBadgeInfo.subtractBadgeInfo(mLauncher.getBadgeInfoForItem(item));
+	boolean isBadged = mBadgeInfo.hasBadge();
+	updateBadgeScale(wasBadged, isBadged);
+	invalidate();
+	requestLayout();
+}
+
+@Override
+public void onTitleChanged(final CharSequence title) {
+	mFolderName.setText(title);
+	applySwipeUpAction(mInfo);
+	setContentDescription(
+		getContext().getString(R.string.folder_name_format, title));
+}
+
+@Override
+public boolean onTouchEvent(final MotionEvent event) {
+	// Call the superclass onTouchEvent first, because sometimes it changes the
+	// state to isPressed() on an ACTION_UP
+	boolean result = super.onTouchEvent(event);
+
+	// Check for a stylus button press, if it occurs cancel any long press
+	// checks.
+	if (mStylusEventHelper.onMotionEvent(event)) {
+		mLongPressHelper.cancelLongPress();
+		return true;
+	}
+
+	switch (event.getAction()) {
+	case MotionEvent.ACTION_DOWN:
+		mLongPressHelper.postCheckForLongPress();
+		break;
+	case MotionEvent.ACTION_CANCEL:
+	case MotionEvent.ACTION_UP:
+		mLongPressHelper.cancelLongPress();
+		break;
+	case MotionEvent.ACTION_MOVE:
+		if (!Utilities.pointInView(this, event.getX(), event.getY(), mSlop)) {
+			mLongPressHelper.cancelLongPress();
+		}
+		break;
+	}
+
+	Launcher launcher = ZimUtilsKt.getLauncherOrNull(getContext());
+	if (launcher instanceof ZimLauncher && mSwipeUpHandler != null) {
+		((ZimLauncher)launcher)
+		.getGestureController()
+		.setSwipeUpOverride(mSwipeUpHandler, event.getDownTime());
+	}
+	return result;
+}
+
+@Override
+public void cancelLongPress() {
+	super.cancelLongPress();
+	mLongPressHelper.cancelLongPress();
+}
+
+public void removeListeners() {
+	mInfo.removeListener(this);
+	mInfo.removeListener(mFolder);
+}
+
+public void clearLeaveBehindIfExists() {
+	if (isInAppDrawer()) {
+		return;
+	}
+	((CellLayout.LayoutParams)getLayoutParams()).canReorder = true;
+	if (mInfo.container == Favorites.CONTAINER_HOTSEAT) {
+		CellLayout cl = (CellLayout)getParent().getParent();
+		cl.clearFolderLeaveBehind();
+	}
+}
+
+public void drawLeaveBehindIfExists() {
+	if (isInAppDrawer()) {
+		return;
+	}
+	CellLayout.LayoutParams lp = (CellLayout.LayoutParams)getLayoutParams();
+	// While the folder is open, the position of the icon cannot change.
+	lp.canReorder = false;
+	if (mInfo.container == Favorites.CONTAINER_HOTSEAT) {
+		CellLayout cl = (CellLayout)getParent().getParent();
+		cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
+	}
+}
+
+public void onFolderClose(final int currentPage) {
+	mPreviewItemManager.onFolderClose(currentPage);
+}
+
+private void applySwipeUpAction(final FolderInfo info) {
+	if (info.isCoverMode()) {
+		mSwipeUpHandler = new RunnableGestureHandler(
+			getContext(), ()->ItemClickHandler.INSTANCE.onClick(this));
+	} else {
+		mSwipeUpHandler = GestureController.Companion.createGestureHandler(
+			getContext(), info.swipeUpAction,
+			new BlankGestureHandler(getContext(), null));
+	}
+	if (mSwipeUpHandler instanceof BlankGestureHandler) {
+		mSwipeUpHandler = null;
+	} else {
+		mSwipeUpHandler = new ViewSwipeUpGestureHandler(this, mSwipeUpHandler);
+	}
+}
+
+private float mIconScale = 1f;
+
+public void setIconScale(final float scale) {
+	mIconScale = scale;
+	invalidate();
+}
+
+public float getIconScale() {
+	return mIconScale;
+}
+
+public static final Property<FolderIcon, Float> ICON_SCALE_PROPERTY =
+	new Property<FolderIcon, Float>(Float.class, "iconScale") {
+	@Override
+	public Float get(final FolderIcon icon) {
+		return icon.getIconScale();
+	}
+
+	@Override
+	public void set(final FolderIcon icon, final Float scale) {
+		icon.setIconScale(scale);
+	}
+};
+
+public boolean isInAppDrawer() {
+	return mInfo instanceof DrawerFolderInfo;
+}
+
+public boolean isCoverMode() {
+	return mInfo.isCoverMode();
+}
+
+public BubbleTextView getFolderName() {
+	return mFolderName;
+}
+
+public void setStayPressed(final boolean stayPressed) {
+	mFolderName.setStayPressed(stayPressed);
+}
+
+@Override
+public void onLauncherResume() {
+	// Reset the pressed state of icon that was locked in the press state while
+	// activity was launching
+	setStayPressed(false);
+}
+
+public void clearPressedBackground() {
+	setStayPressed(false);
+}
+
+public void updateIconBadges(final Set<PackageUserKey> updatedBadges,
+                             final PackageUserKey tmpKey) {
+	FolderBadgeInfo folderBadgeInfo = new FolderBadgeInfo();
+	for (ShortcutInfo si : mInfo.contents) {
+		folderBadgeInfo.addBadgeInfo(mLauncher.getBadgeInfoForItem(si));
+	}
+	setBadgeInfo(folderBadgeInfo);
+
+	if (isCoverMode()) {
+		ShortcutInfo coverInfo = getCoverInfo();
+		if (tmpKey.updateFromItemInfo(coverInfo) &&
+		    updatedBadges.contains(tmpKey)) {
+			applyCoverBadgeState(coverInfo, true);
+		}
+	}
+}
 }

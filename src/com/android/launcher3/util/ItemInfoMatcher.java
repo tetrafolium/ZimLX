@@ -31,131 +31,131 @@ import java.util.HashSet;
  */
 public abstract class ItemInfoMatcher {
 
-  public static ItemInfoMatcher ofUser(final UserHandle user) {
-    return new ItemInfoMatcher() {
-      @Override
-      public boolean matches(final ItemInfo info, final ComponentName cn) {
-        return info.user.equals(user);
-      }
-    };
-  }
+public static ItemInfoMatcher ofUser(final UserHandle user) {
+	return new ItemInfoMatcher() {
+		       @Override
+		       public boolean matches(final ItemInfo info, final ComponentName cn) {
+			       return info.user.equals(user);
+		       }
+	};
+}
 
-  public static ItemInfoMatcher
-  ofComponents(final HashSet<ComponentName> components, final UserHandle user) {
-    return new ItemInfoMatcher() {
-      @Override
-      public boolean matches(final ItemInfo info, final ComponentName cn) {
-        return components.contains(cn) && info.user.equals(user);
-      }
-    };
-  }
+public static ItemInfoMatcher
+ofComponents(final HashSet<ComponentName> components, final UserHandle user) {
+	return new ItemInfoMatcher() {
+		       @Override
+		       public boolean matches(final ItemInfo info, final ComponentName cn) {
+			       return components.contains(cn) && info.user.equals(user);
+		       }
+	};
+}
 
-  public static ItemInfoMatcher ofPackages(final HashSet<String> packageNames,
-                                           final UserHandle user) {
-    return new ItemInfoMatcher() {
-      @Override
-      public boolean matches(final ItemInfo info, final ComponentName cn) {
-        return packageNames.contains(cn.getPackageName()) &&
-            info.user.equals(user);
-      }
-    };
-  }
+public static ItemInfoMatcher ofPackages(final HashSet<String> packageNames,
+                                         final UserHandle user) {
+	return new ItemInfoMatcher() {
+		       @Override
+		       public boolean matches(final ItemInfo info, final ComponentName cn) {
+			       return packageNames.contains(cn.getPackageName()) &&
+			              info.user.equals(user);
+		       }
+	};
+}
 
-  public static ItemInfoMatcher
-  ofShortcutKeys(final HashSet<ShortcutKey> keys) {
-    return new ItemInfoMatcher() {
-      @Override
-      public boolean matches(final ItemInfo info, final ComponentName cn) {
-        return info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
-            keys.contains(ShortcutKey.fromItemInfo(info));
-      }
-    };
-  }
+public static ItemInfoMatcher
+ofShortcutKeys(final HashSet<ShortcutKey> keys) {
+	return new ItemInfoMatcher() {
+		       @Override
+		       public boolean matches(final ItemInfo info, final ComponentName cn) {
+			       return info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
+			              keys.contains(ShortcutKey.fromItemInfo(info));
+		       }
+	};
+}
 
-  public static ItemInfoMatcher ofItemIds(final LongArrayMap<Boolean> ids,
-                                          final Boolean matchDefault) {
-    return new ItemInfoMatcher() {
-      @Override
-      public boolean matches(final ItemInfo info, final ComponentName cn) {
-        return ids.get(info.id, matchDefault);
-      }
-    };
-  }
+public static ItemInfoMatcher ofItemIds(final LongArrayMap<Boolean> ids,
+                                        final Boolean matchDefault) {
+	return new ItemInfoMatcher() {
+		       @Override
+		       public boolean matches(final ItemInfo info, final ComponentName cn) {
+			       return ids.get(info.id, matchDefault);
+		       }
+	};
+}
 
-  public abstract boolean matches(ItemInfo info, ComponentName cn);
+public abstract boolean matches(ItemInfo info, ComponentName cn);
 
-  /**
-   * Filters {@param infos} to those satisfying the {@link #matches(ItemInfo,
-   * ComponentName)}.
-   */
-  public final HashSet<ItemInfo>
-  filterItemInfos(final Iterable<ItemInfo> infos) {
-    HashSet<ItemInfo> filtered = new HashSet<>();
-    for (ItemInfo i : infos) {
-      if (i instanceof ShortcutInfo) {
-        ShortcutInfo info = (ShortcutInfo)i;
-        ComponentName cn = info.getTargetComponent();
-        if (cn != null && matches(info, cn)) {
-          filtered.add(info);
-        }
-      } else if (i instanceof FolderInfo) {
-        FolderInfo info = (FolderInfo)i;
-        for (ShortcutInfo s : info.contents) {
-          ComponentName cn = s.getTargetComponent();
-          if (cn != null && matches(s, cn)) {
-            filtered.add(s);
-          }
-        }
-      } else if (i instanceof LauncherAppWidgetInfo) {
-        LauncherAppWidgetInfo info = (LauncherAppWidgetInfo)i;
-        ComponentName cn = info.providerName;
-        if (cn != null && matches(info, cn)) {
-          filtered.add(info);
-        }
-      }
-    }
-    return filtered;
-  }
+/**
+ * Filters {@param infos} to those satisfying the {@link #matches(ItemInfo,
+ * ComponentName)}.
+ */
+public final HashSet<ItemInfo>
+filterItemInfos(final Iterable<ItemInfo> infos) {
+	HashSet<ItemInfo> filtered = new HashSet<>();
+	for (ItemInfo i : infos) {
+		if (i instanceof ShortcutInfo) {
+			ShortcutInfo info = (ShortcutInfo)i;
+			ComponentName cn = info.getTargetComponent();
+			if (cn != null && matches(info, cn)) {
+				filtered.add(info);
+			}
+		} else if (i instanceof FolderInfo) {
+			FolderInfo info = (FolderInfo)i;
+			for (ShortcutInfo s : info.contents) {
+				ComponentName cn = s.getTargetComponent();
+				if (cn != null && matches(s, cn)) {
+					filtered.add(s);
+				}
+			}
+		} else if (i instanceof LauncherAppWidgetInfo) {
+			LauncherAppWidgetInfo info = (LauncherAppWidgetInfo)i;
+			ComponentName cn = info.providerName;
+			if (cn != null && matches(info, cn)) {
+				filtered.add(info);
+			}
+		}
+	}
+	return filtered;
+}
 
-  /**
-   * Returns a new matcher with returns true if either this or {@param matcher}
-   * returns true.
-   */
-  public ItemInfoMatcher or(final ItemInfoMatcher matcher) {
-    final ItemInfoMatcher that = this;
-    return new ItemInfoMatcher() {
-      @Override
-      public boolean matches(final ItemInfo info, final ComponentName cn) {
-        return that.matches(info, cn) || matcher.matches(info, cn);
-      }
-    };
-  }
+/**
+ * Returns a new matcher with returns true if either this or {@param matcher}
+ * returns true.
+ */
+public ItemInfoMatcher or(final ItemInfoMatcher matcher) {
+	final ItemInfoMatcher that = this;
+	return new ItemInfoMatcher() {
+		       @Override
+		       public boolean matches(final ItemInfo info, final ComponentName cn) {
+			       return that.matches(info, cn) || matcher.matches(info, cn);
+		       }
+	};
+}
 
-  /**
-   * Returns a new matcher with returns true if both this and {@param matcher}
-   * returns true.
-   */
-  public ItemInfoMatcher and(final ItemInfoMatcher matcher) {
-    final ItemInfoMatcher that = this;
-    return new ItemInfoMatcher() {
-      @Override
-      public boolean matches(final ItemInfo info, final ComponentName cn) {
-        return that.matches(info, cn) && matcher.matches(info, cn);
-      }
-    };
-  }
+/**
+ * Returns a new matcher with returns true if both this and {@param matcher}
+ * returns true.
+ */
+public ItemInfoMatcher and(final ItemInfoMatcher matcher) {
+	final ItemInfoMatcher that = this;
+	return new ItemInfoMatcher() {
+		       @Override
+		       public boolean matches(final ItemInfo info, final ComponentName cn) {
+			       return that.matches(info, cn) && matcher.matches(info, cn);
+		       }
+	};
+}
 
-  /**
-   * Returns a new matcher which returns the opposite boolean value of the
-   * provided
-   * {@param matcher}.
-   */
-  public static ItemInfoMatcher not(final ItemInfoMatcher matcher) {
-    return new ItemInfoMatcher() {
-      @Override
-      public boolean matches(final ItemInfo info, final ComponentName cn) {
-        return !matcher.matches(info, cn);
-      }
-    };
-  }
+/**
+ * Returns a new matcher which returns the opposite boolean value of the
+ * provided
+ * {@param matcher}.
+ */
+public static ItemInfoMatcher not(final ItemInfoMatcher matcher) {
+	return new ItemInfoMatcher() {
+		       @Override
+		       public boolean matches(final ItemInfo info, final ComponentName cn) {
+			       return !matcher.matches(info, cn);
+		       }
+	};
+}
 }

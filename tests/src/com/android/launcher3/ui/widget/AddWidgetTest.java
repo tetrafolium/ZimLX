@@ -43,52 +43,52 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class AddWidgetTest extends AbstractLauncherUiTest {
 
-  @Rule
-  public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
-  @Rule
-  public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
+@Rule
+public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
+@Rule
+public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
 
-  @Test
-  public void testDragIcon_portrait() throws Throwable {
-    lockRotation(true);
-    performTest();
-  }
+@Test
+public void testDragIcon_portrait() throws Throwable {
+	lockRotation(true);
+	performTest();
+}
 
-  @Test
-  public void testDragIcon_landscape() throws Throwable {
-    lockRotation(false);
-    performTest();
-  }
+@Test
+public void testDragIcon_landscape() throws Throwable {
+	lockRotation(false);
+	performTest();
+}
 
-  private void performTest() throws Throwable {
-    clearHomescreen();
-    mActivityMonitor.startLauncher();
+private void performTest() throws Throwable {
+	clearHomescreen();
+	mActivityMonitor.startLauncher();
 
-    final LauncherAppWidgetProviderInfo widgetInfo =
-        findWidgetProvider(false /* hasConfigureScreen */);
+	final LauncherAppWidgetProviderInfo widgetInfo =
+		findWidgetProvider(false /* hasConfigureScreen */);
 
-    // Open widget tray and wait for load complete.
-    final UiObject2 widgetContainer = openWidgetsTray();
-    assertTrue(Wait.atMost(Condition.minChildCount(widgetContainer, 2),
-                           DEFAULT_UI_TIMEOUT));
+	// Open widget tray and wait for load complete.
+	final UiObject2 widgetContainer = openWidgetsTray();
+	assertTrue(Wait.atMost(Condition.minChildCount(widgetContainer, 2),
+	                       DEFAULT_UI_TIMEOUT));
 
-    // Drag widget to homescreen
-    UiObject2 widget = scrollAndFind(
-        widgetContainer, By.clazz(WidgetCell.class)
-                             .hasDescendant(By.text(widgetInfo.getLabel(
-                                 mTargetContext.getPackageManager()))));
-    dragToWorkspace(widget, false);
+	// Drag widget to homescreen
+	UiObject2 widget = scrollAndFind(
+		widgetContainer, By.clazz(WidgetCell.class)
+		.hasDescendant(By.text(widgetInfo.getLabel(
+					       mTargetContext.getPackageManager()))));
+	dragToWorkspace(widget, false);
 
-    assertTrue(mActivityMonitor
-                   .itemExists(new ItemOperator() {
-                     @Override
-                     public boolean evaluate(final ItemInfo info,
-                                             final View view) {
-                       return info instanceof LauncherAppWidgetInfo &&
-                           ((LauncherAppWidgetInfo)info)
-                               .providerName.equals(widgetInfo.provider);
-                     }
-                   })
-                   .call());
-  }
+	assertTrue(mActivityMonitor
+	           .itemExists(new ItemOperator() {
+			@Override
+			public boolean evaluate(final ItemInfo info,
+			                        final View view) {
+			        return info instanceof LauncherAppWidgetInfo &&
+			        ((LauncherAppWidgetInfo)info)
+			        .providerName.equals(widgetInfo.provider);
+			}
+		})
+	           .call());
+}
 }

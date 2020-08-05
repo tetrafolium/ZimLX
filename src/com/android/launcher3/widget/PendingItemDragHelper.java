@@ -41,151 +41,153 @@ import com.android.launcher3.graphics.LauncherIcons;
  */
 public class PendingItemDragHelper extends DragPreviewProvider {
 
-  private static final float MAX_WIDGET_SCALE = 1.25f;
+private static final float MAX_WIDGET_SCALE = 1.25f;
 
-  private final PendingAddItemInfo mAddInfo;
-  private int[] mEstimatedCellSize;
+private final PendingAddItemInfo mAddInfo;
+private int[] mEstimatedCellSize;
 
-  private RemoteViews mPreview;
+private RemoteViews mPreview;
 
-  public PendingItemDragHelper(final View view) {
-    super(view);
-    mAddInfo = (PendingAddItemInfo)view.getTag();
-  }
+public PendingItemDragHelper(final View view) {
+	super(view);
+	mAddInfo = (PendingAddItemInfo)view.getTag();
+}
 
-  public void setPreview(final RemoteViews preview) { mPreview = preview; }
+public void setPreview(final RemoteViews preview) {
+	mPreview = preview;
+}
 
-  /**
-   * Starts the drag for the pending item associated with the view.
-   *
-   * @param previewBounds The bounds where the image was displayed,
-   *                      {@link WidgetImageView#getBitmapBounds()}
-   * @param previewBitmapWidth The actual width of the bitmap displayed in the
-   *     view.
-   * @param previewViewWidth The width of {@link WidgetImageView} displaying the
-   *     preview
-   * @param screenPos Position of {@link WidgetImageView} on the screen
-   */
-  public void startDrag(final Rect previewBounds, final int previewBitmapWidth,
-                        final int previewViewWidth, final Point screenPos,
-                        final DragSource source, final DragOptions options) {
-    final Launcher launcher = Launcher.getLauncher(mView.getContext());
-    LauncherAppState app = LauncherAppState.getInstance(launcher);
+/**
+ * Starts the drag for the pending item associated with the view.
+ *
+ * @param previewBounds The bounds where the image was displayed,
+ *                      {@link WidgetImageView#getBitmapBounds()}
+ * @param previewBitmapWidth The actual width of the bitmap displayed in the
+ *     view.
+ * @param previewViewWidth The width of {@link WidgetImageView} displaying the
+ *     preview
+ * @param screenPos Position of {@link WidgetImageView} on the screen
+ */
+public void startDrag(final Rect previewBounds, final int previewBitmapWidth,
+                      final int previewViewWidth, final Point screenPos,
+                      final DragSource source, final DragOptions options) {
+	final Launcher launcher = Launcher.getLauncher(mView.getContext());
+	LauncherAppState app = LauncherAppState.getInstance(launcher);
 
-    Bitmap preview = null;
-    final float scale;
-    final Point dragOffset;
-    final Rect dragRegion;
+	Bitmap preview = null;
+	final float scale;
+	final Point dragOffset;
+	final Rect dragRegion;
 
-    mEstimatedCellSize = launcher.getWorkspace().estimateItemSize(mAddInfo);
+	mEstimatedCellSize = launcher.getWorkspace().estimateItemSize(mAddInfo);
 
-    if (mAddInfo instanceof PendingAddWidgetInfo) {
-      PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo)mAddInfo;
+	if (mAddInfo instanceof PendingAddWidgetInfo) {
+		PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo)mAddInfo;
 
-      int maxWidth = Math.min((int)(previewBitmapWidth * MAX_WIDGET_SCALE),
-                              mEstimatedCellSize[0]);
+		int maxWidth = Math.min((int)(previewBitmapWidth * MAX_WIDGET_SCALE),
+		                        mEstimatedCellSize[0]);
 
-      int[] previewSizeBeforeScale = new int[1];
+		int[] previewSizeBeforeScale = new int[1];
 
-      if (mPreview != null) {
-        preview = LivePreviewWidgetCell.generateFromRemoteViews(
-            launcher, mPreview, createWidgetInfo.info, maxWidth,
-            previewSizeBeforeScale);
-      }
-      if (preview == null) {
-        preview = app.getWidgetCache().generateWidgetPreview(
-            launcher, createWidgetInfo.info, maxWidth, null,
-            previewSizeBeforeScale);
-      }
+		if (mPreview != null) {
+			preview = LivePreviewWidgetCell.generateFromRemoteViews(
+				launcher, mPreview, createWidgetInfo.info, maxWidth,
+				previewSizeBeforeScale);
+		}
+		if (preview == null) {
+			preview = app.getWidgetCache().generateWidgetPreview(
+				launcher, createWidgetInfo.info, maxWidth, null,
+				previewSizeBeforeScale);
+		}
 
-      if (previewSizeBeforeScale[0] < previewBitmapWidth) {
-        // The icon has extra padding around it.
-        int padding = (previewBitmapWidth - previewSizeBeforeScale[0]) / 2;
-        if (previewBitmapWidth > previewViewWidth) {
-          padding = padding * previewViewWidth / previewBitmapWidth;
-        }
+		if (previewSizeBeforeScale[0] < previewBitmapWidth) {
+			// The icon has extra padding around it.
+			int padding = (previewBitmapWidth - previewSizeBeforeScale[0]) / 2;
+			if (previewBitmapWidth > previewViewWidth) {
+				padding = padding * previewViewWidth / previewBitmapWidth;
+			}
 
-        previewBounds.left += padding;
-        previewBounds.right -= padding;
-      }
-      scale = previewBounds.width() / (float)preview.getWidth();
-      launcher.getDragController().addDragListener(
-          new WidgetHostViewLoader(launcher, mView));
+			previewBounds.left += padding;
+			previewBounds.right -= padding;
+		}
+		scale = previewBounds.width() / (float)preview.getWidth();
+		launcher.getDragController().addDragListener(
+			new WidgetHostViewLoader(launcher, mView));
 
-      dragOffset = null;
-      dragRegion = null;
-    } else {
-      PendingAddShortcutInfo createShortcutInfo =
-          (PendingAddShortcutInfo)mAddInfo;
-      Drawable icon =
-          createShortcutInfo.activityInfo.getFullResIcon(app.getIconCache());
-      LauncherIcons li = LauncherIcons.obtain(launcher);
-      preview = li.createScaledBitmapWithoutShadow(icon, 0);
-      li.recycle();
-      scale =
-          ((float)launcher.getDeviceProfile().iconSizePx) / preview.getWidth();
+		dragOffset = null;
+		dragRegion = null;
+	} else {
+		PendingAddShortcutInfo createShortcutInfo =
+			(PendingAddShortcutInfo)mAddInfo;
+		Drawable icon =
+			createShortcutInfo.activityInfo.getFullResIcon(app.getIconCache());
+		LauncherIcons li = LauncherIcons.obtain(launcher);
+		preview = li.createScaledBitmapWithoutShadow(icon, 0);
+		li.recycle();
+		scale =
+			((float)launcher.getDeviceProfile().iconSizePx) / preview.getWidth();
 
-      dragOffset = new Point(previewPadding / 2, previewPadding / 2);
+		dragOffset = new Point(previewPadding / 2, previewPadding / 2);
 
-      // Create a preview same as the workspace cell size and draw the icon at
-      // the appropriate position.
-      DeviceProfile dp = launcher.getDeviceProfile();
-      int iconSize = dp.iconSizePx;
+		// Create a preview same as the workspace cell size and draw the icon at
+		// the appropriate position.
+		DeviceProfile dp = launcher.getDeviceProfile();
+		int iconSize = dp.iconSizePx;
 
-      int padding = launcher.getResources().getDimensionPixelSize(
-          R.dimen.widget_preview_shortcut_padding);
-      previewBounds.left += padding;
-      previewBounds.top += padding;
+		int padding = launcher.getResources().getDimensionPixelSize(
+			R.dimen.widget_preview_shortcut_padding);
+		previewBounds.left += padding;
+		previewBounds.top += padding;
 
-      dragRegion = new Rect();
-      dragRegion.left = (mEstimatedCellSize[0] - iconSize) / 2;
-      dragRegion.right = dragRegion.left + iconSize;
-      dragRegion.top = (mEstimatedCellSize[1] - iconSize - dp.iconTextSizePx -
-                        dp.iconDrawablePaddingPx) /
-                       2;
-      dragRegion.bottom = dragRegion.top + iconSize;
-    }
+		dragRegion = new Rect();
+		dragRegion.left = (mEstimatedCellSize[0] - iconSize) / 2;
+		dragRegion.right = dragRegion.left + iconSize;
+		dragRegion.top = (mEstimatedCellSize[1] - iconSize - dp.iconTextSizePx -
+		                  dp.iconDrawablePaddingPx) /
+		                 2;
+		dragRegion.bottom = dragRegion.top + iconSize;
+	}
 
-    // Since we are not going through the workspace for starting the drag, set
-    // drag related information on the workspace before starting the drag.
-    launcher.getWorkspace().prepareDragWithProvider(this);
+	// Since we are not going through the workspace for starting the drag, set
+	// drag related information on the workspace before starting the drag.
+	launcher.getWorkspace().prepareDragWithProvider(this);
 
-    int dragLayerX =
-        screenPos.x + previewBounds.left +
-        (int)((scale * preview.getWidth() - preview.getWidth()) / 2);
-    int dragLayerY =
-        screenPos.y + previewBounds.top +
-        (int)((scale * preview.getHeight() - preview.getHeight()) / 2);
+	int dragLayerX =
+		screenPos.x + previewBounds.left +
+		(int)((scale * preview.getWidth() - preview.getWidth()) / 2);
+	int dragLayerY =
+		screenPos.y + previewBounds.top +
+		(int)((scale * preview.getHeight() - preview.getHeight()) / 2);
 
-    // Start the drag
-    launcher.getDragController().startDrag(preview, dragLayerX, dragLayerY,
-                                           source, mAddInfo, dragOffset,
-                                           dragRegion, scale, scale, options);
-  }
+	// Start the drag
+	launcher.getDragController().startDrag(preview, dragLayerX, dragLayerY,
+	                                       source, mAddInfo, dragOffset,
+	                                       dragRegion, scale, scale, options);
+}
 
-  @Override
-  protected Bitmap convertPreviewToAlphaBitmap(final Bitmap preview) {
-    if (mAddInfo instanceof PendingAddShortcutInfo ||
-        mEstimatedCellSize == null) {
-      return super.convertPreviewToAlphaBitmap(preview);
-    }
+@Override
+protected Bitmap convertPreviewToAlphaBitmap(final Bitmap preview) {
+	if (mAddInfo instanceof PendingAddShortcutInfo ||
+	    mEstimatedCellSize == null) {
+		return super.convertPreviewToAlphaBitmap(preview);
+	}
 
-    int w = mEstimatedCellSize[0];
-    int h = mEstimatedCellSize[1];
-    final Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ALPHA_8);
-    Rect src = new Rect(0, 0, preview.getWidth(), preview.getHeight());
+	int w = mEstimatedCellSize[0];
+	int h = mEstimatedCellSize[1];
+	final Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ALPHA_8);
+	Rect src = new Rect(0, 0, preview.getWidth(), preview.getHeight());
 
-    float scaleFactor =
-        Math.min((w - blurSizeOutline) / (float)preview.getWidth(),
-                 (h - blurSizeOutline) / (float)preview.getHeight());
-    int scaledWidth = (int)(scaleFactor * preview.getWidth());
-    int scaledHeight = (int)(scaleFactor * preview.getHeight());
-    Rect dst = new Rect(0, 0, scaledWidth, scaledHeight);
+	float scaleFactor =
+		Math.min((w - blurSizeOutline) / (float)preview.getWidth(),
+		         (h - blurSizeOutline) / (float)preview.getHeight());
+	int scaledWidth = (int)(scaleFactor * preview.getWidth());
+	int scaledHeight = (int)(scaleFactor * preview.getHeight());
+	Rect dst = new Rect(0, 0, scaledWidth, scaledHeight);
 
-    // center the image
-    dst.offset((w - scaledWidth) / 2, (h - scaledHeight) / 2);
-    new Canvas(b).drawBitmap(preview, src, dst,
-                             new Paint(Paint.FILTER_BITMAP_FLAG));
-    return b;
-  }
+	// center the image
+	dst.offset((w - scaledWidth) / 2, (h - scaledHeight) / 2);
+	new Canvas(b).drawBitmap(preview, src, dst,
+	                         new Paint(Paint.FILTER_BITMAP_FLAG));
+	return b;
+}
 }

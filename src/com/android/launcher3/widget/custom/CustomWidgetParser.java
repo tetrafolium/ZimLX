@@ -42,129 +42,129 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class CustomWidgetParser {
 
-  private static List<LauncherAppWidgetProviderInfo> sCustomWidgets;
-  private static SparseArray<ComponentName> sWidgetsIdMap;
+private static List<LauncherAppWidgetProviderInfo> sCustomWidgets;
+private static SparseArray<ComponentName> sWidgetsIdMap;
 
-  public static List<LauncherAppWidgetProviderInfo>
-  getCustomWidgets(final Context context) {
-    if (sCustomWidgets == null) {
-      // Synchronization not needed as it it safe to load multiple times
-      parseCustomWidgets(context);
-    }
+public static List<LauncherAppWidgetProviderInfo>
+getCustomWidgets(final Context context) {
+	if (sCustomWidgets == null) {
+		// Synchronization not needed as it it safe to load multiple times
+		parseCustomWidgets(context);
+	}
 
-    return sCustomWidgets;
-  }
+	return sCustomWidgets;
+}
 
-  public static int getWidgetIdForCustomProvider(final Context context,
-                                                 final ComponentName provider) {
-    if (sWidgetsIdMap == null) {
-      parseCustomWidgets(context);
-    }
-    int index = sWidgetsIdMap.indexOfValue(provider);
-    if (index >= 0) {
-      return LauncherAppWidgetInfo.CUSTOM_WIDGET_ID -
-          sWidgetsIdMap.keyAt(index);
-    } else {
-      return AppWidgetManager.INVALID_APPWIDGET_ID;
-    }
-  }
+public static int getWidgetIdForCustomProvider(final Context context,
+                                               final ComponentName provider) {
+	if (sWidgetsIdMap == null) {
+		parseCustomWidgets(context);
+	}
+	int index = sWidgetsIdMap.indexOfValue(provider);
+	if (index >= 0) {
+		return LauncherAppWidgetInfo.CUSTOM_WIDGET_ID -
+		       sWidgetsIdMap.keyAt(index);
+	} else {
+		return AppWidgetManager.INVALID_APPWIDGET_ID;
+	}
+}
 
-  public static LauncherAppWidgetProviderInfo
-  getWidgetProvider(final Context context, final int widgetId) {
-    if (sWidgetsIdMap == null || sCustomWidgets == null) {
-      parseCustomWidgets(context);
-    }
-    ComponentName cn =
-        sWidgetsIdMap.get(LauncherAppWidgetInfo.CUSTOM_WIDGET_ID - widgetId);
-    for (LauncherAppWidgetProviderInfo info : sCustomWidgets) {
-      if (info.provider.equals(cn)) {
-        return info;
-      }
-    }
-    return null;
-  }
+public static LauncherAppWidgetProviderInfo
+getWidgetProvider(final Context context, final int widgetId) {
+	if (sWidgetsIdMap == null || sCustomWidgets == null) {
+		parseCustomWidgets(context);
+	}
+	ComponentName cn =
+		sWidgetsIdMap.get(LauncherAppWidgetInfo.CUSTOM_WIDGET_ID - widgetId);
+	for (LauncherAppWidgetProviderInfo info : sCustomWidgets) {
+		if (info.provider.equals(cn)) {
+			return info;
+		}
+	}
+	return null;
+}
 
-  private static void parseCustomWidgets(final Context context) {
-    ArrayList<LauncherAppWidgetProviderInfo> widgets = new ArrayList<>();
-    SparseArray<ComponentName> idMap = new SparseArray<>();
+private static void parseCustomWidgets(final Context context) {
+	ArrayList<LauncherAppWidgetProviderInfo> widgets = new ArrayList<>();
+	SparseArray<ComponentName> idMap = new SparseArray<>();
 
-    List<AppWidgetProviderInfo> providers =
-        AppWidgetManager.getInstance(context).getInstalledProvidersForProfile(
-            Process.myUserHandle());
-    if (providers.isEmpty()) {
-      sCustomWidgets = widgets;
-      sWidgetsIdMap = idMap;
-      return;
-    }
+	List<AppWidgetProviderInfo> providers =
+		AppWidgetManager.getInstance(context).getInstalledProvidersForProfile(
+			Process.myUserHandle());
+	if (providers.isEmpty()) {
+		sCustomWidgets = widgets;
+		sWidgetsIdMap = idMap;
+		return;
+	}
 
-    Parcel parcel = Parcel.obtain();
-    providers.get(0).writeToParcel(parcel, 0);
+	Parcel parcel = Parcel.obtain();
+	providers.get(0).writeToParcel(parcel, 0);
 
-    try (XmlResourceParser parser =
-             context.getResources().getXml(R.xml.custom_widgets)) {
-      final int depth = parser.getDepth();
-      int type;
+	try (XmlResourceParser parser =
+		     context.getResources().getXml(R.xml.custom_widgets)) {
+		final int depth = parser.getDepth();
+		int type;
 
-      while (((type = parser.next()) != XmlPullParser.END_TAG ||
-              parser.getDepth() > depth) &&
-             type != XmlPullParser.END_DOCUMENT) {
-        if ((type == XmlPullParser.START_TAG) &&
-            "widget".equals(parser.getName())) {
-          TypedArray a = context.obtainStyledAttributes(
-              Xml.asAttributeSet(parser),
-              R.styleable.CustomAppWidgetProviderInfo);
+		while (((type = parser.next()) != XmlPullParser.END_TAG ||
+		        parser.getDepth() > depth) &&
+		       type != XmlPullParser.END_DOCUMENT) {
+			if ((type == XmlPullParser.START_TAG) &&
+			    "widget".equals(parser.getName())) {
+				TypedArray a = context.obtainStyledAttributes(
+					Xml.asAttributeSet(parser),
+					R.styleable.CustomAppWidgetProviderInfo);
 
-          parcel.setDataPosition(0);
-          CustomAppWidgetProviderInfo info = newInfo(a, parcel, context);
-          widgets.add(info);
-          a.recycle();
+				parcel.setDataPosition(0);
+				CustomAppWidgetProviderInfo info = newInfo(a, parcel, context);
+				widgets.add(info);
+				a.recycle();
 
-          idMap.put(info.providerId, info.provider);
-        }
-      }
-    } catch (IOException | XmlPullParserException e) {
-      throw new RuntimeException(e);
-    }
-    parcel.recycle();
-    sCustomWidgets = widgets;
-    sWidgetsIdMap = idMap;
-  }
+				idMap.put(info.providerId, info.provider);
+			}
+		}
+	} catch (IOException | XmlPullParserException e) {
+		throw new RuntimeException(e);
+	}
+	parcel.recycle();
+	sCustomWidgets = widgets;
+	sWidgetsIdMap = idMap;
+}
 
-  private static CustomAppWidgetProviderInfo
-  newInfo(final TypedArray a, final Parcel parcel, final Context context) {
-    int providerId =
-        a.getInt(R.styleable.CustomAppWidgetProviderInfo_providerId, 0);
-    boolean noPadding =
-        a.getBoolean(R.styleable.CustomAppWidgetProviderInfo_noPadding, false);
-    CustomAppWidgetProviderInfo info =
-        new CustomAppWidgetProviderInfo(parcel, false, providerId, noPadding);
-    info.provider = new ComponentName(context.getPackageName(),
-                                      CLS_CUSTOM_WIDGET_PREFIX + providerId);
-    info.customizeTitle = a.getResourceId(
-        R.styleable.CustomAppWidgetProviderInfo_customizeTitle, 0);
-    info.customizeScreen = a.getResourceId(
-        R.styleable.CustomAppWidgetProviderInfo_customizeScreen, 0);
-    info.customizeHasPreview = a.getBoolean(
-        R.styleable.CustomAppWidgetProviderInfo_customizeHasPreview, false);
+private static CustomAppWidgetProviderInfo
+newInfo(final TypedArray a, final Parcel parcel, final Context context) {
+	int providerId =
+		a.getInt(R.styleable.CustomAppWidgetProviderInfo_providerId, 0);
+	boolean noPadding =
+		a.getBoolean(R.styleable.CustomAppWidgetProviderInfo_noPadding, false);
+	CustomAppWidgetProviderInfo info =
+		new CustomAppWidgetProviderInfo(parcel, false, providerId, noPadding);
+	info.provider = new ComponentName(context.getPackageName(),
+	                                  CLS_CUSTOM_WIDGET_PREFIX + providerId);
+	info.customizeTitle = a.getResourceId(
+		R.styleable.CustomAppWidgetProviderInfo_customizeTitle, 0);
+	info.customizeScreen = a.getResourceId(
+		R.styleable.CustomAppWidgetProviderInfo_customizeScreen, 0);
+	info.customizeHasPreview = a.getBoolean(
+		R.styleable.CustomAppWidgetProviderInfo_customizeHasPreview, false);
 
-    info.label =
-        a.getString(R.styleable.CustomAppWidgetProviderInfo_android_label);
-    info.initialLayout = a.getResourceId(
-        R.styleable.CustomAppWidgetProviderInfo_android_initialLayout, 0);
-    info.icon = a.getResourceId(
-        R.styleable.CustomAppWidgetProviderInfo_android_icon, 0);
-    info.previewImage = a.getResourceId(
-        R.styleable.CustomAppWidgetProviderInfo_android_previewImage, 0);
-    info.resizeMode =
-        a.getInt(R.styleable.CustomAppWidgetProviderInfo_android_resizeMode, 0);
+	info.label =
+		a.getString(R.styleable.CustomAppWidgetProviderInfo_android_label);
+	info.initialLayout = a.getResourceId(
+		R.styleable.CustomAppWidgetProviderInfo_android_initialLayout, 0);
+	info.icon = a.getResourceId(
+		R.styleable.CustomAppWidgetProviderInfo_android_icon, 0);
+	info.previewImage = a.getResourceId(
+		R.styleable.CustomAppWidgetProviderInfo_android_previewImage, 0);
+	info.resizeMode =
+		a.getInt(R.styleable.CustomAppWidgetProviderInfo_android_resizeMode, 0);
 
-    info.spanX =
-        a.getInt(R.styleable.CustomAppWidgetProviderInfo_numColumns, 1);
-    info.spanY = a.getInt(R.styleable.CustomAppWidgetProviderInfo_numRows, 1);
-    info.minSpanX =
-        a.getInt(R.styleable.CustomAppWidgetProviderInfo_numMinColumns, 1);
-    info.minSpanY =
-        a.getInt(R.styleable.CustomAppWidgetProviderInfo_numMinRows, 1);
-    return info;
-  }
+	info.spanX =
+		a.getInt(R.styleable.CustomAppWidgetProviderInfo_numColumns, 1);
+	info.spanY = a.getInt(R.styleable.CustomAppWidgetProviderInfo_numRows, 1);
+	info.minSpanX =
+		a.getInt(R.styleable.CustomAppWidgetProviderInfo_numMinColumns, 1);
+	info.minSpanY =
+		a.getInt(R.styleable.CustomAppWidgetProviderInfo_numMinRows, 1);
+	return info;
+}
 }

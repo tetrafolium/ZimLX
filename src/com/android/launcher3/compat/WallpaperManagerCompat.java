@@ -22,40 +22,40 @@ import com.android.launcher3.Utilities;
 
 public abstract class WallpaperManagerCompat {
 
-  private static final Object sInstanceLock = new Object();
-  private static WallpaperManagerCompat sInstance;
+private static final Object sInstanceLock = new Object();
+private static WallpaperManagerCompat sInstance;
 
-  public static WallpaperManagerCompat getInstance(final Context context) {
-    synchronized (sInstanceLock) {
-      if (sInstance == null) {
-        context = context.getApplicationContext();
+public static WallpaperManagerCompat getInstance(final Context context) {
+	synchronized (sInstanceLock) {
+		if (sInstance == null) {
+			context = context.getApplicationContext();
 
-        if (Utilities.ATLEAST_OREO) {
-          try {
-            sInstance = new WallpaperManagerCompatVOMR1(context);
-          } catch (Throwable e) {
-            // The wallpaper APIs do not yet exist
-          }
-        }
-        if (sInstance == null) {
-          sInstance = new WallpaperManagerCompatVL(context);
-        }
-      }
-      return sInstance;
-    }
-  }
+			if (Utilities.ATLEAST_OREO) {
+				try {
+					sInstance = new WallpaperManagerCompatVOMR1(context);
+				} catch (Throwable e) {
+					// The wallpaper APIs do not yet exist
+				}
+			}
+			if (sInstance == null) {
+				sInstance = new WallpaperManagerCompatVL(context);
+			}
+		}
+		return sInstance;
+	}
+}
 
-  public abstract @Nullable WallpaperColorsCompat getWallpaperColors(int which);
+public abstract @Nullable WallpaperColorsCompat getWallpaperColors(int which);
 
-  public abstract void
-  addOnColorsChangedListener(OnColorsChangedListenerCompat listener);
+public abstract void
+addOnColorsChangedListener(OnColorsChangedListenerCompat listener);
 
-  /**
-   * Interface definition for a callback to be invoked when colors change on a
-   * wallpaper.
-   */
-  public interface OnColorsChangedListenerCompat {
+/**
+ * Interface definition for a callback to be invoked when colors change on a
+ * wallpaper.
+ */
+public interface OnColorsChangedListenerCompat {
 
-    void onColorsChanged(WallpaperColorsCompat colors, int which);
-  }
+void onColorsChanged(WallpaperColorsCompat colors, int which);
+}
 }

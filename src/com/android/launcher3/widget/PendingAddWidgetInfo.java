@@ -27,31 +27,31 @@ import com.android.launcher3.PendingAddItemInfo;
  * @see {@link PendingAddItemInfo}
  */
 public class PendingAddWidgetInfo extends PendingAddItemInfo {
-  public int previewImage;
-  public int icon;
-  public LauncherAppWidgetProviderInfo info;
-  public AppWidgetHostView boundWidget;
-  public Bundle bindOptions = null;
+public int previewImage;
+public int icon;
+public LauncherAppWidgetProviderInfo info;
+public AppWidgetHostView boundWidget;
+public Bundle bindOptions = null;
 
-  public PendingAddWidgetInfo(final LauncherAppWidgetProviderInfo i) {
-    if (i.isCustomWidget()) {
-      itemType = LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
-    } else {
-      itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
-    }
-    this.info = i;
-    user = i.getProfile();
-    componentName = i.provider;
-    previewImage = i.previewImage;
-    icon = i.icon;
+public PendingAddWidgetInfo(final LauncherAppWidgetProviderInfo i) {
+	if (i.isCustomWidget()) {
+		itemType = LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
+	} else {
+		itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
+	}
+	this.info = i;
+	user = i.getProfile();
+	componentName = i.provider;
+	previewImage = i.previewImage;
+	icon = i.icon;
 
-    spanX = i.spanX;
-    spanY = i.spanY;
-    minSpanX = i.minSpanX;
-    minSpanY = i.minSpanY;
-  }
+	spanX = i.spanX;
+	spanY = i.spanY;
+	minSpanX = i.minSpanX;
+	minSpanY = i.minSpanY;
+}
 
-  public WidgetAddFlowHandler getHandler() {
-    return new WidgetAddFlowHandler(info);
-  }
+public WidgetAddFlowHandler getHandler() {
+	return new WidgetAddFlowHandler(info);
+}
 }

@@ -33,114 +33,122 @@ import java.lang.ref.WeakReference;
  */
 public abstract class InternalStateHandler extends Binder {
 
-  public static final String EXTRA_STATE_HANDLER = "launcher.state_handler";
+public static final String EXTRA_STATE_HANDLER = "launcher.state_handler";
 
-  private static final Scheduler sScheduler = new Scheduler();
+private static final Scheduler sScheduler = new Scheduler();
 
-  /**
-   * Initializes the handler when the launcher is ready.
-   *
-   * @return true if the handler wants to stay alive.
-   */
-  protected abstract boolean init(Launcher launcher, boolean alreadyOnHome);
+/**
+ * Initializes the handler when the launcher is ready.
+ *
+ * @return true if the handler wants to stay alive.
+ */
+protected abstract boolean init(Launcher launcher, boolean alreadyOnHome);
 
-  public final Intent addToIntent(final Intent intent) {
-    Bundle extras = new Bundle();
-    extras.putBinder(EXTRA_STATE_HANDLER, this);
-    intent.putExtras(extras);
-    return intent;
-  }
+public final Intent addToIntent(final Intent intent) {
+	Bundle extras = new Bundle();
+	extras.putBinder(EXTRA_STATE_HANDLER, this);
+	intent.putExtras(extras);
+	return intent;
+}
 
-  public final void initWhenReady() { sScheduler.schedule(this); }
+public final void initWhenReady() {
+	sScheduler.schedule(this);
+}
 
-  public boolean clearReference() { return sScheduler.clearReference(this); }
+public boolean clearReference() {
+	return sScheduler.clearReference(this);
+}
 
-  public static boolean hasPending() { return sScheduler.hasPending(); }
+public static boolean hasPending() {
+	return sScheduler.hasPending();
+}
 
-  public static boolean handleCreate(final Launcher launcher,
-                                     final Intent intent) {
-    return handleIntent(launcher, intent, false, false);
-  }
+public static boolean handleCreate(final Launcher launcher,
+                                   final Intent intent) {
+	return handleIntent(launcher, intent, false, false);
+}
 
-  public static boolean handleNewIntent(final Launcher launcher,
-                                        final Intent intent,
-                                        final boolean alreadyOnHome) {
-    return handleIntent(launcher, intent, alreadyOnHome, true);
-  }
-
-  private static boolean handleIntent(final Launcher launcher,
+public static boolean handleNewIntent(final Launcher launcher,
                                       final Intent intent,
-                                      final boolean alreadyOnHome,
-                                      final boolean explicitIntent) {
-    boolean result = false;
-    if (intent != null && intent.getExtras() != null) {
-      IBinder stateBinder = intent.getExtras().getBinder(EXTRA_STATE_HANDLER);
-      if (stateBinder instanceof InternalStateHandler) {
-        InternalStateHandler handler = (InternalStateHandler)stateBinder;
-        if (!handler.init(launcher, alreadyOnHome)) {
-          intent.getExtras().remove(EXTRA_STATE_HANDLER);
-        }
-        result = true;
-      }
-    }
-    if (!result && !explicitIntent) {
-      result = sScheduler.initIfPending(launcher, alreadyOnHome);
-    }
-    return result;
-  }
+                                      final boolean alreadyOnHome) {
+	return handleIntent(launcher, intent, alreadyOnHome, true);
+}
 
-  private static class Scheduler implements Runnable {
+private static boolean handleIntent(final Launcher launcher,
+                                    final Intent intent,
+                                    final boolean alreadyOnHome,
+                                    final boolean explicitIntent) {
+	boolean result = false;
+	if (intent != null && intent.getExtras() != null) {
+		IBinder stateBinder = intent.getExtras().getBinder(EXTRA_STATE_HANDLER);
+		if (stateBinder instanceof InternalStateHandler) {
+			InternalStateHandler handler = (InternalStateHandler)stateBinder;
+			if (!handler.init(launcher, alreadyOnHome)) {
+				intent.getExtras().remove(EXTRA_STATE_HANDLER);
+			}
+			result = true;
+		}
+	}
+	if (!result && !explicitIntent) {
+		result = sScheduler.initIfPending(launcher, alreadyOnHome);
+	}
+	return result;
+}
 
-    private WeakReference<InternalStateHandler> mPendingHandler =
-        new WeakReference<>(null);
-    private MainThreadExecutor mMainThreadExecutor;
+private static class Scheduler implements Runnable {
 
-    public void schedule(final InternalStateHandler handler) {
-      synchronized (this) {
-        mPendingHandler = new WeakReference<>(handler);
-        if (mMainThreadExecutor == null) {
-          mMainThreadExecutor = new MainThreadExecutor();
-        }
-      }
-      mMainThreadExecutor.execute(this);
-    }
+private WeakReference<InternalStateHandler> mPendingHandler =
+	new WeakReference<>(null);
+private MainThreadExecutor mMainThreadExecutor;
 
-    @Override
-    public void run() {
-      LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-      if (app == null) {
-        return;
-      }
-      Callbacks cb = app.getModel().getCallback();
-      if (!(cb instanceof Launcher)) {
-        return;
-      }
-      Launcher launcher = (Launcher)cb;
-      initIfPending(launcher, launcher.isStarted());
-    }
+public void schedule(final InternalStateHandler handler) {
+	synchronized (this) {
+		mPendingHandler = new WeakReference<>(handler);
+		if (mMainThreadExecutor == null) {
+			mMainThreadExecutor = new MainThreadExecutor();
+		}
+	}
+	mMainThreadExecutor.execute(this);
+}
 
-    public boolean initIfPending(final Launcher launcher,
-                                 final boolean alreadyOnHome) {
-      InternalStateHandler pendingHandler = mPendingHandler.get();
-      if (pendingHandler != null) {
-        if (!pendingHandler.init(launcher, alreadyOnHome)) {
-          clearReference(pendingHandler);
-        }
-        return true;
-      }
-      return false;
-    }
+@Override
+public void run() {
+	LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+	if (app == null) {
+		return;
+	}
+	Callbacks cb = app.getModel().getCallback();
+	if (!(cb instanceof Launcher)) {
+		return;
+	}
+	Launcher launcher = (Launcher)cb;
+	initIfPending(launcher, launcher.isStarted());
+}
 
-    public boolean clearReference(final InternalStateHandler handler) {
-      synchronized (this) {
-        if (mPendingHandler.get() == handler) {
-          mPendingHandler.clear();
-          return true;
-        }
-        return false;
-      }
-    }
+public boolean initIfPending(final Launcher launcher,
+                             final boolean alreadyOnHome) {
+	InternalStateHandler pendingHandler = mPendingHandler.get();
+	if (pendingHandler != null) {
+		if (!pendingHandler.init(launcher, alreadyOnHome)) {
+			clearReference(pendingHandler);
+		}
+		return true;
+	}
+	return false;
+}
 
-    public boolean hasPending() { return mPendingHandler.get() != null; }
-  }
+public boolean clearReference(final InternalStateHandler handler) {
+	synchronized (this) {
+		if (mPendingHandler.get() == handler) {
+			mPendingHandler.clear();
+			return true;
+		}
+		return false;
+	}
+}
+
+public boolean hasPending() {
+	return mPendingHandler.get() != null;
+}
+}
 }

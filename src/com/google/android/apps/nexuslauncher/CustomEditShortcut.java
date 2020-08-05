@@ -12,23 +12,25 @@ import org.zimmob.zimlx.override.CustomInfoProvider;
 @Keep
 public class CustomEditShortcut extends SystemShortcut.Custom {
 
-  public CustomEditShortcut(final Context context) { super(); }
+public CustomEditShortcut(final Context context) {
+	super();
+}
 
-  @Override
-  public View.OnClickListener getOnClickListener(final Launcher launcher,
-                                                 final ItemInfo itemInfo) {
-    boolean enabled = CustomInfoProvider.Companion.isEditable(itemInfo);
-    return enabled ? new View.OnClickListener() {
-      private boolean mOpened = false;
+@Override
+public View.OnClickListener getOnClickListener(final Launcher launcher,
+                                               final ItemInfo itemInfo) {
+	boolean enabled = CustomInfoProvider.Companion.isEditable(itemInfo);
+	return enabled ? new View.OnClickListener() {
+		       private boolean mOpened = false;
 
-      @Override
-      public void onClick(final View view) {
-        if (!mOpened) {
-          mOpened = true;
-          AbstractFloatingView.closeAllOpenViews(launcher);
-          CustomBottomSheet.show(launcher, itemInfo);
-        }
-      }
-    } : null;
-  }
+		       @Override
+		       public void onClick(final View view) {
+			       if (!mOpened) {
+				       mOpened = true;
+				       AbstractFloatingView.closeAllOpenViews(launcher);
+				       CustomBottomSheet.show(launcher, itemInfo);
+			       }
+		       }
+	} : null;
+}
 }

@@ -33,96 +33,96 @@ import java.lang.reflect.Modifier;
  * Base activity with utility methods to help automate testing.
  */
 public class BaseTestingActivity
-    extends Activity implements View.OnClickListener {
+	extends Activity implements View.OnClickListener {
 
-  public static final String SUFFIX_COMMAND = "-command";
-  public static final String EXTRA_METHOD = "method";
-  public static final String EXTRA_PARAM = "param_";
+public static final String SUFFIX_COMMAND = "-command";
+public static final String EXTRA_METHOD = "method";
+public static final String EXTRA_PARAM = "param_";
 
-  private static final int MARGIN_DP = 20;
+private static final int MARGIN_DP = 20;
 
-  private final String mAction = this.getClass().getName();
-  private final BroadcastReceiver mCommandReceiver = new BroadcastReceiver() {
-    @Override
-    public void onReceive(final Context context, final Intent intent) {
-      handleCommand(intent);
-    }
-  };
-  private LinearLayout mView;
-  private int mMargin;
+private final String mAction = this.getClass().getName();
+private final BroadcastReceiver mCommandReceiver = new BroadcastReceiver() {
+	@Override
+	public void onReceive(final Context context, final Intent intent) {
+		handleCommand(intent);
+	}
+};
+private LinearLayout mView;
+private int mMargin;
 
-  public static Intent getCommandIntent(final Class<?> clazz,
-                                        final String method) {
-    return new Intent(clazz.getName() + SUFFIX_COMMAND)
-        .putExtra(EXTRA_METHOD, method);
-  }
+public static Intent getCommandIntent(final Class<?> clazz,
+                                      final String method) {
+	return new Intent(clazz.getName() + SUFFIX_COMMAND)
+	       .putExtra(EXTRA_METHOD, method);
+}
 
-  @Override
-  protected void onCreate(final Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+@Override
+protected void onCreate(final Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
 
-    mMargin = Math.round(
-        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MARGIN_DP,
-                                  getResources().getDisplayMetrics()));
-    mView = new LinearLayout(this);
-    mView.setPadding(mMargin, mMargin, mMargin, mMargin);
-    mView.setOrientation(LinearLayout.VERTICAL);
-    setContentView(mView);
+	mMargin = Math.round(
+		TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MARGIN_DP,
+		                          getResources().getDisplayMetrics()));
+	mView = new LinearLayout(this);
+	mView.setPadding(mMargin, mMargin, mMargin, mMargin);
+	mView.setOrientation(LinearLayout.VERTICAL);
+	setContentView(mView);
 
-    registerReceiver(mCommandReceiver,
-                     new IntentFilter(mAction + SUFFIX_COMMAND));
-  }
+	registerReceiver(mCommandReceiver,
+	                 new IntentFilter(mAction + SUFFIX_COMMAND));
+}
 
-  protected void addButton(final String title, final String method) {
-    Button button = new Button(this);
-    button.setText(title);
-    button.setTag(method);
-    button.setOnClickListener(this);
+protected void addButton(final String title, final String method) {
+	Button button = new Button(this);
+	button.setText(title);
+	button.setTag(method);
+	button.setOnClickListener(this);
 
-    LayoutParams lp =
-        new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-    lp.bottomMargin = mMargin;
-    mView.addView(button, lp);
-  }
+	LayoutParams lp =
+		new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+	lp.bottomMargin = mMargin;
+	mView.addView(button, lp);
+}
 
-  @Override
-  protected void onResume() {
-    super.onResume();
-    sendBroadcast(
-        new Intent(mAction).putExtra(Intent.EXTRA_INTENT, getIntent()));
-  }
+@Override
+protected void onResume() {
+	super.onResume();
+	sendBroadcast(
+		new Intent(mAction).putExtra(Intent.EXTRA_INTENT, getIntent()));
+}
 
-  @Override
-  protected void onDestroy() {
-    unregisterReceiver(mCommandReceiver);
-    super.onDestroy();
-  }
+@Override
+protected void onDestroy() {
+	unregisterReceiver(mCommandReceiver);
+	super.onDestroy();
+}
 
-  @Override
-  public void onClick(final View view) {
-    handleCommand(new Intent().putExtra(EXTRA_METHOD, (String)view.getTag()));
-  }
+@Override
+public void onClick(final View view) {
+	handleCommand(new Intent().putExtra(EXTRA_METHOD, (String)view.getTag()));
+}
 
-  private void handleCommand(final Intent cmd) {
-    String methodName = cmd.getStringExtra(EXTRA_METHOD);
-    try {
-      Method method = null;
-      for (Method m : this.getClass().getDeclaredMethods()) {
-        if (methodName.equals(m.getName()) &&
-            !Modifier.isStatic(m.getModifiers()) &&
-            Modifier.isPublic(m.getModifiers())) {
-          method = m;
-          break;
-        }
-      }
-      Object[] args = new Object[method.getParameterTypes().length];
-      Bundle extras = cmd.getExtras();
-      for (int i = 0; i < args.length; i++) {
-        args[i] = extras.get(EXTRA_PARAM + i);
-      }
-      method.invoke(this, args);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
+private void handleCommand(final Intent cmd) {
+	String methodName = cmd.getStringExtra(EXTRA_METHOD);
+	try {
+		Method method = null;
+		for (Method m : this.getClass().getDeclaredMethods()) {
+			if (methodName.equals(m.getName()) &&
+			    !Modifier.isStatic(m.getModifiers()) &&
+			    Modifier.isPublic(m.getModifiers())) {
+				method = m;
+				break;
+			}
+		}
+		Object[] args = new Object[method.getParameterTypes().length];
+		Bundle extras = cmd.getExtras();
+		for (int i = 0; i < args.length; i++) {
+			args[i] = extras.get(EXTRA_PARAM + i);
+		}
+		method.invoke(this, args);
+	} catch (Exception e) {
+		throw new RuntimeException(e);
+	}
+}
 }

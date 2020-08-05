@@ -13,32 +13,33 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingItemDragHelper;
 
 public class ItemDragListener extends BaseItemDragListener {
-  private final LauncherActivityInfo mActivityInfo;
+private final LauncherActivityInfo mActivityInfo;
 
-  public ItemDragListener(final LauncherActivityInfo activityInfo,
-                          final Rect rect) {
-    super(rect, rect.width(), rect.width());
-    mActivityInfo = activityInfo;
-  }
+public ItemDragListener(final LauncherActivityInfo activityInfo,
+                        final Rect rect) {
+	super(rect, rect.width(), rect.width());
+	mActivityInfo = activityInfo;
+}
 
-  protected PendingItemDragHelper createDragHelper() {
-    PendingAddShortcutInfo tag = new PendingAddShortcutInfo(
-        new ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVO(
-            mActivityInfo) {
-          @Override
-          public ShortcutInfo createShortcutInfo() {
-            return InstallShortcutReceiver.fromActivityInfo(mActivityInfo,
-                                                            mLauncher);
-          }
-        });
-    View view = new View(mLauncher);
-    view.setTag(tag);
-    return new PendingItemDragHelper(view);
-  }
+protected PendingItemDragHelper createDragHelper() {
+	PendingAddShortcutInfo tag = new PendingAddShortcutInfo(
+		new ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVO(
+			mActivityInfo) {
+			@Override
+			public ShortcutInfo createShortcutInfo() {
+			        return InstallShortcutReceiver.fromActivityInfo(mActivityInfo,
+			                                                        mLauncher);
+			}
+		});
+	View view = new View(mLauncher);
+	view.setTag(tag);
+	return new PendingItemDragHelper(view);
+}
 
-  @Override
-  public void
-  fillInLogContainerData(final View v, final ItemInfo info,
-                         final LauncherLogProto.Target target,
-                         final LauncherLogProto.Target targetParent) {}
+@Override
+public void
+fillInLogContainerData(final View v, final ItemInfo info,
+                       final LauncherLogProto.Target target,
+                       final LauncherLogProto.Target targetParent) {
+}
 }

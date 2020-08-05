@@ -42,157 +42,157 @@ import java.util.List;
  */
 public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
-  private static final int DEFAULT_CLOSE_DURATION = 200;
-  private ItemInfo mOriginalItemInfo;
-  private Rect mInsets;
+private static final int DEFAULT_CLOSE_DURATION = 200;
+private ItemInfo mOriginalItemInfo;
+private Rect mInsets;
 
-  public WidgetsBottomSheet(final Context context, final AttributeSet attrs) {
-    this(context, attrs, 0);
-  }
+public WidgetsBottomSheet(final Context context, final AttributeSet attrs) {
+	this(context, attrs, 0);
+}
 
-  public WidgetsBottomSheet(final Context context, final AttributeSet attrs,
-                            final int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-    setWillNotDraw(false);
-    mInsets = new Rect();
-    mContent = this;
-  }
+public WidgetsBottomSheet(final Context context, final AttributeSet attrs,
+                          final int defStyleAttr) {
+	super(context, attrs, defStyleAttr);
+	setWillNotDraw(false);
+	mInsets = new Rect();
+	mContent = this;
+}
 
-  @Override
-  protected void onLayout(final boolean changed, final int l, final int t,
-                          final int r, final int b) {
-    super.onLayout(changed, l, t, r, b);
-    setTranslationShift(mTranslationShift);
-  }
+@Override
+protected void onLayout(final boolean changed, final int l, final int t,
+                        final int r, final int b) {
+	super.onLayout(changed, l, t, r, b);
+	setTranslationShift(mTranslationShift);
+}
 
-  public void populateAndShow(final ItemInfo itemInfo) {
-    mOriginalItemInfo = itemInfo;
-    ((TextView)findViewById(R.id.title))
-        .setText(getContext().getString(R.string.widgets_bottom_sheet_title,
-                                        mOriginalItemInfo.title));
+public void populateAndShow(final ItemInfo itemInfo) {
+	mOriginalItemInfo = itemInfo;
+	((TextView)findViewById(R.id.title))
+	.setText(getContext().getString(R.string.widgets_bottom_sheet_title,
+	                                mOriginalItemInfo.title));
 
-    onWidgetsBound();
+	onWidgetsBound();
 
-    mLauncher.getDragLayer().addView(this);
-    mIsOpen = false;
-    animateOpen();
-  }
+	mLauncher.getDragLayer().addView(this);
+	mIsOpen = false;
+	animateOpen();
+}
 
-  @Override
-  protected void onWidgetsBound() {
-    List<WidgetItem> widgets =
-        mLauncher.getPopupDataProvider().getWidgetsForPackageUser(
-            new PackageUserKey(
-                mOriginalItemInfo.getTargetComponent().getPackageName(),
-                mOriginalItemInfo.user));
+@Override
+protected void onWidgetsBound() {
+	List<WidgetItem> widgets =
+		mLauncher.getPopupDataProvider().getWidgetsForPackageUser(
+			new PackageUserKey(
+				mOriginalItemInfo.getTargetComponent().getPackageName(),
+				mOriginalItemInfo.user));
 
-    ViewGroup widgetRow = findViewById(R.id.widgets);
-    ViewGroup widgetCells = widgetRow.findViewById(R.id.widgets_cell_list);
+	ViewGroup widgetRow = findViewById(R.id.widgets);
+	ViewGroup widgetCells = widgetRow.findViewById(R.id.widgets_cell_list);
 
-    widgetCells.removeAllViews();
+	widgetCells.removeAllViews();
 
-    for (int i = 0; i < widgets.size(); i++) {
-      WidgetCell widget = addItemCell(widgetCells);
-      widget.applyFromCellItem(
-          widgets.get(i),
-          LauncherAppState.getInstance(mLauncher).getWidgetCache());
-      widget.ensurePreview();
-      widget.setVisibility(View.VISIBLE);
-      if (i < widgets.size() - 1) {
-        addDivider(widgetCells);
-      }
-    }
+	for (int i = 0; i < widgets.size(); i++) {
+		WidgetCell widget = addItemCell(widgetCells);
+		widget.applyFromCellItem(
+			widgets.get(i),
+			LauncherAppState.getInstance(mLauncher).getWidgetCache());
+		widget.ensurePreview();
+		widget.setVisibility(View.VISIBLE);
+		if (i < widgets.size() - 1) {
+			addDivider(widgetCells);
+		}
+	}
 
-    if (widgets.size() == 1) {
-      // If there is only one widget, we want to center it instead of
-      // left-align.
-      WidgetsBottomSheet.LayoutParams params =
-          (WidgetsBottomSheet.LayoutParams)widgetRow.getLayoutParams();
-      params.gravity = Gravity.CENTER_HORIZONTAL;
-    } else {
-      // Otherwise, add an empty view to the start as padding (but still scroll
-      // edge to edge).
-      View leftPaddingView =
-          LayoutInflater.from(getContext())
-              .inflate(R.layout.widget_list_divider, widgetRow, false);
-      leftPaddingView.getLayoutParams().width =
-          Utilities.pxFromDp(16, getResources().getDisplayMetrics());
-      widgetCells.addView(leftPaddingView, 0);
-    }
-  }
+	if (widgets.size() == 1) {
+		// If there is only one widget, we want to center it instead of
+		// left-align.
+		WidgetsBottomSheet.LayoutParams params =
+			(WidgetsBottomSheet.LayoutParams)widgetRow.getLayoutParams();
+		params.gravity = Gravity.CENTER_HORIZONTAL;
+	} else {
+		// Otherwise, add an empty view to the start as padding (but still scroll
+		// edge to edge).
+		View leftPaddingView =
+			LayoutInflater.from(getContext())
+			.inflate(R.layout.widget_list_divider, widgetRow, false);
+		leftPaddingView.getLayoutParams().width =
+			Utilities.pxFromDp(16, getResources().getDisplayMetrics());
+		widgetCells.addView(leftPaddingView, 0);
+	}
+}
 
-  private void addDivider(final ViewGroup parent) {
-    LayoutInflater.from(getContext())
-        .inflate(R.layout.widget_list_divider, parent, true);
-  }
+private void addDivider(final ViewGroup parent) {
+	LayoutInflater.from(getContext())
+	.inflate(R.layout.widget_list_divider, parent, true);
+}
 
-  private WidgetCell addItemCell(final ViewGroup parent) {
-    WidgetCell widget = (WidgetCell)LayoutInflater.from(getContext())
-                            .inflate(R.layout.widget_cell, parent, false);
+private WidgetCell addItemCell(final ViewGroup parent) {
+	WidgetCell widget = (WidgetCell)LayoutInflater.from(getContext())
+	                    .inflate(R.layout.widget_cell, parent, false);
 
-    widget.setOnClickListener(this);
-    widget.setOnLongClickListener(this);
-    widget.setAnimatePreview(false);
+	widget.setOnClickListener(this);
+	widget.setOnLongClickListener(this);
+	widget.setAnimatePreview(false);
 
-    parent.addView(widget);
-    return widget;
-  }
+	parent.addView(widget);
+	return widget;
+}
 
-  private void animateOpen() {
-    if (mIsOpen || mOpenCloseAnimator.isRunning()) {
-      return;
-    }
-    mIsOpen = true;
-    setupNavBarColor();
-    mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
-        TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-    mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
-    mOpenCloseAnimator.start();
-  }
+private void animateOpen() {
+	if (mIsOpen || mOpenCloseAnimator.isRunning()) {
+		return;
+	}
+	mIsOpen = true;
+	setupNavBarColor();
+	mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
+					     TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
+	mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
+	mOpenCloseAnimator.start();
+}
 
-  @Override
-  protected void handleClose(final boolean animate) {
-    handleClose(animate, DEFAULT_CLOSE_DURATION);
-  }
+@Override
+protected void handleClose(final boolean animate) {
+	handleClose(animate, DEFAULT_CLOSE_DURATION);
+}
 
-  @Override
-  protected boolean isOfType(final
-                             @AbstractFloatingView.FloatingViewType int type) {
-    return (type & TYPE_WIDGETS_BOTTOM_SHEET) != 0;
-  }
+@Override
+protected boolean isOfType(final
+                           @AbstractFloatingView.FloatingViewType int type) {
+	return (type & TYPE_WIDGETS_BOTTOM_SHEET) != 0;
+}
 
-  @Override
-  public void setInsets(final Rect insets) {
-    // Extend behind left, right, and bottom insets.
-    int leftInset = insets.left - mInsets.left;
-    int rightInset = insets.right - mInsets.right;
-    int bottomInset = insets.bottom - mInsets.bottom;
-    mInsets.set(insets);
+@Override
+public void setInsets(final Rect insets) {
+	// Extend behind left, right, and bottom insets.
+	int leftInset = insets.left - mInsets.left;
+	int rightInset = insets.right - mInsets.right;
+	int bottomInset = insets.bottom - mInsets.bottom;
+	mInsets.set(insets);
 
-    if (!Utilities.ATLEAST_OREO &&
-        !mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-      View navBarBg = findViewById(R.id.nav_bar_bg);
-      ViewGroup.LayoutParams navBarBgLp = navBarBg.getLayoutParams();
-      navBarBgLp.height = bottomInset;
-      navBarBg.setLayoutParams(navBarBgLp);
-      bottomInset = 0;
-    }
+	if (!Utilities.ATLEAST_OREO &&
+	    !mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+		View navBarBg = findViewById(R.id.nav_bar_bg);
+		ViewGroup.LayoutParams navBarBgLp = navBarBg.getLayoutParams();
+		navBarBgLp.height = bottomInset;
+		navBarBg.setLayoutParams(navBarBgLp);
+		bottomInset = 0;
+	}
 
-    setPadding(getPaddingLeft() + leftInset, getPaddingTop(),
-               getPaddingRight() + rightInset,
-               getPaddingBottom() + bottomInset);
-  }
+	setPadding(getPaddingLeft() + leftInset, getPaddingTop(),
+	           getPaddingRight() + rightInset,
+	           getPaddingBottom() + bottomInset);
+}
 
-  @Override
-  protected int getElementsRowCount() {
-    return 1;
-  }
+@Override
+protected int getElementsRowCount() {
+	return 1;
+}
 
-  @Override
-  protected Pair<View, String> getAccessibilityTarget() {
-    return Pair.create(
-        findViewById(R.id.title),
-        getContext().getString(mIsOpen ? R.string.widgets_list
-                                       : R.string.widgets_list_closed));
-  }
+@Override
+protected Pair<View, String> getAccessibilityTarget() {
+	return Pair.create(
+		findViewById(R.id.title),
+		getContext().getString(mIsOpen ? R.string.widgets_list
+		                       : R.string.widgets_list_closed));
+}
 }

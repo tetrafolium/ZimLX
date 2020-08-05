@@ -53,485 +53,489 @@ import org.zimmob.zimlx.iconpack.IconPackManager;
  */
 public class ModelWriter {
 
-  private static final String TAG = "ModelWriter";
+private static final String TAG = "ModelWriter";
 
-  private final Context mContext;
-  private final LauncherModel mModel;
-  private final BgDataModel mBgDataModel;
-  private final Handler mUiHandler;
+private final Context mContext;
+private final LauncherModel mModel;
+private final BgDataModel mBgDataModel;
+private final Handler mUiHandler;
 
-  private final Executor mWorkerExecutor;
-  private final boolean mHasVerticalHotseat;
-  private final boolean mVerifyChanges;
+private final Executor mWorkerExecutor;
+private final boolean mHasVerticalHotseat;
+private final boolean mVerifyChanges;
 
-  private boolean mPreparingToUndo;
-  private List<Runnable> mDeleteRunnables = new ArrayList<>();
+private boolean mPreparingToUndo;
+private List<Runnable> mDeleteRunnables = new ArrayList<>();
 
-  public ModelWriter(final Context context, final LauncherModel model,
-                     final BgDataModel dataModel,
-                     final boolean hasVerticalHotseat,
-                     final boolean verifyChanges) {
-    mContext = context;
-    mModel = model;
-    mBgDataModel = dataModel;
-    mWorkerExecutor = new LooperExecutor(LauncherModel.getWorkerLooper());
-    mHasVerticalHotseat = hasVerticalHotseat;
-    mVerifyChanges = verifyChanges;
-    mUiHandler = new Handler(Looper.getMainLooper());
-  }
+public ModelWriter(final Context context, final LauncherModel model,
+                   final BgDataModel dataModel,
+                   final boolean hasVerticalHotseat,
+                   final boolean verifyChanges) {
+	mContext = context;
+	mModel = model;
+	mBgDataModel = dataModel;
+	mWorkerExecutor = new LooperExecutor(LauncherModel.getWorkerLooper());
+	mHasVerticalHotseat = hasVerticalHotseat;
+	mVerifyChanges = verifyChanges;
+	mUiHandler = new Handler(Looper.getMainLooper());
+}
 
-  private void updateItemInfoProps(final ItemInfo item, final long container,
-                                   final long screenId, final int cellX,
-                                   final int cellY) {
-    item.container = container;
-    item.cellX = cellX;
-    item.cellY = cellY;
-    // We store hotseat items in canonical form which is this orientation
-    // invariant position in the hotseat
-    if (container == Favorites.CONTAINER_HOTSEAT) {
-      item.screenId = getOrderInHotseat(
-          cellX, cellY, LauncherAppState.getIDP(mContext).numHotseatIcons);
-    } else {
-      item.screenId = screenId;
-    }
-  }
-
-  private int getOrderInHotseat(final int x, final int y, final int size) {
-    int xOrder = mHasVerticalHotseat ? (size - y - 1) : x;
-    int yOrder = mHasVerticalHotseat ? x : y;
-    return xOrder + yOrder * size;
-  }
-
-  /**
-   * Adds an item to the DB if it was not created previously, or move it to a
-   * new <container, screen, cellX, cellY>
-   */
-  public void addOrMoveItemInDatabase(final ItemInfo item, final long container,
-                                      final long screenId, final int cellX,
-                                      final int cellY) {
-    if (item.container == ItemInfo.NO_ID) {
-      // From all apps
-      addItemToDatabase(item, container, screenId, cellX, cellY);
-    } else {
-      // From somewhere else
-      moveItemInDatabase(item, container, screenId, cellX, cellY);
-    }
-  }
-
-  private void checkItemInfoLocked(final long itemId, final ItemInfo item,
-                                   final StackTraceElement[] stackTrace) {
-    ItemInfo modelItem = mBgDataModel.itemsIdMap.get(itemId);
-    if (modelItem != null && item != modelItem) {
-      // check all the data is consistent
-      if (modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
-        ShortcutInfo modelShortcut = (ShortcutInfo)modelItem;
-        ShortcutInfo shortcut = (ShortcutInfo)item;
-        if (modelShortcut.title.toString().equals(shortcut.title.toString()) &&
-            modelShortcut.intent.filterEquals(shortcut.intent) &&
-            modelShortcut.id == shortcut.id &&
-            modelShortcut.itemType == shortcut.itemType &&
-            modelShortcut.container == shortcut.container &&
-            modelShortcut.screenId == shortcut.screenId &&
-            modelShortcut.cellX == shortcut.cellX &&
-            modelShortcut.cellY == shortcut.cellY &&
-            modelShortcut.spanX == shortcut.spanX &&
-            modelShortcut.spanY == shortcut.spanY) {
-          // For all intents and purposes, this is the same object
-          return;
-        }
-      }
-
-      // the modelItem needs to match up perfectly with item if our model is
-      // to be consistent with the database-- for now, just require
-      // modelItem == item or the equality check above
-      String msg =
-          "item: " + ((item != null) ? item.toString() : "null") +
-          "modelItem: " +
-          ((modelItem != null) ? modelItem.toString() : "null") +
-          "Error: ItemInfo passed to checkItemInfo doesn't match original";
-      RuntimeException e = new RuntimeException(msg);
-      if (stackTrace != null) {
-        e.setStackTrace(stackTrace);
-      }
-      throw e;
-    }
-  }
-
-  /**
-   * Move an item in the DB to a new <container, screen, cellX, cellY>
-   */
-  public void moveItemInDatabase(final ItemInfo item, final long container,
+private void updateItemInfoProps(final ItemInfo item, final long container,
                                  final long screenId, final int cellX,
                                  final int cellY) {
-    updateItemInfoProps(item, container, screenId, cellX, cellY);
+	item.container = container;
+	item.cellX = cellX;
+	item.cellY = cellY;
+	// We store hotseat items in canonical form which is this orientation
+	// invariant position in the hotseat
+	if (container == Favorites.CONTAINER_HOTSEAT) {
+		item.screenId = getOrderInHotseat(
+			cellX, cellY, LauncherAppState.getIDP(mContext).numHotseatIcons);
+	} else {
+		item.screenId = screenId;
+	}
+}
 
-    final ContentWriter writer = new ContentWriter(mContext)
-                                     .put(Favorites.CONTAINER, item.container)
-                                     .put(Favorites.CELLX, item.cellX)
-                                     .put(Favorites.CELLY, item.cellY)
-                                     .put(Favorites.RANK, item.rank)
-                                     .put(Favorites.SCREEN, item.screenId);
+private int getOrderInHotseat(final int x, final int y, final int size) {
+	int xOrder = mHasVerticalHotseat ? (size - y - 1) : x;
+	int yOrder = mHasVerticalHotseat ? x : y;
+	return xOrder + yOrder * size;
+}
 
-    mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
-  }
+/**
+ * Adds an item to the DB if it was not created previously, or move it to a
+ * new <container, screen, cellX, cellY>
+ */
+public void addOrMoveItemInDatabase(final ItemInfo item, final long container,
+                                    final long screenId, final int cellX,
+                                    final int cellY) {
+	if (item.container == ItemInfo.NO_ID) {
+		// From all apps
+		addItemToDatabase(item, container, screenId, cellX, cellY);
+	} else {
+		// From somewhere else
+		moveItemInDatabase(item, container, screenId, cellX, cellY);
+	}
+}
 
-  /**
-   * Move items in the DB to a new <container, screen, cellX, cellY>. We assume
-   * that the cellX, cellY have already been updated on the ItemInfos.
-   */
-  public void moveItemsInDatabase(final ArrayList<ItemInfo> items,
-                                  final long container, final int screen) {
-    ArrayList<ContentValues> contentValues = new ArrayList<>();
-    int count = items.size();
+private void checkItemInfoLocked(final long itemId, final ItemInfo item,
+                                 final StackTraceElement[] stackTrace) {
+	ItemInfo modelItem = mBgDataModel.itemsIdMap.get(itemId);
+	if (modelItem != null && item != modelItem) {
+		// check all the data is consistent
+		if (modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
+			ShortcutInfo modelShortcut = (ShortcutInfo)modelItem;
+			ShortcutInfo shortcut = (ShortcutInfo)item;
+			if (modelShortcut.title.toString().equals(shortcut.title.toString()) &&
+			    modelShortcut.intent.filterEquals(shortcut.intent) &&
+			    modelShortcut.id == shortcut.id &&
+			    modelShortcut.itemType == shortcut.itemType &&
+			    modelShortcut.container == shortcut.container &&
+			    modelShortcut.screenId == shortcut.screenId &&
+			    modelShortcut.cellX == shortcut.cellX &&
+			    modelShortcut.cellY == shortcut.cellY &&
+			    modelShortcut.spanX == shortcut.spanX &&
+			    modelShortcut.spanY == shortcut.spanY) {
+				// For all intents and purposes, this is the same object
+				return;
+			}
+		}
 
-    for (int i = 0; i < count; i++) {
-      ItemInfo item = items.get(i);
-      updateItemInfoProps(item, container, screen, item.cellX, item.cellY);
+		// the modelItem needs to match up perfectly with item if our model is
+		// to be consistent with the database-- for now, just require
+		// modelItem == item or the equality check above
+		String msg =
+			"item: " + ((item != null) ? item.toString() : "null") +
+			"modelItem: " +
+			((modelItem != null) ? modelItem.toString() : "null") +
+			"Error: ItemInfo passed to checkItemInfo doesn't match original";
+		RuntimeException e = new RuntimeException(msg);
+		if (stackTrace != null) {
+			e.setStackTrace(stackTrace);
+		}
+		throw e;
+	}
+}
 
-      final ContentValues values = new ContentValues();
-      values.put(Favorites.CONTAINER, item.container);
-      values.put(Favorites.CELLX, item.cellX);
-      values.put(Favorites.CELLY, item.cellY);
-      values.put(Favorites.RANK, item.rank);
-      values.put(Favorites.SCREEN, item.screenId);
+/**
+ * Move an item in the DB to a new <container, screen, cellX, cellY>
+ */
+public void moveItemInDatabase(final ItemInfo item, final long container,
+                               final long screenId, final int cellX,
+                               final int cellY) {
+	updateItemInfoProps(item, container, screenId, cellX, cellY);
 
-      contentValues.add(values);
-    }
-    mWorkerExecutor.execute(new UpdateItemsRunnable(items, contentValues));
-  }
+	final ContentWriter writer = new ContentWriter(mContext)
+	                             .put(Favorites.CONTAINER, item.container)
+	                             .put(Favorites.CELLX, item.cellX)
+	                             .put(Favorites.CELLY, item.cellY)
+	                             .put(Favorites.RANK, item.rank)
+	                             .put(Favorites.SCREEN, item.screenId);
 
-  /**
-   * Move and/or resize item in the DB to a new <container, screen, cellX,
-   * cellY, spanX, spanY>
-   */
-  public void modifyItemInDatabase(final ItemInfo item, final long container,
-                                   final long screenId, final int cellX,
-                                   final int cellY, final int spanX,
-                                   final int spanY) {
-    updateItemInfoProps(item, container, screenId, cellX, cellY);
-    item.spanX = spanX;
-    item.spanY = spanY;
+	mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
+}
 
-    final ContentWriter writer = new ContentWriter(mContext)
-                                     .put(Favorites.CONTAINER, item.container)
-                                     .put(Favorites.CELLX, item.cellX)
-                                     .put(Favorites.CELLY, item.cellY)
-                                     .put(Favorites.RANK, item.rank)
-                                     .put(Favorites.SPANX, item.spanX)
-                                     .put(Favorites.SPANY, item.spanY)
-                                     .put(Favorites.SCREEN, item.screenId);
+/**
+ * Move items in the DB to a new <container, screen, cellX, cellY>. We assume
+ * that the cellX, cellY have already been updated on the ItemInfos.
+ */
+public void moveItemsInDatabase(final ArrayList<ItemInfo> items,
+                                final long container, final int screen) {
+	ArrayList<ContentValues> contentValues = new ArrayList<>();
+	int count = items.size();
 
-    mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
-  }
+	for (int i = 0; i < count; i++) {
+		ItemInfo item = items.get(i);
+		updateItemInfoProps(item, container, screen, item.cellX, item.cellY);
 
-  private void executeUpdateItem(final ItemInfo item,
-                                 final ContentWriter writer) {
-    mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
-  }
+		final ContentValues values = new ContentValues();
+		values.put(Favorites.CONTAINER, item.container);
+		values.put(Favorites.CELLX, item.cellX);
+		values.put(Favorites.CELLY, item.cellY);
+		values.put(Favorites.RANK, item.rank);
+		values.put(Favorites.SCREEN, item.screenId);
 
-  public static void
-  modifyItemInDatabase(final Context context, final ItemInfo item,
-                       final String alias, final String swipeUpAction,
-                       final IconPackManager.CustomIconEntry iconEntry,
-                       final Bitmap icon, final boolean updateIcon,
-                       final boolean reload) {
-    final ContentWriter writer = new ContentWriter(context);
-    writer.put(Favorites.TITLE_ALIAS, alias);
-    writer.put(Favorites.SWIPE_UP_ACTION, swipeUpAction);
-    if (updateIcon) {
-      writer.put(LauncherSettings.Favorites.CUSTOM_ICON,
-                 icon != null ? Utilities.flattenBitmap(icon) : null);
-      writer.put(Favorites.CUSTOM_ICON_ENTRY,
-                 iconEntry != null ? iconEntry.toString() : null);
-    }
+		contentValues.add(values);
+	}
+	mWorkerExecutor.execute(new UpdateItemsRunnable(items, contentValues));
+}
 
-    if (reload) {
-      LauncherAppState.getInstance(context)
-          .getLauncher()
-          .getModelWriter()
-          .executeUpdateItem(item, writer);
-      LauncherAppState.getInstance(context).getModel().forceReload();
-    }
-  }
+/**
+ * Move and/or resize item in the DB to a new <container, screen, cellX,
+ * cellY, spanX, spanY>
+ */
+public void modifyItemInDatabase(final ItemInfo item, final long container,
+                                 final long screenId, final int cellX,
+                                 final int cellY, final int spanX,
+                                 final int spanY) {
+	updateItemInfoProps(item, container, screenId, cellX, cellY);
+	item.spanX = spanX;
+	item.spanY = spanY;
 
-  /**
-   * Update an item to the database in a specified container.
-   */
-  public void updateItemInDatabase(final ItemInfo item) {
-    ContentWriter writer = new ContentWriter(mContext);
-    item.onAddToDatabase(writer);
-    mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
-  }
+	final ContentWriter writer = new ContentWriter(mContext)
+	                             .put(Favorites.CONTAINER, item.container)
+	                             .put(Favorites.CELLX, item.cellX)
+	                             .put(Favorites.CELLY, item.cellY)
+	                             .put(Favorites.RANK, item.rank)
+	                             .put(Favorites.SPANX, item.spanX)
+	                             .put(Favorites.SPANY, item.spanY)
+	                             .put(Favorites.SCREEN, item.screenId);
 
-  /**
-   * Add an item to the database in a specified container. Sets the container,
-   * screen, cellX and cellY fields of the item. Also assigns an ID to the item.
-   */
-  public void addItemToDatabase(final ItemInfo item, final long container,
-                                final long screenId, final int cellX,
-                                final int cellY) {
-    updateItemInfoProps(item, container, screenId, cellX, cellY);
+	mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
+}
 
-    final ContentWriter writer = new ContentWriter(mContext);
-    final ContentResolver cr = mContext.getContentResolver();
-    item.onAddToDatabase(writer);
+private void executeUpdateItem(final ItemInfo item,
+                               final ContentWriter writer) {
+	mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
+}
 
-    item.id = Settings.call(cr, Settings.METHOD_NEW_ITEM_ID)
-                  .getLong(Settings.EXTRA_VALUE);
-    writer.put(Favorites._ID, item.id);
+public static void
+modifyItemInDatabase(final Context context, final ItemInfo item,
+                     final String alias, final String swipeUpAction,
+                     final IconPackManager.CustomIconEntry iconEntry,
+                     final Bitmap icon, final boolean updateIcon,
+                     final boolean reload) {
+	final ContentWriter writer = new ContentWriter(context);
+	writer.put(Favorites.TITLE_ALIAS, alias);
+	writer.put(Favorites.SWIPE_UP_ACTION, swipeUpAction);
+	if (updateIcon) {
+		writer.put(LauncherSettings.Favorites.CUSTOM_ICON,
+		           icon != null ? Utilities.flattenBitmap(icon) : null);
+		writer.put(Favorites.CUSTOM_ICON_ENTRY,
+		           iconEntry != null ? iconEntry.toString() : null);
+	}
 
-    ModelVerifier verifier = new ModelVerifier();
+	if (reload) {
+		LauncherAppState.getInstance(context)
+		.getLauncher()
+		.getModelWriter()
+		.executeUpdateItem(item, writer);
+		LauncherAppState.getInstance(context).getModel().forceReload();
+	}
+}
 
-    final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-    mWorkerExecutor.execute(() -> {
-      cr.insert(Favorites.CONTENT_URI, writer.getValues(mContext));
+/**
+ * Update an item to the database in a specified container.
+ */
+public void updateItemInDatabase(final ItemInfo item) {
+	ContentWriter writer = new ContentWriter(mContext);
+	item.onAddToDatabase(writer);
+	mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
+}
 
-      synchronized (mBgDataModel) {
-        checkItemInfoLocked(item.id, item, stackTrace);
-        mBgDataModel.addItem(mContext, item, true);
-        verifier.verifyModel();
-      }
-    });
-  }
+/**
+ * Add an item to the database in a specified container. Sets the container,
+ * screen, cellX and cellY fields of the item. Also assigns an ID to the item.
+ */
+public void addItemToDatabase(final ItemInfo item, final long container,
+                              final long screenId, final int cellX,
+                              final int cellY) {
+	updateItemInfoProps(item, container, screenId, cellX, cellY);
 
-  /**
-   * Removes the specified item from the database
-   */
-  public void deleteItemFromDatabase(final ItemInfo item) {
-    deleteItemsFromDatabase(Arrays.asList(item));
-  }
+	final ContentWriter writer = new ContentWriter(mContext);
+	final ContentResolver cr = mContext.getContentResolver();
+	item.onAddToDatabase(writer);
 
-  /**
-   * Removes all the items from the database matching {@param matcher}.
-   */
-  public void deleteItemsFromDatabase(final ItemInfoMatcher matcher) {
-    deleteItemsFromDatabase(matcher.filterItemInfos(mBgDataModel.itemsIdMap));
-  }
+	item.id = Settings.call(cr, Settings.METHOD_NEW_ITEM_ID)
+	          .getLong(Settings.EXTRA_VALUE);
+	writer.put(Favorites._ID, item.id);
 
-  /**
-   * Removes the specified items from the database
-   */
-  public void
-  deleteItemsFromDatabase(final Iterable<? extends ItemInfo> items) {
-    ModelVerifier verifier = new ModelVerifier();
+	ModelVerifier verifier = new ModelVerifier();
 
-    mWorkerExecutor.execute(() -> {
-      for (ItemInfo item : items) {
-        final Uri uri = Favorites.getContentUri(item.id);
-        mContext.getContentResolver().delete(uri, null, null);
+	final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+	mWorkerExecutor.execute(()->{
+			cr.insert(Favorites.CONTENT_URI, writer.getValues(mContext));
 
-        mBgDataModel.removeItem(mContext, item);
-        verifier.verifyModel();
-      }
-    });
-  }
+			synchronized (mBgDataModel) {
+			        checkItemInfoLocked(item.id, item, stackTrace);
+			        mBgDataModel.addItem(mContext, item, true);
+			        verifier.verifyModel();
+			}
+		});
+}
 
-  /**
-   * Remove the specified folder and all its contents from the database.
-   */
-  public void deleteFolderAndContentsFromDatabase(final FolderInfo info) {
-    enqueueDeleteRunnable(() -> {
-      ModelVerifier verifier = new ModelVerifier();
+/**
+ * Removes the specified item from the database
+ */
+public void deleteItemFromDatabase(final ItemInfo item) {
+	deleteItemsFromDatabase(Arrays.asList(item));
+}
 
-      mWorkerExecutor.execute(() -> {
-        info.clearCustomIcon(mContext);
-        ContentResolver cr = mContext.getContentResolver();
-        cr.delete(LauncherSettings.Favorites.CONTENT_URI,
-                  LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
-        mBgDataModel.removeItem(mContext, info.contents);
-        info.contents.clear();
+/**
+ * Removes all the items from the database matching {@param matcher}.
+ */
+public void deleteItemsFromDatabase(final ItemInfoMatcher matcher) {
+	deleteItemsFromDatabase(matcher.filterItemInfos(mBgDataModel.itemsIdMap));
+}
 
-        cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null,
-                  null);
-        mBgDataModel.removeItem(mContext, info);
-        verifier.verifyModel();
-      });
-    });
-  }
+/**
+ * Removes the specified items from the database
+ */
+public void
+deleteItemsFromDatabase(final Iterable<? extends ItemInfo> items) {
+	ModelVerifier verifier = new ModelVerifier();
 
-  private void enqueueDeleteRunnable(final Runnable runnable) {
-    if (mPreparingToUndo) {
-      mDeleteRunnables.add(runnable);
-    } else {
-      mWorkerExecutor.execute(runnable);
-    }
-  }
+	mWorkerExecutor.execute(()->{
+			for (ItemInfo item : items) {
+			        final Uri uri = Favorites.getContentUri(item.id);
+			        mContext.getContentResolver().delete(uri, null, null);
 
-  public void deleteWidgetInfo(final LauncherAppWidgetInfo widgetInfo,
-                               final LauncherAppWidgetHost appWidgetHost) {
-    enqueueDeleteRunnable(() -> {
-      if (appWidgetHost != null && !widgetInfo.isCustomWidget() &&
-          widgetInfo.isWidgetIdAllocated()) {
-        // Deleting an app widget ID is a void call but writes to disk before
-        // returning to the caller...
-        new AsyncTask<Void, Void, Void>() {
-          public Void doInBackground(final Void... args) {
-            appWidgetHost.deleteAppWidgetId(widgetInfo.appWidgetId);
-            return null;
-          }
-        }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
-      }
-      deleteItemFromDatabase(widgetInfo);
-    });
-  }
+			        mBgDataModel.removeItem(mContext, item);
+			        verifier.verifyModel();
+			}
+		});
+}
 
-  public void prepareToUndo() {
-    if (!mPreparingToUndo) {
-      mDeleteRunnables.clear();
-      mPreparingToUndo = true;
-    }
-  }
+/**
+ * Remove the specified folder and all its contents from the database.
+ */
+public void deleteFolderAndContentsFromDatabase(final FolderInfo info) {
+	enqueueDeleteRunnable(()->{
+			ModelVerifier verifier = new ModelVerifier();
 
-  public void commitDelete() {
-    mPreparingToUndo = false;
-    for (Runnable execute : this.mDeleteRunnables) {
-      mWorkerExecutor.execute(execute);
-    }
-    mDeleteRunnables.clear();
-  }
+			mWorkerExecutor.execute(()->{
+				info.clearCustomIcon(mContext);
+				ContentResolver cr = mContext.getContentResolver();
+				cr.delete(LauncherSettings.Favorites.CONTENT_URI,
+				          LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
+				mBgDataModel.removeItem(mContext, info.contents);
+				info.contents.clear();
 
-  public void undoDelete(final int reloadPage) {
-    mPreparingToUndo = false;
-    mDeleteRunnables.clear();
-    mModel.forceReload(reloadPage);
-  }
+				cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null,
+				          null);
+				mBgDataModel.removeItem(mContext, info);
+				verifier.verifyModel();
+			});
+		});
+}
 
-  private class UpdateItemRunnable extends UpdateItemBaseRunnable {
-    private final ItemInfo mItem;
-    private final ContentWriter mWriter;
-    private final long mItemId;
+private void enqueueDeleteRunnable(final Runnable runnable) {
+	if (mPreparingToUndo) {
+		mDeleteRunnables.add(runnable);
+	} else {
+		mWorkerExecutor.execute(runnable);
+	}
+}
 
-    UpdateItemRunnable(final ItemInfo item, final ContentWriter writer) {
-      mItem = item;
-      mWriter = writer;
-      mItemId = item.id;
-    }
+public void deleteWidgetInfo(final LauncherAppWidgetInfo widgetInfo,
+                             final LauncherAppWidgetHost appWidgetHost) {
+	enqueueDeleteRunnable(()->{
+			if (appWidgetHost != null && !widgetInfo.isCustomWidget() &&
+			    widgetInfo.isWidgetIdAllocated()) {
+			        // Deleting an app widget ID is a void call but writes to disk before
+			        // returning to the caller...
+			        new AsyncTask<Void, Void, Void>() {
+			                public Void doInBackground(final Void ... args) {
+			                        appWidgetHost.deleteAppWidgetId(widgetInfo.appWidgetId);
+			                        return null;
+					}
+				}.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
+			}
+			deleteItemFromDatabase(widgetInfo);
+		});
+}
 
-    @Override
-    public void run() {
-      Uri uri = Favorites.getContentUri(mItemId);
-      mContext.getContentResolver().update(uri, mWriter.getValues(mContext),
-                                           null, null);
-      updateItemArrays(mItem, mItemId);
-    }
-  }
+public void prepareToUndo() {
+	if (!mPreparingToUndo) {
+		mDeleteRunnables.clear();
+		mPreparingToUndo = true;
+	}
+}
 
-  private class UpdateItemsRunnable extends UpdateItemBaseRunnable {
-    private final ArrayList<ContentValues> mValues;
-    private final ArrayList<ItemInfo> mItems;
+public void commitDelete() {
+	mPreparingToUndo = false;
+	for (Runnable execute : this.mDeleteRunnables) {
+		mWorkerExecutor.execute(execute);
+	}
+	mDeleteRunnables.clear();
+}
 
-    UpdateItemsRunnable(final ArrayList<ItemInfo> items,
-                        final ArrayList<ContentValues> values) {
-      mValues = values;
-      mItems = items;
-    }
+public void undoDelete(final int reloadPage) {
+	mPreparingToUndo = false;
+	mDeleteRunnables.clear();
+	mModel.forceReload(reloadPage);
+}
 
-    @Override
-    public void run() {
-      ArrayList<ContentProviderOperation> ops = new ArrayList<>();
-      int count = mItems.size();
-      for (int i = 0; i < count; i++) {
-        ItemInfo item = mItems.get(i);
-        final long itemId = item.id;
-        final Uri uri = Favorites.getContentUri(itemId);
-        ContentValues values = mValues.get(i);
+private class UpdateItemRunnable extends UpdateItemBaseRunnable {
+private final ItemInfo mItem;
+private final ContentWriter mWriter;
+private final long mItemId;
 
-        ops.add(
-            ContentProviderOperation.newUpdate(uri).withValues(values).build());
-        updateItemArrays(item, itemId);
-      }
-      try {
-        mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY,
-                                                 ops);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-  }
+UpdateItemRunnable(final ItemInfo item, final ContentWriter writer) {
+	mItem = item;
+	mWriter = writer;
+	mItemId = item.id;
+}
 
-  private abstract class UpdateItemBaseRunnable implements Runnable {
-    private final StackTraceElement[] mStackTrace;
-    private final ModelVerifier mVerifier = new ModelVerifier();
+@Override
+public void run() {
+	Uri uri = Favorites.getContentUri(mItemId);
+	mContext.getContentResolver().update(uri, mWriter.getValues(mContext),
+	                                     null, null);
+	updateItemArrays(mItem, mItemId);
+}
+}
 
-    UpdateItemBaseRunnable() { mStackTrace = new Throwable().getStackTrace(); }
+private class UpdateItemsRunnable extends UpdateItemBaseRunnable {
+private final ArrayList<ContentValues> mValues;
+private final ArrayList<ItemInfo> mItems;
 
-    protected void updateItemArrays(final ItemInfo item, final long itemId) {
-      // Lock on mBgLock *after* the db operation
-      synchronized (mBgDataModel) {
-        checkItemInfoLocked(itemId, item, mStackTrace);
+UpdateItemsRunnable(final ArrayList<ItemInfo> items,
+                    final ArrayList<ContentValues> values) {
+	mValues = values;
+	mItems = items;
+}
 
-        // Item is in a folder, make sure this folder exists
-        if ((item.container != Favorites.CONTAINER_DESKTOP &&
-            item.container != Favorites.CONTAINER_HOTSEAT) && (!mBgDataModel.folders.containsKey(item.container))) {
-          // An items container is being set to a that of an item which is not
-          // in the list of Folders.
-          String msg = "item: " + item +
-                       " container being set to: " + item.container +
-                       ", not in the list of folders";
-          Log.e(TAG, msg);
-        }
+@Override
+public void run() {
+	ArrayList<ContentProviderOperation> ops = new ArrayList<>();
+	int count = mItems.size();
+	for (int i = 0; i < count; i++) {
+		ItemInfo item = mItems.get(i);
+		final long itemId = item.id;
+		final Uri uri = Favorites.getContentUri(itemId);
+		ContentValues values = mValues.get(i);
 
-        // Items are added/removed from the corresponding FolderInfo elsewhere,
-        // such as in Workspace.onDrop. Here, we just add/remove them from the
-        // list of items that are on the desktop, as appropriate
-        ItemInfo modelItem = mBgDataModel.itemsIdMap.get(itemId);
-        if (modelItem != null &&
-            (modelItem.container == Favorites.CONTAINER_DESKTOP ||
-             modelItem.container == Favorites.CONTAINER_HOTSEAT)) {
-          switch (modelItem.itemType) {
-          case Favorites.ITEM_TYPE_APPLICATION:
-          case Favorites.ITEM_TYPE_SHORTCUT:
-          case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-          case Favorites.ITEM_TYPE_FOLDER:
-            if (!mBgDataModel.workspaceItems.contains(modelItem)) {
-              mBgDataModel.workspaceItems.add(modelItem);
-            }
-            break;
-          default:
-            break;
-          }
-        } else {
-          mBgDataModel.workspaceItems.remove(modelItem);
-        }
-        mVerifier.verifyModel();
-      }
-    }
-  }
+		ops.add(
+			ContentProviderOperation.newUpdate(uri).withValues(values).build());
+		updateItemArrays(item, itemId);
+	}
+	try {
+		mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY,
+		                                         ops);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+}
+}
 
-  /**
-   * Utility class to verify model updates are propagated properly to the
-   * callback.
-   */
-  public class ModelVerifier {
+private abstract class UpdateItemBaseRunnable implements Runnable {
+private final StackTraceElement[] mStackTrace;
+private final ModelVerifier mVerifier = new ModelVerifier();
 
-    final int startId;
+UpdateItemBaseRunnable() {
+	mStackTrace = new Throwable().getStackTrace();
+}
 
-    ModelVerifier() { startId = mBgDataModel.lastBindId; }
+protected void updateItemArrays(final ItemInfo item, final long itemId) {
+	// Lock on mBgLock *after* the db operation
+	synchronized (mBgDataModel) {
+		checkItemInfoLocked(itemId, item, mStackTrace);
 
-    void verifyModel() {
-      if (!mVerifyChanges || mModel.getCallback() == null) {
-        return;
-      }
+		// Item is in a folder, make sure this folder exists
+		if ((item.container != Favorites.CONTAINER_DESKTOP &&
+		     item.container != Favorites.CONTAINER_HOTSEAT) && (!mBgDataModel.folders.containsKey(item.container))) {
+			// An items container is being set to a that of an item which is not
+			// in the list of Folders.
+			String msg = "item: " + item +
+			             " container being set to: " + item.container +
+			             ", not in the list of folders";
+			Log.e(TAG, msg);
+		}
 
-      int executeId = mBgDataModel.lastBindId;
+		// Items are added/removed from the corresponding FolderInfo elsewhere,
+		// such as in Workspace.onDrop. Here, we just add/remove them from the
+		// list of items that are on the desktop, as appropriate
+		ItemInfo modelItem = mBgDataModel.itemsIdMap.get(itemId);
+		if (modelItem != null &&
+		    (modelItem.container == Favorites.CONTAINER_DESKTOP ||
+		     modelItem.container == Favorites.CONTAINER_HOTSEAT)) {
+			switch (modelItem.itemType) {
+			case Favorites.ITEM_TYPE_APPLICATION:
+			case Favorites.ITEM_TYPE_SHORTCUT:
+			case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+			case Favorites.ITEM_TYPE_FOLDER:
+				if (!mBgDataModel.workspaceItems.contains(modelItem)) {
+					mBgDataModel.workspaceItems.add(modelItem);
+				}
+				break;
+			default:
+				break;
+			}
+		} else {
+			mBgDataModel.workspaceItems.remove(modelItem);
+		}
+		mVerifier.verifyModel();
+	}
+}
+}
 
-      mUiHandler.post(() -> {
-        int currentId = mBgDataModel.lastBindId;
-        if (currentId > executeId) {
-          // Model was already bound after job was executed.
-          return;
-        }
-        if (executeId == startId) {
-          // Bound model has not changed during the job
-          return;
-        }
-        // Bound model was changed between submitting the job and executing the
-        // job
-        Callbacks callbacks = mModel.getCallback();
-        if (callbacks != null) {
-          callbacks.rebindModel();
-        }
-      });
-    }
-  }
+/**
+ * Utility class to verify model updates are propagated properly to the
+ * callback.
+ */
+public class ModelVerifier {
+
+final int startId;
+
+ModelVerifier() {
+	startId = mBgDataModel.lastBindId;
+}
+
+void verifyModel() {
+	if (!mVerifyChanges || mModel.getCallback() == null) {
+		return;
+	}
+
+	int executeId = mBgDataModel.lastBindId;
+
+	mUiHandler.post(()->{
+				int currentId = mBgDataModel.lastBindId;
+				if (currentId > executeId) {
+				        // Model was already bound after job was executed.
+				        return;
+				}
+				if (executeId == startId) {
+				        // Bound model has not changed during the job
+				        return;
+				}
+				// Bound model was changed between submitting the job and executing the
+				// job
+				Callbacks callbacks = mModel.getCallback();
+				if (callbacks != null) {
+				        callbacks.rebindModel();
+				}
+			});
+}
+}
 }

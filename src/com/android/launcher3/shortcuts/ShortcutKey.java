@@ -12,27 +12,29 @@ import com.android.launcher3.util.ComponentKey;
  */
 public class ShortcutKey extends ComponentKey {
 
-  public ShortcutKey(final String packageName, final UserHandle user,
-                     final String id) {
-    // Use the id as the class name.
-    super(new ComponentName(packageName, id), user);
-  }
+public ShortcutKey(final String packageName, final UserHandle user,
+                   final String id) {
+	// Use the id as the class name.
+	super(new ComponentName(packageName, id), user);
+}
 
-  public static ShortcutKey fromInfo(final ShortcutInfoCompat shortcutInfo) {
-    return new ShortcutKey(shortcutInfo.getPackage(),
-                           shortcutInfo.getUserHandle(), shortcutInfo.getId());
-  }
+public static ShortcutKey fromInfo(final ShortcutInfoCompat shortcutInfo) {
+	return new ShortcutKey(shortcutInfo.getPackage(),
+	                       shortcutInfo.getUserHandle(), shortcutInfo.getId());
+}
 
-  public static ShortcutKey fromIntent(final Intent intent,
-                                       final UserHandle user) {
-    String shortcutId =
-        intent.getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID);
-    return new ShortcutKey(intent.getPackage(), user, shortcutId);
-  }
+public static ShortcutKey fromIntent(final Intent intent,
+                                     final UserHandle user) {
+	String shortcutId =
+		intent.getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID);
+	return new ShortcutKey(intent.getPackage(), user, shortcutId);
+}
 
-  public static ShortcutKey fromItemInfo(final ItemInfo info) {
-    return fromIntent(info.getIntent(), info.user);
-  }
+public static ShortcutKey fromItemInfo(final ItemInfo info) {
+	return fromIntent(info.getIntent(), info.user);
+}
 
-  public String getId() { return componentName.getClassName(); }
+public String getId() {
+	return componentName.getClassName();
+}
 }

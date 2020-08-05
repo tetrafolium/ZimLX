@@ -44,115 +44,117 @@ import java.util.List;
 @TargetApi(Build.VERSION_CODES.O)
 public class SessionCommitReceiver extends BroadcastReceiver {
 
-  // Preference key for automatically adding icon to homescreen.
-  public static final String ADD_ICON_PREFERENCE_KEY = "pref_add_icon_to_home";
-  public static final String ADD_ICON_PREFERENCE_INITIALIZED_KEY =
-      "pref_add_icon_to_home_initialized";
-  private static final String TAG = "SessionCommitReceiver";
-  // The content provider for the add to home screen setting. It should be of
-  // the format: <package name>.addtohomescreen
-  private static final String MARKER_PROVIDER_PREFIX = ".addtohomescreen";
+// Preference key for automatically adding icon to homescreen.
+public static final String ADD_ICON_PREFERENCE_KEY = "pref_add_icon_to_home";
+public static final String ADD_ICON_PREFERENCE_INITIALIZED_KEY =
+	"pref_add_icon_to_home_initialized";
+private static final String TAG = "SessionCommitReceiver";
+// The content provider for the add to home screen setting. It should be of
+// the format: <package name>.addtohomescreen
+private static final String MARKER_PROVIDER_PREFIX = ".addtohomescreen";
 
-  public static void queueAppIconAddition(final Context context,
-                                          final String packageName,
-                                          final UserHandle user) {
-    List<LauncherActivityInfo> activities =
-        LauncherAppsCompat.getInstance(context).getActivityList(packageName,
-                                                                user);
-    if (activities == null || activities.isEmpty()) {
-      // no activity found
-      return;
-    }
-    InstallShortcutReceiver.queueActivityInfo(activities.get(0), context);
-  }
+public static void queueAppIconAddition(final Context context,
+                                        final String packageName,
+                                        final UserHandle user) {
+	List<LauncherActivityInfo> activities =
+		LauncherAppsCompat.getInstance(context).getActivityList(packageName,
+		                                                        user);
+	if (activities == null || activities.isEmpty()) {
+		// no activity found
+		return;
+	}
+	InstallShortcutReceiver.queueActivityInfo(activities.get(0), context);
+}
 
-  public static boolean isEnabled(final Context context) {
-    return Utilities.getPrefs(context).getBoolean(ADD_ICON_PREFERENCE_KEY,
-                                                  true);
-  }
+public static boolean isEnabled(final Context context) {
+	return Utilities.getPrefs(context).getBoolean(ADD_ICON_PREFERENCE_KEY,
+	                                              true);
+}
 
-  public static void applyDefaultUserPrefs(final Context context) {
-    if (!Utilities.ATLEAST_OREO) {
-      return;
-    }
-    SharedPreferences prefs = Utilities.getPrefs(context);
-    if (prefs.getAll().isEmpty()) {
-      // This logic assumes that the code is the first thing that is executed
-      // (before any shared preference is written).
-      // TODO: Move this logic to DB upgrade once we have proper support for db
-      // downgrade If it is a fresh start, just apply the default value. We use
-      // prefs.isEmpty() to infer a fresh start as put preferences always
-      // contain some values corresponding to current grid.
-      prefs.edit().putBoolean(ADD_ICON_PREFERENCE_KEY, true).apply();
-    } else if (!prefs.contains(ADD_ICON_PREFERENCE_INITIALIZED_KEY)) {
-      new PrefInitTask(context).executeOnExecutor(
-          Utilities.THREAD_POOL_EXECUTOR);
-    }
-  }
+public static void applyDefaultUserPrefs(final Context context) {
+	if (!Utilities.ATLEAST_OREO) {
+		return;
+	}
+	SharedPreferences prefs = Utilities.getPrefs(context);
+	if (prefs.getAll().isEmpty()) {
+		// This logic assumes that the code is the first thing that is executed
+		// (before any shared preference is written).
+		// TODO: Move this logic to DB upgrade once we have proper support for db
+		// downgrade If it is a fresh start, just apply the default value. We use
+		// prefs.isEmpty() to infer a fresh start as put preferences always
+		// contain some values corresponding to current grid.
+		prefs.edit().putBoolean(ADD_ICON_PREFERENCE_KEY, true).apply();
+	} else if (!prefs.contains(ADD_ICON_PREFERENCE_INITIALIZED_KEY)) {
+		new PrefInitTask(context).executeOnExecutor(
+			Utilities.THREAD_POOL_EXECUTOR);
+	}
+}
 
-  @Override
-  public void onReceive(final Context context, final Intent intent) {
-    if (!isEnabled(context) || !Utilities.ATLEAST_OREO) {
-      // User has decided to not add icons on homescreen.
-      return;
-    }
+@Override
+public void onReceive(final Context context, final Intent intent) {
+	if (!isEnabled(context) || !Utilities.ATLEAST_OREO) {
+		// User has decided to not add icons on homescreen.
+		return;
+	}
 
-    SessionInfo info =
-        intent.getParcelableExtra(PackageInstaller.EXTRA_SESSION);
-    UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
+	SessionInfo info =
+		intent.getParcelableExtra(PackageInstaller.EXTRA_SESSION);
+	UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
 
-    if ((Process.myUserHandle().equals(user)) && (TextUtils.isEmpty(info.getAppPackageName()) ||
-          info.getInstallReason() != PackageManager.INSTALL_REASON_USER)) {
-      return;
-    }
+	if ((Process.myUserHandle().equals(user)) && (TextUtils.isEmpty(info.getAppPackageName()) ||
+	                                              info.getInstallReason() != PackageManager.INSTALL_REASON_USER)) {
+		return;
+	}
 
-    queueAppIconAddition(context, info.getAppPackageName(), user);
-  }
+	queueAppIconAddition(context, info.getAppPackageName(), user);
+}
 
-  private static class PrefInitTask extends AsyncTask<Void, Void, Void> {
-    private final Context mContext;
+private static class PrefInitTask extends AsyncTask<Void, Void, Void> {
+private final Context mContext;
 
-    PrefInitTask(final Context context) { mContext = context; }
+PrefInitTask(final Context context) {
+	mContext = context;
+}
 
-    @Override
-    protected Void doInBackground(final Void... voids) {
-      boolean addIconToHomeScreenEnabled = readValueFromMarketApp();
-      Utilities.getPrefs(mContext)
-          .edit()
-          .putBoolean(ADD_ICON_PREFERENCE_KEY, addIconToHomeScreenEnabled)
-          .putBoolean(ADD_ICON_PREFERENCE_INITIALIZED_KEY, true)
-          .apply();
-      return null;
-    }
+@Override
+protected Void doInBackground(final Void... voids) {
+	boolean addIconToHomeScreenEnabled = readValueFromMarketApp();
+	Utilities.getPrefs(mContext)
+	.edit()
+	.putBoolean(ADD_ICON_PREFERENCE_KEY, addIconToHomeScreenEnabled)
+	.putBoolean(ADD_ICON_PREFERENCE_INITIALIZED_KEY, true)
+	.apply();
+	return null;
+}
 
-    public boolean readValueFromMarketApp() {
-      // Get the marget package
-      ResolveInfo ri = mContext.getPackageManager().resolveActivity(
-          new Intent(Intent.ACTION_MAIN)
-              .addCategory(Intent.CATEGORY_APP_MARKET),
-          PackageManager.MATCH_DEFAULT_ONLY | PackageManager.MATCH_SYSTEM_ONLY);
-      if (ri == null) {
-        return true;
-      }
+public boolean readValueFromMarketApp() {
+	// Get the marget package
+	ResolveInfo ri = mContext.getPackageManager().resolveActivity(
+		new Intent(Intent.ACTION_MAIN)
+		.addCategory(Intent.CATEGORY_APP_MARKET),
+		PackageManager.MATCH_DEFAULT_ONLY | PackageManager.MATCH_SYSTEM_ONLY);
+	if (ri == null) {
+		return true;
+	}
 
-      Cursor c = null;
-      try {
-        c = mContext.getContentResolver().query(
-            Uri.parse("content://" + ri.activityInfo.packageName +
-                      MARKER_PROVIDER_PREFIX),
-            null, null, null, null);
-        if (c.moveToNext()) {
-          return c.getInt(c.getColumnIndexOrThrow(
-                     Settings.NameValueTable.VALUE)) != 0;
-        }
-      } catch (Exception e) {
-        Log.d(TAG, "Error reading add to homescreen preference", e);
-      } finally {
-        if (c != null) {
-          c.close();
-        }
-      }
-      return true;
-    }
-  }
+	Cursor c = null;
+	try {
+		c = mContext.getContentResolver().query(
+			Uri.parse("content://" + ri.activityInfo.packageName +
+			          MARKER_PROVIDER_PREFIX),
+			null, null, null, null);
+		if (c.moveToNext()) {
+			return c.getInt(c.getColumnIndexOrThrow(
+						Settings.NameValueTable.VALUE)) != 0;
+		}
+	} catch (Exception e) {
+		Log.d(TAG, "Error reading add to homescreen preference", e);
+	} finally {
+		if (c != null) {
+			c.close();
+		}
+	}
+	return true;
+}
+}
 }

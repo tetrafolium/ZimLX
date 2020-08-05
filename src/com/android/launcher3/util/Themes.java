@@ -27,83 +27,83 @@ import com.android.launcher3.Utilities;
  * Various utility methods associated with theming.
  */
 public class Themes {
-  public static int getColorAccent(final Context context) {
-    return Utilities.getZimPrefs(context).getAccentColor();
-  }
-  public static int getAttrColor(final Context context, final int attr) {
-    TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
+public static int getColorAccent(final Context context) {
+	return Utilities.getZimPrefs(context).getAccentColor();
+}
+public static int getAttrColor(final Context context, final int attr) {
+	TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
 
-    int colorAccent = ta.getColor(0, 0);
-    ta.recycle();
-    return colorAccent;
-  }
+	int colorAccent = ta.getColor(0, 0);
+	ta.recycle();
+	return colorAccent;
+}
 
-  public static boolean getAttrBoolean(final Context context, final int attr) {
-    TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
-    boolean value = ta.getBoolean(0, false);
-    ta.recycle();
-    return value;
-  }
+public static boolean getAttrBoolean(final Context context, final int attr) {
+	TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
+	boolean value = ta.getBoolean(0, false);
+	ta.recycle();
+	return value;
+}
 
-  public static Drawable getAttrDrawable(final Context context,
-                                         final int attr) {
-    TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
-    Drawable value = ta.getDrawable(0);
-    ta.recycle();
-    return value;
-  }
+public static Drawable getAttrDrawable(final Context context,
+                                       final int attr) {
+	TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
+	Drawable value = ta.getDrawable(0);
+	ta.recycle();
+	return value;
+}
 
-  public static int getAttrInteger(final Context context, final int attr) {
-    TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
-    int value = ta.getInteger(0, 0);
-    ta.recycle();
-    return value;
-  }
+public static int getAttrInteger(final Context context, final int attr) {
+	TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
+	int value = ta.getInteger(0, 0);
+	ta.recycle();
+	return value;
+}
 
-  /**
-   * Returns the alpha corresponding to the theme attribute {@param attr}, in
-   * the range [0, 255].
-   */
-  public static int getAlpha(final Context context, final int attr) {
-    TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
-    float alpha = ta.getFloat(0, 0);
-    ta.recycle();
-    return (int)(255 * alpha + 0.5f);
-  }
+/**
+ * Returns the alpha corresponding to the theme attribute {@param attr}, in
+ * the range [0, 255].
+ */
+public static int getAlpha(final Context context, final int attr) {
+	TypedArray ta = context.obtainStyledAttributes(new int[] {attr});
+	float alpha = ta.getFloat(0, 0);
+	ta.recycle();
+	return (int)(255 * alpha + 0.5f);
+}
 
-  /**
-   * Scales a color matrix such that, when applied to color R G B A, it produces
-   * R' G' B' A' where R' = r * R G' = g * G B' = b * B A' = a * A <p> The
-   * matrix will, for instance, turn white into r g b a, and black will remain
-   * black.
-   *
-   * @param color  The color r g b a
-   * @param target The ColorMatrix to scale
-   */
-  public static void setColorScaleOnMatrix(final int color,
-                                           final ColorMatrix target) {
-    target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
-                    Color.blue(color) / 255f, Color.alpha(color) / 255f);
-  }
+/**
+ * Scales a color matrix such that, when applied to color R G B A, it produces
+ * R' G' B' A' where R' = r * R G' = g * G B' = b * B A' = a * A <p> The
+ * matrix will, for instance, turn white into r g b a, and black will remain
+ * black.
+ *
+ * @param color  The color r g b a
+ * @param target The ColorMatrix to scale
+ */
+public static void setColorScaleOnMatrix(final int color,
+                                         final ColorMatrix target) {
+	target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
+	                Color.blue(color) / 255f, Color.alpha(color) / 255f);
+}
 
-  /**
-   * Changes a color matrix such that, when applied to srcColor, it produces
-   * dstColor. <p> Note that values on the last column of target ColorMatrix can
-   * be negative, and may result in negative values when applied on a color.
-   * Such negative values will be automatically shifted up to 0 by the
-   * framework.
-   *
-   * @param srcColor The color to start from
-   * @param dstColor The color to create by applying target on srcColor
-   * @param target   The ColorMatrix to transform the color
-   */
-  public static void setColorChangeOnMatrix(final int srcColor,
-                                            final int dstColor,
-                                            final ColorMatrix target) {
-    target.reset();
-    target.getArray()[4] = Color.red(dstColor) - Color.red(srcColor);
-    target.getArray()[9] = Color.green(dstColor) - Color.green(srcColor);
-    target.getArray()[14] = Color.blue(dstColor) - Color.blue(srcColor);
-    target.getArray()[19] = Color.alpha(dstColor) - Color.alpha(srcColor);
-  }
+/**
+ * Changes a color matrix such that, when applied to srcColor, it produces
+ * dstColor. <p> Note that values on the last column of target ColorMatrix can
+ * be negative, and may result in negative values when applied on a color.
+ * Such negative values will be automatically shifted up to 0 by the
+ * framework.
+ *
+ * @param srcColor The color to start from
+ * @param dstColor The color to create by applying target on srcColor
+ * @param target   The ColorMatrix to transform the color
+ */
+public static void setColorChangeOnMatrix(final int srcColor,
+                                          final int dstColor,
+                                          final ColorMatrix target) {
+	target.reset();
+	target.getArray()[4] = Color.red(dstColor) - Color.red(srcColor);
+	target.getArray()[9] = Color.green(dstColor) - Color.green(srcColor);
+	target.getArray()[14] = Color.blue(dstColor) - Color.blue(srcColor);
+	target.getArray()[19] = Color.alpha(dstColor) - Color.alpha(srcColor);
+}
 }

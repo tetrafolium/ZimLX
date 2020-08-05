@@ -17,64 +17,64 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
  */
 public class AllAppsSwipeController extends AbstractStateChangeTouchController {
 
-  private MotionEvent mTouchDownEvent;
+private MotionEvent mTouchDownEvent;
 
-  public AllAppsSwipeController(final Launcher l) {
-    super(l, SwipeDetector.VERTICAL);
-  }
+public AllAppsSwipeController(final Launcher l) {
+	super(l, SwipeDetector.VERTICAL);
+}
 
-  @Override
-  protected boolean canInterceptTouch(final MotionEvent ev) {
-    if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-      mTouchDownEvent = ev;
-    }
-    if (mCurrentAnimation != null) {
-      // If we are already animating from a previous state, we can intercept.
-      return true;
-    }
-    if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
-      return false;
-    }
-    if (!mLauncher.isInState(NORMAL) && !mLauncher.isInState(ALL_APPS)) {
-      // Don't listen for the swipe gesture if we are already in some other
-      // state.
-      return false;
-    }
-    return !mLauncher.isInState(ALL_APPS) ||
-        mLauncher.getAppsView().shouldContainerScroll(ev);
-  }
+@Override
+protected boolean canInterceptTouch(final MotionEvent ev) {
+	if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+		mTouchDownEvent = ev;
+	}
+	if (mCurrentAnimation != null) {
+		// If we are already animating from a previous state, we can intercept.
+		return true;
+	}
+	if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
+		return false;
+	}
+	if (!mLauncher.isInState(NORMAL) && !mLauncher.isInState(ALL_APPS)) {
+		// Don't listen for the swipe gesture if we are already in some other
+		// state.
+		return false;
+	}
+	return !mLauncher.isInState(ALL_APPS) ||
+	       mLauncher.getAppsView().shouldContainerScroll(ev);
+}
 
-  @Override
-  protected LauncherState getTargetState(final LauncherState fromState,
-                                         final boolean isDragTowardPositive) {
-    if (fromState == NORMAL && isDragTowardPositive) {
-      return ALL_APPS;
-    } else if (fromState == ALL_APPS && !isDragTowardPositive) {
-      return NORMAL;
-    }
-    return fromState;
-  }
+@Override
+protected LauncherState getTargetState(final LauncherState fromState,
+                                       final boolean isDragTowardPositive) {
+	if (fromState == NORMAL && isDragTowardPositive) {
+		return ALL_APPS;
+	} else if (fromState == ALL_APPS && !isDragTowardPositive) {
+		return NORMAL;
+	}
+	return fromState;
+}
 
-  @Override
-  protected int getLogContainerTypeForNormalState() {
-    return mLauncher.getDragLayer().isEventOverView(mLauncher.getHotseat(),
-                                                    mTouchDownEvent)
-        ? ContainerType.HOTSEAT
-        : ContainerType.WORKSPACE;
-  }
+@Override
+protected int getLogContainerTypeForNormalState() {
+	return mLauncher.getDragLayer().isEventOverView(mLauncher.getHotseat(),
+	                                                mTouchDownEvent)
+	? ContainerType.HOTSEAT
+	: ContainerType.WORKSPACE;
+}
 
-  @Override
-  protected float
-  initCurrentAnimation(final @AnimationComponents int animComponents) {
-    float range = getShiftRange();
-    long maxAccuracy = (long)(2 * range);
-    mCurrentAnimation =
-        mLauncher.getStateManager().createAnimationToNewWorkspace(
-            mToState, maxAccuracy, animComponents);
-    float startVerticalShift =
-        mFromState.getVerticalProgress(mLauncher) * range;
-    float endVerticalShift = mToState.getVerticalProgress(mLauncher) * range;
-    float totalShift = endVerticalShift - startVerticalShift;
-    return 1 / totalShift;
-  }
+@Override
+protected float
+initCurrentAnimation(final @AnimationComponents int animComponents) {
+	float range = getShiftRange();
+	long maxAccuracy = (long)(2 * range);
+	mCurrentAnimation =
+		mLauncher.getStateManager().createAnimationToNewWorkspace(
+			mToState, maxAccuracy, animComponents);
+	float startVerticalShift =
+		mFromState.getVerticalProgress(mLauncher) * range;
+	float endVerticalShift = mToState.getVerticalProgress(mLauncher) * range;
+	float totalShift = endVerticalShift - startVerticalShift;
+	return 1 / totalShift;
+}
 }

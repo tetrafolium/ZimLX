@@ -24,48 +24,50 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutStore;
 
 public class ComponentKeyMapper {
-  private Context mContext;
-  protected final ComponentKey mComponentKey;
+private Context mContext;
+protected final ComponentKey mComponentKey;
 
-  public ComponentKeyMapper(final ComponentKey key) {
-    this.mComponentKey = key;
-  }
+public ComponentKeyMapper(final ComponentKey key) {
+	this.mComponentKey = key;
+}
 
-  public ComponentKeyMapper(final Context context,
-                            final ComponentKey componentKey) {
-    mContext = context;
-    mComponentKey = componentKey;
-  }
+public ComponentKeyMapper(final Context context,
+                          final ComponentKey componentKey) {
+	mContext = context;
+	mComponentKey = componentKey;
+}
 
-  /*public @Nullable
-  T getItem(Map<ComponentKey, T> map) {
-      return map.get(mComponentKey);
-  }
-  */
-  public String getPackage() {
-    return mComponentKey.componentName.getPackageName();
-  }
+/*public @Nullable
+   T getItem(Map<ComponentKey, T> map) {
+    return map.get(mComponentKey);
+   }
+ */
+public String getPackage() {
+	return mComponentKey.componentName.getPackageName();
+}
 
-  public String getComponentClass() {
-    return mComponentKey.componentName.getClassName();
-  }
+public String getComponentClass() {
+	return mComponentKey.componentName.getClassName();
+}
 
-  @Override
-  public String toString() {
-    return mComponentKey.toString();
-  }
+@Override
+public String toString() {
+	return mComponentKey.toString();
+}
 
-  public ComponentKey getKey() { return mComponentKey; }
+public ComponentKey getKey() {
+	return mComponentKey;
+}
 
-  public ItemInfoWithIcon getApp(final AllAppsStore allAppsStore) {
-    AppInfo app = allAppsStore.getApp(mComponentKey);
-    if (app != null) {
-      return app;
-    }
-    if (mComponentKey instanceof ShortcutKey) {
-      return ShortcutStore.getInstance(mContext).mComponentToShortcutMap.get(
-          mComponentKey);
-    }
-    return null;
-  }
+public ItemInfoWithIcon getApp(final AllAppsStore allAppsStore) {
+	AppInfo app = allAppsStore.getApp(mComponentKey);
+	if (app != null) {
+		return app;
+	}
+	if (mComponentKey instanceof ShortcutKey) {
+		return ShortcutStore.getInstance(mContext).mComponentToShortcutMap.get(
+			mComponentKey);
+	}
+	return null;
+}
 }

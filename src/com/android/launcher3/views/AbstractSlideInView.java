@@ -39,146 +39,147 @@ import com.android.launcher3.touch.SwipeDetector;
  * bottom
  */
 public abstract class AbstractSlideInView
-    extends AbstractFloatingView implements SwipeDetector.Listener {
+	extends AbstractFloatingView implements SwipeDetector.Listener {
 
-  protected static Property<AbstractSlideInView, Float> TRANSLATION_SHIFT =
-      new Property<AbstractSlideInView, Float>(Float.class,
-                                               "translationShift") {
-        @Override
-        public Float get(final AbstractSlideInView view) {
-          return view.mTranslationShift;
-        }
+protected static Property<AbstractSlideInView, Float> TRANSLATION_SHIFT =
+	new Property<AbstractSlideInView, Float>(Float.class,
+	                                         "translationShift") {
+	@Override
+	public Float get(final AbstractSlideInView view) {
+		return view.mTranslationShift;
+	}
 
-        @Override
-        public void set(final AbstractSlideInView view, final Float value) {
-          view.setTranslationShift(value);
-        }
-      };
-  protected static final float TRANSLATION_SHIFT_CLOSED = 1f;
-  protected static final float TRANSLATION_SHIFT_OPENED = 0f;
+	@Override
+	public void set(final AbstractSlideInView view, final Float value) {
+		view.setTranslationShift(value);
+	}
+};
+protected static final float TRANSLATION_SHIFT_CLOSED = 1f;
+protected static final float TRANSLATION_SHIFT_OPENED = 0f;
 
-  protected final Launcher mLauncher;
-  protected final SwipeDetector mSwipeDetector;
-  protected final ObjectAnimator mOpenCloseAnimator;
+protected final Launcher mLauncher;
+protected final SwipeDetector mSwipeDetector;
+protected final ObjectAnimator mOpenCloseAnimator;
 
-  protected View mContent;
-  protected Interpolator mScrollInterpolator;
+protected View mContent;
+protected Interpolator mScrollInterpolator;
 
-  // range [0, 1], 0=> completely open, 1=> completely closed
-  protected float mTranslationShift = TRANSLATION_SHIFT_CLOSED;
+// range [0, 1], 0=> completely open, 1=> completely closed
+protected float mTranslationShift = TRANSLATION_SHIFT_CLOSED;
 
-  protected boolean mNoIntercept;
+protected boolean mNoIntercept;
 
-  public AbstractSlideInView(final Context context, final AttributeSet attrs,
-                             final int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-    mLauncher = Launcher.getLauncher(context);
+public AbstractSlideInView(final Context context, final AttributeSet attrs,
+                           final int defStyleAttr) {
+	super(context, attrs, defStyleAttr);
+	mLauncher = Launcher.getLauncher(context);
 
-    mScrollInterpolator = Interpolators.SCROLL_CUBIC;
-    mSwipeDetector = new SwipeDetector(context, this, SwipeDetector.VERTICAL);
+	mScrollInterpolator = Interpolators.SCROLL_CUBIC;
+	mSwipeDetector = new SwipeDetector(context, this, SwipeDetector.VERTICAL);
 
-    mOpenCloseAnimator = LauncherAnimUtils.ofPropertyValuesHolder(this);
-    mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
-      @Override
-      public void onAnimationEnd(final Animator animation) {
-        mSwipeDetector.finishedScrolling();
-        announceAccessibilityChanges();
-      }
-    });
-  }
+	mOpenCloseAnimator = LauncherAnimUtils.ofPropertyValuesHolder(this);
+	mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
+			@Override
+			public void onAnimationEnd(final Animator animation) {
+			        mSwipeDetector.finishedScrolling();
+			        announceAccessibilityChanges();
+			}
+		});
+}
 
-  protected void setTranslationShift(final float translationShift) {
-    mTranslationShift = translationShift;
-    mContent.setTranslationY(mTranslationShift * mContent.getHeight());
-  }
+protected void setTranslationShift(final float translationShift) {
+	mTranslationShift = translationShift;
+	mContent.setTranslationY(mTranslationShift * mContent.getHeight());
+}
 
-  @Override
-  public boolean onControllerInterceptTouchEvent(final MotionEvent ev) {
-    if (mNoIntercept) {
-      return false;
-    }
+@Override
+public boolean onControllerInterceptTouchEvent(final MotionEvent ev) {
+	if (mNoIntercept) {
+		return false;
+	}
 
-    int directionsToDetectScroll =
-        mSwipeDetector.isIdleState() ? SwipeDetector.DIRECTION_NEGATIVE : 0;
-    mSwipeDetector.setDetectableScrollConditions(directionsToDetectScroll,
-                                                 false);
-    mSwipeDetector.onTouchEvent(ev);
-    return mSwipeDetector.isDraggingOrSettling() ||
-        !mLauncher.getDragLayer().isEventOverView(mContent, ev);
-  }
+	int directionsToDetectScroll =
+		mSwipeDetector.isIdleState() ? SwipeDetector.DIRECTION_NEGATIVE : 0;
+	mSwipeDetector.setDetectableScrollConditions(directionsToDetectScroll,
+	                                             false);
+	mSwipeDetector.onTouchEvent(ev);
+	return mSwipeDetector.isDraggingOrSettling() ||
+	       !mLauncher.getDragLayer().isEventOverView(mContent, ev);
+}
 
-  @Override
-  public boolean onControllerTouchEvent(final MotionEvent ev) {
-    mSwipeDetector.onTouchEvent(ev);
-    // If we got ACTION_UP without ever starting swipe, close the panel.
-    if ((ev.getAction() == MotionEvent.ACTION_UP &&
-        mSwipeDetector.isIdleState()) && (!mLauncher.getDragLayer().isEventOverView(mContent, ev))) {
-      close(true);
-    }
-    return true;
-  }
+@Override
+public boolean onControllerTouchEvent(final MotionEvent ev) {
+	mSwipeDetector.onTouchEvent(ev);
+	// If we got ACTION_UP without ever starting swipe, close the panel.
+	if ((ev.getAction() == MotionEvent.ACTION_UP &&
+	     mSwipeDetector.isIdleState()) && (!mLauncher.getDragLayer().isEventOverView(mContent, ev))) {
+		close(true);
+	}
+	return true;
+}
 
-  /* SwipeDetector.Listener */
+/* SwipeDetector.Listener */
 
-  @Override
-  public void onDragStart(final boolean start) {}
+@Override
+public void onDragStart(final boolean start) {
+}
 
-  @Override
-  public boolean onDrag(final float displacement, final float velocity) {
-    float range = mContent.getHeight();
-    displacement = Utilities.boundToRange(displacement, 0, range);
-    setTranslationShift(displacement / range);
-    return true;
-  }
+@Override
+public boolean onDrag(final float displacement, final float velocity) {
+	float range = mContent.getHeight();
+	displacement = Utilities.boundToRange(displacement, 0, range);
+	setTranslationShift(displacement / range);
+	return true;
+}
 
-  @Override
-  public void onDragEnd(final float velocity, final boolean fling) {
-    if ((fling && velocity > 0) || mTranslationShift > 0.5f) {
-      mScrollInterpolator = scrollInterpolatorForVelocity(velocity);
-      mOpenCloseAnimator.setDuration(SwipeDetector.calculateDuration(
-          velocity, TRANSLATION_SHIFT_CLOSED - mTranslationShift));
-      close(true);
-    } else {
-      mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
-          TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-      mOpenCloseAnimator
-          .setDuration(
-              SwipeDetector.calculateDuration(velocity, mTranslationShift))
-          .setInterpolator(Interpolators.DEACCEL);
-      mOpenCloseAnimator.start();
-    }
-  }
+@Override
+public void onDragEnd(final float velocity, final boolean fling) {
+	if ((fling && velocity > 0) || mTranslationShift > 0.5f) {
+		mScrollInterpolator = scrollInterpolatorForVelocity(velocity);
+		mOpenCloseAnimator.setDuration(SwipeDetector.calculateDuration(
+						       velocity, TRANSLATION_SHIFT_CLOSED - mTranslationShift));
+		close(true);
+	} else {
+		mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
+						     TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
+		mOpenCloseAnimator
+		.setDuration(
+			SwipeDetector.calculateDuration(velocity, mTranslationShift))
+		.setInterpolator(Interpolators.DEACCEL);
+		mOpenCloseAnimator.start();
+	}
+}
 
-  protected void handleClose(final boolean animate,
-                             final long defaultDuration) {
-    if (mIsOpen && !animate) {
-      mOpenCloseAnimator.cancel();
-      setTranslationShift(TRANSLATION_SHIFT_CLOSED);
-      onCloseComplete();
-      return;
-    }
-    if (!mIsOpen || mOpenCloseAnimator.isRunning()) {
-      return;
-    }
-    mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
-        TRANSLATION_SHIFT, TRANSLATION_SHIFT_CLOSED));
-    mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
-      @Override
-      public void onAnimationEnd(final Animator animation) {
-        onCloseComplete();
-      }
-    });
-    if (mSwipeDetector.isIdleState()) {
-      mOpenCloseAnimator.setDuration(defaultDuration)
-          .setInterpolator(Interpolators.ACCEL);
-    } else {
-      mOpenCloseAnimator.setInterpolator(mScrollInterpolator);
-    }
-    mOpenCloseAnimator.start();
-  }
+protected void handleClose(final boolean animate,
+                           final long defaultDuration) {
+	if (mIsOpen && !animate) {
+		mOpenCloseAnimator.cancel();
+		setTranslationShift(TRANSLATION_SHIFT_CLOSED);
+		onCloseComplete();
+		return;
+	}
+	if (!mIsOpen || mOpenCloseAnimator.isRunning()) {
+		return;
+	}
+	mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
+					     TRANSLATION_SHIFT, TRANSLATION_SHIFT_CLOSED));
+	mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
+			@Override
+			public void onAnimationEnd(final Animator animation) {
+			        onCloseComplete();
+			}
+		});
+	if (mSwipeDetector.isIdleState()) {
+		mOpenCloseAnimator.setDuration(defaultDuration)
+		.setInterpolator(Interpolators.ACCEL);
+	} else {
+		mOpenCloseAnimator.setInterpolator(mScrollInterpolator);
+	}
+	mOpenCloseAnimator.start();
+}
 
-  protected void onCloseComplete() {
-    mIsOpen = false;
-    mLauncher.getDragLayer().removeView(this);
-  }
+protected void onCloseComplete() {
+	mIsOpen = false;
+	mLauncher.getDragLayer().removeView(this);
+}
 }

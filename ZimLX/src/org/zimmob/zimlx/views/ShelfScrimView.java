@@ -44,189 +44,189 @@ import org.zimmob.zimlx.ZimPreferences;
  */
 public class ShelfScrimView extends ScrimView {
 
-  // If the progress is more than this, shelf follows the finger, otherwise it
-  // moves faster to cover the whole screen
-  protected static final float SCRIM_CATCHUP_THRESHOLD = 0.2f;
+// If the progress is more than this, shelf follows the finger, otherwise it
+// moves faster to cover the whole screen
+protected static final float SCRIM_CATCHUP_THRESHOLD = 0.2f;
 
-  // In transposed layout, we simply draw a flat color.
-  private boolean mDrawingFlatColor;
+// In transposed layout, we simply draw a flat color.
+private boolean mDrawingFlatColor;
 
-  // For shelf mode
-  protected int mEndAlpha;
-  protected float mRadius;
-  protected int mMaxScrimAlpha;
-  private final Paint mPaint;
+// For shelf mode
+protected int mEndAlpha;
+protected float mRadius;
+protected int mMaxScrimAlpha;
+private final Paint mPaint;
 
-  // Mid point where the alpha changes
-  protected int mMidAlpha;
-  protected float mMidProgress;
+// Mid point where the alpha changes
+protected int mMidAlpha;
+protected float mMidProgress;
 
-  protected float mShiftRange;
+protected float mShiftRange;
 
-  protected final float mShelfOffset;
-  protected float mTopOffset;
-  protected float mShelfTop;
-  private float mShelfTopAtThreshold;
+protected final float mShelfOffset;
+protected float mTopOffset;
+protected float mShelfTop;
+private float mShelfTopAtThreshold;
 
-  protected int mShelfColor;
-  private int mRemainingScreenColor;
+protected int mShelfColor;
+private int mRemainingScreenColor;
 
-  private final Path mTempPath = new Path();
-  private final Path mRemainingScreenPath = new Path();
-  private boolean mRemainingScreenPathValid = false;
+private final Path mTempPath = new Path();
+private final Path mRemainingScreenPath = new Path();
+private boolean mRemainingScreenPathValid = false;
 
-  protected final int DEFAULT_END_ALPHA;
-  protected final ZimPreferences prefs;
+protected final int DEFAULT_END_ALPHA;
+protected final ZimPreferences prefs;
 
-  public ShelfScrimView(final Context context, final AttributeSet attrs) {
-    super(context, attrs);
-    mMaxScrimAlpha =
-        Math.round(OVERVIEW.getWorkspaceScrimAlpha(mLauncher) * 255);
+public ShelfScrimView(final Context context, final AttributeSet attrs) {
+	super(context, attrs);
+	mMaxScrimAlpha =
+		Math.round(OVERVIEW.getWorkspaceScrimAlpha(mLauncher) * 255);
 
-    mEndAlpha = DEFAULT_END_ALPHA = Color.alpha(mEndScrim);
-    mRadius =
-        mLauncher.getResources().getDimension(R.dimen.shelf_surface_radius);
-    mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+	mEndAlpha = DEFAULT_END_ALPHA = Color.alpha(mEndScrim);
+	mRadius =
+		mLauncher.getResources().getDimension(R.dimen.shelf_surface_radius);
+	mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    mShelfOffset =
-        context.getResources().getDimension(R.dimen.shelf_surface_offset);
-    // Just assume the easiest UI for now, until we have the proper layout
-    // information.
-    mDrawingFlatColor = true;
-    prefs = Utilities.getZimPrefs(context);
-  }
+	mShelfOffset =
+		context.getResources().getDimension(R.dimen.shelf_surface_offset);
+	// Just assume the easiest UI for now, until we have the proper layout
+	// information.
+	mDrawingFlatColor = true;
+	prefs = Utilities.getZimPrefs(context);
+}
 
-  @Override
-  protected void onSizeChanged(final int w, final int h, final int oldw,
-                               final int oldh) {
-    super.onSizeChanged(w, h, oldw, oldh);
-    mRemainingScreenPathValid = false;
-  }
+@Override
+protected void onSizeChanged(final int w, final int h, final int oldw,
+                             final int oldh) {
+	super.onSizeChanged(w, h, oldw, oldh);
+	mRemainingScreenPathValid = false;
+}
 
-  @Override
-  public void reInitUi() {
-    DeviceProfile dp = mLauncher.getDeviceProfile();
-    mDrawingFlatColor = dp.isVerticalBarLayout();
+@Override
+public void reInitUi() {
+	DeviceProfile dp = mLauncher.getDeviceProfile();
+	mDrawingFlatColor = dp.isVerticalBarLayout();
 
-    if (!mDrawingFlatColor) {
-      mRemainingScreenPathValid = false;
-      mShiftRange = mLauncher.getAllAppsController().getShiftRange();
+	if (!mDrawingFlatColor) {
+		mRemainingScreenPathValid = false;
+		mShiftRange = mLauncher.getAllAppsController().getShiftRange();
 
-      mMidProgress = getMidProgress();
-      mMidAlpha = mMidProgress >= 1 ? 0 : getMidAlpha();
+		mMidProgress = getMidProgress();
+		mMidAlpha = mMidProgress >= 1 ? 0 : getMidAlpha();
 
-      mTopOffset = dp.getInsets().top - mShelfOffset;
-      mShelfTopAtThreshold = mShiftRange * SCRIM_CATCHUP_THRESHOLD + mTopOffset;
-      updateColors();
-    }
-    updateDragHandleAlpha();
-    invalidate();
-  }
+		mTopOffset = dp.getInsets().top - mShelfOffset;
+		mShelfTopAtThreshold = mShiftRange * SCRIM_CATCHUP_THRESHOLD + mTopOffset;
+		updateColors();
+	}
+	updateDragHandleAlpha();
+	invalidate();
+}
 
-  protected int getMidAlpha() {
-    return Themes.getAttrInteger(getContext(), R.attr.allAppsInterimScrimAlpha);
-  }
+protected int getMidAlpha() {
+	return Themes.getAttrInteger(getContext(), R.attr.allAppsInterimScrimAlpha);
+}
 
-  @Override
-  public void updateColors() {
-    super.updateColors();
-    if (mDrawingFlatColor) {
-      mDragHandleOffset = 0;
-      return;
-    }
+@Override
+public void updateColors() {
+	super.updateColors();
+	if (mDrawingFlatColor) {
+		mDragHandleOffset = 0;
+		return;
+	}
 
-    mDragHandleOffset = mShelfOffset - mDragHandleSize;
-    if (mProgress >= SCRIM_CATCHUP_THRESHOLD) {
-      mShelfTop = mShiftRange * mProgress + mTopOffset;
-    } else {
-      mShelfTop = Utilities.mapRange(mProgress / SCRIM_CATCHUP_THRESHOLD,
-                                     -mRadius, mShelfTopAtThreshold);
-    }
+	mDragHandleOffset = mShelfOffset - mDragHandleSize;
+	if (mProgress >= SCRIM_CATCHUP_THRESHOLD) {
+		mShelfTop = mShiftRange * mProgress + mTopOffset;
+	} else {
+		mShelfTop = Utilities.mapRange(mProgress / SCRIM_CATCHUP_THRESHOLD,
+		                               -mRadius, mShelfTopAtThreshold);
+	}
 
-    if (mProgress >= 1) {
-      mRemainingScreenColor = 0;
-      mShelfColor = 0;
-    } else if (mProgress >= mMidProgress) {
-      mRemainingScreenColor = 0;
+	if (mProgress >= 1) {
+		mRemainingScreenColor = 0;
+		mShelfColor = 0;
+	} else if (mProgress >= mMidProgress) {
+		mRemainingScreenColor = 0;
 
-      int alpha = Math.round(Utilities.mapToRange(mProgress, mMidProgress, 1,
-                                                  mMidAlpha, 0, ACCEL));
-      mShelfColor = setAlphaComponent(mEndScrim, alpha);
-    } else {
-      mDragHandleOffset += mShiftRange * (mMidProgress - mProgress);
+		int alpha = Math.round(Utilities.mapToRange(mProgress, mMidProgress, 1,
+		                                            mMidAlpha, 0, ACCEL));
+		mShelfColor = setAlphaComponent(mEndScrim, alpha);
+	} else {
+		mDragHandleOffset += mShiftRange * (mMidProgress - mProgress);
 
-      // Note that these ranges and interpolators are inverted because progress
-      // goes 1 to 0.
-      int alpha = Math.round(Utilities.mapToRange(
-          mProgress, (float)0, mMidProgress, (float)mEndAlpha, (float)mMidAlpha,
-          Interpolators.clampToProgress(ACCEL, 0.5f, 1f)));
-      mShelfColor = setAlphaComponent(mEndScrim, alpha);
+		// Note that these ranges and interpolators are inverted because progress
+		// goes 1 to 0.
+		int alpha = Math.round(Utilities.mapToRange(
+					       mProgress, (float)0, mMidProgress, (float)mEndAlpha, (float)mMidAlpha,
+					       Interpolators.clampToProgress(ACCEL, 0.5f, 1f)));
+		mShelfColor = setAlphaComponent(mEndScrim, alpha);
 
-      int remainingScrimAlpha = Math.round(Utilities.mapToRange(
-          mProgress, (float)0, mMidProgress, mMaxScrimAlpha, (float)0, LINEAR));
-      mRemainingScreenColor =
-          setAlphaComponent(mScrimColor, remainingScrimAlpha);
-    }
-  }
+		int remainingScrimAlpha = Math.round(Utilities.mapToRange(
+							     mProgress, (float)0, mMidProgress, mMaxScrimAlpha, (float)0, LINEAR));
+		mRemainingScreenColor =
+			setAlphaComponent(mScrimColor, remainingScrimAlpha);
+	}
+}
 
-  @Override
-  protected void onDraw(final Canvas canvas) {
-    drawBackground(canvas);
-    drawDragHandle(canvas);
-  }
+@Override
+protected void onDraw(final Canvas canvas) {
+	drawBackground(canvas);
+	drawDragHandle(canvas);
+}
 
-  private void drawBackground(final Canvas canvas) {
-    if (mDrawingFlatColor) {
-      onDrawFlatColor(canvas);
-      if (mCurrentFlatColor != 0) {
-        canvas.drawColor(mCurrentFlatColor);
-      }
-      return;
-    }
+private void drawBackground(final Canvas canvas) {
+	if (mDrawingFlatColor) {
+		onDrawFlatColor(canvas);
+		if (mCurrentFlatColor != 0) {
+			canvas.drawColor(mCurrentFlatColor);
+		}
+		return;
+	}
 
-    if (mProgress <= 0) {
-      onDrawFlatColor(canvas);
-      canvas.drawColor(mShelfColor);
-      return;
-    }
+	if (mProgress <= 0) {
+		onDrawFlatColor(canvas);
+		canvas.drawColor(mShelfColor);
+		return;
+	}
 
-    int height = getHeight();
-    int width = getWidth();
-    // Draw the scrim over the remaining screen if needed.
-    if (mRemainingScreenColor != 0) {
-      if (!mRemainingScreenPathValid) {
-        mTempPath.reset();
-        // Using a arbitrary '+10' in the bottom to avoid any left-overs at the
-        // corners due to rounding issues.
-        mTempPath.addRoundRect(0, height - mRadius, width,
-                               height + mRadius + 10, mRadius, mRadius,
-                               Path.Direction.CW);
-        mRemainingScreenPath.reset();
-        mRemainingScreenPath.addRect(0, 0, width, height, Path.Direction.CW);
-        mRemainingScreenPath.op(mTempPath, Path.Op.DIFFERENCE);
-      }
+	int height = getHeight();
+	int width = getWidth();
+	// Draw the scrim over the remaining screen if needed.
+	if (mRemainingScreenColor != 0) {
+		if (!mRemainingScreenPathValid) {
+			mTempPath.reset();
+			// Using a arbitrary '+10' in the bottom to avoid any left-overs at the
+			// corners due to rounding issues.
+			mTempPath.addRoundRect(0, height - mRadius, width,
+			                       height + mRadius + 10, mRadius, mRadius,
+			                       Path.Direction.CW);
+			mRemainingScreenPath.reset();
+			mRemainingScreenPath.addRect(0, 0, width, height, Path.Direction.CW);
+			mRemainingScreenPath.op(mTempPath, Path.Op.DIFFERENCE);
+		}
 
-      float offset = height - mRadius - mShelfTop;
-      canvas.translate(0, -offset);
-      mPaint.setColor(mRemainingScreenColor);
-      canvas.drawPath(mRemainingScreenPath, mPaint);
-      canvas.translate(0, offset);
-    }
+		float offset = height - mRadius - mShelfTop;
+		canvas.translate(0, -offset);
+		mPaint.setColor(mRemainingScreenColor);
+		canvas.drawPath(mRemainingScreenPath, mPaint);
+		canvas.translate(0, offset);
+	}
 
-    mPaint.setColor(mShelfColor);
-    onDrawRoundRect(canvas, 0, mShelfTop, getWidth(), height + mRadius, mRadius,
-                    mRadius, mPaint);
-  }
+	mPaint.setColor(mShelfColor);
+	onDrawRoundRect(canvas, 0, mShelfTop, getWidth(), height + mRadius, mRadius,
+	                mRadius, mPaint);
+}
 
-  @Override
-  protected void onDrawRoundRect(final Canvas canvas, final float left,
-                                 final float top, final float right,
-                                 final float bottom, final float rx,
-                                 final float ry, final Paint paint) {
-    canvas.drawRoundRect(left, top, right, bottom, rx, ry, paint);
-  }
+@Override
+protected void onDrawRoundRect(final Canvas canvas, final float left,
+                               final float top, final float right,
+                               final float bottom, final float rx,
+                               final float ry, final Paint paint) {
+	canvas.drawRoundRect(left, top, right, bottom, rx, ry, paint);
+}
 
-  protected float getMidProgress() {
-    return OVERVIEW.getVerticalProgress(mLauncher);
-  }
+protected float getMidProgress() {
+	return OVERVIEW.getVerticalProgress(mLauncher);
+}
 }

@@ -48,245 +48,247 @@ import org.zimmob.zimlx.popup.ZimShortcut;
  * Provides data for the popup menu that appears after long-clicking on apps.
  */
 public class PopupDataProvider
-    implements NotificationListener.NotificationsChangedListener {
+	implements NotificationListener.NotificationsChangedListener {
 
-  private static final boolean LOGD = false;
-  private static final String TAG = "PopupDataProvider";
+private static final boolean LOGD = false;
+private static final String TAG = "PopupDataProvider";
 
-  /**
-   * Note that these are in order of priority.
-   */
-  /*private static final SystemShortcut[] SYSTEM_SHORTCUTS = new
-  SystemShortcut[]{ new SystemShortcut.AppInfo(), new SystemShortcut.Widgets(),
-          new SystemShortcut.Install()
-  };*/
+/**
+ * Note that these are in order of priority.
+ */
+/*private static final SystemShortcut[] SYSTEM_SHORTCUTS = new
+   SystemShortcut[]{ new SystemShortcut.AppInfo(), new SystemShortcut.Widgets(),
+        new SystemShortcut.Install()
+   };*/
 
-  /**
-   * Note that these are in order of priority.
-   */
-  private final SystemShortcut[] mSystemShortcuts;
+/**
+ * Note that these are in order of priority.
+ */
+private final SystemShortcut[] mSystemShortcuts;
 
-  private final Launcher mLauncher;
+private final Launcher mLauncher;
 
-  /** Maps launcher activity components to their list of shortcut ids. */
-  private MultiHashMap<ComponentKey, String> mDeepShortcutMap =
-      new MultiHashMap<>();
-  /** Maps packages to their BadgeInfo's . */
-  private Map<PackageUserKey, BadgeInfo> mPackageUserToBadgeInfos =
-      new HashMap<>();
-  /**
-   * Maps packages to their Widgets
-   */
-  private ArrayList<WidgetListRowEntry> mAllWidgets = new ArrayList<>();
+/** Maps launcher activity components to their list of shortcut ids. */
+private MultiHashMap<ComponentKey, String> mDeepShortcutMap =
+	new MultiHashMap<>();
+/** Maps packages to their BadgeInfo's . */
+private Map<PackageUserKey, BadgeInfo> mPackageUserToBadgeInfos =
+	new HashMap<>();
+/**
+ * Maps packages to their Widgets
+ */
+private ArrayList<WidgetListRowEntry> mAllWidgets = new ArrayList<>();
 
-  public PopupDataProvider(final Launcher launcher) {
-    mLauncher = launcher;
-    mSystemShortcuts = new SystemShortcut[] {new SystemShortcut.AppInfo(),
-                                             new SystemShortcut.Widgets(),
-                                             new SystemShortcut.Install()};
-  }
+public PopupDataProvider(final Launcher launcher) {
+	mLauncher = launcher;
+	mSystemShortcuts = new SystemShortcut[] {new SystemShortcut.AppInfo(),
+		                                 new SystemShortcut.Widgets(),
+		                                 new SystemShortcut.Install()};
+}
 
-  @Override
-  public void onNotificationPosted(final PackageUserKey postedPackageUserKey,
-                                   final NotificationKeyData notificationKey,
-                                   final boolean shouldBeFilteredOut) {
-    BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(postedPackageUserKey);
-    boolean badgeShouldBeRefreshed;
-    if (badgeInfo == null) {
-      if (!shouldBeFilteredOut) {
-        BadgeInfo newBadgeInfo = new BadgeInfo(postedPackageUserKey);
-        newBadgeInfo.addOrUpdateNotificationKey(notificationKey);
-        mPackageUserToBadgeInfos.put(postedPackageUserKey, newBadgeInfo);
-        badgeShouldBeRefreshed = true;
-      } else {
-        badgeShouldBeRefreshed = false;
-      }
-    } else {
-      badgeShouldBeRefreshed =
-          shouldBeFilteredOut
-              ? badgeInfo.removeNotificationKey(notificationKey)
-              : badgeInfo.addOrUpdateNotificationKey(notificationKey);
-      if (badgeInfo.getNotificationKeys().size() == 0) {
-        mPackageUserToBadgeInfos.remove(postedPackageUserKey);
-      }
-    }
-    if (badgeShouldBeRefreshed) {
-      mLauncher.updateIconBadges(
-          Utilities.singletonHashSet(postedPackageUserKey));
-    }
-  }
+@Override
+public void onNotificationPosted(final PackageUserKey postedPackageUserKey,
+                                 final NotificationKeyData notificationKey,
+                                 final boolean shouldBeFilteredOut) {
+	BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(postedPackageUserKey);
+	boolean badgeShouldBeRefreshed;
+	if (badgeInfo == null) {
+		if (!shouldBeFilteredOut) {
+			BadgeInfo newBadgeInfo = new BadgeInfo(postedPackageUserKey);
+			newBadgeInfo.addOrUpdateNotificationKey(notificationKey);
+			mPackageUserToBadgeInfos.put(postedPackageUserKey, newBadgeInfo);
+			badgeShouldBeRefreshed = true;
+		} else {
+			badgeShouldBeRefreshed = false;
+		}
+	} else {
+		badgeShouldBeRefreshed =
+			shouldBeFilteredOut
+	      ? badgeInfo.removeNotificationKey(notificationKey)
+	      : badgeInfo.addOrUpdateNotificationKey(notificationKey);
+		if (badgeInfo.getNotificationKeys().size() == 0) {
+			mPackageUserToBadgeInfos.remove(postedPackageUserKey);
+		}
+	}
+	if (badgeShouldBeRefreshed) {
+		mLauncher.updateIconBadges(
+			Utilities.singletonHashSet(postedPackageUserKey));
+	}
+}
 
-  @Override
-  public void onNotificationRemoved(final PackageUserKey removedPackageUserKey,
-                                    final NotificationKeyData notificationKey) {
-    BadgeInfo oldBadgeInfo =
-        mPackageUserToBadgeInfos.get(removedPackageUserKey);
-    if (oldBadgeInfo != null &&
-        oldBadgeInfo.removeNotificationKey(notificationKey)) {
-      if (oldBadgeInfo.getNotificationKeys().size() == 0) {
-        mPackageUserToBadgeInfos.remove(removedPackageUserKey);
-      }
-      mLauncher.updateIconBadges(
-          Utilities.singletonHashSet(removedPackageUserKey));
-      trimNotifications(mPackageUserToBadgeInfos);
-    }
-  }
+@Override
+public void onNotificationRemoved(final PackageUserKey removedPackageUserKey,
+                                  final NotificationKeyData notificationKey) {
+	BadgeInfo oldBadgeInfo =
+		mPackageUserToBadgeInfos.get(removedPackageUserKey);
+	if (oldBadgeInfo != null &&
+	    oldBadgeInfo.removeNotificationKey(notificationKey)) {
+		if (oldBadgeInfo.getNotificationKeys().size() == 0) {
+			mPackageUserToBadgeInfos.remove(removedPackageUserKey);
+		}
+		mLauncher.updateIconBadges(
+			Utilities.singletonHashSet(removedPackageUserKey));
+		trimNotifications(mPackageUserToBadgeInfos);
+	}
+}
 
-  @Override
-  public void onNotificationFullRefresh(
-      final List<StatusBarNotification> activeNotifications) {
-    if (activeNotifications == null)
-      return;
-    // This will contain the PackageUserKeys which have updated badges.
-    HashMap<PackageUserKey, BadgeInfo> updatedBadges =
-        new HashMap<>(mPackageUserToBadgeInfos);
-    mPackageUserToBadgeInfos.clear();
-    for (StatusBarNotification notification : activeNotifications) {
-      PackageUserKey packageUserKey =
-          PackageUserKey.fromNotification(notification);
-      BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(packageUserKey);
-      if (badgeInfo == null) {
-        badgeInfo = new BadgeInfo(packageUserKey);
-        mPackageUserToBadgeInfos.put(packageUserKey, badgeInfo);
-      }
-      badgeInfo.addOrUpdateNotificationKey(
-          NotificationKeyData.fromNotification(notification));
-    }
+@Override
+public void onNotificationFullRefresh(
+	final List<StatusBarNotification> activeNotifications) {
+	if (activeNotifications == null)
+		return;
+	// This will contain the PackageUserKeys which have updated badges.
+	HashMap<PackageUserKey, BadgeInfo> updatedBadges =
+		new HashMap<>(mPackageUserToBadgeInfos);
+	mPackageUserToBadgeInfos.clear();
+	for (StatusBarNotification notification : activeNotifications) {
+		PackageUserKey packageUserKey =
+			PackageUserKey.fromNotification(notification);
+		BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(packageUserKey);
+		if (badgeInfo == null) {
+			badgeInfo = new BadgeInfo(packageUserKey);
+			mPackageUserToBadgeInfos.put(packageUserKey, badgeInfo);
+		}
+		badgeInfo.addOrUpdateNotificationKey(
+			NotificationKeyData.fromNotification(notification));
+	}
 
-    // Add and remove from updatedBadges so it contains the PackageUserKeys of
-    // updated badges.
-    for (PackageUserKey packageUserKey : mPackageUserToBadgeInfos.keySet()) {
-      BadgeInfo prevBadge = updatedBadges.get(packageUserKey);
-      BadgeInfo newBadge = mPackageUserToBadgeInfos.get(packageUserKey);
-      if (prevBadge == null) {
-        updatedBadges.put(packageUserKey, newBadge);
-      } else {
-        if (!prevBadge.shouldBeInvalidated(newBadge)) {
-          updatedBadges.remove(packageUserKey);
-        }
-      }
-    }
+	// Add and remove from updatedBadges so it contains the PackageUserKeys of
+	// updated badges.
+	for (PackageUserKey packageUserKey : mPackageUserToBadgeInfos.keySet()) {
+		BadgeInfo prevBadge = updatedBadges.get(packageUserKey);
+		BadgeInfo newBadge = mPackageUserToBadgeInfos.get(packageUserKey);
+		if (prevBadge == null) {
+			updatedBadges.put(packageUserKey, newBadge);
+		} else {
+			if (!prevBadge.shouldBeInvalidated(newBadge)) {
+				updatedBadges.remove(packageUserKey);
+			}
+		}
+	}
 
-    if (!updatedBadges.isEmpty()) {
-      mLauncher.updateIconBadges(updatedBadges.keySet());
-    }
-    trimNotifications(updatedBadges);
-  }
+	if (!updatedBadges.isEmpty()) {
+		mLauncher.updateIconBadges(updatedBadges.keySet());
+	}
+	trimNotifications(updatedBadges);
+}
 
-  private void
-  trimNotifications(final Map<PackageUserKey, BadgeInfo> updatedBadges) {
-    PopupContainerWithArrow openContainer =
-        PopupContainerWithArrow.getOpen(mLauncher);
-    if (openContainer != null) {
-      openContainer.trimNotifications(updatedBadges);
-    }
-  }
+private void
+trimNotifications(final Map<PackageUserKey, BadgeInfo> updatedBadges) {
+	PopupContainerWithArrow openContainer =
+		PopupContainerWithArrow.getOpen(mLauncher);
+	if (openContainer != null) {
+		openContainer.trimNotifications(updatedBadges);
+	}
+}
 
-  public void setDeepShortcutMap(
-      final MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
-    mDeepShortcutMap = deepShortcutMapCopy;
-    if (LOGD)
-      Log.d(TAG, "bindDeepShortcutMap: " + mDeepShortcutMap);
-  }
+public void setDeepShortcutMap(
+	final MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
+	mDeepShortcutMap = deepShortcutMapCopy;
+	if (LOGD)
+		Log.d(TAG, "bindDeepShortcutMap: " + mDeepShortcutMap);
+}
 
-  public List<String> getShortcutIdsForItem(final ItemInfo info) {
-    if (!DeepShortcutManager.supportsShortcuts(info)) {
-      return Collections.EMPTY_LIST;
-    }
-    ComponentName component = info.getTargetComponent();
-    if (component == null) {
-      return Collections.EMPTY_LIST;
-    }
+public List<String> getShortcutIdsForItem(final ItemInfo info) {
+	if (!DeepShortcutManager.supportsShortcuts(info)) {
+		return Collections.EMPTY_LIST;
+	}
+	ComponentName component = info.getTargetComponent();
+	if (component == null) {
+		return Collections.EMPTY_LIST;
+	}
 
-    List<String> ids = new ArrayList<>();
-    if (!Utilities.ATLEAST_NOUGAT_MR1) {
-      for (ShortcutInfoCompat compat :
-           DeepShortcutManagerBackport.getForPackage(
-               mLauncher,
-               (LauncherApps)mLauncher.getSystemService(
-                   Context.LAUNCHER_APPS_SERVICE),
-               info.getTargetComponent(),
-               info.getTargetComponent().getPackageName())) {
-        ids.add(compat.getId());
-      }
-    } else {
-      List<String> tmp =
-          mDeepShortcutMap.get(new ComponentKey(component, info.user));
-      if (tmp != null)
-        ids.addAll(tmp);
-    }
-    return ids;
-  }
+	List<String> ids = new ArrayList<>();
+	if (!Utilities.ATLEAST_NOUGAT_MR1) {
+		for (ShortcutInfoCompat compat :
+		     DeepShortcutManagerBackport.getForPackage(
+			     mLauncher,
+			     (LauncherApps)mLauncher.getSystemService(
+				     Context.LAUNCHER_APPS_SERVICE),
+			     info.getTargetComponent(),
+			     info.getTargetComponent().getPackageName())) {
+			ids.add(compat.getId());
+		}
+	} else {
+		List<String> tmp =
+			mDeepShortcutMap.get(new ComponentKey(component, info.user));
+		if (tmp != null)
+			ids.addAll(tmp);
+	}
+	return ids;
+}
 
-  public BadgeInfo getBadgeInfoForItem(final ItemInfo info) {
-    if (!DeepShortcutManager.supportsShortcuts(info)) {
-      return null;
-    }
+public BadgeInfo getBadgeInfoForItem(final ItemInfo info) {
+	if (!DeepShortcutManager.supportsShortcuts(info)) {
+		return null;
+	}
 
-    return mPackageUserToBadgeInfos.get(PackageUserKey.fromItemInfo(info));
-  }
+	return mPackageUserToBadgeInfos.get(PackageUserKey.fromItemInfo(info));
+}
 
-  public @NonNull List<NotificationKeyData>
-  getNotificationKeysForItem(final ItemInfo info) {
-    BadgeInfo badgeInfo = getBadgeInfoForItem(info);
-    return badgeInfo == null ? Collections.EMPTY_LIST
-                             : badgeInfo.getNotificationKeys();
-  }
+public @NonNull List<NotificationKeyData>
+getNotificationKeysForItem(final ItemInfo info) {
+	BadgeInfo badgeInfo = getBadgeInfoForItem(info);
+	return badgeInfo == null ? Collections.EMPTY_LIST
+	                     : badgeInfo.getNotificationKeys();
+}
 
-  /**
-   * This makes a potentially expensive binder call and should be run on a
-   * background thread.
-   */
-  public @NonNull List<StatusBarNotification> getStatusBarNotificationsForKeys(
-      final List<NotificationKeyData> notificationKeys) {
-    NotificationListener notificationListener =
-        NotificationListener.getInstanceIfConnected();
-    return notificationListener == null
-        ? Collections.EMPTY_LIST
-        : notificationListener.getNotificationsForKeys(notificationKeys);
-  }
+/**
+ * This makes a potentially expensive binder call and should be run on a
+ * background thread.
+ */
+public @NonNull List<StatusBarNotification> getStatusBarNotificationsForKeys(
+	final List<NotificationKeyData> notificationKeys) {
+	NotificationListener notificationListener =
+		NotificationListener.getInstanceIfConnected();
+	return notificationListener == null
+	? Collections.EMPTY_LIST
+	: notificationListener.getNotificationsForKeys(notificationKeys);
+}
 
-  public @NonNull List<SystemShortcut>
-  getEnabledSystemShortcutsForItem(final ItemInfo info) {
-    List<SystemShortcut> systemShortcuts = new ArrayList<>();
-    for (SystemShortcut systemShortcut :
-         ZimShortcut.Companion.getInstance(mLauncher).getEnabledShortcuts()) {
-      if (systemShortcut.getOnClickListener(mLauncher, info) != null) {
-        systemShortcuts.add(systemShortcut);
-      }
-    }
-    return systemShortcuts;
-  }
-  public void cancelNotification(final String notificationKey) {
-    NotificationListener notificationListener =
-        NotificationListener.getInstanceIfConnected();
-    if (notificationListener == null) {
-      return;
-    }
-    notificationListener.cancelNotificationFromLauncher(notificationKey);
-  }
+public @NonNull List<SystemShortcut>
+getEnabledSystemShortcutsForItem(final ItemInfo info) {
+	List<SystemShortcut> systemShortcuts = new ArrayList<>();
+	for (SystemShortcut systemShortcut :
+	     ZimShortcut.Companion.getInstance(mLauncher).getEnabledShortcuts()) {
+		if (systemShortcut.getOnClickListener(mLauncher, info) != null) {
+			systemShortcuts.add(systemShortcut);
+		}
+	}
+	return systemShortcuts;
+}
+public void cancelNotification(final String notificationKey) {
+	NotificationListener notificationListener =
+		NotificationListener.getInstanceIfConnected();
+	if (notificationListener == null) {
+		return;
+	}
+	notificationListener.cancelNotificationFromLauncher(notificationKey);
+}
 
-  public void setAllWidgets(final ArrayList<WidgetListRowEntry> allWidgets) {
-    mAllWidgets = allWidgets;
-  }
+public void setAllWidgets(final ArrayList<WidgetListRowEntry> allWidgets) {
+	mAllWidgets = allWidgets;
+}
 
-  public ArrayList<WidgetListRowEntry> getAllWidgets() { return mAllWidgets; }
+public ArrayList<WidgetListRowEntry> getAllWidgets() {
+	return mAllWidgets;
+}
 
-  public List<WidgetItem>
-  getWidgetsForPackageUser(final PackageUserKey packageUserKey) {
-    for (WidgetListRowEntry entry : mAllWidgets) {
-      if (entry.pkgItem.packageName.equals(packageUserKey.mPackageName)) {
-        ArrayList<WidgetItem> widgets = new ArrayList<>(entry.widgets);
-        // Remove widgets not associated with the correct user.
-        Iterator<WidgetItem> iterator = widgets.iterator();
-        while (iterator.hasNext()) {
-          if (!iterator.next().user.equals(packageUserKey.mUser)) {
-            iterator.remove();
-          }
-        }
-        return widgets.isEmpty() ? null : widgets;
-      }
-    }
-    return null;
-  }
+public List<WidgetItem>
+getWidgetsForPackageUser(final PackageUserKey packageUserKey) {
+	for (WidgetListRowEntry entry : mAllWidgets) {
+		if (entry.pkgItem.packageName.equals(packageUserKey.mPackageName)) {
+			ArrayList<WidgetItem> widgets = new ArrayList<>(entry.widgets);
+			// Remove widgets not associated with the correct user.
+			Iterator<WidgetItem> iterator = widgets.iterator();
+			while (iterator.hasNext()) {
+				if (!iterator.next().user.equals(packageUserKey.mUser)) {
+					iterator.remove();
+				}
+			}
+			return widgets.isEmpty() ? null : widgets;
+		}
+	}
+	return null;
+}
 }

@@ -60,263 +60,264 @@ import com.android.launcher3.widget.WidgetImageView;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class AddItemActivity
-    extends BaseActivity implements OnLongClickListener, OnTouchListener {
+	extends BaseActivity implements OnLongClickListener, OnTouchListener {
 
-  private static final int SHADOW_SIZE = 10;
+private static final int SHADOW_SIZE = 10;
 
-  private static final int REQUEST_BIND_APPWIDGET = 1;
-  private static final String STATE_EXTRA_WIDGET_ID = "state.widget.id";
+private static final int REQUEST_BIND_APPWIDGET = 1;
+private static final String STATE_EXTRA_WIDGET_ID = "state.widget.id";
 
-  private final PointF mLastTouchPos = new PointF();
+private final PointF mLastTouchPos = new PointF();
 
-  private PinItemRequest mRequest;
-  private LauncherAppState mApp;
-  private InvariantDeviceProfile mIdp;
+private PinItemRequest mRequest;
+private LauncherAppState mApp;
+private InvariantDeviceProfile mIdp;
 
-  private LivePreviewWidgetCell mWidgetCell;
+private LivePreviewWidgetCell mWidgetCell;
 
-  // Widget request specific options.
-  private LauncherAppWidgetHost mAppWidgetHost;
-  private AppWidgetManagerCompat mAppWidgetManager;
-  private PendingAddWidgetInfo mPendingWidgetInfo;
-  private int mPendingBindWidgetId;
-  private Bundle mWidgetOptions;
+// Widget request specific options.
+private LauncherAppWidgetHost mAppWidgetHost;
+private AppWidgetManagerCompat mAppWidgetManager;
+private PendingAddWidgetInfo mPendingWidgetInfo;
+private int mPendingBindWidgetId;
+private Bundle mWidgetOptions;
 
-  private boolean mFinishOnPause = false;
-  private InstantAppResolver mInstantAppResolver;
+private boolean mFinishOnPause = false;
+private InstantAppResolver mInstantAppResolver;
 
-  @Override
-  protected void onCreate(final Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+@Override
+protected void onCreate(final Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
 
-    mRequest = LauncherAppsCompatVO.getPinItemRequest(getIntent());
-    if (mRequest == null) {
-      finish();
-      return;
-    }
+	mRequest = LauncherAppsCompatVO.getPinItemRequest(getIntent());
+	if (mRequest == null) {
+		finish();
+		return;
+	}
 
-    mApp = LauncherAppState.getInstance(this);
-    mIdp = mApp.getInvariantDeviceProfile();
-    mInstantAppResolver = InstantAppResolver.newInstance(this);
+	mApp = LauncherAppState.getInstance(this);
+	mIdp = mApp.getInvariantDeviceProfile();
+	mInstantAppResolver = InstantAppResolver.newInstance(this);
 
-    // Use the application context to get the device profile, as in
-    // multiwindow-mode, the confirmation activity might be rotated.
-    mDeviceProfile = mIdp.getDeviceProfile(getApplicationContext());
+	// Use the application context to get the device profile, as in
+	// multiwindow-mode, the confirmation activity might be rotated.
+	mDeviceProfile = mIdp.getDeviceProfile(getApplicationContext());
 
-    setContentView(R.layout.add_item_confirmation_activity);
-    mWidgetCell = findViewById(R.id.widget_cell);
+	setContentView(R.layout.add_item_confirmation_activity);
+	mWidgetCell = findViewById(R.id.widget_cell);
 
-    if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
-      setupShortcut();
-    } else {
-      if (!setupWidget()) {
-        // TODO: show error toast?
-        finish();
-      }
-    }
+	if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
+		setupShortcut();
+	} else {
+		if (!setupWidget()) {
+			// TODO: show error toast?
+			finish();
+		}
+	}
 
-    mWidgetCell.setOnTouchListener(this);
-    mWidgetCell.setOnLongClickListener(this);
+	mWidgetCell.setOnTouchListener(this);
+	mWidgetCell.setOnLongClickListener(this);
 
-    // savedInstanceState is null when the activity is created the first time
-    // (i.e., avoids duplicate logging during rotation)
-    if (savedInstanceState == null) {
-      logCommand(Action.Command.ENTRY);
-    }
-  }
+	// savedInstanceState is null when the activity is created the first time
+	// (i.e., avoids duplicate logging during rotation)
+	if (savedInstanceState == null) {
+		logCommand(Action.Command.ENTRY);
+	}
+}
 
-  @Override
-  public boolean onTouch(final View view, final MotionEvent motionEvent) {
-    mLastTouchPos.set(motionEvent.getX(), motionEvent.getY());
-    return false;
-  }
+@Override
+public boolean onTouch(final View view, final MotionEvent motionEvent) {
+	mLastTouchPos.set(motionEvent.getX(), motionEvent.getY());
+	return false;
+}
 
-  @Override
-  public boolean onLongClick(final View view) {
-    // Find the position of the preview relative to the touch location.
-    WidgetImageView img = mWidgetCell.getWidgetView();
+@Override
+public boolean onLongClick(final View view) {
+	// Find the position of the preview relative to the touch location.
+	WidgetImageView img = mWidgetCell.getWidgetView();
 
-    // If the ImageView doesn't have a drawable yet, the widget preview hasn't
-    // been loaded and we abort the drag.
-    if (img.getBitmap() == null) {
-      return false;
-    }
+	// If the ImageView doesn't have a drawable yet, the widget preview hasn't
+	// been loaded and we abort the drag.
+	if (img.getBitmap() == null) {
+		return false;
+	}
 
-    Rect bounds = img.getBitmapBounds();
-    bounds.offset(img.getLeft() - (int)mLastTouchPos.x,
-                  img.getTop() - (int)mLastTouchPos.y);
+	Rect bounds = img.getBitmapBounds();
+	bounds.offset(img.getLeft() - (int)mLastTouchPos.x,
+	              img.getTop() - (int)mLastTouchPos.y);
 
-    // Start home and pass the draw request params
-    PinItemDragListener listener = new PinItemDragListener(
-        mRequest, bounds, img.getBitmap().getWidth(), img.getWidth());
+	// Start home and pass the draw request params
+	PinItemDragListener listener = new PinItemDragListener(
+		mRequest, bounds, img.getBitmap().getWidth(), img.getWidth());
 
-    Intent homeIntent =
-        listener.addToIntent(new Intent(Intent.ACTION_MAIN)
-                                 .addCategory(Intent.CATEGORY_HOME)
-                                 .setPackage(getPackageName())
-                                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+	Intent homeIntent =
+		listener.addToIntent(new Intent(Intent.ACTION_MAIN)
+		                     .addCategory(Intent.CATEGORY_HOME)
+		                     .setPackage(getPackageName())
+		                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 
-    listener.initWhenReady();
-    startActivity(
-        homeIntent,
-        ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out)
-            .toBundle());
-    mFinishOnPause = true;
+	listener.initWhenReady();
+	startActivity(
+		homeIntent,
+		ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out)
+		.toBundle());
+	mFinishOnPause = true;
 
-    // Start a system drag and drop. We use a transparent bitmap as preview for
-    // system drag as the preview is handled internally by launcher.
-    ClipDescription description =
-        new ClipDescription("", new String[] {listener.getMimeType()});
-    ClipData data = new ClipData(description, new ClipData.Item(""));
-    view.startDragAndDrop(data, new DragShadowBuilder(view) {
-      @Override
-      public void onDrawShadow(final Canvas canvas) {}
+	// Start a system drag and drop. We use a transparent bitmap as preview for
+	// system drag as the preview is handled internally by launcher.
+	ClipDescription description =
+		new ClipDescription("", new String[] {listener.getMimeType()});
+	ClipData data = new ClipData(description, new ClipData.Item(""));
+	view.startDragAndDrop(data, new DragShadowBuilder(view) {
+			@Override
+			public void onDrawShadow(final Canvas canvas) {
+			}
 
-      @Override
-      public void onProvideShadowMetrics(final Point outShadowSize,
-                                         final Point outShadowTouchPoint) {
-        outShadowSize.set(SHADOW_SIZE, SHADOW_SIZE);
-        outShadowTouchPoint.set(SHADOW_SIZE / 2, SHADOW_SIZE / 2);
-      }
-    }, null, View.DRAG_FLAG_GLOBAL);
-    return false;
-  }
+			@Override
+			public void onProvideShadowMetrics(final Point outShadowSize,
+			                                   final Point outShadowTouchPoint) {
+			        outShadowSize.set(SHADOW_SIZE, SHADOW_SIZE);
+			        outShadowTouchPoint.set(SHADOW_SIZE / 2, SHADOW_SIZE / 2);
+			}
+		}, null, View.DRAG_FLAG_GLOBAL);
+	return false;
+}
 
-  @Override
-  protected void onPause() {
-    super.onPause();
-    if (mFinishOnPause) {
-      finish();
-    }
-  }
+@Override
+protected void onPause() {
+	super.onPause();
+	if (mFinishOnPause) {
+		finish();
+	}
+}
 
-  private void setupShortcut() {
-    PinShortcutRequestActivityInfo shortcutInfo =
-        new PinShortcutRequestActivityInfo(mRequest, this);
-    WidgetItem item = new WidgetItem(shortcutInfo);
-    mWidgetCell.getWidgetView().setTag(
-        new PendingAddShortcutInfo(shortcutInfo));
-    mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
-    mWidgetCell.ensurePreview();
-  }
+private void setupShortcut() {
+	PinShortcutRequestActivityInfo shortcutInfo =
+		new PinShortcutRequestActivityInfo(mRequest, this);
+	WidgetItem item = new WidgetItem(shortcutInfo);
+	mWidgetCell.getWidgetView().setTag(
+		new PendingAddShortcutInfo(shortcutInfo));
+	mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
+	mWidgetCell.ensurePreview();
+}
 
-  private boolean setupWidget() {
-    LauncherAppWidgetProviderInfo widgetInfo =
-        LauncherAppWidgetProviderInfo.fromProviderInfo(
-            this, mRequest.getAppWidgetProviderInfo(this));
-    if (widgetInfo.minSpanX > mIdp.numColumns ||
-        widgetInfo.minSpanY > mIdp.numRows) {
-      // Cannot add widget
-      return false;
-    }
-    mWidgetCell.setPreview(PinItemDragListener.getPreview(mRequest));
+private boolean setupWidget() {
+	LauncherAppWidgetProviderInfo widgetInfo =
+		LauncherAppWidgetProviderInfo.fromProviderInfo(
+			this, mRequest.getAppWidgetProviderInfo(this));
+	if (widgetInfo.minSpanX > mIdp.numColumns ||
+	    widgetInfo.minSpanY > mIdp.numRows) {
+		// Cannot add widget
+		return false;
+	}
+	mWidgetCell.setPreview(PinItemDragListener.getPreview(mRequest));
 
-    mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
-    mAppWidgetHost = new LauncherAppWidgetHost(this);
+	mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
+	mAppWidgetHost = new LauncherAppWidgetHost(this);
 
-    mPendingWidgetInfo = new PendingAddWidgetInfo(widgetInfo);
-    mPendingWidgetInfo.spanX = Math.min(mIdp.numColumns, widgetInfo.spanX);
-    mPendingWidgetInfo.spanY = Math.min(mIdp.numRows, widgetInfo.spanY);
-    mWidgetOptions = WidgetHostViewLoader.getDefaultOptionsForWidget(
-        this, mPendingWidgetInfo);
+	mPendingWidgetInfo = new PendingAddWidgetInfo(widgetInfo);
+	mPendingWidgetInfo.spanX = Math.min(mIdp.numColumns, widgetInfo.spanX);
+	mPendingWidgetInfo.spanY = Math.min(mIdp.numRows, widgetInfo.spanY);
+	mWidgetOptions = WidgetHostViewLoader.getDefaultOptionsForWidget(
+		this, mPendingWidgetInfo);
 
-    WidgetItem item = new WidgetItem(widgetInfo, getPackageManager(), mIdp);
-    mWidgetCell.getWidgetView().setTag(mPendingWidgetInfo);
-    mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
-    mWidgetCell.ensurePreview();
-    return true;
-  }
+	WidgetItem item = new WidgetItem(widgetInfo, getPackageManager(), mIdp);
+	mWidgetCell.getWidgetView().setTag(mPendingWidgetInfo);
+	mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
+	mWidgetCell.ensurePreview();
+	return true;
+}
 
-  /**
-   * Called when the cancel button is clicked.
-   */
-  public void onCancelClick(final View v) {
-    logCommand(Action.Command.CANCEL);
-    finish();
-  }
+/**
+ * Called when the cancel button is clicked.
+ */
+public void onCancelClick(final View v) {
+	logCommand(Action.Command.CANCEL);
+	finish();
+}
 
-  /**
-   * Called when place-automatically button is clicked.
-   */
-  public void onPlaceAutomaticallyClick(final View v) {
-    if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
-      InstallShortcutReceiver.queueShortcut(
-          new ShortcutInfoCompat(mRequest.getShortcutInfo()), this);
-      logCommand(Action.Command.CONFIRM);
-      mRequest.accept();
-      finish();
-      return;
-    }
+/**
+ * Called when place-automatically button is clicked.
+ */
+public void onPlaceAutomaticallyClick(final View v) {
+	if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
+		InstallShortcutReceiver.queueShortcut(
+			new ShortcutInfoCompat(mRequest.getShortcutInfo()), this);
+		logCommand(Action.Command.CONFIRM);
+		mRequest.accept();
+		finish();
+		return;
+	}
 
-    mPendingBindWidgetId = mAppWidgetHost.allocateAppWidgetId();
-    boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
-        mPendingBindWidgetId, mRequest.getAppWidgetProviderInfo(this),
-        mWidgetOptions);
-    if (success) {
-      acceptWidget(mPendingBindWidgetId);
-      return;
-    }
+	mPendingBindWidgetId = mAppWidgetHost.allocateAppWidgetId();
+	boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
+		mPendingBindWidgetId, mRequest.getAppWidgetProviderInfo(this),
+		mWidgetOptions);
+	if (success) {
+		acceptWidget(mPendingBindWidgetId);
+		return;
+	}
 
-    // request bind widget
-    mAppWidgetHost.startBindFlow(this, mPendingBindWidgetId,
-                                 mRequest.getAppWidgetProviderInfo(this),
-                                 REQUEST_BIND_APPWIDGET);
-  }
+	// request bind widget
+	mAppWidgetHost.startBindFlow(this, mPendingBindWidgetId,
+	                             mRequest.getAppWidgetProviderInfo(this),
+	                             REQUEST_BIND_APPWIDGET);
+}
 
-  private void acceptWidget(final int widgetId) {
-    InstallShortcutReceiver.queueWidget(mRequest.getAppWidgetProviderInfo(this),
-                                        widgetId, this);
-    mWidgetOptions.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-    mRequest.accept(mWidgetOptions);
-    logCommand(Action.Command.CONFIRM);
-    finish();
-  }
+private void acceptWidget(final int widgetId) {
+	InstallShortcutReceiver.queueWidget(mRequest.getAppWidgetProviderInfo(this),
+	                                    widgetId, this);
+	mWidgetOptions.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+	mRequest.accept(mWidgetOptions);
+	logCommand(Action.Command.CONFIRM);
+	finish();
+}
 
-  @Override
-  public void onBackPressed() {
-    logCommand(Action.Command.BACK);
-    super.onBackPressed();
-  }
+@Override
+public void onBackPressed() {
+	logCommand(Action.Command.BACK);
+	super.onBackPressed();
+}
 
-  @Override
-  public void onActivityResult(final int requestCode, final int resultCode,
-                               final Intent data) {
-    if (requestCode == REQUEST_BIND_APPWIDGET) {
-      int widgetId = data != null
-                         ? data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                                            mPendingBindWidgetId)
-                         : mPendingBindWidgetId;
-      if (resultCode == RESULT_OK) {
-        acceptWidget(widgetId);
-      } else {
-        // Simply wait it out.
-        mAppWidgetHost.deleteAppWidgetId(widgetId);
-        mPendingBindWidgetId = -1;
-      }
-      return;
-    }
-    super.onActivityResult(requestCode, resultCode, data);
-  }
+@Override
+public void onActivityResult(final int requestCode, final int resultCode,
+                             final Intent data) {
+	if (requestCode == REQUEST_BIND_APPWIDGET) {
+		int widgetId = data != null
+		         ? data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+		                            mPendingBindWidgetId)
+		         : mPendingBindWidgetId;
+		if (resultCode == RESULT_OK) {
+			acceptWidget(widgetId);
+		} else {
+			// Simply wait it out.
+			mAppWidgetHost.deleteAppWidgetId(widgetId);
+			mPendingBindWidgetId = -1;
+		}
+		return;
+	}
+	super.onActivityResult(requestCode, resultCode, data);
+}
 
-  @Override
-  protected void onSaveInstanceState(final Bundle outState) {
-    super.onSaveInstanceState(outState);
-    outState.putInt(STATE_EXTRA_WIDGET_ID, mPendingBindWidgetId);
-  }
+@Override
+protected void onSaveInstanceState(final Bundle outState) {
+	super.onSaveInstanceState(outState);
+	outState.putInt(STATE_EXTRA_WIDGET_ID, mPendingBindWidgetId);
+}
 
-  @Override
-  protected void onRestoreInstanceState(final Bundle savedInstanceState) {
-    super.onRestoreInstanceState(savedInstanceState);
-    mPendingBindWidgetId =
-        savedInstanceState.getInt(STATE_EXTRA_WIDGET_ID, mPendingBindWidgetId);
-  }
+@Override
+protected void onRestoreInstanceState(final Bundle savedInstanceState) {
+	super.onRestoreInstanceState(savedInstanceState);
+	mPendingBindWidgetId =
+		savedInstanceState.getInt(STATE_EXTRA_WIDGET_ID, mPendingBindWidgetId);
+}
 
-  private void logCommand(final int command) {
-    getUserEventDispatcher().dispatchUserEvent(
-        newLauncherEvent(
-            newCommandAction(command),
-            newItemTarget(mWidgetCell.getWidgetView(), mInstantAppResolver),
-            newContainerTarget(ContainerType.PINITEM)),
-        null);
-  }
+private void logCommand(final int command) {
+	getUserEventDispatcher().dispatchUserEvent(
+		newLauncherEvent(
+			newCommandAction(command),
+			newItemTarget(mWidgetCell.getWidgetView(), mInstantAppResolver),
+			newContainerTarget(ContainerType.PINITEM)),
+		null);
+}
 }

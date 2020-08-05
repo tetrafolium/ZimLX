@@ -21,18 +21,18 @@ package com.android.launcher3.util;
  */
 public abstract class Provider<T> {
 
-  public static <T> Provider<T> of(final T value) {
-    return new Provider<T>() {
-      @Override
-      public T get() {
-        return value;
-      }
-    };
-  }
+public static <T> Provider<T> of(final T value) {
+	return new Provider<T>() {
+		       @Override
+		       public T get() {
+			       return value;
+		       }
+	};
+}
 
-  /**
-   * Initializes and returns the object. This may contain expensive operations
-   * not suitable to UI thread.
-   */
-  public abstract T get();
+/**
+ * Initializes and returns the object. This may contain expensive operations
+ * not suitable to UI thread.
+ */
+public abstract T get();
 }

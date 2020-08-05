@@ -11,81 +11,81 @@ import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.allapps.search.SearchAlgorithm;
 
 public class SearchThread implements SearchAlgorithm, Handler.Callback {
-  private static HandlerThread handlerThread;
-  private final Handler mHandler;
-  private final Context mContext;
-  private final Handler mUiHandler;
-  private boolean mInterruptActiveRequests;
+private static HandlerThread handlerThread;
+private final Handler mHandler;
+private final Context mContext;
+private final Handler mUiHandler;
+private boolean mInterruptActiveRequests;
 
-  public SearchThread(final Context context) {
-    mContext = context;
-    mUiHandler = new Handler(this);
-    if (handlerThread == null) {
-      handlerThread = new HandlerThread("search-thread", -2);
-      handlerThread.start();
-    }
-    mHandler = new Handler(SearchThread.handlerThread.getLooper(), this);
-  }
+public SearchThread(final Context context) {
+	mContext = context;
+	mUiHandler = new Handler(this);
+	if (handlerThread == null) {
+		handlerThread = new HandlerThread("search-thread", -2);
+		handlerThread.start();
+	}
+	mHandler = new Handler(SearchThread.handlerThread.getLooper(), this);
+}
 
-  private void dj(final SearchResult componentList) {
-    Uri uri = new Uri.Builder()
-                  .scheme("content")
-                  .authority(BuildConfig.APPLICATION_ID + ".appssearch")
-                  .appendPath(componentList.mQuery)
-                  .build();
+private void dj(final SearchResult componentList) {
+	Uri uri = new Uri.Builder()
+	          .scheme("content")
+	          .authority(BuildConfig.APPLICATION_ID + ".appssearch")
+	          .appendPath(componentList.mQuery)
+	          .build();
 
-    Cursor cursor = null;
-    try {
-      cursor = mContext.getContentResolver().query(uri, null, null, null, null);
-      int suggestIntentData = cursor.getColumnIndex("suggest_intent_data");
-      while (cursor.moveToNext()) {
-        componentList.mApps.add(AppSearchProvider.uriToComponent(
-            Uri.parse(cursor.getString(suggestIntentData)), mContext));
-      }
-    } catch (NullPointerException ignored) {
+	Cursor cursor = null;
+	try {
+		cursor = mContext.getContentResolver().query(uri, null, null, null, null);
+		int suggestIntentData = cursor.getColumnIndex("suggest_intent_data");
+		while (cursor.moveToNext()) {
+			componentList.mApps.add(AppSearchProvider.uriToComponent(
+							Uri.parse(cursor.getString(suggestIntentData)), mContext));
+		}
+	} catch (NullPointerException ignored) {
 
-    } finally {
-      if (cursor != null) {
-        cursor.close();
-      }
-    }
+	} finally {
+		if (cursor != null) {
+			cursor.close();
+		}
+	}
 
-    Message.obtain(mUiHandler, 200, componentList).sendToTarget();
-  }
+	Message.obtain(mUiHandler, 200, componentList).sendToTarget();
+}
 
-  public void cancel(final boolean interruptActiveRequests) {
-    mInterruptActiveRequests = interruptActiveRequests;
-    mHandler.removeMessages(100);
-    if (interruptActiveRequests) {
-      mUiHandler.removeMessages(200);
-    }
-  }
+public void cancel(final boolean interruptActiveRequests) {
+	mInterruptActiveRequests = interruptActiveRequests;
+	mHandler.removeMessages(100);
+	if (interruptActiveRequests) {
+		mUiHandler.removeMessages(200);
+	}
+}
 
-  public void doSearch(final String query,
-                       final AllAppsSearchBarController.Callbacks callback) {
-    mHandler.removeMessages(100);
-    Message.obtain(mHandler, 100, new SearchResult(query, callback))
-        .sendToTarget();
-  }
+public void doSearch(final String query,
+                     final AllAppsSearchBarController.Callbacks callback) {
+	mHandler.removeMessages(100);
+	Message.obtain(mHandler, 100, new SearchResult(query, callback))
+	.sendToTarget();
+}
 
-  public boolean handleMessage(final Message message) {
-    switch (message.what) {
-    default: {
-      return false;
-    }
-    case 100: {
-      dj((SearchResult)message.obj);
-      break;
-    }
-    case 200: {
-      if (!mInterruptActiveRequests) {
-        SearchResult searchResult = (SearchResult)message.obj;
-        searchResult.mCallbacks.onSearchResult(
-            searchResult.mQuery, searchResult.mApps, searchResult.mSuggestions);
-      }
-      break;
-    }
-    }
-    return true;
-  }
+public boolean handleMessage(final Message message) {
+	switch (message.what) {
+	default: {
+		return false;
+	}
+	case 100: {
+		dj((SearchResult)message.obj);
+		break;
+	}
+	case 200: {
+		if (!mInterruptActiveRequests) {
+			SearchResult searchResult = (SearchResult)message.obj;
+			searchResult.mCallbacks.onSearchResult(
+				searchResult.mQuery, searchResult.mApps, searchResult.mSuggestions);
+		}
+		break;
+	}
+	}
+	return true;
+}
 }

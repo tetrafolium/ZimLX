@@ -20,5 +20,7 @@ package com.android.launcher3.uioverrides;
  */
 public class FastOverviewState extends OverviewState {
 
-  public FastOverviewState(final int id) { super(id); }
+public FastOverviewState(final int id) {
+	super(id);
+}
 }

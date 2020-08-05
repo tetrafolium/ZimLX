@@ -26,67 +26,69 @@ import java.util.List;
 
 public class WorkModeSwitch extends Switch {
 
-  public WorkModeSwitch(final Context context) { super(context); }
+public WorkModeSwitch(final Context context) {
+	super(context);
+}
 
-  public WorkModeSwitch(final Context context, final AttributeSet attrs) {
-    super(context, attrs);
-  }
+public WorkModeSwitch(final Context context, final AttributeSet attrs) {
+	super(context, attrs);
+}
 
-  public WorkModeSwitch(final Context context, final AttributeSet attrs,
-                        final int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-  }
+public WorkModeSwitch(final Context context, final AttributeSet attrs,
+                      final int defStyleAttr) {
+	super(context, attrs, defStyleAttr);
+}
 
-  @Override
-  public void setChecked(final boolean checked) {
-    // No-op, do not change the checked state until broadcast is received.
-  }
+@Override
+public void setChecked(final boolean checked) {
+	// No-op, do not change the checked state until broadcast is received.
+}
 
-  @Override
-  public void toggle() {
-    trySetQuietModeEnabledToAllProfilesAsync(isChecked());
-  }
+@Override
+public void toggle() {
+	trySetQuietModeEnabledToAllProfilesAsync(isChecked());
+}
 
-  private void setCheckedInternal(final boolean checked) {
-    super.setChecked(checked);
-  }
+private void setCheckedInternal(final boolean checked) {
+	super.setChecked(checked);
+}
 
-  public void refresh() {
-    UserManagerCompat userManager = UserManagerCompat.getInstance(getContext());
-    setCheckedInternal(!userManager.isAnyProfileQuietModeEnabled());
-    setEnabled(true);
-  }
+public void refresh() {
+	UserManagerCompat userManager = UserManagerCompat.getInstance(getContext());
+	setCheckedInternal(!userManager.isAnyProfileQuietModeEnabled());
+	setEnabled(true);
+}
 
-  private void trySetQuietModeEnabledToAllProfilesAsync(final boolean enabled) {
-    new AsyncTask<Void, Void, Boolean>() {
-      @Override
-      protected void onPreExecute() {
-        super.onPreExecute();
-        setEnabled(false);
-      }
+private void trySetQuietModeEnabledToAllProfilesAsync(final boolean enabled) {
+	new AsyncTask<Void, Void, Boolean>() {
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			setEnabled(false);
+		}
 
-      @Override
-      protected Boolean doInBackground(final Void... voids) {
-        UserManagerCompat userManager =
-            UserManagerCompat.getInstance(getContext());
-        List<UserHandle> userProfiles = userManager.getUserProfiles();
-        boolean showConfirm = false;
-        for (UserHandle userProfile : userProfiles) {
-          if (Process.myUserHandle().equals(userProfile)) {
-            continue;
-          }
-          showConfirm |=
-              !userManager.requestQuietModeEnabled(enabled, userProfile);
-        }
-        return showConfirm;
-      }
+		@Override
+		protected Boolean doInBackground(final Void... voids) {
+			UserManagerCompat userManager =
+				UserManagerCompat.getInstance(getContext());
+			List<UserHandle> userProfiles = userManager.getUserProfiles();
+			boolean showConfirm = false;
+			for (UserHandle userProfile : userProfiles) {
+				if (Process.myUserHandle().equals(userProfile)) {
+					continue;
+				}
+				showConfirm |=
+					!userManager.requestQuietModeEnabled(enabled, userProfile);
+			}
+			return showConfirm;
+		}
 
-      @Override
-      protected void onPostExecute(final Boolean showConfirm) {
-        if (showConfirm) {
-          setEnabled(true);
-        }
-      }
-    }.execute();
-  }
+		@Override
+		protected void onPostExecute(final Boolean showConfirm) {
+			if (showConfirm) {
+				setEnabled(true);
+			}
+		}
+	}.execute();
+}
 }

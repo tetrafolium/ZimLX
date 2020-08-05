@@ -32,81 +32,82 @@ import java.util.List;
 
 public abstract class LauncherAppsCompat {
 
-  private static final Object sInstanceLock = new Object();
-  private static LauncherAppsCompat sInstance;
+private static final Object sInstanceLock = new Object();
+private static LauncherAppsCompat sInstance;
 
-  protected LauncherAppsCompat() {}
+protected LauncherAppsCompat() {
+}
 
-  public static LauncherAppsCompat getInstance(final Context context) {
-    synchronized (sInstanceLock) {
-      if (sInstance == null) {
-        if (Utilities.ATLEAST_OREO) {
-          sInstance = new LauncherAppsCompatVO(context.getApplicationContext());
-        } else {
-          sInstance = new LauncherAppsCompatVL(context.getApplicationContext());
-        }
-      }
-      return sInstance;
-    }
-  }
+public static LauncherAppsCompat getInstance(final Context context) {
+	synchronized (sInstanceLock) {
+		if (sInstance == null) {
+			if (Utilities.ATLEAST_OREO) {
+				sInstance = new LauncherAppsCompatVO(context.getApplicationContext());
+			} else {
+				sInstance = new LauncherAppsCompatVL(context.getApplicationContext());
+			}
+		}
+		return sInstance;
+	}
+}
 
-  public abstract List<LauncherActivityInfo> getActivityList(String packageName,
-                                                             UserHandle user);
+public abstract List<LauncherActivityInfo> getActivityList(String packageName,
+                                                           UserHandle user);
 
-  public abstract LauncherActivityInfo resolveActivity(Intent intent,
-                                                       UserHandle user);
-
-  public abstract void startActivityForProfile(ComponentName component,
-                                               UserHandle user,
-                                               Rect sourceBounds, Bundle opts);
-
-  public abstract ApplicationInfo getApplicationInfo(String packageName,
-                                                     int flags,
+public abstract LauncherActivityInfo resolveActivity(Intent intent,
                                                      UserHandle user);
 
-  public abstract void showAppDetailsForProfile(ComponentName component,
-                                                UserHandle user,
-                                                Rect sourceBounds, Bundle opts);
+public abstract void startActivityForProfile(ComponentName component,
+                                             UserHandle user,
+                                             Rect sourceBounds, Bundle opts);
 
-  public abstract void
-  addOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
+public abstract ApplicationInfo getApplicationInfo(String packageName,
+                                                   int flags,
+                                                   UserHandle user);
 
-  public abstract void
-  removeOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
+public abstract void showAppDetailsForProfile(ComponentName component,
+                                              UserHandle user,
+                                              Rect sourceBounds, Bundle opts);
 
-  public abstract boolean isPackageEnabledForProfile(String packageName,
-                                                     UserHandle user);
+public abstract void
+addOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
 
-  public abstract boolean isActivityEnabledForProfile(ComponentName component,
-                                                      UserHandle user);
+public abstract void
+removeOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
 
-  public abstract List<ShortcutConfigActivityInfo>
-  getCustomShortcutActivityList(@Nullable PackageUserKey packageUser);
+public abstract boolean isPackageEnabledForProfile(String packageName,
+                                                   UserHandle user);
 
-  public void showAppDetailsForProfile(final ComponentName component,
-                                       final UserHandle user) {
-    showAppDetailsForProfile(component, user, null, null);
-  }
+public abstract boolean isActivityEnabledForProfile(ComponentName component,
+                                                    UserHandle user);
 
-  public interface OnAppsChangedCallbackCompat {
-    void onPackageRemoved(String packageName, UserHandle user);
+public abstract List<ShortcutConfigActivityInfo>
+getCustomShortcutActivityList(@Nullable PackageUserKey packageUser);
 
-    void onPackageAdded(String packageName, UserHandle user);
+public void showAppDetailsForProfile(final ComponentName component,
+                                     final UserHandle user) {
+	showAppDetailsForProfile(component, user, null, null);
+}
 
-    void onPackageChanged(String packageName, UserHandle user);
+public interface OnAppsChangedCallbackCompat {
+void onPackageRemoved(String packageName, UserHandle user);
 
-    void onPackagesAvailable(String[] packageNames, UserHandle user,
-                             boolean replacing);
+void onPackageAdded(String packageName, UserHandle user);
 
-    void onPackagesUnavailable(String[] packageNames, UserHandle user,
-                               boolean replacing);
+void onPackageChanged(String packageName, UserHandle user);
 
-    void onPackagesSuspended(String[] packageNames, UserHandle user);
+void onPackagesAvailable(String[] packageNames, UserHandle user,
+                         boolean replacing);
 
-    void onPackagesUnsuspended(String[] packageNames, UserHandle user);
+void onPackagesUnavailable(String[] packageNames, UserHandle user,
+                           boolean replacing);
 
-    void onShortcutsChanged(String packageName,
-                            List<ShortcutInfoCompat> shortcuts,
-                            UserHandle user);
-  }
+void onPackagesSuspended(String[] packageNames, UserHandle user);
+
+void onPackagesUnsuspended(String[] packageNames, UserHandle user);
+
+void onShortcutsChanged(String packageName,
+                        List<ShortcutInfoCompat> shortcuts,
+                        UserHandle user);
+}
 }

@@ -26,37 +26,39 @@ import java.util.List;
 @TargetApi(Build.VERSION_CODES.N)
 public class UserManagerCompatVN extends UserManagerCompatVM {
 
-  UserManagerCompatVN(final Context context) { super(context); }
+UserManagerCompatVN(final Context context) {
+	super(context);
+}
 
-  @Override
-  public boolean isQuietModeEnabled(final UserHandle user) {
-    try {
-      return mUserManager.isQuietModeEnabled(user);
-    } catch (SecurityException ex) {
-      return false;
-    }
-  }
+@Override
+public boolean isQuietModeEnabled(final UserHandle user) {
+	try {
+		return mUserManager.isQuietModeEnabled(user);
+	} catch (SecurityException ex) {
+		return false;
+	}
+}
 
-  @Override
-  public boolean isUserUnlocked(final UserHandle user) {
-    try {
-      return mUserManager.isUserUnlocked(user);
-    } catch (SecurityException ex) {
-      return false;
-    }
-  }
+@Override
+public boolean isUserUnlocked(final UserHandle user) {
+	try {
+		return mUserManager.isUserUnlocked(user);
+	} catch (SecurityException ex) {
+		return false;
+	}
+}
 
-  @Override
-  public boolean isAnyProfileQuietModeEnabled() {
-    List<UserHandle> userProfiles = getUserProfiles();
-    for (UserHandle userProfile : userProfiles) {
-      if (Process.myUserHandle().equals(userProfile)) {
-        continue;
-      }
-      if (isQuietModeEnabled(userProfile)) {
-        return true;
-      }
-    }
-    return false;
-  }
+@Override
+public boolean isAnyProfileQuietModeEnabled() {
+	List<UserHandle> userProfiles = getUserProfiles();
+	for (UserHandle userProfile : userProfiles) {
+		if (Process.myUserHandle().equals(userProfile)) {
+			continue;
+		}
+		if (isQuietModeEnabled(userProfile)) {
+			return true;
+		}
+	}
+	return false;
+}
 }

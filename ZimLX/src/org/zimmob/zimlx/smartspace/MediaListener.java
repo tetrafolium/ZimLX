@@ -26,241 +26,261 @@ import org.zimmob.zimlx.smartspace.NotificationsManager.OnChangeListener;
  * stop.
  */
 public class MediaListener extends MediaController.Callback
-    implements MediaSessionManager.OnActiveSessionsChangedListener,
-               OnChangeListener {
-  private static final String TAG = "MediaListener";
+	implements MediaSessionManager.OnActiveSessionsChangedListener,
+	                           OnChangeListener {
+private static final String TAG = "MediaListener";
 
-  private final ComponentName mComponent;
-  private final MediaSessionManager mManager;
-  private final Runnable mOnChange;
-  private final NotificationsManager mNotificationsManager;
-  private List<MediaController> mControllers = Collections.emptyList();
-  private MediaNotificationController mTracking;
-  private final Handler mHandler = new Handler();
-  private final Handler mWorkHandler;
+private final ComponentName mComponent;
+private final MediaSessionManager mManager;
+private final Runnable mOnChange;
+private final NotificationsManager mNotificationsManager;
+private List<MediaController> mControllers = Collections.emptyList();
+private MediaNotificationController mTracking;
+private final Handler mHandler = new Handler();
+private final Handler mWorkHandler;
 
-  MediaListener(final Context context, final Runnable onChange,
-                final Handler handler) {
-    mComponent = new ComponentName(context, NotificationListener.class);
-    mManager = (MediaSessionManager)context.getSystemService(
-        Context.MEDIA_SESSION_SERVICE);
-    mOnChange = onChange;
-    mNotificationsManager = NotificationsManager.getInstance();
-    mWorkHandler = handler;
-  }
+MediaListener(final Context context, final Runnable onChange,
+              final Handler handler) {
+	mComponent = new ComponentName(context, NotificationListener.class);
+	mManager = (MediaSessionManager)context.getSystemService(
+		Context.MEDIA_SESSION_SERVICE);
+	mOnChange = onChange;
+	mNotificationsManager = NotificationsManager.getInstance();
+	mWorkHandler = handler;
+}
 
-  void onResume() {
-    try {
-      mManager.addOnActiveSessionsChangedListener(this, mComponent);
-    } catch (SecurityException ignored) {
-    }
-    onActiveSessionsChanged(null); // Bind all current controllers.
-    mNotificationsManager.addListener(this);
-  }
+void onResume() {
+	try {
+		mManager.addOnActiveSessionsChangedListener(this, mComponent);
+	} catch (SecurityException ignored) {
+	}
+	onActiveSessionsChanged(null); // Bind all current controllers.
+	mNotificationsManager.addListener(this);
+}
 
-  void onPause() {
-    mManager.removeOnActiveSessionsChangedListener(this);
-    onActiveSessionsChanged(
-        Collections.emptyList()); // Unbind all previous controllers.
-    mNotificationsManager.removeListener(this);
-  }
+void onPause() {
+	mManager.removeOnActiveSessionsChangedListener(this);
+	onActiveSessionsChanged(
+		Collections.emptyList()); // Unbind all previous controllers.
+	mNotificationsManager.removeListener(this);
+}
 
-  MediaNotificationController getTracking() { return mTracking; }
+MediaNotificationController getTracking() {
+	return mTracking;
+}
 
-  String getPackage() { return mTracking.controller.getPackageName(); }
+String getPackage() {
+	return mTracking.controller.getPackageName();
+}
 
-  private void updateControllers(final List<MediaController> controllers) {
-    for (MediaController mc : mControllers) {
-      mc.unregisterCallback(this);
-    }
-    for (MediaController mc : controllers) {
-      mc.registerCallback(this);
-    }
-    mControllers = controllers;
-  }
+private void updateControllers(final List<MediaController> controllers) {
+	for (MediaController mc : mControllers) {
+		mc.unregisterCallback(this);
+	}
+	for (MediaController mc : controllers) {
+		mc.registerCallback(this);
+	}
+	mControllers = controllers;
+}
 
-  @Override
-  public void onActiveSessionsChanged(final List<MediaController> controllers) {
-    mWorkHandler.post(() -> updateTracking(controllers));
-  }
+@Override
+public void onActiveSessionsChanged(final List<MediaController> controllers) {
+	mWorkHandler.post(()->updateTracking(controllers));
+}
 
-  private void updateTracking(final List<MediaController> controllers) {
-    if (controllers == null) {
-      try {
-        controllers = mManager.getActiveSessions(mComponent);
-      } catch (SecurityException ignored) {
-        controllers = Collections.emptyList();
-      }
-    }
-    updateControllers(controllers);
+private void updateTracking(final List<MediaController> controllers) {
+	if (controllers == null) {
+		try {
+			controllers = mManager.getActiveSessions(mComponent);
+		} catch (SecurityException ignored) {
+			controllers = Collections.emptyList();
+		}
+	}
+	updateControllers(controllers);
 
-    if (mTracking != null) {
-      mTracking.reloadInfo();
-    }
+	if (mTracking != null) {
+		mTracking.reloadInfo();
+	}
 
-    // If the current controller is not paused or playing, stop tracking it.
-    if (mTracking != null && (!controllers.contains(mTracking.controller) ||
-                              !mTracking.isPausedOrPlaying())) {
-      mTracking = null;
-    }
+	// If the current controller is not paused or playing, stop tracking it.
+	if (mTracking != null && (!controllers.contains(mTracking.controller) ||
+	                          !mTracking.isPausedOrPlaying())) {
+		mTracking = null;
+	}
 
-    for (MediaController mc : controllers) {
-      MediaNotificationController mnc = new MediaNotificationController(mc);
-      // Either we are not tracking a controller and this one is valid,
-      // or this one is playing while the one we track is not.
-      if ((mTracking == null && mnc.isPausedOrPlaying()) ||
-          (mTracking != null && mnc.isPlaying() && !mTracking.isPlaying())) {
-        mTracking = mnc;
-      }
-    }
+	for (MediaController mc : controllers) {
+		MediaNotificationController mnc = new MediaNotificationController(mc);
+		// Either we are not tracking a controller and this one is valid,
+		// or this one is playing while the one we track is not.
+		if ((mTracking == null && mnc.isPausedOrPlaying()) ||
+		    (mTracking != null && mnc.isPlaying() && !mTracking.isPlaying())) {
+			mTracking = mnc;
+		}
+	}
 
-    mHandler.removeCallbacks(mOnChange);
-    mHandler.post(mOnChange);
-  }
+	mHandler.removeCallbacks(mOnChange);
+	mHandler.post(mOnChange);
+}
 
-  private void pressButton(final int keyCode) {
-    if (mTracking != null) {
-      mTracking.pressButton(keyCode);
-    }
-  }
+private void pressButton(final int keyCode) {
+	if (mTracking != null) {
+		mTracking.pressButton(keyCode);
+	}
+}
 
-  void toggle(final boolean finalClick) {
-    if (!finalClick) {
-      Log.d(TAG, "Toggle");
-      pressButton(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
-    }
-  }
+void toggle(final boolean finalClick) {
+	if (!finalClick) {
+		Log.d(TAG, "Toggle");
+		pressButton(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
+	}
+}
 
-  void next(final boolean finalClick) {
-    if (finalClick) {
-      Log.d(TAG, "Next");
-      pressButton(KeyEvent.KEYCODE_MEDIA_NEXT);
-      pressButton(KeyEvent.KEYCODE_MEDIA_PLAY);
-    }
-  }
+void next(final boolean finalClick) {
+	if (finalClick) {
+		Log.d(TAG, "Next");
+		pressButton(KeyEvent.KEYCODE_MEDIA_NEXT);
+		pressButton(KeyEvent.KEYCODE_MEDIA_PLAY);
+	}
+}
 
-  void previous(final boolean finalClick) {
-    if (finalClick) {
-      Log.d(TAG, "Previous");
-      pressButton(KeyEvent.KEYCODE_MEDIA_PREVIOUS);
-      pressButton(KeyEvent.KEYCODE_MEDIA_PLAY);
-    }
-  }
+void previous(final boolean finalClick) {
+	if (finalClick) {
+		Log.d(TAG, "Previous");
+		pressButton(KeyEvent.KEYCODE_MEDIA_PREVIOUS);
+		pressButton(KeyEvent.KEYCODE_MEDIA_PLAY);
+	}
+}
 
-  // If there is no notification, consider the state to be stopped.
-  private boolean hasNotification(final @Nullable MediaController mc) {
-    return findNotification(mc) != null;
-  }
+// If there is no notification, consider the state to be stopped.
+private boolean hasNotification(final @Nullable MediaController mc) {
+	return findNotification(mc) != null;
+}
 
-  private StatusBarNotification findNotification(final
-                                                 @Nullable MediaController mc) {
-    if (mc == null)
-      return null;
-    MediaSession.Token controllerToken = mc.getSessionToken();
-    for (StatusBarNotification notif :
-         mNotificationsManager.getNotifications()) {
-      Bundle extras = notif.getNotification().extras;
-      MediaSession.Token notifToken =
-          extras.getParcelable(Notification.EXTRA_MEDIA_SESSION);
-      if (controllerToken.equals(notifToken)) {
-        return notif;
-      }
-    }
-    return null;
-  }
+private StatusBarNotification findNotification(final
+                                               @Nullable MediaController mc) {
+	if (mc == null)
+		return null;
+	MediaSession.Token controllerToken = mc.getSessionToken();
+	for (StatusBarNotification notif :
+	     mNotificationsManager.getNotifications()) {
+		Bundle extras = notif.getNotification().extras;
+		MediaSession.Token notifToken =
+			extras.getParcelable(Notification.EXTRA_MEDIA_SESSION);
+		if (controllerToken.equals(notifToken)) {
+			return notif;
+		}
+	}
+	return null;
+}
 
-  /**
-   * Events that refresh the current handler.
-   */
-  public void onPlaybackStateChanged(final PlaybackState state) {
-    super.onPlaybackStateChanged(state);
-    onActiveSessionsChanged(null);
-  }
+/**
+ * Events that refresh the current handler.
+ */
+public void onPlaybackStateChanged(final PlaybackState state) {
+	super.onPlaybackStateChanged(state);
+	onActiveSessionsChanged(null);
+}
 
-  public void onMetadataChanged(final MediaMetadata metadata) {
-    super.onMetadataChanged(metadata);
-    onActiveSessionsChanged(null);
-  }
+public void onMetadataChanged(final MediaMetadata metadata) {
+	super.onMetadataChanged(metadata);
+	onActiveSessionsChanged(null);
+}
 
-  @Override
-  public void onNotificationsChanged() {
-    onActiveSessionsChanged(null);
-  }
+@Override
+public void onNotificationsChanged() {
+	onActiveSessionsChanged(null);
+}
 
-  public class MediaInfo {
+public class MediaInfo {
 
-    private CharSequence title;
-    private CharSequence artist;
-    private CharSequence album;
+private CharSequence title;
+private CharSequence artist;
+private CharSequence album;
 
-    public CharSequence getTitle() { return title; }
+public CharSequence getTitle() {
+	return title;
+}
 
-    public CharSequence getArtist() { return artist; }
+public CharSequence getArtist() {
+	return artist;
+}
 
-    public CharSequence getAlbum() { return album; }
-  }
+public CharSequence getAlbum() {
+	return album;
+}
+}
 
-  class MediaNotificationController {
+class MediaNotificationController {
 
-    private MediaController controller;
-    private StatusBarNotification sbn;
-    private MediaInfo info;
+private MediaController controller;
+private StatusBarNotification sbn;
+private MediaInfo info;
 
-    private MediaNotificationController(final MediaController controller) {
-      this.controller = controller;
-      this.sbn = findNotification(controller);
-      reloadInfo();
-    }
+private MediaNotificationController(final MediaController controller) {
+	this.controller = controller;
+	this.sbn = findNotification(controller);
+	reloadInfo();
+}
 
-    private boolean hasNotification() { return sbn != null; }
+private boolean hasNotification() {
+	return sbn != null;
+}
 
-    private boolean hasTitle() { return info != null && info.title != null; }
+private boolean hasTitle() {
+	return info != null && info.title != null;
+}
 
-    private boolean isPlaying() {
-      return (!Utilities.ATLEAST_NOUGAT || hasNotification()) && hasTitle() &&
-          controller.getPlaybackState() != null &&
-          controller.getPlaybackState().getState() ==
-              PlaybackState.STATE_PLAYING;
-    }
+private boolean isPlaying() {
+	return (!Utilities.ATLEAST_NOUGAT || hasNotification()) && hasTitle() &&
+	       controller.getPlaybackState() != null &&
+	       controller.getPlaybackState().getState() ==
+	       PlaybackState.STATE_PLAYING;
+}
 
-    private boolean isPausedOrPlaying() {
-      if (Utilities.ATLEAST_NOUGAT) {
-        if (!hasNotification() || !hasTitle() ||
-            controller.getPlaybackState() == null) {
-          return false;
-        }
-        int state = controller.getPlaybackState().getState();
-        return state == PlaybackState.STATE_PAUSED ||
-            state == PlaybackState.STATE_PLAYING;
-      }
-      return isPlaying();
-    }
+private boolean isPausedOrPlaying() {
+	if (Utilities.ATLEAST_NOUGAT) {
+		if (!hasNotification() || !hasTitle() ||
+		    controller.getPlaybackState() == null) {
+			return false;
+		}
+		int state = controller.getPlaybackState().getState();
+		return state == PlaybackState.STATE_PAUSED ||
+		       state == PlaybackState.STATE_PLAYING;
+	}
+	return isPlaying();
+}
 
-    private void pressButton(final int keyCode) {
-      controller.dispatchMediaButtonEvent(
-          new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));
-      controller.dispatchMediaButtonEvent(
-          new KeyEvent(KeyEvent.ACTION_UP, keyCode));
-    }
+private void pressButton(final int keyCode) {
+	controller.dispatchMediaButtonEvent(
+		new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));
+	controller.dispatchMediaButtonEvent(
+		new KeyEvent(KeyEvent.ACTION_UP, keyCode));
+}
 
-    private void reloadInfo() {
-      MediaMetadata metadata = controller.getMetadata();
-      if (metadata != null) {
-        info = new MediaInfo();
-        info.title = metadata.getText(MediaMetadata.METADATA_KEY_TITLE);
-        info.artist = metadata.getText(MediaMetadata.METADATA_KEY_ARTIST);
-        info.album = metadata.getText(MediaMetadata.METADATA_KEY_ALBUM);
-      } else if (sbn != null) {
-        info = new MediaInfo();
-        info.title = sbn.getNotification().extras.getCharSequence(
-            Notification.EXTRA_TITLE);
-      }
-    }
+private void reloadInfo() {
+	MediaMetadata metadata = controller.getMetadata();
+	if (metadata != null) {
+		info = new MediaInfo();
+		info.title = metadata.getText(MediaMetadata.METADATA_KEY_TITLE);
+		info.artist = metadata.getText(MediaMetadata.METADATA_KEY_ARTIST);
+		info.album = metadata.getText(MediaMetadata.METADATA_KEY_ALBUM);
+	} else if (sbn != null) {
+		info = new MediaInfo();
+		info.title = sbn.getNotification().extras.getCharSequence(
+			Notification.EXTRA_TITLE);
+	}
+}
 
-    public String getPackageName() { return controller.getPackageName(); }
+public String getPackageName() {
+	return controller.getPackageName();
+}
 
-    public StatusBarNotification getSbn() { return sbn; }
+public StatusBarNotification getSbn() {
+	return sbn;
+}
 
-    public MediaInfo getInfo() { return info; }
-  }
+public MediaInfo getInfo() {
+	return info;
+}
+}
 }

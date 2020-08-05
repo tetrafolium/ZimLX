@@ -28,61 +28,61 @@ import java.lang.reflect.Method;
 @TargetApi(27)
 public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
 
-  private static final String TAG = "WMCompatVOMR1";
+private static final String TAG = "WMCompatVOMR1";
 
-  private final WallpaperManager mWm;
-  private Method mWCColorHintsMethod;
+private final WallpaperManager mWm;
+private Method mWCColorHintsMethod;
 
-  WallpaperManagerCompatVOMR1(final Context context) throws Throwable {
-    mWm = context.getSystemService(WallpaperManager.class);
-    String className = WallpaperColors.class.getName();
-    try {
-      mWCColorHintsMethod =
-          WallpaperColors.class.getDeclaredMethod("getColorHints");
-    } catch (Exception exc) {
-      Log.e(TAG, "getColorHints not available", exc);
-    }
-  }
+WallpaperManagerCompatVOMR1(final Context context) throws Throwable {
+	mWm = context.getSystemService(WallpaperManager.class);
+	String className = WallpaperColors.class.getName();
+	try {
+		mWCColorHintsMethod =
+			WallpaperColors.class.getDeclaredMethod("getColorHints");
+	} catch (Exception exc) {
+		Log.e(TAG, "getColorHints not available", exc);
+	}
+}
 
-  @Nullable
-  @Override
-  public WallpaperColorsCompat getWallpaperColors(final int which) {
-    return convertColorsObject(mWm.getWallpaperColors(which));
-  }
+@Nullable
+@Override
+public WallpaperColorsCompat getWallpaperColors(final int which) {
+	return convertColorsObject(mWm.getWallpaperColors(which));
+}
 
-  @Override
-  public void
-  addOnColorsChangedListener(final OnColorsChangedListenerCompat listener) {
-    OnColorsChangedListener onChangeListener = new OnColorsChangedListener() {
-      @Override
-      public void onColorsChanged(final WallpaperColors colors,
-                                  final int which) {
-        listener.onColorsChanged(convertColorsObject(colors), which);
-      }
-    };
-    mWm.addOnColorsChangedListener(onChangeListener, null);
-  }
+@Override
+public void
+addOnColorsChangedListener(final OnColorsChangedListenerCompat listener) {
+	OnColorsChangedListener onChangeListener = new OnColorsChangedListener() {
+		@Override
+		public void onColorsChanged(final WallpaperColors colors,
+		                            final int which) {
+			listener.onColorsChanged(convertColorsObject(colors), which);
+		}
+	};
+	mWm.addOnColorsChangedListener(onChangeListener, null);
+}
 
-  private WallpaperColorsCompat
-  convertColorsObject(final WallpaperColors colors) {
-    if (colors == null) {
-      return null;
-    }
-    Color primary = colors.getPrimaryColor();
-    Color secondary = colors.getSecondaryColor();
-    Color tertiary = colors.getTertiaryColor();
-    int primaryVal = primary != null ? primary.toArgb() : 0;
-    int secondaryVal = secondary != null ? secondary.toArgb() : 0;
-    int tertiaryVal = tertiary != null ? tertiary.toArgb() : 0;
-    int colorHints = 0;
-    try {
-      if (mWCColorHintsMethod != null) {
-        colorHints = (Integer)mWCColorHintsMethod.invoke(colors);
-      }
-    } catch (Exception exc) {
-      Log.e(TAG, "error calling color hints", exc);
-    }
-    return new WallpaperColorsCompat(primaryVal, secondaryVal, tertiaryVal,
-                                     colorHints);
-  }
+private WallpaperColorsCompat
+convertColorsObject(final WallpaperColors colors) {
+	if (colors == null) {
+		return null;
+	}
+	Color primary = colors.getPrimaryColor();
+	Color secondary = colors.getSecondaryColor();
+	Color tertiary = colors.getTertiaryColor();
+	int primaryVal = primary != null ? primary.toArgb() : 0;
+	int secondaryVal = secondary != null ? secondary.toArgb() : 0;
+	int tertiaryVal = tertiary != null ? tertiary.toArgb() : 0;
+	int colorHints = 0;
+	try {
+		if (mWCColorHintsMethod != null) {
+			colorHints = (Integer)mWCColorHintsMethod.invoke(colors);
+		}
+	} catch (Exception exc) {
+		Log.e(TAG, "error calling color hints", exc);
+	}
+	return new WallpaperColorsCompat(primaryVal, secondaryVal, tertiaryVal,
+	                                 colorHints);
+}
 }

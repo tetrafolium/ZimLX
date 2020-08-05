@@ -26,5 +26,7 @@ import com.android.launcher3.util.LooperExecutor;
  */
 public class MainThreadExecutor extends LooperExecutor {
 
-  public MainThreadExecutor() { super(Looper.getMainLooper()); }
+public MainThreadExecutor() {
+	super(Looper.getMainLooper());
+}
 }

@@ -36,65 +36,65 @@ import java.util.ArrayList;
  * shortcuts in deep shortcuts menu.
  */
 public class ShortcutMenuAccessibilityDelegate
-    extends LauncherAccessibilityDelegate {
+	extends LauncherAccessibilityDelegate {
 
-  private static final int DISMISS_NOTIFICATION =
-      R.id.action_dismiss_notification;
+private static final int DISMISS_NOTIFICATION =
+	R.id.action_dismiss_notification;
 
-  public ShortcutMenuAccessibilityDelegate(final Launcher launcher) {
-    super(launcher);
-    mActions.put(DISMISS_NOTIFICATION,
-                 new AccessibilityAction(
-                     DISMISS_NOTIFICATION,
-                     launcher.getText(R.string.action_dismiss_notification)));
-  }
+public ShortcutMenuAccessibilityDelegate(final Launcher launcher) {
+	super(launcher);
+	mActions.put(DISMISS_NOTIFICATION,
+	             new AccessibilityAction(
+			     DISMISS_NOTIFICATION,
+			     launcher.getText(R.string.action_dismiss_notification)));
+}
 
-  @Override
-  public void addSupportedActions(final View host,
-                                  final AccessibilityNodeInfo info,
-                                  final boolean fromKeyboard) {
-    if ((host.getParent() instanceof DeepShortcutView)) {
-      info.addAction(mActions.get(ADD_TO_WORKSPACE));
-    } else if ((host instanceof NotificationMainView) && (((NotificationMainView)host).canChildBeDismissed())) {
-      info.addAction(mActions.get(DISMISS_NOTIFICATION));
-    }
-  }
+@Override
+public void addSupportedActions(final View host,
+                                final AccessibilityNodeInfo info,
+                                final boolean fromKeyboard) {
+	if ((host.getParent() instanceof DeepShortcutView)) {
+		info.addAction(mActions.get(ADD_TO_WORKSPACE));
+	} else if ((host instanceof NotificationMainView) && (((NotificationMainView)host).canChildBeDismissed())) {
+		info.addAction(mActions.get(DISMISS_NOTIFICATION));
+	}
+}
 
-  @Override
-  public boolean performAction(final View host, final ItemInfo item,
-                               final int action) {
-    if (action == ADD_TO_WORKSPACE) {
-      if (!(host.getParent() instanceof DeepShortcutView)) {
-        return false;
-      }
-      final ShortcutInfo info =
-          ((DeepShortcutView)host.getParent()).getFinalInfo();
-      final int[] coordinates = new int[2];
-      final long screenId = findSpaceOnWorkspace(item, coordinates);
-      Runnable onComplete = new Runnable() {
-        @Override
-        public void run() {
-          mLauncher.getModelWriter().addItemToDatabase(
-              info, LauncherSettings.Favorites.CONTAINER_DESKTOP, screenId,
-              coordinates[0], coordinates[1]);
-          ArrayList<ItemInfo> itemList = new ArrayList<>();
-          itemList.add(info);
-          mLauncher.bindItems(itemList, true);
-          AbstractFloatingView.closeAllOpenViews(mLauncher);
-          announceConfirmation(R.string.item_added_to_workspace);
-        }
-      };
+@Override
+public boolean performAction(final View host, final ItemInfo item,
+                             final int action) {
+	if (action == ADD_TO_WORKSPACE) {
+		if (!(host.getParent() instanceof DeepShortcutView)) {
+			return false;
+		}
+		final ShortcutInfo info =
+			((DeepShortcutView)host.getParent()).getFinalInfo();
+		final int[] coordinates = new int[2];
+		final long screenId = findSpaceOnWorkspace(item, coordinates);
+		Runnable onComplete = new Runnable() {
+			@Override
+			public void run() {
+				mLauncher.getModelWriter().addItemToDatabase(
+					info, LauncherSettings.Favorites.CONTAINER_DESKTOP, screenId,
+					coordinates[0], coordinates[1]);
+				ArrayList<ItemInfo> itemList = new ArrayList<>();
+				itemList.add(info);
+				mLauncher.bindItems(itemList, true);
+				AbstractFloatingView.closeAllOpenViews(mLauncher);
+				announceConfirmation(R.string.item_added_to_workspace);
+			}
+		};
 
-      mLauncher.getStateManager().goToState(NORMAL, true, onComplete);
-      return true;
-    } else if (action == DISMISS_NOTIFICATION) {
-      if (!(host instanceof NotificationMainView)) {
-        return false;
-      }
-      ((NotificationMainView)host).onChildDismissed();
-      announceConfirmation(R.string.notification_dismissed);
-      return true;
-    }
-    return false;
-  }
+		mLauncher.getStateManager().goToState(NORMAL, true, onComplete);
+		return true;
+	} else if (action == DISMISS_NOTIFICATION) {
+		if (!(host instanceof NotificationMainView)) {
+			return false;
+		}
+		((NotificationMainView)host).onChildDismissed();
+		announceConfirmation(R.string.notification_dismissed);
+		return true;
+	}
+	return false;
+}
 }

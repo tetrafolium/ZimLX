@@ -33,276 +33,294 @@ import java.util.List;
  * start delays on child animations or sequential playbacks.
  */
 public abstract class AnimatorPlaybackController
-    implements ValueAnimator.AnimatorUpdateListener {
+	implements ValueAnimator.AnimatorUpdateListener {
 
-  public static AnimatorPlaybackController wrap(final AnimatorSet anim,
-                                                final long duration) {
-    return wrap(anim, duration, null);
-  }
+public static AnimatorPlaybackController wrap(final AnimatorSet anim,
+                                              final long duration) {
+	return wrap(anim, duration, null);
+}
 
-  /**
-   * Creates an animation controller for the provided animation.
-   * The actual duration does not matter as the animation is manually
-   * controlled. It just needs to be larger than the total number of pixels so
-   * that we don't have jittering due to float (animation-fraction * total
-   * duration) to int conversion.
-   */
-  public static AnimatorPlaybackController
-  wrap(final AnimatorSet anim, final long duration,
-       final Runnable onCancelRunnable) {
+/**
+ * Creates an animation controller for the provided animation.
+ * The actual duration does not matter as the animation is manually
+ * controlled. It just needs to be larger than the total number of pixels so
+ * that we don't have jittering due to float (animation-fraction * total
+ * duration) to int conversion.
+ */
+public static AnimatorPlaybackController
+wrap(final AnimatorSet anim, final long duration,
+     final Runnable onCancelRunnable) {
 
-    /**
-     * TODO: use {@link AnimatorSet#setCurrentPlayTime(long)} once b/68382377 is
-     * fixed.
-     */
-    return new AnimatorPlaybackControllerVL(anim, duration, onCancelRunnable);
-  }
+	/**
+	 * TODO: use {@link AnimatorSet#setCurrentPlayTime(long)} once b/68382377 is
+	 * fixed.
+	 */
+	return new AnimatorPlaybackControllerVL(anim, duration, onCancelRunnable);
+}
 
-  private final ValueAnimator mAnimationPlayer;
-  private final long mDuration;
+private final ValueAnimator mAnimationPlayer;
+private final long mDuration;
 
-  protected final AnimatorSet mAnim;
+protected final AnimatorSet mAnim;
 
-  protected float mCurrentFraction;
-  private Runnable mEndAction;
+protected float mCurrentFraction;
+private Runnable mEndAction;
 
-  protected boolean mTargetCancelled = false;
-  protected Runnable mOnCancelRunnable;
+protected boolean mTargetCancelled = false;
+protected Runnable mOnCancelRunnable;
 
-  protected AnimatorPlaybackController(final AnimatorSet anim,
-                                       final long duration,
-                                       final Runnable onCancelRunnable) {
-    mAnim = anim;
-    mDuration = duration;
-    mOnCancelRunnable = onCancelRunnable;
+protected AnimatorPlaybackController(final AnimatorSet anim,
+                                     final long duration,
+                                     final Runnable onCancelRunnable) {
+	mAnim = anim;
+	mDuration = duration;
+	mOnCancelRunnable = onCancelRunnable;
 
-    mAnimationPlayer = ValueAnimator.ofFloat(0, 1);
-    mAnimationPlayer.setInterpolator(LINEAR);
-    mAnimationPlayer.addListener(new OnAnimationEndDispatcher());
-    mAnimationPlayer.addUpdateListener(this);
+	mAnimationPlayer = ValueAnimator.ofFloat(0, 1);
+	mAnimationPlayer.setInterpolator(LINEAR);
+	mAnimationPlayer.addListener(new OnAnimationEndDispatcher());
+	mAnimationPlayer.addUpdateListener(this);
 
-    mAnim.addListener(new AnimatorListenerAdapter() {
-      @Override
-      public void onAnimationCancel(final Animator animation) {
-        mTargetCancelled = true;
-        if (mOnCancelRunnable != null) {
-          mOnCancelRunnable.run();
-          mOnCancelRunnable = null;
-        }
-      }
+	mAnim.addListener(new AnimatorListenerAdapter() {
+			@Override
+			public void onAnimationCancel(final Animator animation) {
+			        mTargetCancelled = true;
+			        if (mOnCancelRunnable != null) {
+			                mOnCancelRunnable.run();
+			                mOnCancelRunnable = null;
+				}
+			}
 
-      @Override
-      public void onAnimationEnd(final Animator animation) {
-        mTargetCancelled = false;
-        mOnCancelRunnable = null;
-      }
+			@Override
+			public void onAnimationEnd(final Animator animation) {
+			        mTargetCancelled = false;
+			        mOnCancelRunnable = null;
+			}
 
-      @Override
-      public void onAnimationStart(final Animator animation) {
-        mTargetCancelled = false;
-      }
-    });
-  }
+			@Override
+			public void onAnimationStart(final Animator animation) {
+			        mTargetCancelled = false;
+			}
+		});
+}
 
-  public AnimatorSet getTarget() { return mAnim; }
+public AnimatorSet getTarget() {
+	return mAnim;
+}
 
-  public long getDuration() { return mDuration; }
+public long getDuration() {
+	return mDuration;
+}
 
-  public TimeInterpolator getInterpolator() {
-    return mAnim.getInterpolator() != null ? mAnim.getInterpolator() : LINEAR;
-  }
+public TimeInterpolator getInterpolator() {
+	return mAnim.getInterpolator() != null ? mAnim.getInterpolator() : LINEAR;
+}
 
-  /**
-   * Starts playing the animation forward from current position.
-   */
-  public void start() {
-    mAnimationPlayer.setFloatValues(mCurrentFraction, 1);
-    mAnimationPlayer.setDuration(clampDuration(1 - mCurrentFraction));
-    mAnimationPlayer.start();
-  }
+/**
+ * Starts playing the animation forward from current position.
+ */
+public void start() {
+	mAnimationPlayer.setFloatValues(mCurrentFraction, 1);
+	mAnimationPlayer.setDuration(clampDuration(1 - mCurrentFraction));
+	mAnimationPlayer.start();
+}
 
-  /**
-   * Starts playing the animation backwards from current position
-   */
-  public void reverse() {
-    mAnimationPlayer.setFloatValues(mCurrentFraction, 0);
-    mAnimationPlayer.setDuration(clampDuration(mCurrentFraction));
-    mAnimationPlayer.start();
-  }
+/**
+ * Starts playing the animation backwards from current position
+ */
+public void reverse() {
+	mAnimationPlayer.setFloatValues(mCurrentFraction, 0);
+	mAnimationPlayer.setDuration(clampDuration(mCurrentFraction));
+	mAnimationPlayer.start();
+}
 
-  /**
-   * Pauses the currently playing animation.
-   */
-  public void pause() { mAnimationPlayer.cancel(); }
+/**
+ * Pauses the currently playing animation.
+ */
+public void pause() {
+	mAnimationPlayer.cancel();
+}
 
-  /**
-   * Returns the underlying animation used for controlling the set.
-   */
-  public ValueAnimator getAnimationPlayer() { return mAnimationPlayer; }
+/**
+ * Returns the underlying animation used for controlling the set.
+ */
+public ValueAnimator getAnimationPlayer() {
+	return mAnimationPlayer;
+}
 
-  /**
-   * Sets the current animation position and updates all the child animators
-   * accordingly.
-   */
-  public abstract void setPlayFraction(float fraction);
+/**
+ * Sets the current animation position and updates all the child animators
+ * accordingly.
+ */
+public abstract void setPlayFraction(float fraction);
 
-  public float getProgressFraction() { return mCurrentFraction; }
+public float getProgressFraction() {
+	return mCurrentFraction;
+}
 
-  /**
-   * Sets the action to be called when the animation is completed. Also clears
-   * any previously set action.
-   */
-  public void setEndAction(final Runnable runnable) { mEndAction = runnable; }
+/**
+ * Sets the action to be called when the animation is completed. Also clears
+ * any previously set action.
+ */
+public void setEndAction(final Runnable runnable) {
+	mEndAction = runnable;
+}
 
-  @Override
-  public void onAnimationUpdate(final ValueAnimator valueAnimator) {
-    setPlayFraction((float)valueAnimator.getAnimatedValue());
-  }
+@Override
+public void onAnimationUpdate(final ValueAnimator valueAnimator) {
+	setPlayFraction((float)valueAnimator.getAnimatedValue());
+}
 
-  protected long clampDuration(final float fraction) {
-    float playPos = mDuration * fraction;
-    if (playPos <= 0) {
-      return 0;
-    } else {
-      return Math.min((long)playPos, mDuration);
-    }
-  }
+protected long clampDuration(final float fraction) {
+	float playPos = mDuration * fraction;
+	if (playPos <= 0) {
+		return 0;
+	} else {
+		return Math.min((long)playPos, mDuration);
+	}
+}
 
-  public void dispatchOnStart() { dispatchOnStartRecursively(mAnim); }
+public void dispatchOnStart() {
+	dispatchOnStartRecursively(mAnim);
+}
 
-  private void dispatchOnStartRecursively(final Animator animator) {
-    for (AnimatorListener l : nonNullList(animator.getListeners())) {
-      l.onAnimationStart(animator);
-    }
+private void dispatchOnStartRecursively(final Animator animator) {
+	for (AnimatorListener l : nonNullList(animator.getListeners())) {
+		l.onAnimationStart(animator);
+	}
 
-    if (animator instanceof AnimatorSet) {
-      for (Animator anim :
-           nonNullList(((AnimatorSet)animator).getChildAnimations())) {
-        dispatchOnStartRecursively(anim);
-      }
-    }
-  }
+	if (animator instanceof AnimatorSet) {
+		for (Animator anim :
+		     nonNullList(((AnimatorSet)animator).getChildAnimations())) {
+			dispatchOnStartRecursively(anim);
+		}
+	}
+}
 
-  public void dispatchOnCancel() { dispatchOnCancelRecursively(mAnim); }
+public void dispatchOnCancel() {
+	dispatchOnCancelRecursively(mAnim);
+}
 
-  private void dispatchOnCancelRecursively(final Animator animator) {
-    for (AnimatorListener l : nonNullList(animator.getListeners())) {
-      l.onAnimationCancel(animator);
-    }
+private void dispatchOnCancelRecursively(final Animator animator) {
+	for (AnimatorListener l : nonNullList(animator.getListeners())) {
+		l.onAnimationCancel(animator);
+	}
 
-    if (animator instanceof AnimatorSet) {
-      for (Animator anim :
-           nonNullList(((AnimatorSet)animator).getChildAnimations())) {
-        dispatchOnCancelRecursively(anim);
-      }
-    }
-  }
+	if (animator instanceof AnimatorSet) {
+		for (Animator anim :
+		     nonNullList(((AnimatorSet)animator).getChildAnimations())) {
+			dispatchOnCancelRecursively(anim);
+		}
+	}
+}
 
-  public void dispatchSetInterpolator(final TimeInterpolator interpolator) {
-    dispatchSetInterpolatorRecursively(mAnim, interpolator);
-  }
+public void dispatchSetInterpolator(final TimeInterpolator interpolator) {
+	dispatchSetInterpolatorRecursively(mAnim, interpolator);
+}
 
-  private void
-  dispatchSetInterpolatorRecursively(final Animator anim,
-                                     final TimeInterpolator interpolator) {
-    anim.setInterpolator(interpolator);
-    if (anim instanceof AnimatorSet) {
-      for (Animator child :
-           nonNullList(((AnimatorSet)anim).getChildAnimations())) {
-        dispatchSetInterpolatorRecursively(child, interpolator);
-      }
-    }
-  }
+private void
+dispatchSetInterpolatorRecursively(final Animator anim,
+                                   final TimeInterpolator interpolator) {
+	anim.setInterpolator(interpolator);
+	if (anim instanceof AnimatorSet) {
+		for (Animator child :
+		     nonNullList(((AnimatorSet)anim).getChildAnimations())) {
+			dispatchSetInterpolatorRecursively(child, interpolator);
+		}
+	}
+}
 
-  public void setOnCancelRunnable(final Runnable runnable) {
-    mOnCancelRunnable = runnable;
-  }
+public void setOnCancelRunnable(final Runnable runnable) {
+	mOnCancelRunnable = runnable;
+}
 
-  public Runnable getOnCancelRunnable() { return mOnCancelRunnable; }
+public Runnable getOnCancelRunnable() {
+	return mOnCancelRunnable;
+}
 
-  public static class AnimatorPlaybackControllerVL
-      extends AnimatorPlaybackController {
+public static class AnimatorPlaybackControllerVL
+	extends AnimatorPlaybackController {
 
-    private final ValueAnimator[] mChildAnimations;
+private final ValueAnimator[] mChildAnimations;
 
-    private AnimatorPlaybackControllerVL(final AnimatorSet anim,
-                                         final long duration,
-                                         final Runnable onCancelRunnable) {
-      super(anim, duration, onCancelRunnable);
+private AnimatorPlaybackControllerVL(final AnimatorSet anim,
+                                     final long duration,
+                                     final Runnable onCancelRunnable) {
+	super(anim, duration, onCancelRunnable);
 
-      // Build animation list
-      ArrayList<ValueAnimator> childAnims = new ArrayList<>();
-      getAnimationsRecur(mAnim, childAnims);
-      mChildAnimations =
-          childAnims.toArray(new ValueAnimator[childAnims.size()]);
-    }
+	// Build animation list
+	ArrayList<ValueAnimator> childAnims = new ArrayList<>();
+	getAnimationsRecur(mAnim, childAnims);
+	mChildAnimations =
+		childAnims.toArray(new ValueAnimator[childAnims.size()]);
+}
 
-    private void getAnimationsRecur(final AnimatorSet anim,
-                                    final ArrayList<ValueAnimator> out) {
-      long forceDuration = anim.getDuration();
-      TimeInterpolator forceInterpolator = anim.getInterpolator();
-      for (Animator child : anim.getChildAnimations()) {
-        if (forceDuration > 0) {
-          child.setDuration(forceDuration);
-        }
-        if (forceInterpolator != null) {
-          child.setInterpolator(forceInterpolator);
-        }
-        if (child instanceof ValueAnimator) {
-          out.add((ValueAnimator)child);
-        } else if (child instanceof AnimatorSet) {
-          getAnimationsRecur((AnimatorSet)child, out);
-        } else {
-          throw new RuntimeException("Unknown animation type " + child);
-        }
-      }
-    }
+private void getAnimationsRecur(final AnimatorSet anim,
+                                final ArrayList<ValueAnimator> out) {
+	long forceDuration = anim.getDuration();
+	TimeInterpolator forceInterpolator = anim.getInterpolator();
+	for (Animator child : anim.getChildAnimations()) {
+		if (forceDuration > 0) {
+			child.setDuration(forceDuration);
+		}
+		if (forceInterpolator != null) {
+			child.setInterpolator(forceInterpolator);
+		}
+		if (child instanceof ValueAnimator) {
+			out.add((ValueAnimator)child);
+		} else if (child instanceof AnimatorSet) {
+			getAnimationsRecur((AnimatorSet)child, out);
+		} else {
+			throw new RuntimeException("Unknown animation type " + child);
+		}
+	}
+}
 
-    @Override
-    public void setPlayFraction(final float fraction) {
-      mCurrentFraction = fraction;
-      // Let the animator report the progress but don't apply the progress to
-      // child animations if it has been cancelled.
-      if (mTargetCancelled) {
-        return;
-      }
-      long playPos = clampDuration(fraction);
-      for (ValueAnimator anim : mChildAnimations) {
-        anim.setCurrentPlayTime(Math.min(playPos, anim.getDuration()));
-      }
-    }
-  }
+@Override
+public void setPlayFraction(final float fraction) {
+	mCurrentFraction = fraction;
+	// Let the animator report the progress but don't apply the progress to
+	// child animations if it has been cancelled.
+	if (mTargetCancelled) {
+		return;
+	}
+	long playPos = clampDuration(fraction);
+	for (ValueAnimator anim : mChildAnimations) {
+		anim.setCurrentPlayTime(Math.min(playPos, anim.getDuration()));
+	}
+}
+}
 
-  private class OnAnimationEndDispatcher extends AnimationSuccessListener {
+private class OnAnimationEndDispatcher extends AnimationSuccessListener {
 
-    @Override
-    public void onAnimationStart(final Animator animation) {
-      mCancelled = false;
-    }
+@Override
+public void onAnimationStart(final Animator animation) {
+	mCancelled = false;
+}
 
-    @Override
-    public void onAnimationSuccess(final Animator animator) {
-      dispatchOnEndRecursively(mAnim);
-      if (mEndAction != null) {
-        mEndAction.run();
-      }
-    }
+@Override
+public void onAnimationSuccess(final Animator animator) {
+	dispatchOnEndRecursively(mAnim);
+	if (mEndAction != null) {
+		mEndAction.run();
+	}
+}
 
-    private void dispatchOnEndRecursively(final Animator animator) {
-      for (AnimatorListener l : nonNullList(animator.getListeners())) {
-        l.onAnimationEnd(animator);
-      }
+private void dispatchOnEndRecursively(final Animator animator) {
+	for (AnimatorListener l : nonNullList(animator.getListeners())) {
+		l.onAnimationEnd(animator);
+	}
 
-      if (animator instanceof AnimatorSet) {
-        for (Animator anim :
-             nonNullList(((AnimatorSet)animator).getChildAnimations())) {
-          dispatchOnEndRecursively(anim);
-        }
-      }
-    }
-  }
+	if (animator instanceof AnimatorSet) {
+		for (Animator anim :
+		     nonNullList(((AnimatorSet)animator).getChildAnimations())) {
+			dispatchOnEndRecursively(anim);
+		}
+	}
+}
+}
 
-  private static <T> List<T> nonNullList(final ArrayList<T> list) {
-    return list == null ? Collections.emptyList() : list;
-  }
+private static <T> List<T> nonNullList(final ArrayList<T> list) {
+	return list == null ? Collections.emptyList() : list;
+}
 }
