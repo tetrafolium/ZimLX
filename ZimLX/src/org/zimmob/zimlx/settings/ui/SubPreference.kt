@@ -25,8 +25,10 @@ import android.view.View
 import com.android.launcher3.R
 import org.zimmob.zimlx.preferences.StyledIconPreference
 
-open class SubPreference(context: Context, attrs: AttributeSet) : StyledIconPreference(context, attrs),
-        View.OnLongClickListener, ControlledPreference by ControlledPreference.Delegate(context, attrs) {
+open class SubPreference(context: Context, attrs: AttributeSet) :
+    StyledIconPreference(context, attrs),
+    View.OnLongClickListener,
+    ControlledPreference by ControlledPreference.Delegate(context, attrs) {
 
     private var mContent: Int = 0
     private var mLongClickContent: Int = 0

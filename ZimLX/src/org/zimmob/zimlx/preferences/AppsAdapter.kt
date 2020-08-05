@@ -36,10 +36,11 @@ import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.comparing
 
 open class AppsAdapter(
-        private val context: Context,
-        private val callback: Callback? = null,
-        private val filter: AppFilter? = null)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val context: Context,
+    private val callback: Callback? = null,
+    private val filter: AppFilter? = null
+) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TYPE_LOADING = 0
     private val TYPE_ITEM = 1
@@ -77,9 +78,11 @@ open class AppsAdapter(
     }
 
     protected open fun loadAppsList() {
-        apps.addAll(getAppsList(context)
+        apps.addAll(
+            getAppsList(context)
                 .map { App(context, it) }
-                .sortedWith(comparator))
+                .sortedWith(comparator)
+        )
         handler.postAtFrontOfQueue(::onAppsListLoaded)
     }
 
@@ -89,7 +92,6 @@ open class AppsAdapter(
     }
 
     open fun onBindApp(app: App, holder: AppHolder) {
-
     }
 
     open fun onClickApp(position: Int, holder: AppHolder) {

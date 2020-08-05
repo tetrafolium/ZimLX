@@ -36,8 +36,8 @@ class NotificationsOpenGestureHandler(context: Context, config: JSONObject?) : G
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         try {
             Class.forName("android.app.StatusBarManager")
-                    .getMethod("expandNotificationsPanel")
-                    .invoke(controller.launcher.getSystemService("statusbar"))
+                .getMethod("expandNotificationsPanel")
+                .invoke(controller.launcher.getSystemService("statusbar"))
         } catch (ex: ClassNotFoundException) {
         } catch (ex: NoSuchMethodException) {
         } catch (ex: IllegalAccessException) {
@@ -55,13 +55,12 @@ class NotificationsCloseGestureHandler(context: Context, config: JSONObject?) : 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         try {
             Class.forName("android.app.StatusBarManager")
-                    .getMethod("collapsePanels")
-                    .invoke(controller.launcher.getSystemService("statusbar"))
+                .getMethod("collapsePanels")
+                .invoke(controller.launcher.getSystemService("statusbar"))
         } catch (ex: ClassNotFoundException) {
         } catch (ex: NoSuchMethodException) {
         } catch (ex: IllegalAccessException) {
         } catch (ex: InvocationTargetException) {
         }
-
     }
 }

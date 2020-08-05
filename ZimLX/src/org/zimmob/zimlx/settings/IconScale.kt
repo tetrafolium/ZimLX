@@ -5,13 +5,14 @@ import org.zimmob.zimlx.JavaField
 import org.zimmob.zimlx.ZimPreferences
 
 class IconScale @JvmOverloads constructor(
-        prefs: ZimPreferences,
-        scaleKey: String,
-        private val fallbackScaleKey: String? = null,
-        landscapeScaleKey: String = "landscape${Utilities.upperCaseFirstLetter(scaleKey)}",
-        private val landscapeFallbackScaleKey: String = "landscape${Utilities.upperCaseFirstLetter(fallbackScaleKey)}",
-        private val targetObject: Any,
-        private val onChangeListener: () -> Unit = prefs.restart) {
+    prefs: ZimPreferences,
+    scaleKey: String,
+    private val fallbackScaleKey: String? = null,
+    landscapeScaleKey: String = "landscape${Utilities.upperCaseFirstLetter(scaleKey)}",
+    private val landscapeFallbackScaleKey: String = "landscape${Utilities.upperCaseFirstLetter(fallbackScaleKey)}",
+    private val targetObject: Any,
+    private val onChangeListener: () -> Unit = prefs.restart
+) {
 
     var scale by JavaField<Float>(targetObject, scaleKey)
     val scaleOriginal by JavaField<Float>(targetObject, "${scaleKey}Original")

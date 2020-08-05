@@ -30,7 +30,9 @@ class ZimDrawableFactory(context: Context) : DynamicDrawableFactory(context) {
     val customClockDrawer by lazy { CustomClock(context) }
 
     override fun newIcon(info: ItemInfoWithIcon): FastBitmapDrawable {
-        return iconPackManager.newIcon((info as? ShortcutInfo)?.customIcon ?: info.iconBitmap,
-                info, this).also { it.setIsDisabled(info.isDisabled) }
+        return iconPackManager.newIcon(
+            (info as? ShortcutInfo)?.customIcon ?: info.iconBitmap,
+            info, this
+        ).also { it.setIsDisabled(info.isDisabled) }
     }
 }

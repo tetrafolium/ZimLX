@@ -36,8 +36,11 @@ import org.zimmob.zimlx.views.BaseBottomSheet
 import org.zimmob.zimlx.zimPrefs
 
 @SuppressLint("ViewConstructor")
-class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.CustomizationMap,
-                               private val callback: (Boolean) -> Unit) : FrameLayout(context), View.OnClickListener {
+class DrawerTabEditBottomSheet(
+    context: Context,
+    config: AppGroups.Group.CustomizationMap,
+    private val callback: (Boolean) -> Unit
+) : FrameLayout(context), View.OnClickListener {
 
     init {
         View.inflate(context, R.layout.drawer_tab_edit_bottom_sheet, this)
@@ -69,22 +72,28 @@ class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.Customi
 
         fun show(context: Context, config: AppGroups.Group.CustomizationMap, animate: Boolean, callback: () -> Unit) {
             val sheet = SettingsBottomSheet.inflate(context)
-            sheet.show(DrawerTabEditBottomSheet(context, config) {
-                if (it) {
-                    callback()
-                }
-                sheet.close(true)
-            }, animate)
+            sheet.show(
+                DrawerTabEditBottomSheet(context, config) {
+                    if (it) {
+                        callback()
+                    }
+                    sheet.close(true)
+                },
+                animate
+            )
         }
 
         fun show(launcher: Launcher, config: AppGroups.Group.CustomizationMap, animate: Boolean, callback: () -> Unit) {
             val sheet = BaseBottomSheet.inflate(launcher)
-            sheet.show(DrawerTabEditBottomSheet(launcher, config) {
-                if (it) {
-                    callback()
-                }
-                sheet.close(true)
-            }, animate)
+            sheet.show(
+                DrawerTabEditBottomSheet(launcher, config) {
+                    if (it) {
+                        callback()
+                    }
+                    sheet.close(true)
+                },
+                animate
+            )
         }
 
         fun newGroup(context: Context, emptyGroup: AppGroups.Group, animate: Boolean, callback: (AppGroups.Group.CustomizationMap) -> Unit) {
@@ -116,8 +125,13 @@ class DrawerTabEditBottomSheet(context: Context, config: AppGroups.Group.Customi
             }
         }
 
-        fun edit(launcher: Launcher, config: AppGroups.Group.CustomizationMap,
-                 group: AppGroups.Group, animate: Boolean = true, callback: () -> Unit) {
+        fun edit(
+            launcher: Launcher,
+            config: AppGroups.Group.CustomizationMap,
+            group: AppGroups.Group,
+            animate: Boolean = true,
+            callback: () -> Unit
+        ) {
             show(launcher, config, animate) {
                 group.customizations.applyFrom(config)
                 callback()

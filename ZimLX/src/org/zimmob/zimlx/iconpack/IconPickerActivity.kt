@@ -50,7 +50,8 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
     private val iconGrid by lazy { findViewById<RecyclerView>(R.id.list_results) }
     private val iconPack by lazy {
         iconPackManager.getIconPack(
-                intent.getParcelableExtra<IconPackManager.PackProvider>(EXTRA_ICON_PACK), false)
+            intent.getParcelableExtra<IconPackManager.PackProvider>(EXTRA_ICON_PACK), false
+        )
     }
     private val items get() = searchItems ?: actualItems
     private var actualItems = ArrayList<AdapterItem>()
@@ -64,7 +65,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
 
     private val pickerComponent by lazy {
         LauncherAppsCompat.getInstance(this)
-                .getActivityList(iconPack.packPackageName, Process.myUserHandle()).firstOrNull()?.componentName
+            .getActivityList(iconPack.packPackageName, Process.myUserHandle()).firstOrNull()?.componentName
     }
 
     private var searchItems: MutableList<AdapterItem>? = null
@@ -196,8 +197,8 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
             }
             R.id.action_open_external -> {
                 val intent = Intent("com.novalauncher.THEME")
-                        .addCategory("com.novalauncher.category.CUSTOM_ICON_PICKER")
-                        .setComponent(pickerComponent)
+                    .addCategory("com.novalauncher.category.CUSTOM_ICON_PICKER")
+                    .setComponent(pickerComponent)
                 startActivityForResult(intent, 1000)
                 true
             }

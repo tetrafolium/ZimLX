@@ -27,7 +27,9 @@ import org.zimmob.zimlx.util.getField
 import org.zimmob.zimlx.zimPrefs
 
 open class SpringNestedScrollView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : NestedScrollView(context, attrs, defStyleAttr) {
 
     private val springManager = SpringEdgeEffect.Manager(this)
@@ -65,4 +67,3 @@ open class SpringNestedScrollView @JvmOverloads constructor(
         return if (isTopFadingEdgeEnabled) super.getTopFadingEdgeStrength() else 0f
     }
 }
-

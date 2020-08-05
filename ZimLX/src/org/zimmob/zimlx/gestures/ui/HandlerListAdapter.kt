@@ -46,7 +46,7 @@ class HandlerListAdapter(private val context: Context, isSwipeUp: Boolean, priva
 
         val text = itemView.findViewById<CheckedTextView>(android.R.id.text1)!!.apply {
             setOnClickListener(this@Holder)
-            //applyAccent()
+            // applyAccent()
         }
 
         override fun onClick(v: View) {

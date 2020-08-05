@@ -117,24 +117,27 @@ class ColorEngine private constructor(val context: Context) : ZimPreferences.OnP
 
         fun setColor(editor: SharedPreferences.Editor, resolver: String, color: Int) {
             editor.putString(
-                    resolver, (if (alpha(color) < 0xFF) {
-                // ARGB
-                arrayOf(
-                        ARGBColorResolver::class.java.name,
-                        color.alpha.toString(),
-                        color.red.toString(),
-                        color.green.toString(),
-                        color.blue.toString()
-                )
-            } else {
-                // RGB
-                arrayOf(
-                        RGBColorResolver::class.java.name,
-                        color.red.toString(),
-                        color.green.toString(),
-                        color.blue.toString()
-                )
-            }).joinToString("|")
+                resolver,
+                (
+                    if (alpha(color) < 0xFF) {
+                        // ARGB
+                        arrayOf(
+                            ARGBColorResolver::class.java.name,
+                            color.alpha.toString(),
+                            color.red.toString(),
+                            color.green.toString(),
+                            color.blue.toString()
+                        )
+                    } else {
+                        // RGB
+                        arrayOf(
+                            RGBColorResolver::class.java.name,
+                            color.red.toString(),
+                            color.green.toString(),
+                            color.blue.toString()
+                        )
+                    }
+                    ).joinToString("|")
             )
         }
     }
@@ -177,9 +180,11 @@ class ColorEngine private constructor(val context: Context) : ZimPreferences.OnP
                         SuperGAutoResolver(createConfig(key, engine))
                     }*/
                     else -> {
-                        engine.createColorResolverNullable(key,
-                                Config.getInstance(context).defaultColorResolver)
-                                ?: PixelAccentResolver(createConfig(key, engine))
+                        engine.createColorResolverNullable(
+                            key,
+                            Config.getInstance(context).defaultColorResolver
+                        )
+                            ?: PixelAccentResolver(createConfig(key, engine))
                     }
                 }
             }
@@ -188,8 +193,8 @@ class ColorEngine private constructor(val context: Context) : ZimPreferences.OnP
         }
     }
 
-    class ResolverCache(private val engine: ColorEngine, key: String)
-        : ZimPreferences.OnPreferenceChangeListener {
+    class ResolverCache(private val engine: ColorEngine, key: String) :
+        ZimPreferences.OnPreferenceChangeListener {
 
         private var currentValue: ColorResolver? = null
             set(value) {
@@ -234,7 +239,6 @@ class ColorEngine private constructor(val context: Context) : ZimPreferences.OnP
         private val themedContextProvider by lazy { ThemedContextProvider(context, this, themeSet) }
         val themedContext get() = themedContextProvider.get()
 
-
         abstract fun resolveColor(): Int
 
         abstract fun getDisplayName(): String
@@ -265,12 +269,12 @@ class ColorEngine private constructor(val context: Context) : ZimPreferences.OnP
             notifyChanged()
         }
 
-
         class Config(
-                val key: String,
-                val engine: ColorEngine,
-                val listener: ((String, ColorResolver) -> Unit)? = null,
-                val args: List<String> = emptyList())
+            val key: String,
+            val engine: ColorEngine,
+            val listener: ((String, ColorResolver) -> Unit)? = null,
+            val args: List<String> = emptyList()
+        )
     }
 
     class ResolveInfo(val key: String, resolver: ColorResolver) {

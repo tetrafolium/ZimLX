@@ -67,13 +67,15 @@ abstract class DockStyle(protected val manager: StyleManager) {
             set(value) {}
     }
 
-    private abstract class PredefinedStyle(manager: StyleManager,
-                                           val defaultGradient: Boolean = false,
-                                           val defaultShadow: Boolean = false,
-                                           val defaultRadius: Float = 0f,
-                                           val defaultOpacity: Int = -1,
-                                           val defaultArrow: Boolean = true,
-                                           val defaultHide: Boolean = false) : DockStyle(manager) {
+    private abstract class PredefinedStyle(
+        manager: StyleManager,
+        val defaultGradient: Boolean = false,
+        val defaultShadow: Boolean = false,
+        val defaultRadius: Float = 0f,
+        val defaultOpacity: Int = -1,
+        val defaultArrow: Boolean = true,
+        val defaultHide: Boolean = false
+    ) : DockStyle(manager) {
 
         override var enableGradient
             get() = defaultGradient
@@ -128,9 +130,11 @@ abstract class DockStyle(protected val manager: StyleManager) {
         }
     }
 
-    class StyleManager(val prefs: ZimPreferences,
-                       private val onPresetChange: () -> Unit,
-                       private val onCustomizationChange: () -> Unit) {
+    class StyleManager(
+        val prefs: ZimPreferences,
+        private val onPresetChange: () -> Unit,
+        private val onCustomizationChange: () -> Unit
+    ) {
 
         val onChangeListener = ::onValueChanged
         var dockPreset by prefs.StringIntPref("pref_dockPreset", 1, onChangeListener)
@@ -142,8 +146,10 @@ abstract class DockStyle(protected val manager: StyleManager) {
         var dockGradient by prefs.BooleanPref("pref_dockGradient", false, ::onGradientChanged)
         var dockHidden by prefs.BooleanPref("pref_hideHotseat", false, onChangeListener)
 
-        val styles = arrayListOf(CustomStyle(this), RoundedStyle(this), GradientStyle(this), FlatStyle(this),
-                TransparentStyle(this), HiddenStyle(this))
+        val styles = arrayListOf(
+            CustomStyle(this), RoundedStyle(this), GradientStyle(this), FlatStyle(this),
+            TransparentStyle(this), HiddenStyle(this)
+        )
         var currentStyle = styles[dockPreset]
         private var oldStyle = styles[dockPreset]
 
@@ -177,11 +183,12 @@ abstract class DockStyle(protected val manager: StyleManager) {
     companion object {
 
         val properties = hashMapOf(
-                Pair("enableGradient", DockStyle::enableGradient),
-                Pair("enableShadow", DockStyle::enableShadow),
-                Pair("radius", DockStyle::radius),
-                Pair("opacityPref", DockStyle::opacityPref),
-                Pair("enableArrow", DockStyle::enableArrow),
-                Pair("hide", DockStyle::hide))
+            Pair("enableGradient", DockStyle::enableGradient),
+            Pair("enableShadow", DockStyle::enableShadow),
+            Pair("radius", DockStyle::radius),
+            Pair("opacityPref", DockStyle::opacityPref),
+            Pair("enableArrow", DockStyle::enableArrow),
+            Pair("hide", DockStyle::hide)
+        )
     }
 }

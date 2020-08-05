@@ -4,10 +4,11 @@ import org.zimmob.zimlx.JavaField
 import org.zimmob.zimlx.ZimPreferences
 
 open class GridSize(
-        prefs: ZimPreferences,
-        rowsKey: String,
-        targetObject: Any,
-        private val onChangeListener: () -> Unit) {
+    prefs: ZimPreferences,
+    rowsKey: String,
+    targetObject: Any,
+    private val onChangeListener: () -> Unit
+) {
 
     var numRows by JavaField<Int>(targetObject, rowsKey)
     val numRowsOriginal by JavaField<Int>(targetObject, "${rowsKey}Original")

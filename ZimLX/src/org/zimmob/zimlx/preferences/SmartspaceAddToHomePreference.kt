@@ -31,20 +31,22 @@ import com.android.launcher3.widget.WidgetsFullSheet
 import org.zimmob.zimlx.settings.ui.ControlledPreference
 
 class SmartspaceAddToHomePreference(context: Context, attrs: AttributeSet?) :
-        Preference(context, attrs), ResumablePreference,
-        ControlledPreference by ControlledPreference.Delegate(context, attrs) {
+    Preference(context, attrs),
+    ResumablePreference,
+    ControlledPreference by ControlledPreference.Delegate(context, attrs) {
 
     override fun onResume() {
         isVisible = LauncherAppState.getInstance(context).model
-                .loadedWidgets?.any { it.isCustomWidget } != true
+            .loadedWidgets?.any { it.isCustomWidget } != true
     }
 
     override fun onClick() {
         val homeIntent = OpenWidgetsInitListener().addToIntent(
-                Intent(Intent.ACTION_MAIN)
-                        .addCategory(Intent.CATEGORY_HOME)
-                        .setPackage(BuildConfig.APPLICATION_ID)
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_HOME)
+                .setPackage(BuildConfig.APPLICATION_ID)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
 
         context.startActivity(homeIntent)
     }

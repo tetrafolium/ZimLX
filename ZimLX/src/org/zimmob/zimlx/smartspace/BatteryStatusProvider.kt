@@ -28,7 +28,7 @@ import org.zimmob.zimlx.smartspace.ZimSmartspaceController.*
 
 @Keep
 class BatteryStatusProvider(controller: ZimSmartspaceController) :
-        DataProvider(controller) {
+    DataProvider(controller) {
 
     private val batteryReceiver = object : BroadcastReceiver() {
 
@@ -36,9 +36,11 @@ class BatteryStatusProvider(controller: ZimSmartspaceController) :
             val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
             charging = status == BatteryManager.BATTERY_STATUS_CHARGING
             full = status == BatteryManager.BATTERY_STATUS_FULL
-            level = (100f
-                    * intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-                    / intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100)).toInt()
+            level = (
+                100f *
+                    intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) /
+                    intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100)
+                ).toInt()
             updateData(null, getEventCard())
         }
     }
@@ -62,8 +64,9 @@ class BatteryStatusProvider(controller: ZimSmartspaceController) :
             lines.add(Line("$level%"))
         }
         return ZimSmartspaceController.CardData(
-                lines = lines,
-                forceSingleLine = true)
+            lines = lines,
+            forceSingleLine = true
+        )
     }
 
     override fun stopListening() {

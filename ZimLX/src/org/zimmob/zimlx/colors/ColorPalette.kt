@@ -40,11 +40,13 @@ class ColorPalette private constructor(@ColorInt color: Int, size: Int) {
         }
     }
 
-    operator fun get(index: Int, shuffled: Boolean = false) = colors[if (shuffled) {
-        getShuffledIndex(index)
-    } else {
-        index
-    }]
+    operator fun get(index: Int, shuffled: Boolean = false) = colors[
+        if (shuffled) {
+            getShuffledIndex(index)
+        } else {
+            index
+        }
+    ]
 
     companion object {
         private val SHUFFLE_PRESET = intArrayOf(0, 10, 6, 1, 9, 2, 8, 5, 7, 4, 3)

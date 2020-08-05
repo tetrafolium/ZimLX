@@ -44,18 +44,26 @@ class DrawerTabTypeSelectionBottomSheet(context: Context, selectionItems: Map<In
         findViewById<TextView>(android.R.id.title).setTextColor(accent)
 
         val tintNormal = ColorUtils.setAlphaComponent(context.getColorAttr(android.R.attr.colorControlHighlight), 255)
-        val tintList = ColorStateList(arrayOf(
+        val tintList = ColorStateList(
+            arrayOf(
                 intArrayOf(android.R.attr.state_selected),
-                intArrayOf()),
-                intArrayOf(
-                        accent,
-                        tintNormal))
-        val rippleTintList = ColorStateList(arrayOf(
+                intArrayOf()
+            ),
+            intArrayOf(
+                accent,
+                tintNormal
+            )
+        )
+        val rippleTintList = ColorStateList(
+            arrayOf(
                 intArrayOf(android.R.attr.state_selected),
-                intArrayOf()),
-                intArrayOf(
-                        ColorUtils.setAlphaComponent(accent, 31),
-                        ColorUtils.setAlphaComponent(tintNormal, 31)))
+                intArrayOf()
+            ),
+            intArrayOf(
+                ColorUtils.setAlphaComponent(accent, 31),
+                ColorUtils.setAlphaComponent(tintNormal, 31)
+            )
+        )
 
         for (item in selectionItems) {
             val view = View.inflate(context, R.layout.drawer_tab_type_item, null)
@@ -85,10 +93,13 @@ class DrawerTabTypeSelectionBottomSheet(context: Context, selectionItems: Map<In
     companion object {
         fun show(context: Context, selectionItems: Map<Int, Array<Int>>, callback: (which: Int) -> Unit) {
             val sheet = SettingsBottomSheet.inflate(context)
-            sheet.show(DrawerTabTypeSelectionBottomSheet(context, selectionItems) {
-                sheet.close(false)
-                callback(it)
-            }, true)
+            sheet.show(
+                DrawerTabTypeSelectionBottomSheet(context, selectionItems) {
+                    sheet.close(false)
+                    callback(it)
+                },
+                true
+            )
         }
     }
 }

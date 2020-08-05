@@ -7,14 +7,13 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 class GridSizePreference(context: Context, attrs: AttributeSet?) :
-        DialogPreference(context, attrs) {
+    DialogPreference(context, attrs) {
 
     val gridSize = Utilities.getZimPrefs(context).gridSize
     val defaultSize by lazy { Pair(gridSize.numRowsOriginal, gridSize.numColumnsOriginal) }
 
     init {
         updateSummary()
-
     }
 
     fun getSize(): Pair<Int, Int> {

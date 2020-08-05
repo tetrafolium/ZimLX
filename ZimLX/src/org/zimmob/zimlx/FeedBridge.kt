@@ -34,7 +34,8 @@ class FeedBridge(private val context: Context) {
 
     private val bridgePackages by lazy {
         listOf(
-                PixelBridgeInfo("com.google.android.apps.nexuslauncher", R.integer.bridge_signature_hash))
+            PixelBridgeInfo("com.google.android.apps.nexuslauncher", R.integer.bridge_signature_hash)
+        )
     }
 
     fun resolveBridge(): BridgeInfo? {
@@ -48,7 +49,7 @@ class FeedBridge(private val context: Context) {
 
     fun resolveSmartspace(): String {
         return bridgePackages.firstOrNull { it.supportsSmartspace }?.packageName
-                ?: "com.google.android.googlequicksearchbox"
+            ?: "com.google.android.googlequicksearchbox"
     }
 
     open inner class BridgeInfo(val packageName: String, signatureHashRes: Int) {
@@ -58,23 +59,30 @@ class FeedBridge(private val context: Context) {
         open val supportsSmartspace = false
 
         fun isAvailable(): Boolean {
-            val info = context.packageManager.resolveService(Intent(overlayAction)
+            val info = context.packageManager.resolveService(
+                Intent(overlayAction)
                     .setPackage(packageName)
-                    .setData(Uri.parse(StringBuilder(packageName.length + 18)
-                            .append("app://")
-                            .append(packageName)
-                            .append(":")
-                            .append(Process.myUid())
-                            .toString())
+                    .setData(
+                        Uri.parse(
+                            StringBuilder(packageName.length + 18)
+                                .append("app://")
+                                .append(packageName)
+                                .append(":")
+                                .append(Process.myUid())
+                                .toString()
+                        )
                             .buildUpon()
                             .appendQueryParameter("v", Integer.toString(7))
                             .appendQueryParameter("cv", Integer.toString(9))
-                            .build()), 0)
+                            .build()
+                    ),
+                0
+            )
             return info != null && isSigned()
         }
 
         private fun isSigned(): Boolean {
-            //if (BuildConfig.FLAVOR_build.equals("dev"))
+            // if (BuildConfig.FLAVOR_build.equals("dev"))
             //    return true // Skip signature checks for dev builds
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 val info = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
@@ -96,8 +104,11 @@ class FeedBridge(private val context: Context) {
         override val supportsSmartspace get() = isAvailable()
     }
 
-    companion object : SingletonHolder<FeedBridge, Context>(ensureOnMainThread(
-            useApplicationContext(::FeedBridge))) {
+    companion object : SingletonHolder<FeedBridge, Context>(
+        ensureOnMainThread(
+            useApplicationContext(::FeedBridge)
+        )
+    ) {
 
         private const val overlayAction = "com.android.launcher3.WINDOW_OVERLAY"
 

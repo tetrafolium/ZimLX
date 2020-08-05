@@ -22,8 +22,8 @@ import android.view.ContextThemeWrapper
 import org.zimmob.zimlx.theme.ThemeManager
 import org.zimmob.zimlx.theme.ThemeOverride
 
-class ThemedContextProvider(private val base: Context, var listener: Listener?, themeSet: ThemeOverride.ThemeSet)
-    : ThemeOverride.ThemeOverrideListener {
+class ThemedContextProvider(private val base: Context, var listener: Listener?, themeSet: ThemeOverride.ThemeSet) :
+    ThemeOverride.ThemeOverrideListener {
 
     override val isAlive = true
 

@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit
 
 @Keep
 class OnePlusWeatherDataProvider(controller: ZimSmartspaceController) :
-        ZimSmartspaceController.DataProvider(controller), OPWeatherProvider.IWeatherCallback {
+    ZimSmartspaceController.DataProvider(controller), OPWeatherProvider.IWeatherCallback {
 
     private val provider by lazy { OPWeatherProvider(context) }
     private val locationAccess by lazy { context.checkLocationAccess() }
@@ -81,9 +81,9 @@ class OnePlusWeatherDataProvider(controller: ZimSmartspaceController) :
     private fun update(weatherData: OPWeatherProvider.WeatherData) {
         runOnUiWorkerThread {
             val weather = ZimSmartspaceController.WeatherData(
-                    getConditionIcon(weatherData),
-                    Temperature(weatherData.temperature, getTemperatureUnit(weatherData)),
-                    forecastIntent = Intent().setClassName(OPWeatherProvider.WEATHER_PACKAGE_NAME, OPWeatherProvider.WEATHER_LAUNCH_ACTIVITY)
+                getConditionIcon(weatherData),
+                Temperature(weatherData.temperature, getTemperatureUnit(weatherData)),
+                forecastIntent = Intent().setClassName(OPWeatherProvider.WEATHER_PACKAGE_NAME, OPWeatherProvider.WEATHER_LAUNCH_ACTIVITY)
             )
             runOnMainThread { updateData(weather, null) }
         }
@@ -115,7 +115,6 @@ class OnePlusWeatherDataProvider(controller: ZimSmartspaceController) :
         } else Temperature.Unit.Celsius
     }
 
-
     override fun stopListening() {
         super.stopListening()
         provider.unregisterContentObserver(context.contentResolver)
@@ -129,4 +128,3 @@ class OnePlusWeatherDataProvider(controller: ZimSmartspaceController) :
         }
     }
 }
-

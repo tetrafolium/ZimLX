@@ -243,14 +243,13 @@ class BlurWallpaperProvider(val context: Context) {
 
     fun createDrawable(radius: Float): BlurDrawable {
         return ShaderBlurDrawable(this)
-                .apply { blurRadii = BlurDrawable.Radii(radius) }
+            .apply { blurRadii = BlurDrawable.Radii(radius) }
     }
 
     fun createDrawable(topRadius: Float, bottomRadius: Float): BlurDrawable {
         return ShaderBlurDrawable(this)
-                .apply { blurRadii = BlurDrawable.Radii(topRadius, bottomRadius) }
+            .apply { blurRadii = BlurDrawable.Radii(topRadius, bottomRadius) }
     }
-
 
     fun setWallpaperOffset(offset: Float) {
         if (!isEnabled) return
@@ -262,8 +261,10 @@ class BlurWallpaperProvider(val context: Context) {
         if (availw < 0)
             xPixels += (availw * (offset - .5f) + .5f).toInt()
 
-        mOffset = Utilities.boundToRange((-xPixels).toFloat(),
-                0f, (mWallpaperWidth - mDisplayMetrics.widthPixels).toFloat())
+        mOffset = Utilities.boundToRange(
+            (-xPixels).toFloat(),
+            0f, (mWallpaperWidth - mDisplayMetrics.widthPixels).toFloat()
+        )
 
         for (listener in ArrayList(mListeners)) {
             listener.onOffsetChanged(mOffset)

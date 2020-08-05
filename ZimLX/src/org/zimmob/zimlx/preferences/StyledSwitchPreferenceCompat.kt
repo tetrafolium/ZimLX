@@ -33,8 +33,8 @@ import org.zimmob.zimlx.settings.ui.search.SearchIndex
 import org.zimmob.zimlx.zimPrefs
 
 open class StyledSwitchPreferenceCompat(context: Context, attrs: AttributeSet? = null) :
-        SwitchPreference(context, attrs),
-        ControlledPreference by ControlledPreference.Delegate(context, attrs) {
+    SwitchPreference(context, attrs),
+    ControlledPreference by ControlledPreference.Delegate(context, attrs) {
 
     protected var checkableView: View? = null
         private set
@@ -44,7 +44,6 @@ open class StyledSwitchPreferenceCompat(context: Context, attrs: AttributeSet? =
         checkableView = holder?.findViewById(AndroidResources.ANDROID_R_SWITCH_WIDGET)
         (checkableView as Switch).applyColor(Utilities.getZimPrefs(context).accentColor)
     }
-
 
     open class SwitchSlice(context: Context, attrs: AttributeSet) : SearchIndex.Slice(context, attrs) {
 
@@ -62,10 +61,11 @@ open class StyledSwitchPreferenceCompat(context: Context, attrs: AttributeSet? =
     }
 
     class SwitchSliceView(
-            context: Context,
-            private val key: String,
-            private val defaultValue: Boolean)
-        : Switch(context), ZimPreferences.OnPreferenceChangeListener {
+        context: Context,
+        private val key: String,
+        private val defaultValue: Boolean
+    ) :
+        Switch(context), ZimPreferences.OnPreferenceChangeListener {
 
         init {
             applyColor(context.zimPrefs.accentColor)

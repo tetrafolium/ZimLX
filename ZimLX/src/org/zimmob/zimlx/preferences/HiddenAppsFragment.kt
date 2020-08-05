@@ -21,8 +21,10 @@ class HiddenAppsFragment : RecyclerViewFragment(), SelectableAppsAdapter.Callbac
 
     override fun onRecyclerViewCreated(recyclerView: RecyclerView) {
         val context = recyclerView.context
-        adapter = SelectableAppsAdapter.ofProperty(context,
-                Utilities.getZimPrefs(context)::hiddenAppSet, this, ZimAppFilter(context))
+        adapter = SelectableAppsAdapter.ofProperty(
+            context,
+            Utilities.getZimPrefs(context)::hiddenAppSet, this, ZimAppFilter(context)
+        )
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recyclerView.adapter = adapter

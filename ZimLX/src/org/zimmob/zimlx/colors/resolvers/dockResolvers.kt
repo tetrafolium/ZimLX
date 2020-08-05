@@ -30,12 +30,22 @@ import org.zimmob.zimlx.theme.ThemeManager
 class DockQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config), ZimPreferences.OnPreferenceChangeListener {
 
     private val isDark get() = ThemeManager.getInstance(engine.context).isDark
-    private val lightResolver = DockQsbLightResolver(Config("DockQsbAutoResolver@Light", engine, { _, _ ->
-        if (!isDark) notifyChanged()
-    }))
-    private val darkResolver = DockQsbDarkResolver(Config("DockQsbAutoResolver@Dark", engine, { _, _ ->
-        if (isDark) notifyChanged()
-    }))
+    private val lightResolver = DockQsbLightResolver(
+        Config(
+            "DockQsbAutoResolver@Light", engine,
+            { _, _ ->
+                if (!isDark) notifyChanged()
+            }
+        )
+    )
+    private val darkResolver = DockQsbDarkResolver(
+        Config(
+            "DockQsbAutoResolver@Dark", engine,
+            { _, _ ->
+                if (isDark) notifyChanged()
+            }
+        )
+    )
 
     override fun startListening() {
         super.startListening()
@@ -60,7 +70,7 @@ class DockQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config), Z
 class DockQsbLightResolver(config: Config) : WallpaperColorResolver(config), ZimPreferences.OnPreferenceChangeListener {
 
     val launcher = ZimLauncher.getLauncher(engine.context)
-    //val qsb = launcher.hotseatSearchBox as? HotseatQsbWidget
+    // val qsb = launcher.hotseatSearchBox as? HotseatQsbWidget
 
     override fun startListening() {
         super.startListening()
@@ -77,10 +87,10 @@ class DockQsbLightResolver(config: Config) : WallpaperColorResolver(config), Zim
     }
 
     override fun resolveColor() = engine.context.resources.getColor(
-            //if (qsb?.isGoogleColored == true)
-                R.color.qsb_background_hotseat_white
-            //else
-            //    R.color.qsb_background_hotseat_default
+        // if (qsb?.isGoogleColored == true)
+        R.color.qsb_background_hotseat_white
+        // else
+        //    R.color.qsb_background_hotseat_default
     )
 
     override fun getDisplayName() = engine.context.resources.getString(R.string.theme_light)

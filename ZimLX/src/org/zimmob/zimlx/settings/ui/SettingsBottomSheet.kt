@@ -45,8 +45,11 @@ import org.zimmob.zimlx.getColorAttr
 /**
  * Base class for custom popups
  */
-class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs),
-        Insettable, TouchController, SwipeDetector.Listener {
+class SettingsBottomSheet(context: Context, attrs: AttributeSet) :
+    LinearLayout(context, attrs),
+    Insettable,
+    TouchController,
+    SwipeDetector.Listener {
 
     private val activity = SettingsBaseActivity.getActivity(context)
 
@@ -102,7 +105,8 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
         else
             0
         mSwipeDetector.setDetectableScrollConditions(
-                directionsToDetectScroll, false)
+            directionsToDetectScroll, false
+        )
         mSwipeDetector.onTouchEvent(ev)
         return mSwipeDetector.isDraggingOrSettling || !activity.dragLayer.isEventOverView(content, ev)
     }
@@ -125,7 +129,8 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
         }
         isOpen = true
         openCloseAnimator.setValues(
-                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED))
+            PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED)
+        )
         openCloseAnimator.interpolator = Interpolators.FAST_OUT_SLOW_IN
         if (!animate) {
             openCloseAnimator.duration = 0
@@ -146,11 +151,15 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
         if (fling && velocity > 0 || translationShift > 0.5f) {
             scrollInterpolator = scrollInterpolatorForVelocity(velocity)
             openCloseAnimator.duration = SwipeDetector.calculateDuration(
-                    velocity, TRANSLATION_SHIFT_CLOSED - translationShift)
+                velocity, TRANSLATION_SHIFT_CLOSED - translationShift
+            )
             close(true)
         } else {
-            openCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
-                    TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED))
+            openCloseAnimator.setValues(
+                PropertyValuesHolder.ofFloat(
+                    TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED
+                )
+            )
             openCloseAnimator.duration = SwipeDetector.calculateDuration(velocity, translationShift)
             openCloseAnimator.interpolator = Interpolators.DEACCEL
             openCloseAnimator.start()
@@ -177,7 +186,8 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
             return
         }
         openCloseAnimator.setValues(
-                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_CLOSED))
+            PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_CLOSED)
+        )
         openCloseAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 onCloseComplete()
@@ -212,23 +222,25 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
             bottomInset = 0
         }
 
-        setPadding(paddingLeft + leftInset, paddingTop,
-                paddingRight + rightInset, paddingBottom + bottomInset)
+        setPadding(
+            paddingLeft + leftInset, paddingTop,
+            paddingRight + rightInset, paddingBottom + bottomInset
+        )
     }
 
     companion object {
 
         private var TRANSLATION_SHIFT: Property<SettingsBottomSheet, Float> =
-                object : Property<SettingsBottomSheet, Float>(Float::class.java, "translationShift") {
+            object : Property<SettingsBottomSheet, Float>(Float::class.java, "translationShift") {
 
-                    override fun get(view: SettingsBottomSheet): Float {
-                        return view.translationShift
-                    }
-
-                    override fun set(view: SettingsBottomSheet, value: Float) {
-                        view.translationShift = value
-                    }
+                override fun get(view: SettingsBottomSheet): Float {
+                    return view.translationShift
                 }
+
+                override fun set(view: SettingsBottomSheet, value: Float) {
+                    view.translationShift = value
+                }
+            }
         private const val TRANSLATION_SHIFT_CLOSED = 1f
         private const val TRANSLATION_SHIFT_OPENED = 0f
 
@@ -237,8 +249,7 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
         fun inflate(context: Context): SettingsBottomSheet {
             val activity = SettingsBaseActivity.getActivity(context)
             return LayoutInflater.from(context)
-                    .inflate(R.layout.settings_bottom_sheet, activity.dragLayer, false) as SettingsBottomSheet
+                .inflate(R.layout.settings_bottom_sheet, activity.dragLayer, false) as SettingsBottomSheet
         }
     }
-
 }

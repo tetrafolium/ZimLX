@@ -28,22 +28,26 @@ import org.zimmob.zimlx.blur.BlurWallpaperProvider
 import org.zimmob.zimlx.runOnMainThread
 import org.zimmob.zimlx.util.InvertedMultiValueAlpha
 
-class ZimBackgroundView(context: Context, attrs: AttributeSet) : View(context, attrs),
-        Insettable, BlurWallpaperProvider.Listener {
+class ZimBackgroundView(context: Context, attrs: AttributeSet) :
+    View(context, attrs),
+    Insettable,
+    BlurWallpaperProvider.Listener {
 
     private val blurProvider by lazy { BlurWallpaperProvider.getInstance(context) }
     private var fullBlurDrawable: BlurDrawable? = null
-    val blurAlphas = InvertedMultiValueAlpha({ alpha ->
-        blurAlpha = Math.round(255 * alpha)
-        invalidate()
-    }, 3)
+    val blurAlphas = InvertedMultiValueAlpha(
+        { alpha ->
+            blurAlpha = Math.round(255 * alpha)
+            invalidate()
+        },
+        3
+    )
     private var blurAlpha = 0
 
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
 
             override fun unscheduleDrawable(who: Drawable, what: Runnable) {
-
             }
 
             override fun invalidateDrawable(who: Drawable) {
@@ -51,7 +55,6 @@ class ZimBackgroundView(context: Context, attrs: AttributeSet) : View(context, a
             }
 
             override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
-
             }
         }
     }
@@ -105,7 +108,6 @@ class ZimBackgroundView(context: Context, attrs: AttributeSet) : View(context, a
     }
 
     override fun setInsets(insets: Rect) {
-
     }
 
     companion object {

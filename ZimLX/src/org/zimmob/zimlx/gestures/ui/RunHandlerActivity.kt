@@ -45,10 +45,11 @@ class RunHandlerActivity : Activity() {
                 if (handler.requiresForeground) {
                     val listener = GestureHandlerInitListener(handler)
                     val homeIntent = listener.addToIntent(
-                            Intent(Intent.ACTION_MAIN)
-                                    .addCategory(Intent.CATEGORY_HOME)
-                                    .setPackage(packageName)
-                                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                        Intent(Intent.ACTION_MAIN)
+                            .addCategory(Intent.CATEGORY_HOME)
+                            .setPackage(packageName)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    )
 
                     startActivity(homeIntent)
                 } else {

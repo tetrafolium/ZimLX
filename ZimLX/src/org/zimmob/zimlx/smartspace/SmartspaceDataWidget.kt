@@ -74,7 +74,8 @@ class SmartspaceDataWidget(controller: ZimSmartspaceController) : ZimSmartspaceC
 
             widgetId = smartspaceWidgetHost.allocateAppWidgetId()
             isWidgetBound = widgetManager.bindAppWidgetIdIfAllowed(
-                    widgetId, providerInfo.profile, providerInfo.provider, null)
+                widgetId, providerInfo.profile, providerInfo.provider, null
+            )
         }
 
         if (isWidgetBound) {
@@ -83,8 +84,8 @@ class SmartspaceDataWidget(controller: ZimSmartspaceController) : ZimSmartspaceC
             onSetupComplete()
         } else {
             val bindIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
-                    .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-                    .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
             BlankActivity.startActivityForResult(context, bindIntent, 1028, 0) { resultCode, _ ->
                 if (resultCode == Activity.RESULT_OK) {
                     bindWidget(onSetupComplete)
@@ -124,9 +125,11 @@ class SmartspaceDataWidget(controller: ZimSmartspaceController) : ZimSmartspaceC
             val pendingIntent = getPendingIntent(title.parent.parent.parent as? View)
             val ttl = title.text.toString() + if (subtitle2 != null) subtitle.text.toString() else ""
             val sub = subtitle2 ?: subtitle
-            ZimSmartspaceController.CardData(cardIcon, ttl, title.ellipsize,
-                    sub.text.toString(), sub.ellipsize,
-                    pendingIntent = pendingIntent)
+            ZimSmartspaceController.CardData(
+                cardIcon, ttl, title.ellipsize,
+                sub.text.toString(), sub.ellipsize,
+                pendingIntent = pendingIntent
+            )
         } else {
             null
         }
@@ -202,16 +205,15 @@ class SmartspaceDataWidget(controller: ZimSmartspaceController) : ZimSmartspaceC
             } else {
                 runOnMainThread {
                     val foreground = context.zimApp.activityHandler.foregroundActivity
-                            ?: context
+                        ?: context
                     if (foreground is AppCompatActivity) {
                         AlertDialog.Builder(foreground)
-                                .setTitle(R.string.failed)
-                                .setMessage(R.string.smartspace_widget_provider_not_found)
-                                .setNegativeButton(android.R.string.cancel, null).create().apply {
-                                    show()
-                                    applyAccent()
-                                }
-
+                            .setTitle(R.string.failed)
+                            .setMessage(R.string.smartspace_widget_provider_not_found)
+                            .setNegativeButton(android.R.string.cancel, null).create().apply {
+                                show()
+                                applyAccent()
+                            }
                     }
                 }
                 throw RuntimeException("smartspace widget not found")
@@ -222,12 +224,19 @@ class SmartspaceDataWidget(controller: ZimSmartspaceController) : ZimSmartspaceC
             return if (weatherIcon != null && temperature != null) {
                 try {
                     val value = temperature.substring(0, temperature.indexOfFirst { (it < '0' || it > '9') && it != '-' }).toInt()
-                    ZimSmartspaceController.WeatherData(weatherIcon, Temperature(value, when {
-                        temperature.contains("C") -> Temperature.Unit.Celsius
-                        temperature.contains("F") -> Temperature.Unit.Fahrenheit
-                        temperature.contains("K") -> Temperature.Unit.Kelvin
-                        else -> throw IllegalArgumentException("only supports C, F and K")
-                    }), pendingIntent = intent)
+                    ZimSmartspaceController.WeatherData(
+                        weatherIcon,
+                        Temperature(
+                            value,
+                            when {
+                                temperature.contains("C") -> Temperature.Unit.Celsius
+                                temperature.contains("F") -> Temperature.Unit.Fahrenheit
+                                temperature.contains("K") -> Temperature.Unit.Kelvin
+                                else -> throw IllegalArgumentException("only supports C, F and K")
+                            }
+                        ),
+                        pendingIntent = intent
+                    )
                 } catch (e: NumberFormatException) {
                     null
                 } catch (e: IllegalArgumentException) {

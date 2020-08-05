@@ -31,39 +31,44 @@ class WeatherIconManager(private val context: Context) {
     private val pm = context.packageManager
     private val prefs = context.zimPrefs
     private val defaultPack =
-            object : WeatherIconPack(context, context.getString(R.string.weather_icons_default), "",
-                    RecoloringMode.NEVER) {
-                override val provider = DefaultIconProvider(context)
-                override val icon = context.getDrawable(R.drawable.weather_04)
-            }
+        object : WeatherIconPack(
+            context, context.getString(R.string.weather_icons_default), "",
+            RecoloringMode.NEVER
+        ) {
+            override val provider = DefaultIconProvider(context)
+            override val icon = context.getDrawable(R.drawable.weather_04)
+        }
 
     fun getIconPacks(): List<WeatherIconPack> = mutableListOf<WeatherIconPack>(defaultPack).apply {
         pm.queryIntentActivities(
-                Intent(Intent.ACTION_MAIN).addCategory(
-                        INTENT_CATEGORY), PackageManager.GET_META_DATA).map {
+            Intent(Intent.ACTION_MAIN).addCategory(
+                INTENT_CATEGORY
+            ),
+            PackageManager.GET_META_DATA
+        ).map {
             val recoloringMode =
-                    it.activityInfo.metaData?.getString(METADATA_KEY)?.let {
-                        RecoloringMode.fromName(it)
-                    } ?: RecoloringMode.NEVER
+                it.activityInfo.metaData?.getString(METADATA_KEY)?.let {
+                    RecoloringMode.fromName(it)
+                } ?: RecoloringMode.NEVER
             WeatherIconPack(
-                    context,
-                    it.loadLabel(pm).toString(),
-                    it.activityInfo.packageName,
-                    recoloringMode)
+                context,
+                it.loadLabel(pm).toString(),
+                it.activityInfo.packageName,
+                recoloringMode
+            )
         }.let { addAll(it) }
     }
 
     fun getIcon(which: Icon, night: Boolean) = getProvider().getIcon(which, night)
 
     fun getPack(): WeatherIconPack = getIconPacks().firstOrNull { it.pkgName == prefs.weatherIconPack }
-            ?: defaultPack
+        ?: defaultPack
 
     fun getProvider(): IconProvider = if (prefs.weatherIconPack == "")
         DefaultIconProvider(context)
     else
         getIconPacks().firstOrNull { it.pkgName == prefs.weatherIconPack }?.provider
-                ?: DefaultIconProvider(context)
-
+            ?: DefaultIconProvider(context)
 
     companion object : ZimSingletonHolder<WeatherIconManager>(::WeatherIconManager) {
         const val INTENT_CATEGORY = "com.dvtonder.chronus.ICON_PACK"
@@ -125,11 +130,14 @@ class WeatherIconManager(private val context: Context) {
                 else -> throw RuntimeException()
             }
         }
-
     }
 
-    open class WeatherIconPack(val context: Context, val name: String, val pkgName: String,
-                               val recoloringMode: RecoloringMode) {
+    open class WeatherIconPack(
+        val context: Context,
+        val name: String,
+        val pkgName: String,
+        val recoloringMode: RecoloringMode
+    ) {
         open val provider: IconProvider by lazy { WeatherIconPackProviderImpl(context, pkgName, this) }
         open val icon by lazy { context.packageManager.getApplicationIcon(pkgName) }
     }

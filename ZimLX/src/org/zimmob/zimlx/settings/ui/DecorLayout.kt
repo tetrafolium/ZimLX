@@ -24,8 +24,10 @@ import org.zimmob.zimlx.util.parents
 import java.io.File
 
 @SuppressLint("ViewConstructor")
-class DecorLayout(context: Context, private val window: Window) : InsettableFrameLayout(context, null),
-        View.OnClickListener, BlurWallpaperProvider.Listener {
+class DecorLayout(context: Context, private val window: Window) :
+    InsettableFrameLayout(context, null),
+    View.OnClickListener,
+    BlurWallpaperProvider.Listener {
 
     private var tapCount = 0
 
@@ -128,9 +130,10 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
         if (tapCount == 6 && allowDevOptions()) {
             Utilities.getZimPrefs(context).developerOptionsEnabled = true
             Snackbar.make(
-                    findViewById(R.id.content),
-                    R.string.developer_options_enabled,
-                    Snackbar.LENGTH_LONG).show()
+                findViewById(R.id.content),
+                R.string.developer_options_enabled,
+                Snackbar.LENGTH_LONG
+            ).show()
             tapCount++
         } else if (tapCount < 6) {
             tapCount++
@@ -139,8 +142,12 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
 
     private fun allowDevOptions(): Boolean {
         return try {
-            File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOCUMENTS), "ZimLX/dev").exists()
+            File(
+                Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS
+                ),
+                "ZimLX/dev"
+            ).exists()
         } catch (e: SecurityException) {
             false
         }
@@ -182,11 +189,14 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
 
         override fun setInsets(insets: Rect) {
             decorLayout?.also {
-                setInsetsInternal(Rect(
+                setInsetsInternal(
+                    Rect(
                         insets.left,
                         insets.top + it.contentTop,
                         insets.right,
-                        insets.bottom))
+                        insets.bottom
+                    )
+                )
             } ?: setInsetsInternal(insets)
         }
 
@@ -206,32 +216,35 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
 
         private fun computeClip() {
             contentRect.set(
-                    selfRect.left + insetsRect.left,
-                    selfRect.top + insetsRect.top,
-                    selfRect.right - insetsRect.right,
-                    selfRect.bottom - insetsRect.bottom
+                selfRect.left + insetsRect.left,
+                selfRect.top + insetsRect.top,
+                selfRect.right - insetsRect.right,
+                selfRect.bottom - insetsRect.bottom
             )
 
             dividerPath.reset()
             when {
                 isNavBarToRightEdge() -> dividerPath.addRect(
-                        contentRect.right,
-                        selfRect.top,
-                        contentRect.right + dividerSize,
-                        selfRect.bottom,
-                        Path.Direction.CW)
+                    contentRect.right,
+                    selfRect.top,
+                    contentRect.right + dividerSize,
+                    selfRect.bottom,
+                    Path.Direction.CW
+                )
                 isNavBarToLeftEdge() -> dividerPath.addRect(
-                        contentRect.left - dividerSize,
-                        selfRect.top,
-                        contentRect.left,
-                        selfRect.bottom,
-                        Path.Direction.CW)
+                    contentRect.left - dividerSize,
+                    selfRect.top,
+                    contentRect.left,
+                    selfRect.bottom,
+                    Path.Direction.CW
+                )
                 else -> dividerPath.addRect(
-                        selfRect.left,
-                        contentRect.bottom,
-                        selfRect.right,
-                        contentRect.bottom + dividerSize,
-                        Path.Direction.CW)
+                    selfRect.left,
+                    contentRect.bottom,
+                    selfRect.right,
+                    contentRect.bottom + dividerSize,
+                    Path.Direction.CW
+                )
             }
 
             contentPath.reset()

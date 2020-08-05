@@ -26,7 +26,6 @@ import org.zimmob.zimlx.createRipple
 @SuppressLint("ViewConstructor")
 class ColorPreviewView(context: Context, attrs: AttributeSet) : AppCompatTextView(context, attrs) {
 
-
     var colorResolver: ColorEngine.ColorResolver? = null
         set(value) {
             if (value == null) throw IllegalArgumentException("colorResolver must not be null")
@@ -42,4 +41,3 @@ class ColorPreviewView(context: Context, attrs: AttributeSet) : AppCompatTextVie
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec))
     }
 }
-

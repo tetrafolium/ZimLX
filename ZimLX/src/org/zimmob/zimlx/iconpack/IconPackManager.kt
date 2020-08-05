@@ -63,17 +63,21 @@ class IconPackManager(private val context: Context) {
     private val listeners: MutableSet<() -> Unit> = mutableSetOf()
 
     init {
-        context.registerReceiver(object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent?) {
-                dayOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-            }
-        }, IntentFilter(Intent.ACTION_DATE_CHANGED).apply {
-            addAction(Intent.ACTION_TIME_CHANGED)
-            addAction(Intent.ACTION_TIMEZONE_CHANGED)
-            if (!Utilities.ATLEAST_NOUGAT) {
-                addAction(Intent.ACTION_TIME_TICK)
-            }
-        }, null, Handler(LauncherModel.getWorkerLooper()))
+        context.registerReceiver(
+            object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent?) {
+                    dayOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                }
+            },
+            IntentFilter(Intent.ACTION_DATE_CHANGED).apply {
+                addAction(Intent.ACTION_TIME_CHANGED)
+                addAction(Intent.ACTION_TIMEZONE_CHANGED)
+                if (!Utilities.ATLEAST_NOUGAT) {
+                    addAction(Intent.ACTION_TIME_TICK)
+                }
+            },
+            null, Handler(LauncherModel.getWorkerLooper())
+        )
     }
 
     private fun onDateChanged() {
@@ -100,21 +104,29 @@ class IconPackManager(private val context: Context) {
         return getIconPackInternal(packProvider.name, put, load)!!
     }
 
-    fun getIcon(launcherActivityInfo: LauncherActivityInfo,
-                iconDpi: Int, flattenDrawable: Boolean, itemInfo: ItemInfo?,
-                iconProvider: ZimIconProvider?): Drawable {
+    fun getIcon(
+        launcherActivityInfo: LauncherActivityInfo,
+        iconDpi: Int,
+        flattenDrawable: Boolean,
+        itemInfo: ItemInfo?,
+        iconProvider: ZimIconProvider?
+    ): Drawable {
         val customEntry = CustomInfoProvider.forItem<ItemInfo>(context, itemInfo)?.getIcon(itemInfo!!)
-                ?: appInfoProvider.getCustomIconEntry(launcherActivityInfo)
+            ?: appInfoProvider.getCustomIconEntry(launcherActivityInfo)
         val customPack = customEntry?.run {
             getIconPackInternal(packPackageName)
         }
         if (customPack != null) {
-            customPack.getIcon(launcherActivityInfo, iconDpi,
-                    flattenDrawable, customEntry, iconProvider)?.let { icon -> return icon }
+            customPack.getIcon(
+                launcherActivityInfo, iconDpi,
+                flattenDrawable, customEntry, iconProvider
+            )?.let { icon -> return icon }
         }
         packList.iterator().forEach { pack ->
-            pack.getIcon(launcherActivityInfo, iconDpi,
-                    flattenDrawable, null, iconProvider)?.let { return it }
+            pack.getIcon(
+                launcherActivityInfo, iconDpi,
+                flattenDrawable, null, iconProvider
+            )?.let { return it }
         }
         return defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null, iconProvider)
     }
@@ -129,7 +141,7 @@ class IconPackManager(private val context: Context) {
     fun newIcon(icon: Bitmap, itemInfo: ItemInfo, drawableFactory: ZimDrawableFactory): FastBitmapDrawable {
         val key = itemInfo.targetComponent?.let { ComponentKey(it, itemInfo.user) }
         val customEntry = CustomInfoProvider.forItem<ItemInfo>(context, itemInfo)?.getIcon(itemInfo)
-                ?: key?.let { appInfoProvider.getCustomIconEntry(it) }
+            ?: key?.let { appInfoProvider.getCustomIconEntry(it) }
         val customPack = customEntry?.run { getIconPackInternal(packPackageName) }
         if (customPack != null) {
             customPack.newIcon(icon, itemInfo, customEntry, drawableFactory)?.let { return it }
@@ -289,21 +301,23 @@ class IconPackManager(private val context: Context) {
         }
 
         val ICON_INTENTS = arrayOf(
-                "com.novalauncher.THEME",
-                "org.adw.launcher.THEMES",
-                "org.adw.launcher.icons.ACTION_PICK_ICON",
-                "com.anddoes.launcher.THEME",
-                "com.teslacoilsw.launcher.THEME",
-                "com.fede.launcher.THEME_ICONPACK",
-                "com.gau.go.launcherex.theme",
-                "com.dlto.atom.launcher.THEME",
-                "net.oneplus.launcher.icons.ACTION_PICK_ICON",
-                "org.zimmob.zimlx.ICONPACK")
+            "com.novalauncher.THEME",
+            "org.adw.launcher.THEMES",
+            "org.adw.launcher.icons.ACTION_PICK_ICON",
+            "com.anddoes.launcher.THEME",
+            "com.teslacoilsw.launcher.THEME",
+            "com.fede.launcher.THEME_ICONPACK",
+            "com.gau.go.launcherex.theme",
+            "com.dlto.atom.launcher.THEME",
+            "net.oneplus.launcher.icons.ACTION_PICK_ICON",
+            "org.zimmob.zimlx.ICONPACK"
+        )
         internal fun isPackProvider(context: Context, packageName: String?): Boolean {
             if (packageName != null && !packageName.isEmpty()) {
                 return ICON_INTENTS.firstOrNull {
                     context.packageManager.queryIntentActivities(
-                            Intent(it).setPackage(packageName), PackageManager.GET_META_DATA).iterator().hasNext()
+                        Intent(it).setPackage(packageName), PackageManager.GET_META_DATA
+                    ).iterator().hasNext()
                 } != null
             }
             return false

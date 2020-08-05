@@ -37,7 +37,7 @@ import org.zimmob.zimlx.globalsearch.providers.web.WebSearchProvider
 import org.zimmob.zimlx.zimPrefs
 
 class FuzzyAppSearchAlgorithm(private val context: Context, private val apps: List<AppInfo>) :
-        SearchAlgorithm {
+    SearchAlgorithm {
 
     private var resultHandler: Handler = Handler()
     private var baseFilter: AppFilter = ZimAppFilter(context)
@@ -58,7 +58,7 @@ class FuzzyAppSearchAlgorithm(private val context: Context, private val apps: Li
 
     private fun getSuggestions(query: String): List<String> {
         val provider = SearchProviderController
-                .getInstance(context).searchProvider
+            .getInstance(context).searchProvider
         return (provider as? WebSearchProvider)?.getSuggestions(query) ?: emptyList()
     }
 
@@ -66,8 +66,11 @@ class FuzzyAppSearchAlgorithm(private val context: Context, private val apps: Li
         const val MIN_SCORE = 65
 
         @JvmStatic
-        fun getApps(context: Context, defaultApps: List<AppInfo>,
-                    filter: AppFilter): List<AppInfo> {
+        fun getApps(
+            context: Context,
+            defaultApps: List<AppInfo>,
+            filter: AppFilter
+        ): List<AppInfo> {
             if (!context.zimPrefs.searchHiddenApps) {
                 return defaultApps
             }
@@ -77,7 +80,7 @@ class FuzzyAppSearchAlgorithm(private val context: Context, private val apps: Li
                 val duplicatePreventionCache = mutableListOf<ComponentName>()
                 lac.getActivityList(null, user).filter { info ->
                     filter.shouldShowApp(info.componentName, user) &&
-                            !duplicatePreventionCache.contains(info.componentName)
+                        !duplicatePreventionCache.contains(info.componentName)
                 }.map { info ->
                     duplicatePreventionCache.add(info.componentName)
                     AppInfo(context, info, user).apply {
@@ -88,15 +91,22 @@ class FuzzyAppSearchAlgorithm(private val context: Context, private val apps: Li
         }
 
         @JvmStatic
-        fun query(context: Context, query: String, defaultApps: List<AppInfo>,
-                  filter: AppFilter): List<AppInfo> {
-            return FuzzySearch.extractAll(query, getApps(context, defaultApps, filter),
-                    ToStringFunction<AppInfo> { item ->
-                        item?.title.toString()
-                    }, WinklerWeightedRatio(), MIN_SCORE)
-                    .sortedBy { it.referent.title.toString() }
-                    .sortedByDescending { it.score }
-                    .map { it.referent }
+        fun query(
+            context: Context,
+            query: String,
+            defaultApps: List<AppInfo>,
+            filter: AppFilter
+        ): List<AppInfo> {
+            return FuzzySearch.extractAll(
+                query, getApps(context, defaultApps, filter),
+                ToStringFunction<AppInfo> { item ->
+                    item?.title.toString()
+                },
+                WinklerWeightedRatio(), MIN_SCORE
+            )
+                .sortedBy { it.referent.title.toString() }
+                .sortedByDescending { it.score }
+                .map { it.referent }
         }
     }
 }

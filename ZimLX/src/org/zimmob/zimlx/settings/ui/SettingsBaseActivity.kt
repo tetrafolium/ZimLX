@@ -62,8 +62,12 @@ open class SettingsBaseActivity : AppCompatActivity(), ThemeManager.ThemeableAct
         currentTheme = themeOverride.getTheme(this)
 
         super.onCreate(savedInstanceState ?: intent.getBundleExtra("state"))
-        dragLayer.addView(decorLayout, InsettableFrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+        dragLayer.addView(
+            decorLayout,
+            InsettableFrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        )
         super.setContentView(dragLayer)
 
         val prefs = Utilities.getZimPrefs(this)
@@ -178,8 +182,12 @@ open class SettingsBaseActivity : AppCompatActivity(), ThemeManager.ThemeableAct
             recreate()
         } else {
             finish()
-            startActivity(createRelaunchIntent(), ActivityOptions.makeCustomAnimation(
-                    this, android.R.anim.fade_in, android.R.anim.fade_out).toBundle())
+            startActivity(
+                createRelaunchIntent(),
+                ActivityOptions.makeCustomAnimation(
+                    this, android.R.anim.fade_in, android.R.anim.fade_out
+                ).toBundle()
+            )
         }
     }
 
@@ -201,7 +209,7 @@ open class SettingsBaseActivity : AppCompatActivity(), ThemeManager.ThemeableAct
 
         fun getActivity(context: Context): SettingsBaseActivity {
             return context as? SettingsBaseActivity
-                    ?: (context as ContextWrapper).baseContext as SettingsBaseActivity
+                ?: (context as ContextWrapper).baseContext as SettingsBaseActivity
         }
     }
 }

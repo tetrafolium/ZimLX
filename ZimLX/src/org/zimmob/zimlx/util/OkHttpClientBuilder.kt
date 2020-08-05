@@ -41,13 +41,15 @@ class OkHttpClientBuilder {
                 it.proceed(it.request().newBuilder().url(urlBuilder.build()).build())
             }
         }
-        builder.addInterceptor(HttpLoggingInterceptor().apply {
-            level = if (context?.zimPrefs?.debugOkHttp == true) {
-                HttpLoggingInterceptor.Level.BODY
-            } else {
-                HttpLoggingInterceptor.Level.BASIC
+        builder.addInterceptor(
+            HttpLoggingInterceptor().apply {
+                level = if (context?.zimPrefs?.debugOkHttp == true) {
+                    HttpLoggingInterceptor.Level.BODY
+                } else {
+                    HttpLoggingInterceptor.Level.BASIC
+                }
             }
-        })
+        )
         return builder.build()
     }
 }

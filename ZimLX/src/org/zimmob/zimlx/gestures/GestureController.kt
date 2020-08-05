@@ -42,7 +42,7 @@ class GestureController(val launcher: ZimLauncher) : TouchController {
     val hasBackGesture
         get() = pressBackGesture.handler !is BlankGestureHandler
     val verticalSwipeGesture by lazy { VerticalSwipeGesture(this) }
-    //val navSwipeUpGesture by lazy { NavSwipeUpGesture(this) }
+    // val navSwipeUpGesture by lazy { NavSwipeUpGesture(this) }
 
     var touchDownPoint = PointF()
 
@@ -90,7 +90,8 @@ class GestureController(val launcher: ZimLauncher) : TouchController {
     }
 
     fun createHandlerPref(key: String, defaultValue: GestureHandler = blankGestureHandler) = prefs.StringBasedPref(
-            key, defaultValue, prefs.doNothing, ::createGestureHandler, GestureHandler::toString, GestureHandler::onDestroy)
+        key, defaultValue, prefs.doNothing, ::createGestureHandler, GestureHandler::toString, GestureHandler::onDestroy
+    )
 
     private fun createGestureHandler(jsonString: String) = createGestureHandler(launcher, jsonString, blankGestureHandler)
 
@@ -98,9 +99,10 @@ class GestureController(val launcher: ZimLauncher) : TouchController {
 
         private const val TAG = "GestureController"
         private val LEGACY_SLEEP_HANDLERS = listOf(
-                "org.zimmob.zimlx.gestures.handlers.SleepGestureHandlerDeviceAdmin",
-                "org.zimmob.zimlx.gestures.handlers.SleepGestureHandlerAccessibility",
-                "org.zimmob.zimlx.gestures.handlers.SleepGestureHandlerRoot")
+            "org.zimmob.zimlx.gestures.handlers.SleepGestureHandlerDeviceAdmin",
+            "org.zimmob.zimlx.gestures.handlers.SleepGestureHandlerAccessibility",
+            "org.zimmob.zimlx.gestures.handlers.SleepGestureHandlerRoot"
+        )
 
         fun createGestureHandler(context: Context, jsonString: String?, fallback: GestureHandler): GestureHandler {
             if (!TextUtils.isEmpty(jsonString)) {
@@ -117,7 +119,7 @@ class GestureController(val launcher: ZimLauncher) : TouchController {
                 // Log.d(TAG, "creating handler $className with config ${configValue?.toString(2)}")
                 try {
                     val handler = Class.forName(className!!).getConstructor(Context::class.java, JSONObject::class.java)
-                            .newInstance(context, configValue) as GestureHandler
+                        .newInstance(context, configValue) as GestureHandler
                     if (handler.isAvailable) return handler
                 } catch (t: Throwable) {
                     Log.e(TAG, "can't create gesture handler", t)
@@ -141,23 +143,23 @@ class GestureController(val launcher: ZimLauncher) : TouchController {
         }
 
         fun getGestureHandlers(context: Context, isSwipeUp: Boolean, hasBlank: Boolean) = mutableListOf(
-                //SwitchAppsGestureHandler(context, null),
-                //BlankGestureHandler(context, null), -> Added in apply block
-                SleepGestureHandler(context, null),
-                SleepGestureHandlerTimeout(context, null),
-                OpenDrawerGestureHandler(context, null),
-                OpenWidgetsGestureHandler(context, null),
-                OpenSettingsGestureHandler(context, null),
-                OpenOverviewGestureHandler(context, null),
-                StartGlobalSearchGestureHandler(context, null),
-                StartAppSearchGestureHandler(context, null),
-                NotificationsOpenGestureHandler(context, null),
-                OpenOverlayGestureHandler(context, null),
-                StartAssistantGestureHandler(context, null),
-                StartVoiceSearchGestureHandler(context, null),
-                StartAppGestureHandler(context, null)
-                //OpenRecentsGestureHandler(context, null),
-                //LaunchMostRecentTaskGestureHandler(context, null)
+            // SwitchAppsGestureHandler(context, null),
+            // BlankGestureHandler(context, null), -> Added in apply block
+            SleepGestureHandler(context, null),
+            SleepGestureHandlerTimeout(context, null),
+            OpenDrawerGestureHandler(context, null),
+            OpenWidgetsGestureHandler(context, null),
+            OpenSettingsGestureHandler(context, null),
+            OpenOverviewGestureHandler(context, null),
+            StartGlobalSearchGestureHandler(context, null),
+            StartAppSearchGestureHandler(context, null),
+            NotificationsOpenGestureHandler(context, null),
+            OpenOverlayGestureHandler(context, null),
+            StartAssistantGestureHandler(context, null),
+            StartVoiceSearchGestureHandler(context, null),
+            StartAppGestureHandler(context, null)
+            // OpenRecentsGestureHandler(context, null),
+            // LaunchMostRecentTaskGestureHandler(context, null)
         ).apply {
             if (hasBlank) {
                 add(1, BlankGestureHandler(context, null))

@@ -12,7 +12,6 @@ import org.zimmob.zimlx.globalsearch.SearchProvider
 @Keep
 class BaiduSearchProvider(context: Context) : SearchProvider(context) {
 
-
     override val name = context.getString(R.string.search_provider_baidu)
     override val supportsVoiceSearch = true
     override val supportsAssistant = false

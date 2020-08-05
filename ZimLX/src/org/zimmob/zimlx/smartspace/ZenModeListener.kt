@@ -23,8 +23,9 @@ import android.os.Handler
 import android.provider.Settings
 
 class ZenModeListener(
-        private val contentResolver: ContentResolver,
-        private val listener: (Boolean) -> Unit) : ContentObserver(Handler()) {
+    private val contentResolver: ContentResolver,
+    private val listener: (Boolean) -> Unit
+) : ContentObserver(Handler()) {
 
     fun startListening() {
         contentResolver.registerContentObserver(Settings.Global.getUriFor(ZEN_MODE), false, this)

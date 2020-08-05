@@ -33,9 +33,10 @@ import org.zimmob.zimlx.isVisible
 import org.zimmob.zimlx.settings.ui.ControlledPreference
 
 @Keep
-class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : PreferenceGroup(context, attrs, defStyleAttr, defStyleRes),
-        ValueAnimator.AnimatorUpdateListener,
-        ControlledPreference by ControlledPreference.Delegate(context, attrs) {
+class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) :
+    PreferenceGroup(context, attrs, defStyleAttr, defStyleRes),
+    ValueAnimator.AnimatorUpdateListener,
+    ControlledPreference by ControlledPreference.Delegate(context, attrs) {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -122,7 +123,7 @@ class AdvancedPreferencesGroup(context: Context, attrs: AttributeSet?, defStyleA
     private fun animateCaretPointingUp(pointingUp: Boolean) {
         caretPointingUp = pointingUp
         animator = ObjectAnimator.ofFloat(caretDrawable.caretProgress, if (pointingUp) CaretDrawable.PROGRESS_CARET_POINTING_UP else CaretDrawable.PROGRESS_CARET_POINTING_DOWN)
-                .setDuration(200)
+            .setDuration(200)
     }
 
     override fun onAnimationUpdate(animator: ValueAnimator) {

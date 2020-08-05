@@ -28,8 +28,10 @@ import kotlinx.android.synthetic.zim.app_categorization_type_item.view.*
 import org.zimmob.zimlx.*
 import org.zimmob.zimlx.groups.AppGroupsManager
 
-class AppCategorizationTypeItem(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs),
-        View.OnClickListener, ZimPreferences.OnPreferenceChangeListener {
+class AppCategorizationTypeItem(context: Context, attrs: AttributeSet?) :
+    LinearLayout(context, attrs),
+    View.OnClickListener,
+    ZimPreferences.OnPreferenceChangeListener {
 
     private val prefs = context.zimPrefs
     private val manager = prefs.appGroupsManager
@@ -40,20 +42,28 @@ class AppCategorizationTypeItem(context: Context, attrs: AttributeSet?) : Linear
 
         val tintSelected = prefs.accentColor
         val tintNormal = ColorUtils.setAlphaComponent(context.getColorAttr(android.R.attr.colorControlHighlight), 255)
-        val tintList = ColorStateList(arrayOf(
+        val tintList = ColorStateList(
+            arrayOf(
                 intArrayOf(android.R.attr.state_selected),
-                intArrayOf()),
-                intArrayOf(
-                        tintSelected,
-                        tintNormal))
+                intArrayOf()
+            ),
+            intArrayOf(
+                tintSelected,
+                tintNormal
+            )
+        )
         background.setTintList(tintList)
 
-        val rippleTintList = ColorStateList(arrayOf(
+        val rippleTintList = ColorStateList(
+            arrayOf(
                 intArrayOf(android.R.attr.state_selected),
-                intArrayOf()),
-                intArrayOf(
-                        ColorUtils.setAlphaComponent(tintSelected, 31),
-                        ColorUtils.setAlphaComponent(tintNormal, 31)))
+                intArrayOf()
+            ),
+            intArrayOf(
+                ColorUtils.setAlphaComponent(tintSelected, 31),
+                ColorUtils.setAlphaComponent(tintNormal, 31)
+            )
+        )
         (background as RippleDrawable).setColor(rippleTintList)
     }
 

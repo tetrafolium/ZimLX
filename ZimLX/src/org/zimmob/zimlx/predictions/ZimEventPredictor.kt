@@ -46,7 +46,7 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
     private val predictionsHeader by lazy { launcher.appsView.floatingHeaderView as PredictionsFloatingHeader }
     private val deepShortcutManager by lazy { DeepShortcutManager.getInstance(context) }
 
-    private val handlerThread by lazy { HandlerThread("event-predictor").apply { start() }}
+    private val handlerThread by lazy { HandlerThread("event-predictor").apply { start() } }
     private val handler by lazy { Handler(handlerThread.looper) }
 
     private val devicePrefs = Utilities.getDevicePrefs(context)
@@ -115,16 +115,19 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
     }
 
     private fun setupBroadcastReceiver() {
-        context.registerReceiver( phonesStateChangeReceiver,
-                IntentFilter(Intent.ACTION_HEADSET_PLUG).apply {
-                    addAction(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED)
-                }, null, handler)
+        context.registerReceiver(
+            phonesStateChangeReceiver,
+            IntentFilter(Intent.ACTION_HEADSET_PLUG).apply {
+                addAction(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED)
+            },
+            null, handler
+        )
     }
 
     private fun tearDownBroadcastReceiver() {
         try {
             context.unregisterReceiver(phonesStateChangeReceiver)
-        } catch(ignored: Exception) {
+        } catch (ignored: Exception) {
             // there is apparently no way to reliably check if a receiver is actually registered and
             // an exception is thrown when trying to unregister one that never was
         }
@@ -177,11 +180,11 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
             val appList = if (phonesJustConnected) phonesList.getRanked().take(MAX_HEADPHONE_SUGGESTIONS).toMutableList() else mutableListOf()
             appList.addAll(appsList.getRanked().filterNot { appList.contains(it) }.take(MAX_PREDICTIONS - appList.size))
             val fullList = appList.map { getComponentFromString(it) }
-                    .filterNot { isHiddenApp(context, it.key) }.toMutableList()
+                .filterNot { isHiddenApp(context, it.key) }.toMutableList()
             if (fullList.size < MAX_PREDICTIONS) {
                 fullList.addAll(
-                        PLACE_HOLDERS.mapNotNull { packageManager.getLaunchIntentForPackage(it)?.component }
-                                .map { ComponentKeyMapper(context, ComponentKey(it, user)) }
+                    PLACE_HOLDERS.mapNotNull { packageManager.getLaunchIntentForPackage(it)?.component }
+                        .map { ComponentKeyMapper(context, ComponentKey(it, user)) }
                 )
             }
             fullList.take(MAX_PREDICTIONS).toMutableList()
@@ -250,7 +253,7 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
     inner class CountRankedArrayPreference(private val prefs: SharedPreferences, private val key: String, private val maxSize: Int = -1, private val delimiter: String = ";") {
         private var list = load()
 
-        fun getRanked() : Set<String> = list.distinct().sortedBy { value -> list.count { it == value } }.reversed().toSet()
+        fun getRanked(): Set<String> = list.distinct().sortedBy { value -> list.count { it == value } }.reversed().toSet()
 
         fun add(string: String) {
             list.add(0, string)
@@ -270,7 +273,7 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
         }
         fun contains(element: String) = list.contains(element)
 
-        private fun load() = (prefs.getString(key, "")?: "").split(delimiter).toMutableList()
+        private fun load() = (prefs.getString(key, "") ?: "").split(delimiter).toMutableList()
         private fun save() {
             val strValue = list.joinToString(delimiter)
             prefs.edit().putString(key, strValue).apply()

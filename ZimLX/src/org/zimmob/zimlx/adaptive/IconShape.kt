@@ -24,43 +24,54 @@ import android.graphics.PointF
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-open class IconShape(val topLeft: Corner,
-                     val topRight: Corner,
-                     val bottomLeft: Corner,
-                     val bottomRight: Corner) {
+open class IconShape(
+    val topLeft: Corner,
+    val topRight: Corner,
+    val bottomLeft: Corner,
+    val bottomRight: Corner
+) {
 
-    constructor(topLeftShape: IconCornerShape,
-                topRightShape: IconCornerShape,
-                bottomLeftShape: IconCornerShape,
-                bottomRightShape: IconCornerShape,
-                topLeftScale: Float,
-                topRightScale: Float,
-                bottomLeftScale: Float,
-                bottomRightScale: Float) : this(Corner(topLeftShape, topLeftScale),
-            Corner(topRightShape, topRightScale),
-            Corner(bottomLeftShape, bottomLeftScale),
-            Corner(bottomRightShape, bottomRightScale))
+    constructor(
+        topLeftShape: IconCornerShape,
+        topRightShape: IconCornerShape,
+        bottomLeftShape: IconCornerShape,
+        bottomRightShape: IconCornerShape,
+        topLeftScale: Float,
+        topRightScale: Float,
+        bottomLeftScale: Float,
+        bottomRightScale: Float
+    ) : this(
+        Corner(topLeftShape, topLeftScale),
+        Corner(topRightShape, topRightScale),
+        Corner(bottomLeftShape, bottomLeftScale),
+        Corner(bottomRightShape, bottomRightScale)
+    )
 
-    constructor(topLeftShape: IconCornerShape,
-                topRightShape: IconCornerShape,
-                bottomLeftShape: IconCornerShape,
-                bottomRightShape: IconCornerShape,
-                topLeftScale: PointF,
-                topRightScale: PointF,
-                bottomLeftScale: PointF,
-                bottomRightScale: PointF) : this(Corner(topLeftShape, topLeftScale),
-            Corner(topRightShape, topRightScale),
-            Corner(bottomLeftShape, bottomLeftScale),
-            Corner(bottomRightShape, bottomRightScale))
+    constructor(
+        topLeftShape: IconCornerShape,
+        topRightShape: IconCornerShape,
+        bottomLeftShape: IconCornerShape,
+        bottomRightShape: IconCornerShape,
+        topLeftScale: PointF,
+        topRightScale: PointF,
+        bottomLeftScale: PointF,
+        bottomRightScale: PointF
+    ) : this(
+        Corner(topLeftShape, topLeftScale),
+        Corner(topRightShape, topRightScale),
+        Corner(bottomLeftShape, bottomLeftScale),
+        Corner(bottomRightShape, bottomRightScale)
+    )
 
     constructor(shape: IconShape) : this(
-            shape.topLeft, shape.topRight, shape.bottomLeft, shape.bottomRight)
+        shape.topLeft, shape.topRight, shape.bottomLeft, shape.bottomRight
+    )
 
     private val isCircle =
-            topLeft == Corner.fullArc &&
-                    topRight == Corner.fullArc &&
-                    bottomLeft == Corner.fullArc &&
-                    bottomRight == Corner.fullArc
+        topLeft == Corner.fullArc &&
+            topRight == Corner.fullArc &&
+            bottomLeft == Corner.fullArc &&
+            bottomRight == Corner.fullArc
 
     private val tmpPoint = PointF()
     open val qsbEdgeRadius = 0
@@ -79,8 +90,16 @@ open class IconShape(val topLeft: Corner,
     }
 
     @JvmOverloads
-    fun addToPath(path: Path, left: Float, top: Float, right: Float, bottom: Float,
-                  size: Float = 50f, endSize: Float = size, progress: Float = 0f) {
+    fun addToPath(
+        path: Path,
+        left: Float,
+        top: Float,
+        right: Float,
+        bottom: Float,
+        size: Float = 50f,
+        endSize: Float = size,
+        progress: Float = 0f
+    ) {
         val topLeftSizeX = Utilities.mapRange(progress, topLeft.scale.x * size, endSize)
         val topLeftSizeY = Utilities.mapRange(progress, topLeft.scale.y * size, endSize)
         val topRightSizeX = Utilities.mapRange(progress, topRight.scale.x * size, endSize)
@@ -92,53 +111,67 @@ open class IconShape(val topLeft: Corner,
 
         // Start from the bottom right corner
         path.moveTo(right, bottom - bottomRightSizeY)
-        bottomRight.shape.addCorner(path, IconCornerShape.Position.BottomRight,
-                tmpPoint.apply {
-                    x = bottomRightSizeX
-                    y = bottomRightSizeY
-                },
-                progress,
-                right - bottomRightSizeX,
-                bottom - bottomRightSizeY)
+        bottomRight.shape.addCorner(
+            path, IconCornerShape.Position.BottomRight,
+            tmpPoint.apply {
+                x = bottomRightSizeX
+                y = bottomRightSizeY
+            },
+            progress,
+            right - bottomRightSizeX,
+            bottom - bottomRightSizeY
+        )
 
         // Move to bottom left
-        addLine(path,
-                right - bottomRightSizeX, bottom,
-                left + bottomLeftSizeX, bottom)
-        bottomLeft.shape.addCorner(path, IconCornerShape.Position.BottomLeft,
-                tmpPoint.apply {
-                    x = bottomLeftSizeX
-                    y = bottomLeftSizeY
-                },
-                progress,
-                left,
-                bottom - bottomLeftSizeY)
+        addLine(
+            path,
+            right - bottomRightSizeX, bottom,
+            left + bottomLeftSizeX, bottom
+        )
+        bottomLeft.shape.addCorner(
+            path, IconCornerShape.Position.BottomLeft,
+            tmpPoint.apply {
+                x = bottomLeftSizeX
+                y = bottomLeftSizeY
+            },
+            progress,
+            left,
+            bottom - bottomLeftSizeY
+        )
 
         // Move to top left
-        addLine(path,
-                left, bottom - bottomLeftSizeY,
-                left, top + topLeftSizeY)
-        topLeft.shape.addCorner(path, IconCornerShape.Position.TopLeft,
-                tmpPoint.apply {
-                    x = topLeftSizeX
-                    y = topLeftSizeY
-                },
-                progress,
-                left,
-                top)
+        addLine(
+            path,
+            left, bottom - bottomLeftSizeY,
+            left, top + topLeftSizeY
+        )
+        topLeft.shape.addCorner(
+            path, IconCornerShape.Position.TopLeft,
+            tmpPoint.apply {
+                x = topLeftSizeX
+                y = topLeftSizeY
+            },
+            progress,
+            left,
+            top
+        )
 
         // And then finally top right
-        addLine(path,
-                left + topLeftSizeX, top,
-                right - topRightSizeX, top)
-        topRight.shape.addCorner(path, IconCornerShape.Position.TopRight,
-                tmpPoint.apply {
-                    x = topRightSizeX
-                    y = topRightSizeY
-                },
-                progress,
-                right - topRightSizeX,
-                top)
+        addLine(
+            path,
+            left + topLeftSizeX, top,
+            right - topRightSizeX, top
+        )
+        topRight.shape.addCorner(
+            path, IconCornerShape.Position.TopRight,
+            tmpPoint.apply {
+                x = topRightSizeX
+                y = topRightSizeY
+            },
+            progress,
+            right - topRightSizeX,
+            top
+        )
 
         path.close()
     }
@@ -175,11 +208,13 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
-    object Circle : IconShape(IconCornerShape.arc,
-            IconCornerShape.arc,
-            IconCornerShape.arc,
-            IconCornerShape.arc,
-            1f, 1f, 1f, 1f) {
+    object Circle : IconShape(
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        1f, 1f, 1f, 1f
+    ) {
 
         override fun addShape(path: Path, x: Float, y: Float, radius: Float) {
             path.addCircle(x + radius, y + radius, radius, Path.Direction.CW)
@@ -190,11 +225,13 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
-    object Square : IconShape(IconCornerShape.arc,
-            IconCornerShape.arc,
-            IconCornerShape.arc,
-            IconCornerShape.arc,
-            .16f, .16f, .16f, .16f) {
+    object Square : IconShape(
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        .16f, .16f, .16f, .16f
+    ) {
 
         override val qsbEdgeRadius = R.dimen.qsb_radius_square
 
@@ -203,11 +240,13 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
-    object RoundedSquare : IconShape(IconCornerShape.arc,
-            IconCornerShape.arc,
-            IconCornerShape.arc,
-            IconCornerShape.arc,
-            .6f, .6f, .6f, .6f) {
+    object RoundedSquare : IconShape(
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        .6f, .6f, .6f, .6f
+    ) {
 
         override val qsbEdgeRadius = R.dimen.qsb_radius_square
 
@@ -216,11 +255,13 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
-    object Squircle : IconShape(IconCornerShape.squircle,
-            IconCornerShape.squircle,
-            IconCornerShape.squircle,
-            IconCornerShape.squircle,
-            1f, 1f, 1f, 1f) {
+    object Squircle : IconShape(
+        IconCornerShape.squircle,
+        IconCornerShape.squircle,
+        IconCornerShape.squircle,
+        IconCornerShape.squircle,
+        1f, 1f, 1f, 1f
+    ) {
 
         override val qsbEdgeRadius = R.dimen.qsb_radius_squircle
 
@@ -229,25 +270,29 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
-    object Teardrop : IconShape(IconCornerShape.arc,
-            IconCornerShape.arc,
-            IconCornerShape.arc,
-            IconCornerShape.arc,
-            1f, 1f, 1f, .3f) {
+    object Teardrop : IconShape(
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        1f, 1f, 1f, .3f
+    ) {
 
         override fun toString(): String {
             return "teardrop"
         }
     }
 
-    object Cylinder : IconShape(IconCornerShape.arc,
-            IconCornerShape.arc,
-            IconCornerShape.arc,
-            IconCornerShape.arc,
-            PointF(1f, .6f),
-            PointF(1f, .6f),
-            PointF(1f, .6f),
-            PointF(1f, .6f)) {
+    object Cylinder : IconShape(
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        IconCornerShape.arc,
+        PointF(1f, .6f),
+        PointF(1f, .6f),
+        PointF(1f, .6f),
+        PointF(1f, .6f)
+    ) {
 
         override fun toString(): String {
             return "cylinder"
@@ -265,11 +310,12 @@ open class IconShape(val topLeft: Corner,
                 "teardrop" -> Teardrop
                 "cylinder" -> Cylinder
                 "" -> null
-                else -> try {
-                    parseCustomShape(value)
-                } catch (ex: Exception) {
-                    null
-                }
+                else ->
+                    try {
+                        parseCustomShape(value)
+                    } catch (ex: Exception) {
+                        null
+                    }
             }
         }
 
@@ -277,10 +323,12 @@ open class IconShape(val topLeft: Corner,
             val parts = value.split("|")
             if (parts[0] != "v1") error("unknown config format")
             if (parts.size != 5) error("invalid arguments size")
-            return IconShape(Corner.fromString(parts[1]),
-                    Corner.fromString(parts[2]),
-                    Corner.fromString(parts[3]),
-                    Corner.fromString(parts[4]))
+            return IconShape(
+                Corner.fromString(parts[1]),
+                Corner.fromString(parts[2]),
+                Corner.fromString(parts[3]),
+                Corner.fromString(parts[4])
+            )
         }
     }
 }

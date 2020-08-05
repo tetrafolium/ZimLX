@@ -92,7 +92,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
 
     private fun canInterceptTouch(): Boolean {
         return AbstractFloatingView.getTopOpenView(launcher) == null &&
-                launcher.isInState(LauncherState.NORMAL)
+            launcher.isInState(LauncherState.NORMAL)
     }
 
     private fun isOverHotseat(ev: MotionEvent): Boolean {
@@ -134,7 +134,8 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
                 }
             } else {
                 if (velocity > triggerVelocity &&
-                        (state == GestureState.Free || state == GestureState.NotificationClosed)) {
+                    (state == GestureState.Free || state == GestureState.NotificationClosed)
+                ) {
                     state = if (openNotificationsOrQuickSettings()) GestureState.NotificationOpened else GestureState.Locked
                 } else if (velocity < -notificationsCloseVelocity && state == GestureState.NotificationOpened) {
                     state = if (closeNotifications()) GestureState.NotificationClosed else GestureState.Locked
@@ -179,8 +180,8 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     private fun openNotifications(): Boolean {
         return try {
             Class.forName("android.app.StatusBarManager")
-                    .getMethod("expandNotificationsPanel")
-                    .invoke(launcher.getSystemService("statusbar"))
+                .getMethod("expandNotificationsPanel")
+                .invoke(launcher.getSystemService("statusbar"))
             true
         } catch (ex: ClassNotFoundException) {
             false
@@ -197,8 +198,8 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     private fun openQuickSettings(): Boolean {
         return try {
             Class.forName("android.app.StatusBarManager")
-                    .getMethod("expandSettingsPanel")
-                    .invoke(launcher.getSystemService("statusbar"))
+                .getMethod("expandSettingsPanel")
+                .invoke(launcher.getSystemService("statusbar"))
             true
         } catch (ex: ClassNotFoundException) {
             false
@@ -215,8 +216,8 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     private fun closeNotifications(): Boolean {
         return try {
             Class.forName("android.app.StatusBarManager")
-                    .getMethod("collapsePanels")
-                    .invoke(launcher.getSystemService("statusbar"))
+                .getMethod("collapsePanels")
+                .invoke(launcher.getSystemService("statusbar"))
             true
         } catch (ex: ClassNotFoundException) {
             false
@@ -227,6 +228,5 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
         } catch (ex: InvocationTargetException) {
             false
         }
-
     }
 }

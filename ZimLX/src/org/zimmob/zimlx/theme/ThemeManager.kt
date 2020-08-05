@@ -151,8 +151,10 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
             return theme
         }
 
-        BlankActivity.requestPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                ZimLauncher.REQUEST_PERMISSION_LOCATION_ACCESS) { granted ->
+        BlankActivity.requestPermission(
+            context, android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            ZimLauncher.REQUEST_PERMISSION_LOCATION_ACCESS
+        ) { granted ->
             if (granted) {
                 listenToTwilight = true
             } else {
@@ -188,12 +190,12 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
 
     companion object : SingletonHolder<ThemeManager, Context>(ensureOnMainThread(useApplicationContext(::ThemeManager))) {
 
-        const val THEME_FOLLOW_WALLPAPER = 1         // 000001 = 1
-        const val THEME_DARK_TEXT = 1 shl 1          // 000010 = 2
-        const val THEME_DARK = 1 shl 2               // 000100 = 4
-        const val THEME_USE_BLACK = 1 shl 3          // 001000 = 8
-        const val THEME_FOLLOW_NIGHT_MODE = 1 shl 4  // 010000 = 16
-        const val THEME_FOLLOW_DAYLIGHT = 1 shl 5    // 100000 = 32
+        const val THEME_FOLLOW_WALLPAPER = 1 // 000001 = 1
+        const val THEME_DARK_TEXT = 1 shl 1 // 000010 = 2
+        const val THEME_DARK = 1 shl 2 // 000100 = 4
+        const val THEME_USE_BLACK = 1 shl 3 // 001000 = 8
+        const val THEME_FOLLOW_NIGHT_MODE = 1 shl 4 // 010000 = 16
+        const val THEME_FOLLOW_DAYLIGHT = 1 shl 5 // 100000 = 32
 
         const val THEME_AUTO_MASK = THEME_FOLLOW_WALLPAPER or THEME_FOLLOW_NIGHT_MODE or THEME_FOLLOW_DAYLIGHT
         const val THEME_DARK_MASK = THEME_DARK or THEME_AUTO_MASK

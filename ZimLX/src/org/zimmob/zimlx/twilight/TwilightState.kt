@@ -24,9 +24,11 @@ class TwilightState(val sunriseTimeMillis: Long, val sunsetTimeMillis: Long) {
     val isNight get() = System.currentTimeMillis() in sunsetTimeMillis until sunriseTimeMillis
 
     override fun toString(): String {
-        return ("TwilightState {"
-                + " sunrise=" + DateFormat.format("MM-dd HH:mm", sunriseTimeMillis)
-                + " sunset=" + DateFormat.format("MM-dd HH:mm", sunsetTimeMillis)
-                + " }")
+        return (
+            "TwilightState {" +
+                " sunrise=" + DateFormat.format("MM-dd HH:mm", sunriseTimeMillis) +
+                " sunset=" + DateFormat.format("MM-dd HH:mm", sunsetTimeMillis) +
+                " }"
+            )
     }
 }

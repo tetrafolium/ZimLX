@@ -29,8 +29,8 @@ import org.zimmob.zimlx.settings.ui.SettingsActivity
 
 // TODO: add event for after installing a new Icon Pack with apply activity as intent
 class OnboardingProvider(controller: ZimSmartspaceController) :
-        ZimSmartspaceController.DataProvider(controller),
-        SharedPreferences.OnSharedPreferenceChangeListener {
+    ZimSmartspaceController.DataProvider(controller),
+    SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val deviceKeys = arrayOf(PREF_HAS_OPENED_SETTINGS)
     private val prefKeys = arrayOf(DiscoveryBounce.HOME_BOUNCE_SEEN)
@@ -65,18 +65,22 @@ class OnboardingProvider(controller: ZimSmartspaceController) :
     private fun update() {
         val card = when {
             !prefs.getBoolean(DiscoveryBounce.HOME_BOUNCE_SEEN, false) -> ZimSmartspaceController.CardData(
-                    lines = listOf(ZimSmartspaceController.Line(context, R.string.onboarding_swipe_up)))
+                lines = listOf(ZimSmartspaceController.Line(context, R.string.onboarding_swipe_up))
+            )
             !devicePrefs.getBoolean(PREF_HAS_OPENED_SETTINGS, false) -> ZimSmartspaceController.CardData(
-                    icon = null,
-                    title = context.getString(
-                            R.string.onbording_settings_title,
-                            context.getString(R.string.derived_app_name)),
-                    subtitle = context.getString(R.string.onbording_settings_summary),
-                    pendingIntent = PendingIntent.getActivity(
-                            context,
-                            0,
-                            Intent(context, SettingsActivity::class.java),
-                            0))
+                icon = null,
+                title = context.getString(
+                    R.string.onbording_settings_title,
+                    context.getString(R.string.derived_app_name)
+                ),
+                subtitle = context.getString(R.string.onbording_settings_summary),
+                pendingIntent = PendingIntent.getActivity(
+                    context,
+                    0,
+                    Intent(context, SettingsActivity::class.java),
+                    0
+                )
+            )
             else -> null
         }
         updateData(null, card)

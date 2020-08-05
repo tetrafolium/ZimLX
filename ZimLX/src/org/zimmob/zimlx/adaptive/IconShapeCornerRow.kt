@@ -33,8 +33,9 @@ import kotlinx.android.synthetic.main.preference_seekbar.view.txtValue
 import kotlinx.android.synthetic.zim.icon_shape_corner_row.view.*
 
 class IconShapeCornerRow(context: Context, attrs: AttributeSet?) :
-        LinearLayout(context, attrs), SeekBar.OnSeekBarChangeListener,
-        AdapterView.OnItemSelectedListener {
+    LinearLayout(context, attrs),
+    SeekBar.OnSeekBarChangeListener,
+    AdapterView.OnItemSelectedListener {
 
     private var listener: ((IconShape.Corner) -> Unit)? = null
     private var scale = 1f
@@ -96,11 +97,9 @@ class IconShapeCornerRow(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
     }
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
     }
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
@@ -108,34 +107,34 @@ class IconShapeCornerRow(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-
     }
 
     class CornerShapeAdapter(context: Context) :
-            SimpleAdapter(context, getEntries(context),
-                    android.R.layout.simple_list_item_1,
-                    arrayOf("text"),
-                    intArrayOf(android.R.id.text1)) {
+        SimpleAdapter(
+            context, getEntries(context),
+            android.R.layout.simple_list_item_1,
+            arrayOf("text"),
+            intArrayOf(android.R.id.text1)
+        ) {
 
         companion object {
 
             private fun getEntries(context: Context): List<Map<String, String>> {
                 return listOf(
-                        mapOf(
-                                "value" to "arc",
-                                "text" to context.getString(R.string.icon_shape_corner_round)
-                        ),
-                        mapOf(
-                                "value" to "squircle",
-                                "text" to context.getString(R.string.icon_shape_corner_squircle)
-                        ),
-                        mapOf(
-                                "value" to "cut",
-                                "text" to context.getString(R.string.icon_shape_corner_cut)
-                        )
+                    mapOf(
+                        "value" to "arc",
+                        "text" to context.getString(R.string.icon_shape_corner_round)
+                    ),
+                    mapOf(
+                        "value" to "squircle",
+                        "text" to context.getString(R.string.icon_shape_corner_squircle)
+                    ),
+                    mapOf(
+                        "value" to "cut",
+                        "text" to context.getString(R.string.icon_shape_corner_cut)
+                    )
                 )
             }
         }
     }
 }
-

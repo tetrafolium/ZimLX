@@ -45,15 +45,20 @@ import org.zimmob.zimlx.util.SingletonHolder
 
 typealias GroupCreator<T> = (Context) -> T?
 
-abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsManager,
-                                              private val type: AppGroupsManager.CategorizationType) {
+abstract class AppGroups<T : AppGroups.Group>(
+    private val manager: AppGroupsManager,
+    private val type: AppGroupsManager.CategorizationType
+) {
 
     private val prefs = manager.prefs
     val context = prefs.context
 
-    private var groupsDataJson by prefs.StringPref(type.prefsKey, "{}", prefs.withChangeCallback {
-        onGroupsChanged(it)
-    })
+    private var groupsDataJson by prefs.StringPref(
+        type.prefsKey, "{}",
+        prefs.withChangeCallback {
+            onGroupsChanged(it)
+        }
+    )
     private val groups = ArrayList<T>()
 
     var isEnabled = manager.categorizationEnabled && manager.categorizationType == type
@@ -87,13 +92,13 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
         val arr = loadGroupsArray()
         val used = mutableSetOf<GroupCreator<T>>()
         (0 until arr.length())
-                .map { arr.getJSONObject(it) }
-                .mapNotNullTo(groups) { group ->
-                    val type = if (group.has(KEY_TYPE)) group.getInt(KEY_TYPE) else TYPE_UNDEFINED
-                    val creator = getGroupCreator(type)
-                    used.add(creator)
-                    creator(context)?.apply { loadCustomizations(context, group.asMap()) }
-                }
+            .map { arr.getJSONObject(it) }
+            .mapNotNullTo(groups) { group ->
+                val type = if (group.has(KEY_TYPE)) group.getInt(KEY_TYPE) else TYPE_UNDEFINED
+                val creator = getGroupCreator(type)
+                used.add(creator)
+                creator(context)?.apply { loadCustomizations(context, group.asMap()) }
+            }
         getDefaultCreators().asReversed().forEach { creator ->
             if (creator !in used) {
                 creator(context)?.let { groups.add(0, it) }
@@ -240,7 +245,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
         }
 
         open class StringCustomization(key: String, default: String) :
-                Customization<String, String>(key, default) {
+            Customization<String, String>(key, default) {
 
             override fun loadFromJson(context: Context, obj: String?) {
                 value = obj
@@ -270,13 +275,10 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
                     }
 
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
                     }
 
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
                     }
-
                 })
                 return view
             }
@@ -291,7 +293,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
         }
 
         open class BooleanCustomization(key: String, default: Boolean) :
-                Customization<Boolean, Boolean>(key, default) {
+            Customization<Boolean, Boolean>(key, default) {
 
             override fun loadFromJson(context: Context, obj: Boolean?) {
                 value = obj
@@ -318,11 +320,10 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
             override fun clone(): Customization<Long, Long> {
                 return LongCustomization(key, default).also { it.value = value }
             }
-
         }
 
         class SwitchRow(private val icon: Int, private val label: Int, key: String, default: Boolean) :
-                BooleanCustomization(key, default) {
+            BooleanCustomization(key, default) {
 
             override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
                 val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_switch_row, parent, false)
@@ -352,14 +353,14 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
         }
 
         open class ColorCustomization(key: String, default: Int) :
-                Customization<Int, String>(key, default) {
+            Customization<Int, String>(key, default) {
 
             override fun loadFromJson(context: Context, obj: String?) {
                 value = obj?.let { it.toInt() }
             }
 
             override fun saveToJson(context: Context): String? {
-                //return if (value is ZimAccentResolver) null else value.toString()
+                // return if (value is ZimAccentResolver) null else value.toString()
                 return value.toString()
             }
 
@@ -369,7 +370,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
         }
 
         class ColorRow(key: String, default: Int) :
-                ColorCustomization(key, default) {
+            ColorCustomization(key, default) {
 
             override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
                 val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_color_row, parent, false)
@@ -382,11 +383,15 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
                     val current = value()
                     val resolvers = resources.getStringArray(R.array.resolver_tabs)
                     with(dialog) {
-                        val tabbedPickerView = TabbedPickerView(this.context, "tabs", current,
-                                ColorMode.RGB, resolvers, false, {
-                            value = current
-                            updateColor(view)
-                        }, dialog::dismiss)
+                        val tabbedPickerView = TabbedPickerView(
+                            this.context, "tabs", current,
+                            ColorMode.RGB, resolvers, false,
+                            {
+                                value = current
+                                updateColor(view)
+                            },
+                            dialog::dismiss
+                        )
                         setView(tabbedPickerView)
                         setOnShowListener {
                             val width: Int; val height: Int
@@ -419,7 +424,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
         }
 
         abstract class SetCustomization<T : Any, S : Any>(key: String, default: MutableSet<T>) :
-                Customization<MutableSet<T>, JSONArray>(key, default) {
+            Customization<MutableSet<T>, JSONArray>(key, default) {
 
             @Suppress("UNCHECKED_CAST")
             override fun loadFromJson(context: Context, obj: JSONArray?) {
@@ -447,7 +452,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
         }
 
         open class ComponentsCustomization(key: String, default: MutableSet<ComponentKey>) :
-                SetCustomization<ComponentKey, String>(key, default) {
+            SetCustomization<ComponentKey, String>(key, default) {
 
             override fun loadFromJson(context: Context, obj: JSONArray?) {
                 super.loadFromJson(context, obj)
@@ -472,7 +477,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
         }
 
         class AppsRow(key: String, default: MutableSet<ComponentKey>) :
-                ComponentsCustomization(key, default) {
+            ComponentsCustomization(key, default) {
 
             override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
                 val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_apps_row, parent, false)
@@ -481,12 +486,15 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
                 updateCount(view)
 
                 view.setOnClickListener {
-                    SelectableAppsActivity.start(context, value(), { newSelections ->
-                        if (newSelections != null) {
-                            value = HashSet(newSelections)
-                            updateCount(view)
+                    SelectableAppsActivity.start(
+                        context, value(),
+                        { newSelections ->
+                            if (newSelections != null) {
+                                value = HashSet(newSelections)
+                                updateCount(view)
+                            }
                         }
-                    })
+                    )
                 }
 
                 return view
@@ -495,7 +503,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
             private fun updateCount(view: View) {
                 val count = value().size
                 view.findViewById<TextView>(R.id.apps_count).text =
-                        view.resources.getQuantityString(R.plurals.tab_apps_count, count, count)
+                    view.resources.getQuantityString(R.plurals.tab_apps_count, count, count)
             }
 
             override fun clone(): Customization<MutableSet<ComponentKey>, JSONArray> {
@@ -555,7 +563,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
 
 class AppGroupsUtils(context: Context) {
 
-    //private val colorEngine = ColorEngine.getInstance(context)
+    // private val colorEngine = ColorEngine.getInstance(context)
     /*val defaultColorResolver = ZimAccentResolver(
             ColorEngine.ColorResolver.Config("groups", colorEngine))
 
@@ -564,7 +572,7 @@ class AppGroupsUtils(context: Context) {
                 ?: defaultColorResolver
     }*/
 
-
     companion object : SingletonHolder<AppGroupsUtils, Context>(
-            ensureOnMainThread(useApplicationContext(::AppGroupsUtils)))
+        ensureOnMainThread(useApplicationContext(::AppGroupsUtils))
+    )
 }

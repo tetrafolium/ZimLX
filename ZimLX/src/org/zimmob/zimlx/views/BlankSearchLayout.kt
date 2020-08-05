@@ -38,14 +38,11 @@ class BlankSearchLayout(context: Context, attrs: AttributeSet?) : View(context, 
     }
 
     override fun resetSearch() {
-
     }
 
     override fun preDispatchKeyEvent(keyEvent: KeyEvent?) {
-
     }
 
     override fun startSearch() {
-
     }
 }

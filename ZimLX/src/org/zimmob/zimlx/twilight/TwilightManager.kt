@@ -78,19 +78,24 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
     val isAvailable get() = context.checkLocationAccess()
 
     private val updateIntent = Intent(ACTION_UPDATE_TWILIGHT)
-            .setPackage(BuildConfig.APPLICATION_ID)
+        .setPackage(BuildConfig.APPLICATION_ID)
 
     init {
-        context.registerReceiver(object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                //d("onAlarm")
-                updateTwilightState()
-            }
-        }, IntentFilter(ACTION_UPDATE_TWILIGHT))
+        context.registerReceiver(
+            object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
+                    // d("onAlarm")
+                    updateTwilightState()
+                }
+            },
+            IntentFilter(ACTION_UPDATE_TWILIGHT)
+        )
     }
 
-    fun registerListener(listener: TwilightListener,
-                         handler: Handler) {
+    fun registerListener(
+        listener: TwilightListener,
+        handler: Handler
+    ) {
         if (!isAvailable) throw IllegalStateException("location access not available")
         synchronized(listeners) {
             val wasEmpty = listeners.isEmpty()
@@ -182,7 +187,7 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
         // Calculate the twilight state based on the current time and location.
         val currentTimeMillis = System.currentTimeMillis()
         val location = lastLocation ?: locationManager.getBestProvider(Criteria(), true)
-                ?.let { locationManager.getLastKnownLocation(it) }
+            ?.let { locationManager.getLastKnownLocation(it) }
         val state = calculateTwilightState(location?.latitude, location?.longitude, currentTimeMillis)
         Log.d(TAG, "updateTwilightState: $state")
 
@@ -191,8 +196,10 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
         // Schedule an alarm to update the state at the next sunrise or sunset.
         if (state != null) {
             val triggerAtMillis = if (state.isNight) state.sunriseTimeMillis else state.sunsetTimeMillis
-            alarmManager.setExact(AlarmManager.RTC, triggerAtMillis,
-                    PendingIntent.getBroadcast(context, 0, updateIntent, 0))
+            alarmManager.setExact(
+                AlarmManager.RTC, triggerAtMillis,
+                PendingIntent.getBroadcast(context, 0, updateIntent, 0)
+            )
         }
     }
 
@@ -201,29 +208,30 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
         // device's location. These location updates can be safely ignored since the chance of a
         // user actually being at these coordinates is quite low.
         if (location != null && !(location.longitude == 0.0 && location.latitude == 0.0)) {
-            Log.d(TAG, "onLocationChanged:"
-                    + " provider=" + location.provider
-                    + " accuracy=" + location.accuracy
-                    + " time=" + location.time)
+            Log.d(
+                TAG,
+                "onLocationChanged:" +
+                    " provider=" + location.provider +
+                    " accuracy=" + location.accuracy +
+                    " time=" + location.time
+            )
             lastLocation = location
             updateTwilightState()
         }
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-
     }
 
     override fun onProviderEnabled(provider: String?) {
-
     }
 
     override fun onProviderDisabled(provider: String?) {
-
     }
 
     companion object : SingletonHolder<TwilightManager, Context>(
-            ensureOnMainThread(useApplicationContext(::TwilightManager))) {
+        ensureOnMainThread(useApplicationContext(::TwilightManager))
+    ) {
 
         private const val TAG = "TwilightManager"
 

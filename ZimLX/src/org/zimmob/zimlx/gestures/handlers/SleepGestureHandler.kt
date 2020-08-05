@@ -50,10 +50,10 @@ class SleepGestureHandler(context: Context, config: JSONObject?) : GestureHandle
     // Preferred methods should appear earlier in the list
     private val method: SleepMethod? by lazy {
         listOf(
-                SleepMethodPowerManager(context),
-                //SleepMethodRoot(context),
-                SleepMethodPieAccessibility(context),
-                SleepMethodDeviceAdmin(context)
+            SleepMethodPowerManager(context),
+            // SleepMethodRoot(context),
+            SleepMethodPieAccessibility(context),
+            SleepMethodDeviceAdmin(context)
         ).firstOrNull { it.supported }
     }
 
@@ -84,7 +84,6 @@ class SleepMethodPowerManager(context: Context) : SleepGestureHandler.SleepMetho
     override fun sleep(controller: GestureController) {
         goToSleep(SystemClock.uptimeMillis())
     }
-
 }
 
 /*class SleepMethodRoot(context: Context) : SleepGestureHandler.SleepMethod(context) {

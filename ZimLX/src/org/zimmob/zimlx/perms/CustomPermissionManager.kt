@@ -31,7 +31,7 @@ class CustomPermissionManager private constructor(private val context: Context) 
 
     fun checkOrRequestPermission(permission: String, @StringRes explanation: Int?, callback: (allowed: Boolean) -> Unit) {
         deniedPerms.forEach {
-            //it.d()
+            // it.d()
         }
         if (!DEBUG_PROMPT_ALWAYS) {
             if (deniedPerms.contains(permission)) {
@@ -44,16 +44,16 @@ class CustomPermissionManager private constructor(private val context: Context) 
         }
         val uiValues = MAP[permission]!!
         CustomPermissionRequestDialog
-                .create(context, uiValues.first, uiValues.second, explanation)
-                .onResult { allowed ->
-                    if (allowed) {
-                        grantedPerms += permission
-                    } else {
-                        deniedPerms += permission
-                    }
+            .create(context, uiValues.first, uiValues.second, explanation)
+            .onResult { allowed ->
+                if (allowed) {
+                    grantedPerms += permission
+                } else {
+                    deniedPerms += permission
                 }
-                .onResult(callback)
-                .show()
+            }
+            .onResult(callback)
+            .show()
     }
 
     // todo: add ui to allow resetting permissions
@@ -69,7 +69,7 @@ class CustomPermissionManager private constructor(private val context: Context) 
         const val PERMISSION_IPLOCATE = "PERMISSION_IPLOCATE"
 
         private val MAP = mapOf<String, Pair<@StringRes Int, @DrawableRes Int>>(
-                PERMISSION_IPLOCATE to Pair(R.string.permission_iplocate, R.drawable.ic_location)
+            PERMISSION_IPLOCATE to Pair(R.string.permission_iplocate, R.drawable.ic_location)
         )
 
         private const val DEBUG_PROMPT_ALWAYS = false

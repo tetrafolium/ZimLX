@@ -23,7 +23,7 @@ import android.util.AttributeSet
 import org.zimmob.zimlx.iconpack.IconPackManager
 
 class IconMaskingPreference(context: Context, attrs: AttributeSet?) :
-        StyledSwitchPreferenceCompat(context, attrs) {
+    StyledSwitchPreferenceCompat(context, attrs) {
 
     private val manager = IconPackManager.getInstance(context)
     private val listener = {

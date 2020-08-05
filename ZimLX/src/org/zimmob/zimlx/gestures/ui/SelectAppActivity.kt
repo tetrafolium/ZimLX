@@ -50,23 +50,29 @@ class SelectAppActivity : SettingsBaseActivity(), AppsAdapterWithShortcuts.Callb
     }
 
     override fun onAppSelected(app: AppsAdapterWithShortcuts.AppItem) {
-        setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra("type", "app")
-            putExtra("appName", app.info.label)
-            putExtra("target", app.key.toString())
-        })
+        setResult(
+            Activity.RESULT_OK,
+            Intent().apply {
+                putExtra("type", "app")
+                putExtra("appName", app.info.label)
+                putExtra("target", app.key.toString())
+            }
+        )
         finish()
     }
 
     override fun onShortcutSelected(shortcut: AppsAdapterWithShortcuts.ShortcutItem) {
-        setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra("type", "shortcut")
-            putExtra("appName", shortcut.label)
-            putExtra("intent", shortcut.info.makeIntent().toUri(0))
-            putExtra("user", shortcut.info.userHandle)
-            putExtra("packageName", shortcut.info.`package`)
-            putExtra("id", shortcut.info.id)
-        })
+        setResult(
+            Activity.RESULT_OK,
+            Intent().apply {
+                putExtra("type", "shortcut")
+                putExtra("appName", shortcut.label)
+                putExtra("intent", shortcut.info.makeIntent().toUri(0))
+                putExtra("user", shortcut.info.userHandle)
+                putExtra("packageName", shortcut.info.`package`)
+                putExtra("id", shortcut.info.id)
+            }
+        )
         finish()
     }
 }

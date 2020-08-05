@@ -103,7 +103,8 @@ val Context.zimPrefs get() = Utilities.getZimPrefs(this)
 
 val Context.hasStoragePermission
     get() = PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(
-            this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        this, android.Manifest.permission.READ_EXTERNAL_STORAGE
+    )
 
 @ColorInt
 fun Context.getColorEngineAccent(): Int {
@@ -132,8 +133,10 @@ fun Context.applyAlphaAttr(attr: Int, inputColor: Int): Int {
 fun applyAlpha(a: Float, inputColor: Int): Int {
     var alpha = a
     alpha *= Color.alpha(inputColor)
-    return Color.argb(alpha.toInt(), Color.red(inputColor), Color.green(inputColor),
-            Color.blue(inputColor))
+    return Color.argb(
+        alpha.toInt(), Color.red(inputColor), Color.green(inputColor),
+        Color.blue(inputColor)
+    )
 }
 
 @ColorInt
@@ -189,7 +192,7 @@ inline fun ViewGroup.forEachChildReversed(action: (View) -> Unit) {
 
 fun ComponentKey.getLauncherActivityInfo(context: Context): LauncherActivityInfo? {
     return LauncherAppsCompat.getInstance(context).getActivityList(componentName.packageName, user)
-            .firstOrNull { it.componentName == componentName }
+        .firstOrNull { it.componentName == componentName }
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -264,7 +267,6 @@ fun runOnThread(handler: Handler, r: () -> Unit) {
         handler.post(r)
     }
 }
-
 
 fun ViewGroup.getAllChilds() = ArrayList<View>().also { getAllChilds(it) }
 
@@ -367,7 +369,6 @@ fun <T, A> ensureOnMainThread(creator: (A) -> T): (A) -> T {
             } catch (e: ExecutionException) {
                 throw RuntimeException(e)
             }
-
         }
     }
 }
@@ -424,9 +425,10 @@ fun AlertDialog.applyAccent() {
 fun android.app.AlertDialog.applyAccent() {
     val color = Utilities.getZimPrefs(context).accentColor
     val buttons = listOf(
-            getButton(AlertDialog.BUTTON_NEGATIVE),
-            getButton(AlertDialog.BUTTON_NEUTRAL),
-            getButton(AlertDialog.BUTTON_POSITIVE))
+        getButton(AlertDialog.BUTTON_NEGATIVE),
+        getButton(AlertDialog.BUTTON_NEUTRAL),
+        getButton(AlertDialog.BUTTON_POSITIVE)
+    )
     buttons.forEach {
         it.setTextColor(color)
     }
@@ -455,22 +457,30 @@ fun Switch.applyColor(color: Int) {
     val alphaDisabled = Themes.getAlpha(context, android.R.attr.disabledAlpha)
     val switchThumbNormal = context.resources.getColor(androidx.preference.R.color.switch_thumb_normal_material_light)
     val switchThumbDisabled = context.resources.getColor(androidx.preference.R.color.switch_thumb_disabled_material_light)
-    val thstateList = ColorStateList(arrayOf(
+    val thstateList = ColorStateList(
+        arrayOf(
             intArrayOf(-android.R.attr.state_enabled),
             intArrayOf(android.R.attr.state_checked),
-            intArrayOf()),
-            intArrayOf(
-                    switchThumbDisabled,
-                    color,
-                    switchThumbNormal))
-    val trstateList = ColorStateList(arrayOf(
+            intArrayOf()
+        ),
+        intArrayOf(
+            switchThumbDisabled,
+            color,
+            switchThumbNormal
+        )
+    )
+    val trstateList = ColorStateList(
+        arrayOf(
             intArrayOf(-android.R.attr.state_enabled),
             intArrayOf(android.R.attr.state_checked),
-            intArrayOf()),
-            intArrayOf(
-                    ColorUtils.setAlphaComponent(colorForeground, alphaDisabled),
-                    color,
-                    colorForeground))
+            intArrayOf()
+        ),
+        intArrayOf(
+            ColorUtils.setAlphaComponent(colorForeground, alphaDisabled),
+            color,
+            colorForeground
+        )
+    )
     DrawableCompat.setTintList(thumbDrawable, thstateList)
     DrawableCompat.setTintList(trackDrawable, trstateList)
 }
@@ -551,7 +561,6 @@ fun View.runOnAttached(runnable: Runnable) {
                 removeOnAttachStateChangeListener(this)
             }
         })
-
     }
 }
 
@@ -573,12 +582,16 @@ fun Context.resourcesForApplication(packageName: String): Resources? {
 }
 
 fun getTabRipple(context: Context, accent: Int): ColorStateList {
-    return ColorStateList(arrayOf(
+    return ColorStateList(
+        arrayOf(
             intArrayOf(android.R.attr.state_selected),
-            intArrayOf()),
-            intArrayOf(
-                    ColorUtils.setAlphaComponent(accent, 31),
-                    context.getColorAttr(android.R.attr.colorControlHighlight)))
+            intArrayOf()
+        ),
+        intArrayOf(
+            ColorUtils.setAlphaComponent(accent, 31),
+            context.getColorAttr(android.R.attr.colorControlHighlight)
+        )
+    )
 }
 
 fun JSONObject.getNullable(key: String): Any? {
@@ -598,12 +611,16 @@ fun createRipple(foreground: Int, background: Int): RippleDrawable {
 }
 
 fun Context.createDisabledColor(color: Int): ColorStateList {
-    return ColorStateList(arrayOf(
+    return ColorStateList(
+        arrayOf(
             intArrayOf(-android.R.attr.state_enabled),
-            intArrayOf()),
-            intArrayOf(
-                    getDisabled(getColorAttr(android.R.attr.colorForeground)),
-                    color))
+            intArrayOf()
+        ),
+        intArrayOf(
+            getDisabled(getColorAttr(android.R.attr.colorForeground)),
+            color
+        )
+    )
 }
 
 class ViewGroupChildIterator(private val viewGroup: ViewGroup, private var current: Int) : ListIterator<View> {
@@ -663,7 +680,7 @@ fun ContentResolver.getDisplayName(uri: Uri): String? {
 
 fun Context.checkLocationAccess(): Boolean {
     return Utilities.hasPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ||
-            Utilities.hasPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+        Utilities.hasPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
 }
 
 val Int.foregroundColor
@@ -694,9 +711,9 @@ val Context.locale: Locale
 
 fun createRipplePill(context: Context, color: Int, radius: Float): Drawable {
     return RippleDrawable(
-            ContextCompat.getColorStateList(context, R.color.focused_background)!!,
-            createPill(color, radius),
-            createPill(color, radius)
+        ContextCompat.getColorStateList(context, R.color.focused_background)!!,
+        createPill(color, radius),
+        createPill(color, radius)
     )
 }
 

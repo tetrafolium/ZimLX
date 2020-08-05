@@ -16,9 +16,11 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 open class SeekbarPreference
-@JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener, View.OnCreateContextMenuListener,
-        MenuItem.OnMenuItemClickListener {
+@JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    Preference(context, attrs, defStyleAttr),
+    SeekBar.OnSeekBarChangeListener,
+    View.OnCreateContextMenuListener,
+    MenuItem.OnMenuItemClickListener {
 
     private var mSeekbar: SeekBar? = null
     var mValueText: TextView? = null
@@ -92,7 +94,7 @@ open class SeekbarPreference
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         current = min + (max - min) / steps * progress
-        current = Math.round(current * 100f) / 100f //round to .00 places
+        current = Math.round(current * 100f) / 100f // round to .00 places
         updateSummary()
 
         persistFloat(current)

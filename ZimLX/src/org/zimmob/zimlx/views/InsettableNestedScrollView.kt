@@ -24,7 +24,9 @@ import android.view.View
 import com.android.launcher3.Insettable
 
 open class InsettableNestedScrollView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : SpringNestedScrollView(context, attrs, defStyleAttr), Insettable {
 
     private val currentInsets = Rect()
@@ -39,4 +41,3 @@ open class InsettableNestedScrollView @JvmOverloads constructor(
         (child as Insettable).setInsets(currentInsets)
     }
 }
-

@@ -22,7 +22,8 @@ package org.zimmob.zimlx.blur
 import android.graphics.*
 
 class ShaderBlurDrawable internal constructor(
-        private val blurProvider: BlurWallpaperProvider) : BlurDrawable() {
+    private val blurProvider: BlurWallpaperProvider
+) : BlurDrawable() {
 
     private var blurAlpha = 255
     private val blurPaint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
@@ -86,9 +87,11 @@ class ShaderBlurDrawable internal constructor(
 
         canvas.translate(-blurOffset, 0f)
         if (noRadius) {
-            canvas.drawRect(blurBounds.left + blurOffset, blurBounds.top,
-                    blurBounds.right + blurOffset, blurBounds.bottom,
-                    blurPaint)
+            canvas.drawRect(
+                blurBounds.left + blurOffset, blurBounds.top,
+                blurBounds.right + blurOffset, blurBounds.bottom,
+                blurPaint
+            )
         } else {
             canvas.drawPath(blurPath, blurPaint)
         }
@@ -99,9 +102,11 @@ class ShaderBlurDrawable internal constructor(
         if (blurPathValid) return
 
         blurPath.reset()
-        blurPath.addRoundRect(blurBounds.left + blurOffset, blurBounds.top,
-                blurBounds.right + blurOffset, blurBounds.bottom,
-                radii, Path.Direction.CW)
+        blurPath.addRoundRect(
+            blurBounds.left + blurOffset, blurBounds.top,
+            blurBounds.right + blurOffset, blurBounds.bottom,
+            radii, Path.Direction.CW
+        )
     }
 
     override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
@@ -110,9 +115,10 @@ class ShaderBlurDrawable internal constructor(
 
     override fun setBlurBounds(left: Float, top: Float, right: Float, bottom: Float) {
         if (blurBounds.left != left ||
-                blurBounds.top != top ||
-                blurBounds.right != right ||
-                blurBounds.bottom != bottom) {
+            blurBounds.top != top ||
+            blurBounds.right != right ||
+            blurBounds.bottom != bottom
+        ) {
             blurBounds.set(left, top, right, bottom)
             blurPathValid = false
         }
@@ -140,7 +146,6 @@ class ShaderBlurDrawable internal constructor(
     }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
-
     }
 
     override fun startListening() {

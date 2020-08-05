@@ -67,6 +67,9 @@ class FolderInfoProvider(context: Context) : CustomInfoProvider<FolderInfo>(cont
         return info.swipeUpAction
     }
 
-    companion object : SingletonHolder<FolderInfoProvider, Context>(ensureOnMainThread(
-            useApplicationContext(::FolderInfoProvider)))
+    companion object : SingletonHolder<FolderInfoProvider, Context>(
+        ensureOnMainThread(
+            useApplicationContext(::FolderInfoProvider)
+        )
+    )
 }

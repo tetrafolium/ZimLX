@@ -38,9 +38,9 @@ import org.zimmob.zimlx.util.ZimFlags
 import org.zimmob.zimlx.util.buildEntries
 
 class IconShapePreference(context: Context, attrs: AttributeSet?) :
-        ListPreference(context, attrs),
-        ZimPreferences.OnPreferenceChangeListener,
-        ControlledPreference by ControlledPreference.Delegate(context, attrs) {
+    ListPreference(context, attrs),
+    ZimPreferences.OnPreferenceChangeListener,
+    ControlledPreference by ControlledPreference.Delegate(context, attrs) {
 
     private var iconShape = IconShapeManager.getInstance(context).iconShape
         set(value) {

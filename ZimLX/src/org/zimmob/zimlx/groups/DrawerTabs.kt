@@ -33,8 +33,8 @@ import org.zimmob.zimlx.preferences.SelectableAppsActivity
 import org.zimmob.zimlx.tintDrawable
 import org.zimmob.zimlx.zimPrefs
 
-abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.CategorizationType)
-    : AppGroups<DrawerTabs.Tab>(manager, type) {
+abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.CategorizationType) :
+    AppGroups<DrawerTabs.Tab>(manager, type) {
 
     override fun getDefaultCreators(): List<GroupCreator<Tab>> {
         return listOf(::createAllAppsTab, ::createPersonalTab, ::createWorkTab)
@@ -65,7 +65,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
 
     abstract class Tab(context: Context, type: Int, titleRes: Int) : Group(type, context, titleRes) {
 
-        //val colorResolver = ColorRow(KEY_COLOR, AppGroupsUtils.getInstance(context).defaultColorResolver)
+        // val colorResolver = ColorRow(KEY_COLOR, AppGroupsUtils.getInstance(context).defaultColorResolver)
         val colorResolver = ColorRow(KEY_COLOR, Color.CYAN)
 
         init {
@@ -75,8 +75,10 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
 
     class CustomTab(context: Context) : Tab(context, TYPE_CUSTOM, R.string.default_tab_name) {
 
-        val hideFromAllApps = SwitchRow(R.drawable.tab_hide_from_main, R.string.tab_hide_from_main,
-                KEY_HIDE_FROM_ALL_APPS, true)
+        val hideFromAllApps = SwitchRow(
+            R.drawable.tab_hide_from_main, R.string.tab_hide_from_main,
+            KEY_HIDE_FROM_ALL_APPS, true
+        )
         val contents = AppsRow(KEY_ITEMS, mutableSetOf())
 
         init {
@@ -94,8 +96,12 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
         fun getFilter(context: Context): Filter<*> = CustomFilter(context, contents.value()) // IconPackFilter(context)
     }
 
-    open class PredefinedTab(context: Context, type: Int, titleRes: Int,
-                             private val filterIsWork: Boolean?) : Tab(context, type, titleRes) {
+    open class PredefinedTab(
+        context: Context,
+        type: Int,
+        titleRes: Int,
+        private val filterIsWork: Boolean?
+    ) : Tab(context, type, titleRes) {
 
         init {
             addCustomization(HiddenAppsRow(filterIsWork))
@@ -104,8 +110,8 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
 
         override fun getSummary(context: Context): String? {
             val hidden = context.zimPrefs.hiddenAppSet
-                    .map { ComponentKey(context, it) }
-                    .filter(getWorkFilter(filterIsWork))
+                .map { ComponentKey(context, it) }
+                .filter(getWorkFilter(filterIsWork))
             val size = hidden.size
             if (size == 0) {
                 return null
@@ -121,7 +127,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
     class WorkTab(context: Context) : PredefinedTab(context, TYPE_WORK, R.string.all_apps_work_tab, true)
 
     class HiddenAppsRow(private val filterIsWork: Boolean? = null) :
-            Group.Customization<Collection<ComponentKey>, Boolean>(KEY_HIDDEN, emptySet()) {
+        Group.Customization<Collection<ComponentKey>, Boolean>(KEY_HIDDEN, emptySet()) {
 
         private val predicate get() = getWorkFilter(filterIsWork)
 
@@ -132,19 +138,22 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
             updateCount(view)
 
             view.setOnClickListener {
-                SelectableAppsActivity.start(context, filteredValue(context), { newSelections ->
-                    if (newSelections != null) {
-                        value = HashSet(newSelections)
-                        updateCount(view)
-                    }
-                }, filterIsWork)
+                SelectableAppsActivity.start(
+                    context, filteredValue(context),
+                    { newSelections ->
+                        if (newSelections != null) {
+                            value = HashSet(newSelections)
+                            updateCount(view)
+                        }
+                    },
+                    filterIsWork
+                )
             }
 
             return view
         }
 
         override fun loadFromJson(context: Context, obj: Boolean?) {
-
         }
 
         override fun saveToJson(context: Context): Boolean? {
@@ -157,20 +166,22 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
         private fun updateCount(view: View) {
             val count = (value ?: filteredValue(view.context)).size
             view.findViewById<TextView>(R.id.apps_count).text =
-                    view.resources.getQuantityString(R.plurals.hidden_apps_count, count, count)
+                view.resources.getQuantityString(R.plurals.hidden_apps_count, count, count)
         }
 
         private fun filteredValue(context: Context): Collection<ComponentKey> {
             return context.zimPrefs.hiddenAppSet
-                    .map { ComponentKey(context, it) }
-                    .filter(predicate)
+                .map { ComponentKey(context, it) }
+                .filter(predicate)
         }
 
         private fun setHiddenApps(context: Context, hidden: Collection<ComponentKey>) {
             val prefs = context.zimPrefs
-            val hiddenSet = ArrayList(prefs.hiddenAppSet
+            val hiddenSet = ArrayList(
+                prefs.hiddenAppSet
                     .map { ComponentKey(context, it) }
-                    .filter { !predicate(it) })
+                    .filter { !predicate(it) }
+            )
             hiddenSet.addAll(hidden)
             prefs.hiddenAppSet = hiddenSet.map(ComponentKey::toString).toSet()
         }

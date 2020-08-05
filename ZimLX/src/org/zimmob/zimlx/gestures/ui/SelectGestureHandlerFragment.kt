@@ -85,7 +85,6 @@ class SelectGestureHandlerFragment : PreferenceDialogFragmentCompat() {
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
-
     }
 
     companion object {

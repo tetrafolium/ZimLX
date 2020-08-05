@@ -87,6 +87,9 @@ class AppInfoProvider private constructor(context: Context) : CustomInfoProvider
 
     private fun getComponentKey(app: LauncherActivityInfo) = ComponentKey(app.componentName, app.user)
 
-    companion object : SingletonHolder<AppInfoProvider, Context>(ensureOnMainThread(
-            useApplicationContext(::AppInfoProvider)))
+    companion object : SingletonHolder<AppInfoProvider, Context>(
+        ensureOnMainThread(
+            useApplicationContext(::AppInfoProvider)
+        )
+    )
 }

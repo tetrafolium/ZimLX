@@ -51,8 +51,9 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) : 
 
     private fun addFromPackage(packageName: String?, user: UserHandle) {
         launcherApps.getActivityList(packageName, user).forEach {
-            if (intentMatches.contains(it.componentName.packageName)
-                    || pot.rules.contains(Rule.Package(it.componentName.packageName))) {
+            if (intentMatches.contains(it.componentName.packageName) ||
+                pot.rules.contains(Rule.Package(it.componentName.packageName))
+            ) {
                 matches.add(ComponentKey(it.componentName, it.user))
                 packageMatches.add(PackageUserKey(it.componentName.packageName, it.user))
             } else {
@@ -116,6 +117,5 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) : 
     }
 
     override fun onShortcutsChanged(packageName: String?, shortcuts: MutableList<ShortcutInfoCompat>?, user: UserHandle?) {
-
     }
 }

@@ -32,9 +32,9 @@ import org.zimmob.zimlx.zimApp
 import org.zimmob.zimlx.zimPrefs
 
 class SmartspaceEventProvidersPreference(context: Context, attrs: AttributeSet?) :
-        DialogPreference(context, attrs),
-        ControlledPreference by ControlledPreference.Delegate(context, attrs),
-        ZimPreferences.MutableListPrefChangeListener {
+    DialogPreference(context, attrs),
+    ControlledPreference by ControlledPreference.Delegate(context, attrs),
+    ZimPreferences.MutableListPrefChangeListener {
 
     private val providersPref = context.zimPrefs.eventProviders
 
@@ -49,7 +49,7 @@ class SmartspaceEventProvidersPreference(context: Context, attrs: AttributeSet?)
 
     private fun updateSummary() {
         val providerNames = providersPref.getAll()
-                .map { ZimSmartspaceController.getDisplayName(context, it) }
+            .map { ZimSmartspaceController.getDisplayName(context, it) }
         if (providerNames.isNotEmpty()) {
             summary = TextUtils.join(", ", providerNames)
         } else {

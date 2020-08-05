@@ -74,8 +74,8 @@ class MultiSelectTabPreference(context: Context, attrs: AttributeSet?) : Launche
 
     fun loadSummary() {
         val added = tabs
-                .filter { it.contents.value().contains(componentKey) }
-                .map { it.getTitle() }
+            .filter { it.contents.value().contains(componentKey) }
+            .map { it.getTitle() }
         summary = if (!added.isEmpty()) {
             TextUtils.join(", ", added)
         } else {

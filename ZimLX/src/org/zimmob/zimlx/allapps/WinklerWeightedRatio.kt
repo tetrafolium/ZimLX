@@ -72,7 +72,6 @@ class WinklerWeightedRatio : WeightedRatio() {
         return if (result > 4) 4 else result
     }
 
-
     companion object {
         const val SCALING_FACTOR = .15
     }

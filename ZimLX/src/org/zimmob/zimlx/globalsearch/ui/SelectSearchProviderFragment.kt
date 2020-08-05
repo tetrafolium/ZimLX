@@ -50,7 +50,6 @@ class SelectSearchProviderFragment : PreferenceDialogFragmentCompat() {
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
-
     }
 
     inner class ProviderListAdapter(private val context: Context) : RecyclerView.Adapter<ProviderListAdapter.Holder>() {

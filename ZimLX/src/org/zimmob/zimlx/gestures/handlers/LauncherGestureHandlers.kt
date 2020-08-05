@@ -43,8 +43,10 @@ import org.zimmob.zimlx.globalsearch.SearchProviderController
 import org.zimmob.zimlx.zimPrefs
 
 @Keep
-open class OpenDrawerGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config),
-        VerticalSwipeGestureHandler, StateChangeGestureHandler {
+open class OpenDrawerGestureHandler(context: Context, config: JSONObject?) :
+    GestureHandler(context, config),
+    VerticalSwipeGestureHandler,
+    StateChangeGestureHandler {
 
     override val displayName: String = context.getString(R.string.action_open_drawer)
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.mipmap.ic_allapps_adaptive) }
@@ -80,9 +82,11 @@ class OpenSettingsGestureHandler(context: Context, config: JSONObject?) : Gestur
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_setting) }
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
-        controller.launcher.startActivity(Intent(Intent.ACTION_APPLICATION_PREFERENCES).apply {
-            `package` = controller.launcher.packageName
-        })
+        controller.launcher.startActivity(
+            Intent(Intent.ACTION_APPLICATION_PREFERENCES).apply {
+                `package` = controller.launcher.packageName
+            }
+        )
     }
 }
 
@@ -95,8 +99,10 @@ class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : Gestur
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         if (context.zimPrefs.usePopupMenuView) {
-            OptionsPopupView.showDefaultOptions(controller.launcher,
-                    controller.touchDownPoint.x, controller.touchDownPoint.y)
+            OptionsPopupView.showDefaultOptions(
+                controller.launcher,
+                controller.touchDownPoint.x, controller.touchDownPoint.y
+            )
         } else {
             controller.launcher.stateManager.goToState(LauncherState.OPTIONS)
         }
@@ -165,16 +171,18 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
             String.format(displayNameWithTarget, appName) else displayNameWithoutTarget
     override val icon: Drawable
         get() = when {
-            intent != null -> try {
-                context.packageManager.getActivityIcon(intent)
-            } catch (e: Exception) {
-                context.getIcon()
-            }
-            target != null -> try {
-                context.packageManager.getApplicationIcon(target?.componentName?.packageName)
-            } catch (e: Exception) {
-                context.getIcon()
-            }
+            intent != null ->
+                try {
+                    context.packageManager.getActivityIcon(intent)
+                } catch (e: Exception) {
+                    context.getIcon()
+                }
+            target != null ->
+                try {
+                    context.packageManager.getApplicationIcon(target?.componentName?.packageName)
+                } catch (e: Exception) {
+                    context.getIcon()
+                }
             else -> context.getIcon()
         }
 
@@ -244,8 +252,8 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
         if (view == null) {
             val down = controller.touchDownPoint
             controller.launcher.prepareDummyView(down.x.toInt(), down.y.toInt()) {
-            //onGestureTrigger(controller, it)
-        }
+                // onGestureTrigger(controller, it)
+            }
             return
         }
         val opts = view.let { controller.launcher.getActivityLaunchOptionsAsBundle(it) }
@@ -253,8 +261,8 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
             "app" -> {
                 try {
                     LauncherAppsCompat.getInstance(context)
-                            .startActivityForProfile(target!!.componentName, target!!.user, null, opts)
-                } catch (e: NullPointerException){
+                        .startActivityForProfile(target!!.componentName, target!!.user, null, opts)
+                } catch (e: NullPointerException) {
                     // App is probably not installed anymore, show a Toast
                     Toast.makeText(context, R.string.failed, Toast.LENGTH_LONG).show()
                 }
@@ -266,10 +274,10 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
             }
             "shortcut" -> {
                 if (id?.startsWith("sesame_") == true) {
-                    //context.startActivity(SesameFrontend.addPackageAuth(context, intent!!), opts)
+                    // context.startActivity(SesameFrontend.addPackageAuth(context, intent!!), opts)
                 } else {
                     DeepShortcutManager.getInstance(context)
-                            .startShortcut(packageName, id, intent, opts, user)
+                        .startShortcut(packageName, id, intent, opts, user)
                 }
             }
         }

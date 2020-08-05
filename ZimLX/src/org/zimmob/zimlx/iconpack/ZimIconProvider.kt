@@ -49,9 +49,11 @@ class ZimIconProvider(context: Context) : DynamicIconProvider(context) {
 
     private fun <T> T.assertNotAdaptiveIconDrawable(info: Any?): T {
         if (Utilities.ATLEAST_OREO && this is AdaptiveIconDrawable) {
-            error("unwrapped AdaptiveIconDrawable for ${
-            if (info is LauncherActivityInfo) info.applicationInfo else info
-            }")
+            error(
+                "unwrapped AdaptiveIconDrawable for ${
+                if (info is LauncherActivityInfo) info.applicationInfo else info
+                }"
+            )
         }
         return this
     }
@@ -60,8 +62,11 @@ class ZimIconProvider(context: Context) : DynamicIconProvider(context) {
 
         @JvmStatic
         fun getAdaptiveIconDrawableWrapper(context: Context): AdaptiveIconCompat {
-            return AdaptiveIconCompat.wrap(context.getDrawable(
-                    R.drawable.adaptive_icon_drawable_wrapper)!!.mutate()) as AdaptiveIconCompat
+            return AdaptiveIconCompat.wrap(
+                context.getDrawable(
+                    R.drawable.adaptive_icon_drawable_wrapper
+                )!!.mutate()
+            ) as AdaptiveIconCompat
         }
     }
 }

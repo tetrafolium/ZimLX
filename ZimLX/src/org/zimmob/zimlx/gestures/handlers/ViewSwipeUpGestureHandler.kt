@@ -24,21 +24,24 @@ import com.android.launcher3.touch.OverScroll
 import org.zimmob.zimlx.gestures.GestureController
 import org.zimmob.zimlx.gestures.GestureHandler
 
-class ViewSwipeUpGestureHandler(private val view: View, private val handler: GestureHandler)
-    : GestureHandler(view.context, null), VerticalSwipeGestureHandler {
+class ViewSwipeUpGestureHandler(private val view: View, private val handler: GestureHandler) :
+    GestureHandler(view.context, null), VerticalSwipeGestureHandler {
 
     private val negativeMax by lazy { view.resources.getDimensionPixelSize(R.dimen.swipe_up_negative_max) }
     private val positiveMax by lazy { view.resources.getDimensionPixelSize(R.dimen.swipe_up_positive_max) }
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
-        //controller.launcher.prepareDummyView(this.view) {
+        // controller.launcher.prepareDummyView(this.view) {
         //    handler.onGestureTrigger(controller, it)
-        //}
+        // }
     }
 
     override fun onDrag(displacement: Float, velocity: Float) {
-        view.translationY = OverScroll.dampedScroll(displacement, if (displacement < 0)
-            negativeMax else positiveMax).toFloat()
+        view.translationY = OverScroll.dampedScroll(
+            displacement,
+            if (displacement < 0)
+                negativeMax else positiveMax
+        ).toFloat()
     }
 
     override fun onDragEnd(velocity: Float, fling: Boolean) {

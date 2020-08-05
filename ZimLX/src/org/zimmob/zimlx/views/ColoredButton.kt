@@ -26,7 +26,6 @@ import android.widget.Button
 import com.android.launcher3.Utilities
 import org.zimmob.zimlx.getTabRipple
 
-
 class ColoredButton(context: Context, attrs: AttributeSet) : Button(context, attrs) {
 
     /*var colorResolver: ColorEngine.ColorResolver = ColorEngine.getInstance(context).accentResolver
@@ -42,7 +41,7 @@ class ColoredButton(context: Context, attrs: AttributeSet) : Button(context, att
     private var defaultColor = currentTextColor
 
     init {
-        //CustomFontManager.getInstance(context).loadCustomFont(this, attrs)
+        // CustomFontManager.getInstance(context).loadCustomFont(this, attrs)
     }
 
     fun reset() {
@@ -52,12 +51,16 @@ class ColoredButton(context: Context, attrs: AttributeSet) : Button(context, att
     }
 
     private fun setTextColor() {
-        val stateList = ColorStateList(arrayOf(
+        val stateList = ColorStateList(
+            arrayOf(
                 intArrayOf(R.attr.state_selected),
-                intArrayOf()),
-                intArrayOf(
-                        color,
-                        defaultColor))
+                intArrayOf()
+            ),
+            intArrayOf(
+                color,
+                defaultColor
+            )
+        )
         setTextColor(stateList)
     }
 

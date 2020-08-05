@@ -59,7 +59,6 @@ class CoolSearchSearchProvider(context: Context) : SearchProvider(context) {
     override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent(Intent.ACTION_SEARCH_LONG_PRESS).setPackage(PACKAGE))
 
     override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_search)!!.mutate().apply {
-        //setTint(ColorEngine.getInstance(context).accent)
+        // setTint(ColorEngine.getInstance(context).accent)
     }
-
 }

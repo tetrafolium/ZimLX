@@ -35,7 +35,7 @@ import kotlin.random.Random
 
 @Keep
 class PersonalityProvider(controller: ZimSmartspaceController) :
-        ZimSmartspaceController.DataProvider(controller) {
+    ZimSmartspaceController.DataProvider(controller) {
     private val updateInterval = 60 * 1000
     private val timeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
@@ -64,12 +64,13 @@ class PersonalityProvider(controller: ZimSmartspaceController) :
     override fun startListening() {
         super.startListening()
         context.registerReceiver(
-                timeReceiver,
-                IntentFilter().apply {
-                    addAction(Intent.ACTION_DATE_CHANGED)
-                    addAction(Intent.ACTION_TIME_CHANGED)
-                    addAction(Intent.ACTION_TIMEZONE_CHANGED)
-                })
+            timeReceiver,
+            IntentFilter().apply {
+                addAction(Intent.ACTION_DATE_CHANGED)
+                addAction(Intent.ACTION_TIME_CHANGED)
+                addAction(Intent.ACTION_TIMEZONE_CHANGED)
+            }
+        )
         onUpdate()
     }
 
@@ -97,7 +98,8 @@ class PersonalityProvider(controller: ZimSmartspaceController) :
             else -> return null
         }
         return ZimSmartspaceController.CardData(
-                lines = lines,
-                forceSingleLine = true)
+            lines = lines,
+            forceSingleLine = true
+        )
     }
 }

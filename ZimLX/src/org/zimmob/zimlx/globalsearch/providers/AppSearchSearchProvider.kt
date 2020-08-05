@@ -25,5 +25,4 @@ class AppSearchSearchProvider(context: Context) : SearchProvider(context) {
     }
 
     override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_search)!!.mutate()
-
 }

@@ -76,9 +76,10 @@ class DockSwitchPreference(context: Context, attrs: AttributeSet? = null) : Styl
     }
 
     class DockSwitchSliceView(
-            context: Context,
-            private val key: String)
-        : Switch(context) {
+        context: Context,
+        private val key: String
+    ) :
+        Switch(context) {
 
         private val currentStyle get() = context.zimPrefs.dockStyles.currentStyle
         private val inverted get() = key == "enableGradient"

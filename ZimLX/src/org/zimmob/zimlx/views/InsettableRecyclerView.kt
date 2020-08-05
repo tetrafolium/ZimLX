@@ -23,7 +23,9 @@ import android.util.AttributeSet
 import com.android.launcher3.Insettable
 
 open class InsettableRecyclerView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : SpringRecyclerView(context, attrs, defStyleAttr), Insettable {
 
     private var inflationDone = false
@@ -37,10 +39,11 @@ open class InsettableRecyclerView @JvmOverloads constructor(
 
     override fun setInsets(insets: Rect) {
         super.setPadding(
-                paddingLeft + insets.left - currentInsets.left,
-                paddingTop + insets.top - currentInsets.top,
-                paddingRight + insets.right - currentInsets.right,
-                paddingBottom + insets.bottom - currentInsets.bottom)
+            paddingLeft + insets.left - currentInsets.left,
+            paddingTop + insets.top - currentInsets.top,
+            paddingRight + insets.right - currentInsets.right,
+            paddingBottom + insets.bottom - currentInsets.bottom
+        )
         currentInsets.set(insets)
     }
 

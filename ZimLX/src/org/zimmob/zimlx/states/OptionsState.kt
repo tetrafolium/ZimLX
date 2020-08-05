@@ -23,8 +23,10 @@ import com.android.launcher3.states.RotationHelper
 import com.android.launcher3.userevent.nano.LauncherLogProto
 import org.zimmob.zimlx.ZimLauncher
 
-class OptionsState(id: Int) : LauncherState(id, LauncherLogProto.ContainerType.OVERVIEW,
-        SPRING_LOADED_TRANSITION_MS, STATE_FLAGS) {
+class OptionsState(id: Int) : LauncherState(
+    id, LauncherLogProto.ContainerType.OVERVIEW,
+    SPRING_LOADED_TRANSITION_MS, STATE_FLAGS
+) {
 
     override fun getWorkspaceScaleAndTranslation(launcher: Launcher): FloatArray {
         val grid = launcher.deviceProfile
@@ -49,9 +51,11 @@ class OptionsState(id: Int) : LauncherState(id, LauncherLogProto.ContainerType.O
 
         val scaledHeight = scale * ws.normalChildHeight
         val shrunkTop = (insets.top + grid.dropTargetBarSizePx).toFloat()
-        val shrunkBottom = (ws.measuredHeight - insets.bottom
-                - grid.workspacePadding.bottom
-                - grid.workspaceSpringLoadedBottomSpace).toFloat()
+        val shrunkBottom = (
+            ws.measuredHeight - insets.bottom -
+                grid.workspacePadding.bottom -
+                grid.workspaceSpringLoadedBottomSpace
+            ).toFloat()
         val totalShrunkSpace = shrunkBottom - shrunkTop
 
         val desiredCellTop = shrunkTop + (totalShrunkSpace - scaledHeight) / 2
@@ -82,6 +86,6 @@ class OptionsState(id: Int) : LauncherState(id, LauncherLogProto.ContainerType.O
 
     companion object {
         private const val STATE_FLAGS = FLAG_MULTI_PAGE or FLAG_DISABLE_RESTORE or
-                FLAG_DISABLE_PAGE_CLIPPING or FLAG_PAGE_BACKGROUNDS
+            FLAG_DISABLE_PAGE_CLIPPING or FLAG_PAGE_BACKGROUNDS
     }
 }

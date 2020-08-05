@@ -35,8 +35,8 @@ import org.zimmob.zimlx.toBitmap
 
 @Keep
 class NotificationUnreadProvider(controller: ZimSmartspaceController) :
-        ZimSmartspaceController.NotificationBasedDataProvider(controller),
-        NotificationsManager.OnChangeListener {
+    ZimSmartspaceController.NotificationBasedDataProvider(controller),
+    NotificationsManager.OnChangeListener {
 
     private val manager = NotificationsManager.instance
     private var flowerpotLoaded = false
@@ -60,7 +60,7 @@ class NotificationUnreadProvider(controller: ZimSmartspaceController) :
         zenModeListener.startListening()
         runOnUiWorkerThread {
             flowerpotApps = Flowerpot.Manager.getInstance(controller.context)
-                    .getPot("COMMUNICATION", true)?.apps
+                .getPot("COMMUNICATION", true)?.apps
             flowerpotLoaded = true
             onNotificationsChanged()
         }
@@ -73,26 +73,30 @@ class NotificationUnreadProvider(controller: ZimSmartspaceController) :
     }
 
     private fun isCommunicationApp(sbn: StatusBarNotification): Boolean {
-        return tmpKey.updateFromNotification(sbn)
-                && flowerpotApps?.packageMatches?.contains(tmpKey) != false
+        return tmpKey.updateFromNotification(sbn) &&
+            flowerpotApps?.packageMatches?.contains(tmpKey) != false
     }
 
     private fun getEventCard(): CardData? {
         if (!flowerpotLoaded) return null
 
         val sbn = manager.notifications
-                .asSequence()
-                .filter { !it.isOngoing }
-                .filter { it.notification.priority >= PRIORITY_DEFAULT }
-                .filter { isCommunicationApp(it) }
-                .maxWith(compareBy(
-                        { it.notification.priority },
-                        { it.notification.`when` })) ?: return null
+            .asSequence()
+            .filter { !it.isOngoing }
+            .filter { it.notification.priority >= PRIORITY_DEFAULT }
+            .filter { isCommunicationApp(it) }
+            .maxWith(
+                compareBy(
+                    { it.notification.priority },
+                    { it.notification.`when` }
+                )
+            ) ?: return null
 
         if (zenModeEnabled) {
             return CardData(
-                    context.getDrawable(R.drawable.ic_zen_mode)!!.toBitmap(),
-                    listOf(Line(context.getString(R.string.zen_mode_enabled))))
+                context.getDrawable(R.drawable.ic_zen_mode)!!.toBitmap(),
+                listOf(Line(context.getString(R.string.zen_mode_enabled)))
+            )
         }
 
         val context = controller.context
@@ -113,8 +117,9 @@ class NotificationUnreadProvider(controller: ZimSmartspaceController) :
             lines.add(appLine)
         }
         return CardData(
-                sbn.loadSmallIcon(context)?.toBitmap(), lines,
-                ZimSmartspaceController.NotificationClickListener(sbn))
+            sbn.loadSmallIcon(context)?.toBitmap(), lines,
+            ZimSmartspaceController.NotificationClickListener(sbn)
+        )
     }
 
     private fun splitTitle(title: String): Array<String> {
@@ -133,4 +138,3 @@ class NotificationUnreadProvider(controller: ZimSmartspaceController) :
         zenModeListener.stopListening()
     }
 }
-

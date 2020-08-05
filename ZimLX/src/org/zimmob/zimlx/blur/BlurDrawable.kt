@@ -37,13 +37,14 @@ abstract class BlurDrawable : Drawable(), BlurWallpaperProvider.Listener {
     abstract fun stopListening()
 
     data class Radii(
-            val topLeft: Float = 0f,
-            val topRight: Float = 0f,
-            val bottomLeft: Float = 0f,
-            val bottomRight: Float = 0f) {
+        val topLeft: Float = 0f,
+        val topRight: Float = 0f,
+        val bottomLeft: Float = 0f,
+        val bottomRight: Float = 0f
+    ) {
 
         constructor(radius: Float) : this(radius, radius, radius, radius)
-        constructor(topRadius: Float, bottomRadius: Float)
-                : this(topRadius, topRadius, bottomRadius, bottomRadius)
+        constructor(topRadius: Float, bottomRadius: Float) :
+            this(topRadius, topRadius, bottomRadius, bottomRadius)
     }
 }

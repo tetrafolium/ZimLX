@@ -124,13 +124,17 @@ class AppCategorizationFragment : Fragment(), ZimPreferences.OnPreferenceChangeL
         title.setTextColor(ourContext.createDisabledColor(accent))
 
         (folderTypeItem as AppCategorizationTypeItem)
-                .setup(AppGroupsManager.CategorizationType.Folders,
-                        R.string.pref_appcategorization_folders_title,
-                        R.string.pref_appcategorization_folders_summary)
+            .setup(
+                AppGroupsManager.CategorizationType.Folders,
+                R.string.pref_appcategorization_folders_title,
+                R.string.pref_appcategorization_folders_summary
+            )
 
         (tabTypeItem as AppCategorizationTypeItem)
-                .setup(AppGroupsManager.CategorizationType.Tabs,
-                        R.string.pref_appcategorization_tabs_title,
-                        R.string.pref_appcategorization_tabs_summary)
+            .setup(
+                AppGroupsManager.CategorizationType.Tabs,
+                R.string.pref_appcategorization_tabs_title,
+                R.string.pref_appcategorization_tabs_summary
+            )
     }
 }

@@ -42,9 +42,11 @@ import org.zimmob.zimlx.graphics.NinePatchDrawHelper
 import org.zimmob.zimlx.isVisible
 import org.zimmob.zimlx.runOnMainThread
 
-class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs),
-        ZimPreferences.OnPreferenceChangeListener, View.OnLayoutChangeListener,
-        BlurWallpaperProvider.Listener {
+class BlurScrimView(context: Context, attrs: AttributeSet) :
+    ShelfScrimView(context, attrs),
+    ZimPreferences.OnPreferenceChangeListener,
+    View.OnLayoutChangeListener,
+    BlurWallpaperProvider.Listener {
 
     private val key_radius = "pref_dockRadius"
     private val key_opacity = "pref_allAppsOpacitySB"
@@ -54,13 +56,14 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private val key_debug_state = "pref_debugDisplayState"
 
     private val prefsToWatch =
-            arrayOf(key_radius, key_opacity, key_dock_opacity, key_dock_arrow, key_search_radius,
-                    key_debug_state)
+        arrayOf(
+            key_radius, key_opacity, key_dock_opacity, key_dock_arrow, key_search_radius,
+            key_debug_state
+        )
 
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
             override fun unscheduleDrawable(who: Drawable, what: Runnable) {
-
             }
 
             override fun invalidateDrawable(who: Drawable) {
@@ -68,7 +71,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             }
 
             override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
-
             }
         }
     }
@@ -201,8 +203,12 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     private fun calculateEndScrim() {
         mEndScrim = ColorUtils.setAlphaComponent(allAppsBackground, mEndAlpha)
-        mEndFlatColor = ColorUtils.compositeColors(mEndScrim, ColorUtils.setAlphaComponent(
-                mScrimColor, mMaxScrimAlpha))
+        mEndFlatColor = ColorUtils.compositeColors(
+            mEndScrim,
+            ColorUtils.setAlphaComponent(
+                mScrimColor, mMaxScrimAlpha
+            )
+        )
     }
 
     private fun rebuildColors() {
@@ -216,7 +222,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         val recentsShelfColor = ColorUtils.setAlphaComponent(allAppsBackground, super.getMidAlpha())
         val homeShelfColor = ColorUtils.setAlphaComponent(dockBackground, midAlpha)
         val nullShelfColor = ColorUtils.setAlphaComponent(
-                if (hasDockBackground) dockBackground else allAppsBackground, 0)
+            if (hasDockBackground) dockBackground else allAppsBackground, 0
+        )
 
         val colors = ArrayList<Pair<Float, Int>>()
         colors.add(Pair(Float.NEGATIVE_INFINITY, fullShelfColor))
@@ -250,7 +257,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         }
     }
 
-
     override fun getMidAlpha(): Int {
         return prefs.dockOpacity.takeIf { it >= 0 } ?: super.getMidAlpha()
     }
@@ -269,8 +275,13 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         super.onDraw(canvas)
 
         if (!Utilities.ATLEAST_MARSHMALLOW && !isDarkTheme) {
-            val scrimProgress = Utilities.boundToRange(Utilities.mapToRange(mProgress,
-                    0f, SCRIM_CATCHUP_THRESHOLD, 0f, 1f, Interpolators.LINEAR), 0f, 1f)
+            val scrimProgress = Utilities.boundToRange(
+                Utilities.mapToRange(
+                    mProgress,
+                    0f, SCRIM_CATCHUP_THRESHOLD, 0f, 1f, Interpolators.LINEAR
+                ),
+                0f, 1f
+            )
             statusBarPaint.alpha = ((1 - scrimProgress) * 97).toInt()
             canvas.drawRect(0f, 0f, width.toFloat(), insets.top.toFloat(), statusBarPaint)
         }
@@ -327,14 +338,18 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             val isBubbleUi = (searchBox as? AbstractQsbLayout)?.useTwoBubbles() != false
             val bubbleAdjustmentLeft = if (isBubbleUi && isRtl) micWidth + bubbleGap else 0
             val bubbleAdjustmentRight = if (isBubbleUi && !isRtl) micWidth + bubbleGap else 0
-            setBlurBounds((left + bubbleAdjustmentLeft).toFloat(), top,
-                    (right - bubbleAdjustmentRight).toFloat(), bottom)
+            setBlurBounds(
+                (left + bubbleAdjustmentLeft).toFloat(), top,
+                (right - bubbleAdjustmentRight).toFloat(), bottom
+            )
             alpha = (searchBox.alpha * 255).toInt()
             draw(canvas)
             if (isBubbleUi) {
-                setBlurBounds((if (!isRtl) right - micWidth else left).toFloat(),
-                        top, (if (isRtl) left + micWidth else right).toFloat(),
-                        bottom)
+                setBlurBounds(
+                    (if (!isRtl) right - micWidth else left).toFloat(),
+                    top, (if (isRtl) left + micWidth else right).toFloat(),
+                    bottom
+                )
                 draw(canvas)
             }
         }
@@ -344,8 +359,11 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         super.updateColors()
         val alpha = when {
             useFlatColor -> ((1 - mProgress) * 255).toInt()
-            mProgress >= fullBlurProgress -> Math.round(255 * ACCEL_2.getInterpolation(
-                    Math.max(0f, 1 - mProgress) / (1 - fullBlurProgress)))
+            mProgress >= fullBlurProgress -> Math.round(
+                255 * ACCEL_2.getInterpolation(
+                    Math.max(0f, 1 - mProgress) / (1 - fullBlurProgress)
+                )
+            )
             else -> 255
         }
         blurDrawable?.alpha = alpha
@@ -385,9 +403,9 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     private fun drawDebug(canvas: Canvas) {
         listOf(
-                "version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
-                "state: ${mLauncher.stateManager.state::class.java.simpleName}",
-                "toState: ${mLauncher.stateManager.toState::class.java.simpleName}"
+            "version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+            "state: ${mLauncher.stateManager.state::class.java.simpleName}",
+            "toState: ${mLauncher.stateManager.toState::class.java.simpleName}"
         ).forEachIndexed { index, line ->
             canvas.drawText(line, 50f, 200f + (DEBUG_LINE_HEIGHT * index), debugTextPaint)
         }
@@ -408,8 +426,12 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         private const val DEBUG_LINE_HEIGHT = DEBUG_TEXT_SIZE + 3f
     }
 
-    class ColorRange(private val start: Float, private val end: Float,
-                     private val startColor: Int, private val endColor: Int) {
+    class ColorRange(
+        private val start: Float,
+        private val end: Float,
+        private val startColor: Int,
+        private val endColor: Int
+    ) {
 
         private val range = start..end
 

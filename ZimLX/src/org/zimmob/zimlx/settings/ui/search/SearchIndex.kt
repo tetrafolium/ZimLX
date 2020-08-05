@@ -70,7 +70,7 @@ class SearchIndex(private val context: Context) {
                     if (controller?.isVisible != false) {
                         val iconRes = ta.getResourceId(R.styleable.IndexablePreference_android_icon, 0)
                         val title = controller?.title
-                                ?: ta.getString(R.styleable.IndexablePreference_android_title)
+                            ?: ta.getString(R.styleable.IndexablePreference_android_title)
                         val content = ta.getResourceId(R.styleable.IndexablePreference_content, 0)
                         val hasPreview = ta.getBoolean(R.styleable.IndexablePreference_hasPreview, false)
                         var canIndex = true
@@ -78,7 +78,7 @@ class SearchIndex(private val context: Context) {
                             val key = ta.getString(R.styleable.IndexablePreference_android_key)
                             val defaultValue = ta.getBoolean(R.styleable.IndexablePreference_android_defaultValue, false)
                             val summary = controller?.summary
-                                    ?: ta.getString(R.styleable.IndexablePreference_android_summary)
+                                ?: ta.getString(R.styleable.IndexablePreference_android_summary)
                             if (parent != null && key != null) {
                                 if (addedKeys.add(key)) {
                                     entries.add(SettingsEntry(iconRes, key, title!!, summary, parent))
@@ -96,10 +96,15 @@ class SearchIndex(private val context: Context) {
                     val controller = createController(ta)
                     if (controller?.isVisible != false) {
                         val title = controller?.title
-                                ?: ta.getString(R.styleable.IndexablePreference_android_title)
+                            ?: ta.getString(R.styleable.IndexablePreference_android_title)
                         if (parent != null) {
-                            indexSection(parser, SettingsCategory(parent.title, title,
-                                    parent, parent.contentRes, parent.hasPreview))
+                            indexSection(
+                                parser,
+                                SettingsCategory(
+                                    parent.title, title,
+                                    parent, parent.contentRes, parent.hasPreview
+                                )
+                            )
                         } else {
                             indexSection(parser, null)
                         }
@@ -113,9 +118,9 @@ class SearchIndex(private val context: Context) {
                         val iconRes = ta.getResourceId(R.styleable.IndexablePreference_android_icon, 0)
                         val key = ta.getString(R.styleable.IndexablePreference_android_key)
                         val title = controller?.title
-                                ?: ta.getString(R.styleable.IndexablePreference_android_title)
+                            ?: ta.getString(R.styleable.IndexablePreference_android_title)
                         val summary = controller?.summary
-                                ?: ta.getString(R.styleable.IndexablePreference_android_summary)
+                            ?: ta.getString(R.styleable.IndexablePreference_android_summary)
                         if (parent != null && key != null && title != null) {
                             if (addedKeys.add(key)) {
                                 entries.add(SettingsEntry(iconRes, key, title, summary, parent, getSlice(cls, attrs)))
@@ -170,31 +175,42 @@ class SearchIndex(private val context: Context) {
         }
     }
 
-    inner class SettingsCategory(title: String, categoryTitle: String?,
-                                 parent: SettingsScreen?, contentRes: Int,
-                                 hasPreview: Boolean)
-        : SettingsScreen(title, categoryTitle, parent, contentRes, hasPreview)
+    inner class SettingsCategory(
+        title: String,
+        categoryTitle: String?,
+        parent: SettingsScreen?,
+        contentRes: Int,
+        hasPreview: Boolean
+    ) :
+        SettingsScreen(title, categoryTitle, parent, contentRes, hasPreview)
 
-    open inner class SettingsScreen(val title: String, private val categoryTitle: String?,
-                                    val parent: SettingsScreen?,
-                                    val contentRes: Int, val hasPreview: Boolean) {
+    open inner class SettingsScreen(
+        val title: String,
+        private val categoryTitle: String?,
+        val parent: SettingsScreen?,
+        val contentRes: Int,
+        val hasPreview: Boolean
+    ) {
 
         val breadcrumbs: String
             get() = when {
                 parent == null -> categoryTitle ?: ""
-                categoryTitle != null -> context.getString(R.string.search_breadcrumb_connector,
-                        parent.breadcrumbs, categoryTitle)
+                categoryTitle != null -> context.getString(
+                    R.string.search_breadcrumb_connector,
+                    parent.breadcrumbs, categoryTitle
+                )
                 else -> parent.breadcrumbs
             }
     }
 
     inner class SettingsEntry(
-            val iconRes: Int,
-            val key: String,
-            val title: String,
-            val summary: String?,
-            val parent: SettingsScreen?,
-            private val slice: Slice? = null) {
+        val iconRes: Int,
+        val key: String,
+        val title: String,
+        val summary: String?,
+        val parent: SettingsScreen?,
+        private val slice: Slice? = null
+    ) {
 
         val breadcrumbs get() = parent?.breadcrumbs ?: ""
 

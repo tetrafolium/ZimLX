@@ -24,7 +24,6 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat() {
         val size = gridSizePreference.getSize()
         numRows = savedInstanceState?.getInt(SAVE_STATE_ROWS) ?: size.first
         numColumns = savedInstanceState?.getInt(SAVE_STATE_COLUMNS) ?: size.second
-
     }
 
     override fun onBindDialogView(view: View) {
@@ -40,7 +39,6 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat() {
 
         numRowsPicker.value = numRows
         numColumnsPicker.value = numColumns
-
     }
 
     override fun onStart() {
@@ -56,9 +54,12 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat() {
 
     override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
         super.onPrepareDialogBuilder(builder)
-        builder.setNeutralButton(R.string.grid_size_default, { _, _ ->
-            gridSizePreference.setSize(0, 0)
-        })
+        builder.setNeutralButton(
+            R.string.grid_size_default,
+            { _, _ ->
+                gridSizePreference.setSize(0, 0)
+            }
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

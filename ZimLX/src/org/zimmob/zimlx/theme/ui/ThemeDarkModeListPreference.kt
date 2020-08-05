@@ -30,8 +30,9 @@ import org.zimmob.zimlx.util.removeFlag
 import org.zimmob.zimlx.zimPrefs
 
 @Keep
-class ThemeDarkModeListPreference(context: Context, attrs: AttributeSet?) : ListPreference(context, attrs),
-        ZimPreferences.OnPreferenceChangeListener {
+class ThemeDarkModeListPreference(context: Context, attrs: AttributeSet?) :
+    ListPreference(context, attrs),
+    ZimPreferences.OnPreferenceChangeListener {
 
     private val prefs = context.zimPrefs
 
@@ -63,12 +64,11 @@ class ThemeDarkModeListPreference(context: Context, attrs: AttributeSet?) : List
 
     override fun persistString(value: String): Boolean {
         val newFlag = prefs.launcherTheme
-                .removeFlag(ThemeManager.THEME_DARK_MASK)
-                .addFlag(value.toInt())
+            .removeFlag(ThemeManager.THEME_DARK_MASK)
+            .addFlag(value.toInt())
         if (prefs.launcherTheme != newFlag) {
             prefs.launcherTheme = newFlag
         }
         return true
     }
-
 }

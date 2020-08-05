@@ -93,7 +93,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val usePopupMenuView by BooleanPref("pref_desktopUsePopupMenuView", true, doNothing)
     val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
 
-    //dock
+    // dock
     val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
     val dockRadius get() = dockStyles.currentStyle.radius
@@ -156,8 +156,10 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val searchHiddenApps by BooleanPref(DefaultAppSearchAlgorithm.SEARCH_HIDDEN_APPS, false)
 
     // Search
-    var searchProvider by StringPref("pref_globalSearchProvider",
-            zimConfig.defaultSearchProvider) {
+    var searchProvider by StringPref(
+        "pref_globalSearchProvider",
+        zimConfig.defaultSearchProvider
+    ) {
         SearchProviderController.getInstance(context).onSearchProviderChanged()
     }
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, recreate)
@@ -166,15 +168,19 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     // Theme
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
-    val iconPacks = object : MutableListPref<String>("pref_iconPacks", reloadIconPacks,
-            if (!TextUtils.isEmpty(iconPack)) listOf(iconPack) else zimConfig.defaultIconPacks.asList()) {
+    val iconPacks = object : MutableListPref<String>(
+        "pref_iconPacks", reloadIconPacks,
+        if (!TextUtils.isEmpty(iconPack)) listOf(iconPack) else zimConfig.defaultIconPacks.asList()
+    ) {
         override fun unflattenValue(value: String) = value
     }
     val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
     val adaptifyIconPacks by BooleanPref("pref_generateAdaptiveForIconPack", false, reloadIcons)
     val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", zimConfig.enableLegacyTreatment(), reloadIcons)
-    val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds",
-            zimConfig.enableColorizedLegacyTreatment(), reloadIcons)
+    val colorizedLegacyTreatment by BooleanPref(
+        "pref_colorizeGeneratedBackgrounds",
+        zimConfig.enableColorizedLegacyTreatment(), reloadIcons
+    )
     val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", zimConfig.enableWhiteOnlyTreatment(), reloadIcons)
     var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).updateTheme() }
 
@@ -195,40 +201,51 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
 
-    //Folder
+    // Folder
     val folderBadgeCount by BooleanPref("pref_key__folder_badge_count", true)
     val folderBackground by IntPref("pref_key__folder_background", R.color.folderBackground, recreate)
 
-    //smartspace
-    var weatherProvider by StringPref("pref_smartspace_widget_provider",
-            SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
+    // smartspace
+    var weatherProvider by StringPref(
+        "pref_smartspace_widget_provider",
+        SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider
+    )
     val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
     val smartspaceTimeAbove by BooleanPref("pref_smartspace_time_above", false, refreshGrid)
     val smartspaceTime24H by BooleanPref("pref_smartspace_time_24_h", false, refreshGrid)
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
 
-    var eventProvider by StringPref("pref_smartspace_event_provider",
-            SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
+    var eventProvider by StringPref(
+        "pref_smartspace_event_provider",
+        SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider
+    )
 
-    var eventProviders = StringListPref("pref_smartspace_event_providers",
-            ::updateSmartspaceProvider, listOf(eventProvider,
+    var eventProviders = StringListPref(
+        "pref_smartspace_event_providers",
+        ::updateSmartspaceProvider,
+        listOf(
+            eventProvider,
             NotificationUnreadProvider::class.java.name,
             NowPlayingProvider::class.java.name,
             BatteryStatusProvider::class.java.name,
-            PersonalityProvider::class.java.name))
+            PersonalityProvider::class.java.name
+        )
+    )
 
-    val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
-            Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
-    //val enableSmartspace by BooleanPref("pref_smartspace", zimConfig.enableSmartspace())
+    val weatherUnit by StringBasedPref(
+        "pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
+        Temperature.Companion::unitFromString, Temperature.Companion::unitToString
+    ) { }
+    // val enableSmartspace by BooleanPref("pref_smartspace", zimConfig.enableSmartspace())
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
     var weatherIconPack by StringPref("pref_weatherIcons", "", updateWeatherData)
 
-    //Notification
+    // Notification
     val notificationCount: Boolean by BooleanPref("pref_notification_count", true, recreate)
     val notificationBackground by IntPref("pref_notification_background", R.color.notification_background, recreate)
 
-    //Gestures
+    // Gestures
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
@@ -252,7 +269,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     val recentBackups = object : MutableListPref<Uri>(
-            Utilities.getDevicePrefs(context), "pref_recentBackups") {
+        Utilities.getDevicePrefs(context), "pref_recentBackups"
+    ) {
         override fun unflattenValue(value: String) = Uri.parse(value)
     }
 
@@ -261,7 +279,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     inline fun withChangeCallback(
-            crossinline callback: (ZimPreferencesChangeCallback) -> Unit): () -> Unit {
+        crossinline callback: (ZimPreferencesChangeCallback) -> Unit
+    ): () -> Unit {
         return { getOnChangeCallback()?.let { callback(it) } }
     }
 
@@ -326,23 +345,26 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         onChangeListeners[key]?.remove(listener)
     }
 
-    inner class StringListPref(prefKey: String,
-                               onChange: () -> Unit = doNothing,
-                               default: List<String> = emptyList())
-        : MutableListPref<String>(prefKey, onChange, default) {
+    inner class StringListPref(
+        prefKey: String,
+        onChange: () -> Unit = doNothing,
+        default: List<String> = emptyList()
+    ) :
+        MutableListPref<String>(prefKey, onChange, default) {
 
         override fun unflattenValue(value: String) = value
         override fun flattenValue(value: String) = value
     }
 
+    abstract inner class MutableListPref<T>(
+        private val prefs: SharedPreferences,
+        private val prefKey: String,
+        onChange: () -> Unit = doNothing,
+        default: List<T> = emptyList()
+    ) {
 
-    abstract inner class MutableListPref<T>(private val prefs: SharedPreferences,
-                                            private val prefKey: String,
-                                            onChange: () -> Unit = doNothing,
-                                            default: List<T> = emptyList()) {
-
-        constructor(prefKey: String, onChange: () -> Unit = doNothing, default: List<T> = emptyList())
-                : this(sharedPrefs, prefKey, onChange, default)
+        constructor(prefKey: String, onChange: () -> Unit = doNothing, default: List<T> = emptyList()) :
+            this(sharedPrefs, prefKey, onChange, default)
 
         private val valueList = ArrayList<T>()
         private val listeners: MutableSet<MutableListPrefChangeListener> = Collections.newSetFromMap(WeakHashMap())
@@ -488,18 +510,29 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         }
     }
 
-    inline fun <reified T : Enum<T>> EnumPref(key: String, defaultValue: T,
-                                              noinline onChange: () -> Unit = doNothing): PrefDelegate<T> {
-        return IntBasedPref(key, defaultValue, onChange, { value ->
-            enumValues<T>().firstOrNull { item -> item.ordinal == value } ?: defaultValue
-        }, { it.ordinal }, { })
+    inline fun <reified T : Enum<T>> EnumPref(
+        key: String,
+        defaultValue: T,
+        noinline onChange: () -> Unit = doNothing
+    ): PrefDelegate<T> {
+        return IntBasedPref(
+            key, defaultValue, onChange,
+            { value ->
+                enumValues<T>().firstOrNull { item -> item.ordinal == value } ?: defaultValue
+            },
+            { it.ordinal }, { }
+        )
     }
 
-    open inner class IntBasedPref<T : Any>(key: String, defaultValue: T, onChange: () -> Unit = doNothing,
-                                           private val fromInt: (Int) -> T,
-                                           private val toInt: (T) -> Int,
-                                           private val dispose: (T) -> Unit) :
-            PrefDelegate<T>(key, defaultValue, onChange) {
+    open inner class IntBasedPref<T : Any>(
+        key: String,
+        defaultValue: T,
+        onChange: () -> Unit = doNothing,
+        private val fromInt: (Int) -> T,
+        private val toInt: (T) -> Int,
+        private val dispose: (T) -> Unit
+    ) :
+        PrefDelegate<T>(key, defaultValue, onChange) {
         override fun onGetValue(): T {
             return if (sharedPrefs.contains(key)) {
                 fromInt(sharedPrefs.getInt(getKey(), toInt(defaultValue)))
@@ -515,13 +548,17 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         }
     }
 
-    open inner class StringBasedPref<T : Any>(key: String, defaultValue: T, onChange: () -> Unit = doNothing,
-                                              private val fromString: (String) -> T,
-                                              private val toString: (T) -> String,
-                                              private val dispose: (T) -> Unit) :
-            PrefDelegate<T>(key, defaultValue, onChange) {
+    open inner class StringBasedPref<T : Any>(
+        key: String,
+        defaultValue: T,
+        onChange: () -> Unit = doNothing,
+        private val fromString: (String) -> T,
+        private val toString: (T) -> String,
+        private val dispose: (T) -> Unit
+    ) :
+        PrefDelegate<T>(key, defaultValue, onChange) {
         override fun onGetValue(): T = sharedPrefs.getString(getKey(), null)?.run(fromString)
-                ?: defaultValue
+            ?: defaultValue
 
         override fun onSetValue(value: T) {
             edit { putString(getKey(), toString(value)) }
@@ -533,7 +570,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     open inner class StringPref(key: String, defaultValue: String = "", onChange: () -> Unit = doNothing) :
-            PrefDelegate<String>(key, defaultValue, onChange) {
+        PrefDelegate<String>(key, defaultValue, onChange) {
         override fun onGetValue(): String = sharedPrefs.getString(getKey(), defaultValue)!!
 
         override fun onSetValue(value: String) {
@@ -542,7 +579,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     open inner class StringSetPref(key: String, defaultValue: Set<String>, onChange: () -> Unit = doNothing) :
-            PrefDelegate<Set<String>>(key, defaultValue, onChange) {
+        PrefDelegate<Set<String>>(key, defaultValue, onChange) {
         override fun onGetValue(): Set<String> = sharedPrefs.getStringSet(getKey(), defaultValue)!!
 
         override fun onSetValue(value: Set<String>) {
@@ -551,7 +588,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     open inner class StringIntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
-            PrefDelegate<Int>(key, defaultValue, onChange) {
+        PrefDelegate<Int>(key, defaultValue, onChange) {
         override fun onGetValue(): Int = sharedPrefs.getString(getKey(), "$defaultValue")!!.toInt()
 
         override fun onSetValue(value: Int) {
@@ -559,7 +596,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         }
     }
     open inner class IntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
-            PrefDelegate<Int>(key, defaultValue, onChange) {
+        PrefDelegate<Int>(key, defaultValue, onChange) {
         override fun onGetValue(): Int = sharedPrefs.getInt(getKey(), defaultValue)
 
         override fun onSetValue(value: Int) {
@@ -568,7 +605,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     open inner class AlphaPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
-            PrefDelegate<Int>(key, defaultValue, onChange) {
+        PrefDelegate<Int>(key, defaultValue, onChange) {
         override fun onGetValue(): Int = (sharedPrefs.getFloat(getKey(), defaultValue.toFloat() / 255) * 255).roundToInt()
 
         override fun onSetValue(value: Int) {
@@ -577,7 +614,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     open inner class DimensionPref(key: String, defaultValue: Float = 0f, onChange: () -> Unit = doNothing) :
-            PrefDelegate<Float>(key, defaultValue, onChange) {
+        PrefDelegate<Float>(key, defaultValue, onChange) {
 
         override fun onGetValue(): Float = dpToPx(sharedPrefs.getFloat(getKey(), defaultValue))
 
@@ -587,7 +624,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     open inner class FloatPref(key: String, defaultValue: Float = 0f, onChange: () -> Unit = doNothing) :
-            PrefDelegate<Float>(key, defaultValue, onChange) {
+        PrefDelegate<Float>(key, defaultValue, onChange) {
         override fun onGetValue(): Float = sharedPrefs.getFloat(getKey(), defaultValue)
 
         override fun onSetValue(value: Float) {
@@ -596,7 +633,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     open inner class BooleanPref(key: String, defaultValue: Boolean = false, onChange: () -> Unit = doNothing) :
-            PrefDelegate<Boolean>(key, defaultValue, onChange) {
+        PrefDelegate<Boolean>(key, defaultValue, onChange) {
         override fun onGetValue(): Boolean = sharedPrefs.getBoolean(getKey(), defaultValue)
 
         override fun onSetValue(value: Boolean) {
@@ -702,7 +739,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         }
 
         open fun disposeOldValue(oldValue: T) {
-
         }
     }
 
@@ -772,7 +808,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     private fun migrateFromV1(editor: SharedPreferences.Editor, prefs: SharedPreferences) = with(
-            editor
+        editor
     ) {
         // Set flags
         putBoolean("pref_legacyUpgrade", true)
@@ -783,13 +819,15 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         putString("pref_iconShape", "")
 
         // Dt2s
-        putString("pref_gesture_double_tap",
-                when (prefs.getString("pref_dt2sHandler", "")) {
-                    "" -> BlankGestureHandler(context, null)
-                    "org.zimmob.zimlx.gestures.dt2s.DoubleTapGesture\$SleepGestureHandlerTimeout" ->
-                        SleepGestureHandlerTimeout(context, null)
-                    else -> SleepGestureHandler(context, null)
-                }.toString())
+        putString(
+            "pref_gesture_double_tap",
+            when (prefs.getString("pref_dt2sHandler", "")) {
+                "" -> BlankGestureHandler(context, null)
+                "org.zimmob.zimlx.gestures.dt2s.DoubleTapGesture\$SleepGestureHandlerTimeout" ->
+                    SleepGestureHandlerTimeout(context, null)
+                else -> SleepGestureHandler(context, null)
+            }.toString()
+        )
 
         // Dock
         putString("pref_dockPreset", "0")
@@ -803,9 +841,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         putFloat("pref_dockScale", prefs.getFloat("pref_hotseatHeightScale", 1f))
 
         // Home widget
-        val pillQsb = prefs.getBoolean("pref_showPixelBar", true)
-                // The new dock qsb should be close enough I guess
-                && !prefs.getBoolean("pref_fullWidthSearchbar", false)
+        val pillQsb = prefs.getBoolean("pref_showPixelBar", true) &&
+            // The new dock qsb should be close enough I guess
+            !prefs.getBoolean("pref_fullWidthSearchbar", false)
         putBoolean("pref_use_pill_qsb", pillQsb)
         if (pillQsb) {
             putBoolean("pref_dockSearchBar", false)
@@ -818,25 +856,31 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         putBoolean("opa_assistant", showAssistant)
 
         // Theme
-        putString("pref_launcherTheme",
-                when (prefs.getString("pref_theme", "0")) {
-                    "1" -> ThemeManager.THEME_DARK
-                    "2" -> ThemeManager.THEME_USE_BLACK or ThemeManager.THEME_DARK
-                    else -> 0
-                }.toString())
+        putString(
+            "pref_launcherTheme",
+            when (prefs.getString("pref_theme", "0")) {
+                "1" -> ThemeManager.THEME_DARK
+                "2" -> ThemeManager.THEME_USE_BLACK or ThemeManager.THEME_DARK
+                else -> 0
+            }.toString()
+        )
         putString("pref_icon_pack", prefs.getString("pref_iconPackPackage", ""))
 
         // Gestures
-        putString("pref_gesture_swipe_down",
-                when (prefs.getInt("pref_pulldownAction", 1)) {
-                    1 -> NotificationsOpenGestureHandler(context, null)
-                    2 -> StartGlobalSearchGestureHandler(context, null)
-                    3 -> StartAppSearchGestureHandler(context, null)
-                    else -> BlankGestureHandler(context, null)
-                }.toString())
+        putString(
+            "pref_gesture_swipe_down",
+            when (prefs.getInt("pref_pulldownAction", 1)) {
+                1 -> NotificationsOpenGestureHandler(context, null)
+                2 -> StartGlobalSearchGestureHandler(context, null)
+                3 -> StartAppSearchGestureHandler(context, null)
+                else -> BlankGestureHandler(context, null)
+            }.toString()
+        )
         if (prefs.getBoolean("pref_homeOpensDrawer", false)) {
-            putString("pref_gesture_press_home",
-                    OpenDrawerGestureHandler(context, null).toString())
+            putString(
+                "pref_gesture_press_home",
+                OpenDrawerGestureHandler(context, null).toString()
+            )
         }
 
         // misc
@@ -871,7 +915,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
                     } catch (e: ExecutionException) {
                         throw RuntimeException(e)
                     }
-
                 }
             }
             return INSTANCE!!

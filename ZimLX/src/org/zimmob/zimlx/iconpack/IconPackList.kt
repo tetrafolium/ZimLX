@@ -105,7 +105,7 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
         val packs = HashSet<PackInfo>()
         IconPackManager.ICON_INTENTS.forEach { intent ->
             pm.queryIntentActivities(Intent(intent), 0)
-                    .mapTo(packs) { PackInfo.forPackage(context, it.activityInfo.packageName) }
+                .mapTo(packs) { PackInfo.forPackage(context, it.activityInfo.packageName) }
         }
         return packs
     }
@@ -168,11 +168,9 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
         val iconPack get() = pack
 
         open fun register() {
-
         }
 
         open fun unregister() {
-
         }
 
         open fun reloadPack() {
@@ -199,10 +197,15 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
         override fun register() {
             super.register()
 
-            context.registerReceiver(updateReceiver, ActionIntentFilter.newInstance(packageName,
+            context.registerReceiver(
+                updateReceiver,
+                ActionIntentFilter.newInstance(
+                    packageName,
                     Intent.ACTION_PACKAGE_CHANGED,
                     Intent.ACTION_PACKAGE_REPLACED,
-                    Intent.ACTION_PACKAGE_FULLY_REMOVED))
+                    Intent.ACTION_PACKAGE_FULLY_REMOVED
+                )
+            )
         }
 
         override fun unregister() {
@@ -221,15 +224,12 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
     inner class DefaultLoadedPack : LoadedPack(manager.defaultPack) {
 
         override fun register() {
-
         }
 
         override fun unregister() {
-
         }
 
         override fun reloadPack() {
-
         }
     }
 }

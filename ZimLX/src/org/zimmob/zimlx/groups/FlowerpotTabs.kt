@@ -44,12 +44,14 @@ class FlowerpotTabs(manager: AppGroupsManager) : DrawerTabs(manager, AppGroupsMa
                 pot != null
             }
         }.toMutableList()
-        existingGroups.addAll(pots.map {
-            FlowerpotTab(context).apply {
-                title.value = it.displayName
-                potName.value = it.name
+        existingGroups.addAll(
+            pots.map {
+                FlowerpotTab(context).apply {
+                    title.value = it.displayName
+                    potName.value = it.name
+                }
             }
-        })
+        )
         setGroups(existingGroups)
         saveToJson()
     }
@@ -109,28 +111,28 @@ class FlowerpotTabs(manager: AppGroupsManager) : DrawerTabs(manager, AppGroupsMa
                 val currentIndex = pots.indexOfFirst { it.name == value ?: default }
                 val themedContext = ThemedContextProvider(context, null, ThemeOverride.Settings()).get()
                 AlertDialog.Builder(themedContext, ThemeOverride.AlertDialog().getTheme(context))
-                        .setTitle(R.string.pref_appcategorization_flowerpot_title)
-                        .setSingleChoiceItems(pots.map { it.displayName }.toTypedArray(), currentIndex) { dialog, which ->
-                            if (currentIndex != which) {
-                                var updateTitle = false
-                                // Update the group title if it exactly matched the previous category name
-                                if (title.value == displayName) {
-                                    updateTitle = true
-                                }
-                                value = pots[which].name
-                                if (updateTitle) {
-                                    title.value = displayName
-                                }
-                                updateSummary(view)
+                    .setTitle(R.string.pref_appcategorization_flowerpot_title)
+                    .setSingleChoiceItems(pots.map { it.displayName }.toTypedArray(), currentIndex) { dialog, which ->
+                        if (currentIndex != which) {
+                            var updateTitle = false
+                            // Update the group title if it exactly matched the previous category name
+                            if (title.value == displayName) {
+                                updateTitle = true
                             }
-                            dialog.dismiss()
+                            value = pots[which].name
+                            if (updateTitle) {
+                                title.value = displayName
+                            }
+                            updateSummary(view)
                         }
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .create()
-                        .apply {
-                            //applyAccent()
-                            show()
-                        }
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .create()
+                    .apply {
+                        // applyAccent()
+                        show()
+                    }
             }
 
             return view

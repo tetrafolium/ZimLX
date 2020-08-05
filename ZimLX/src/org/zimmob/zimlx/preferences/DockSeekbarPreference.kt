@@ -23,7 +23,7 @@ import com.android.launcher3.Utilities
 import kotlin.reflect.KMutableProperty1
 
 class DockSeekbarPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        SeekbarPreference(context, attrs, defStyleAttr) {
+    SeekbarPreference(context, attrs, defStyleAttr) {
 
     private val prefs = Utilities.getZimPrefs(context)
     private val currentStyle get() = prefs.dockStyles.currentStyle
@@ -60,7 +60,7 @@ class DockSeekbarPreference @JvmOverloads constructor(context: Context, attrs: A
 }
 
 class DockAutoModeSeekbarPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        AutoModeSeekbarPreference(context, attrs, defStyleAttr) {
+    AutoModeSeekbarPreference(context, attrs, defStyleAttr) {
 
     private val prefs = Utilities.getZimPrefs(context)
     private val currentStyle get() = prefs.dockStyles.currentStyle

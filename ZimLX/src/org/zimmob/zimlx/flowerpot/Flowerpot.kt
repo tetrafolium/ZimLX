@@ -80,7 +80,7 @@ class Flowerpot(private val context: Context, val name: String, private val load
          * List of all currently supported versions
          */
         val SUPPORTED_VERSIONS = arrayOf(
-                VERSION_CURRENT
+            VERSION_CURRENT
         )
         /**
          * Path relative to assets/ to the directory containing the shipped flowerpot files
@@ -90,7 +90,6 @@ class Flowerpot(private val context: Context, val name: String, private val load
         private fun beautifyName(name: String): String {
             return name.replace('_', ' ').toLowerCase().toTitleCase()
         }
-
     }
 
     object Version {

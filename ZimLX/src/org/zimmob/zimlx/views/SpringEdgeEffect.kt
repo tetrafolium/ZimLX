@@ -33,12 +33,13 @@ import org.zimmob.zimlx.zimPrefs
 import kotlin.reflect.KMutableProperty0
 
 class SpringEdgeEffect(
-        context: Context,
-        private val getMax: () -> Int,
-        private val target: KMutableProperty0<Float>,
-        private val activeEdge: KMutableProperty0<SpringEdgeEffect?>,
-        private val velocityMultiplier: Float,
-        private val reverseAbsorb: Boolean) : EdgeEffect(context) {
+    context: Context,
+    private val getMax: () -> Int,
+    private val target: KMutableProperty0<Float>,
+    private val activeEdge: KMutableProperty0<SpringEdgeEffect?>,
+    private val velocityMultiplier: Float,
+    private val reverseAbsorb: Boolean
+) : EdgeEffect(context) {
 
     private val prefs = context.zimPrefs
 
@@ -76,8 +77,8 @@ class SpringEdgeEffect(
             spring.start()
         } else {
             ObjectAnimator.ofFloat(this, shiftProperty, 0f)
-                    .setDuration(100)
-                    .start()
+                .setDuration(100)
+                .start()
         }
     }
 
@@ -153,7 +154,7 @@ class SpringEdgeEffect(
 
             override fun createEdgeEffect(recyclerView: RecyclerView, direction: Int): EdgeEffect {
                 return createEdgeEffect(direction)
-                        ?: super.createEdgeEffect(recyclerView, direction)
+                    ?: super.createEdgeEffect(recyclerView, direction)
             }
         }
     }

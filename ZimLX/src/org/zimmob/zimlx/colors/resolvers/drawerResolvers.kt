@@ -31,12 +31,22 @@ import org.zimmob.zimlx.theme.ThemeManager
 class DrawerQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config), ZimPreferences.OnPreferenceChangeListener {
 
     private val isDark get() = ThemeManager.getInstance(engine.context).isDark
-    private val lightResolver = DrawerQsbLightResolver(Config("DrawerQsbAutoResolver@Light", engine, { _, _ ->
-        if (!isDark) notifyChanged()
-    }))
-    private val darkResolver = DrawerQsbDarkResolver(Config("DrawerQsbAutoResolver@Dark", engine, { _, _ ->
-        if (isDark) notifyChanged()
-    }))
+    private val lightResolver = DrawerQsbLightResolver(
+        Config(
+            "DrawerQsbAutoResolver@Light", engine,
+            { _, _ ->
+                if (!isDark) notifyChanged()
+            }
+        )
+    )
+    private val darkResolver = DrawerQsbDarkResolver(
+        Config(
+            "DrawerQsbAutoResolver@Dark", engine,
+            { _, _ ->
+                if (isDark) notifyChanged()
+            }
+        )
+    )
 
     override fun startListening() {
         super.startListening()
@@ -78,14 +88,16 @@ class DrawerQsbLightResolver(config: Config) : WallpaperColorResolver(config), Z
     }
 
     override fun resolveColor() = engine.context.resources.getColor(
-            if (isDark)
-                R.color.qsb_background_drawer_dark
-            else
-                R.color.qsb_background_drawer_default
+        if (isDark)
+            R.color.qsb_background_drawer_dark
+        else
+            R.color.qsb_background_drawer_default
     ).let {
-        ColorUtils.compositeColors(ColorUtils
+        ColorUtils.compositeColors(
+            ColorUtils
                 .compositeColors(it, Themes.getAttrColor(launcher, R.attr.allAppsScrimColor)),
-                colorInfo.mainColor)
+            colorInfo.mainColor
+        )
     }
 
     override fun getDisplayName() = engine.context.resources.getString(R.string.theme_light)
@@ -97,9 +109,11 @@ class DrawerQsbDarkResolver(config: Config) : WallpaperColorResolver(config) {
     val color = engine.context.resources.getColor(R.color.qsb_background_drawer_dark_bar)
     val launcher = ZimLauncher.getLauncher(engine.context)
 
-    override fun resolveColor() = ColorUtils.compositeColors(ColorUtils
+    override fun resolveColor() = ColorUtils.compositeColors(
+        ColorUtils
             .compositeColors(color, Themes.getAttrColor(launcher, R.attr.allAppsScrimColor)),
-            colorInfo.mainColor)
+        colorInfo.mainColor
+    )
 
     override fun getDisplayName() = engine.context.resources.getString(R.string.theme_dark)
 }

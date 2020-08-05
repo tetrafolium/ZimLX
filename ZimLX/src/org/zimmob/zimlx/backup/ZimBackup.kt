@@ -73,8 +73,10 @@ class ZimBackup(val context: Context, val uri: Uri) {
             }
         }
         if (screenshot == wallpaper) return null // both are null
-        return Pair(Utilities.getScaledDownBitmap(screenshot, 1000, false),
-                Utilities.getScaledDownBitmap(wallpaper, 1000, false))
+        return Pair(
+            Utilities.getScaledDownBitmap(screenshot, 1000, false),
+            Utilities.getScaledDownBitmap(wallpaper, 1000, false)
+        )
     }
 
     private inline fun readZip(body: (ZipInputStream) -> Unit) {
@@ -232,9 +234,9 @@ class ZimBackup(val context: Context, val uri: Uri) {
             fun fromString(string: String): Meta {
                 val arr = JSONArray(string)
                 return Meta(
-                        name = arr.getString(NAME_INDEX),
-                        contents = arr.getInt(CONTENTS_INDEX),
-                        timestamp = arr.getString(TIMESTAMP_INDEX)
+                    name = arr.getString(NAME_INDEX),
+                    contents = arr.getInt(CONTENTS_INDEX),
+                    timestamp = arr.getString(TIMESTAMP_INDEX)
                 )
             }
         }
@@ -268,10 +270,10 @@ class ZimBackup(val context: Context, val uri: Uri) {
 
         fun listLocalBackups(context: Context): List<ZimBackup> {
             return getFolder().listFiles { file -> file.extension == EXTENSION }
-                    ?.sortedByDescending { it.lastModified() }
-                    ?.map { FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.provider", it) }
-                    ?.map { ZimBackup(context, it) }
-                    ?: Collections.emptyList()
+                ?.sortedByDescending { it.lastModified() }
+                ?.map { FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.provider", it) }
+                ?.map { ZimBackup(context, it) }
+                ?: Collections.emptyList()
         }
 
         private fun prepareConfig(context: Context) {
@@ -300,7 +302,7 @@ class ZimBackup(val context: Context, val uri: Uri) {
             }
 
             val devOptionsEnabled = Utilities.getZimPrefs(context)
-                    .developerOptionsEnabled
+                .developerOptionsEnabled
             prepareConfig(context)
             val pfd = context.contentResolver.openFileDescriptor(location, "w")
             val outStream = FileOutputStream(pfd?.fileDescriptor)
@@ -346,9 +348,9 @@ class ZimBackup(val context: Context, val uri: Uri) {
         }
 
         private fun getMeta(name: String, contents: Int) = Meta(
-                name = name,
-                contents = contents,
-                timestamp = getTimestamp()
+            name = name,
+            contents = contents,
+            timestamp = getTimestamp()
         )
 
         private fun getTimestamp(): String {

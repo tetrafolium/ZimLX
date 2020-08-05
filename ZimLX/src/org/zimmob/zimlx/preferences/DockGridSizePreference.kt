@@ -21,5 +21,6 @@ import android.util.AttributeSet
 import com.android.launcher3.Utilities
 
 class DockGridSizePreference(context: Context, attrs: AttributeSet?) :
-        SingleDimensionGridSizePreference(
-                context, attrs, Utilities.getZimPrefs(context).dockGridSize)
+    SingleDimensionGridSizePreference(
+        context, attrs, Utilities.getZimPrefs(context).dockGridSize
+    )

@@ -41,8 +41,10 @@ class DynamicDrawable {
         fun getIcon(context: Context, drawable: Drawable, metadata: Metadata, iconDpi: Int): Drawable {
             metadata.load(context, iconDpi)
             return when (metadata.type) {
-                Type.CLOCK -> CustomClock.getClock(context, metadata.clockMetadata!!.drawable,
-                        metadata.clockMetadata!!.metadata, iconDpi)
+                Type.CLOCK -> CustomClock.getClock(
+                    context, metadata.clockMetadata!!.drawable,
+                    metadata.clockMetadata!!.metadata, iconDpi
+                )
                 else -> drawable
             }
         }
@@ -99,8 +101,9 @@ class DynamicDrawable {
                     if (parser.eventType == XmlPullParser.START_TAG) {
                         if (parser.name == "item") {
                             val item = Item(
-                                    parser["type"]!!,
-                                    parser["key"]!!)
+                                parser["type"]!!,
+                                parser["key"]!!
+                            )
                             item.parseItem(parser)
                             mutableItems.add(item)
                         }
@@ -133,8 +136,11 @@ class DynamicDrawable {
                 val item = items!!.findLast { it.key == relevantItem }
                 if (item != null) {
                     if (item.drawables.size > 1) {
-                        Log.e(TAG, "Unexpected number of drawables ${item.drawables.size}! " +
-                                "Assuming first and continuing.")
+                        Log.e(
+                            TAG,
+                            "Unexpected number of drawables ${item.drawables.size}! " +
+                                "Assuming first and continuing."
+                        )
                     } else if (item.drawables.isEmpty()) {
                         throw RuntimeException("Item '${item.key}' has no drawables!")
                     }
@@ -155,15 +161,15 @@ class DynamicDrawable {
             }
             val layerDrawable = LayerDrawable(drawables.toTypedArray())
             this.clockMetadata = ClockMetadata(
-                    layerDrawable,
-                    CustomClock.Metadata(
-                            1,
-                            2,
-                            3,
-                            0,
-                            0,
-                            0
-                    )
+                layerDrawable,
+                CustomClock.Metadata(
+                    1,
+                    2,
+                    3,
+                    0,
+                    0,
+                    0
+                )
             )
         }
     }
@@ -177,28 +183,30 @@ class DynamicDrawable {
                 "drawable" -> {
                     while (!(parser.next() == XmlPullParser.END_TAG && parser.name == "item")) {
                         if (parser.eventType == XmlPullParser.START_TAG && parser.name == "drawable") {
-                            drawables.add(DrawableItem(
+                            drawables.add(
+                                DrawableItem(
                                     parser["value"]!!,
                                     parser["res"]!!
-                            ))
+                                )
+                            )
                         }
                     }
                 }
                 "text" -> {
                     textAttributes = TextAttributes(
-                            parser["alignX"],
-                            parser["alignY"],
-                            parser["offsetX"],
-                            parser["offsetY"],
-                            parser["textSize"],
-                            parser["font"],
-                            parser["color"],
-                            parser["shadowLayerX"],
-                            parser["shadowLayerY"],
-                            parser["shadowLayerRadius"]?.toInt(),
-                            parser["shadowLayerColor"],
-                            parser["shadowLayerAlpha"],
-                            parser["enabled"]?.toBoolean() ?: true
+                        parser["alignX"],
+                        parser["alignY"],
+                        parser["offsetX"],
+                        parser["offsetY"],
+                        parser["textSize"],
+                        parser["font"],
+                        parser["color"],
+                        parser["shadowLayerX"],
+                        parser["shadowLayerY"],
+                        parser["shadowLayerRadius"]?.toInt(),
+                        parser["shadowLayerColor"],
+                        parser["shadowLayerAlpha"],
+                        parser["enabled"]?.toBoolean() ?: true
                     )
                 }
             }
@@ -206,11 +214,21 @@ class DynamicDrawable {
     }
 
     internal class DrawableItem(val value: String, val res: String)
-    internal class TextAttributes(val alignX: String?, val alignY: String?, val offsetX: String?,
-                                  val offsetY: String?, val textSize: String?, val font: String?,
-                                  val color: String?, val shadowLayerX: String?, val shadowLayerY: String?,
-                                  val shadowLayerRadius: Int?, val shadowLayerColor: String?,
-                                  val shadowLayerAlpha: String?, val enabled: Boolean = true)
+    internal class TextAttributes(
+        val alignX: String?,
+        val alignY: String?,
+        val offsetX: String?,
+        val offsetY: String?,
+        val textSize: String?,
+        val font: String?,
+        val color: String?,
+        val shadowLayerX: String?,
+        val shadowLayerY: String?,
+        val shadowLayerRadius: Int?,
+        val shadowLayerColor: String?,
+        val shadowLayerAlpha: String?,
+        val enabled: Boolean = true
+    )
 
     internal class ClockMetadata(val drawable: Drawable, val metadata: CustomClock.Metadata)
 

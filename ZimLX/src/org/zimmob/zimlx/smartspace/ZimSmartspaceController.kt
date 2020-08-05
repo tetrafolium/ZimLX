@@ -63,7 +63,8 @@ class ZimSmartspaceController(val context: Context) {
     private val eventDataMap = mutableMapOf<DataProvider, CardData?>()
 
     private val stockProviderClasses = listOf(
-            OnboardingProvider::class.java)
+        OnboardingProvider::class.java
+    )
     private val stockProviders = mutableListOf<DataProvider>()
 
     var requiresSetup = false
@@ -80,7 +81,7 @@ class ZimSmartspaceController(val context: Context) {
         }
 
         val provider = (listOf(weatherDataProvider) + eventDataProviders)
-                .firstOrNull { !it.listening && it.requiresSetup() }
+            .firstOrNull { !it.listening && it.requiresSetup() }
 
         if (provider != null) {
             provider.startSetup { success ->
@@ -93,9 +94,11 @@ class ZimSmartspaceController(val context: Context) {
                         weatherProviderPref.set(BlankDataProvider::class.java.name)
                     }
                     if (eventDataProviders.contains(provider)) {
-                        eventProvidersPref.setAll(eventDataProviders
+                        eventProvidersPref.setAll(
+                            eventDataProviders
                                 .filter { it != provider }
-                                .map { it::class.java.name })
+                                .map { it::class.java.name }
+                        )
                     }
                     onProviderChanged()
                 }
@@ -125,8 +128,8 @@ class ZimSmartspaceController(val context: Context) {
     fun forceUpdate() {
         val allProviders = stockProviders.asSequence() + eventDataProviders.asSequence()
         val eventData = allProviders
-                .mapNotNull { eventDataMap[it] }
-                .firstOrNull()
+            .mapNotNull { eventDataMap[it] }
+            .firstOrNull()
         updateData(weatherData, eventData)
     }
 
@@ -150,15 +153,16 @@ class ZimSmartspaceController(val context: Context) {
     fun onProviderChanged() {
         val weatherClass = weatherProviderPref.get()
         val eventClasses = eventProvidersPref.getAll()
-        if (weatherClass == weatherDataProvider::class.java.name
-                && eventClasses == eventDataProviders.map { it::class.java.name }) {
+        if (weatherClass == weatherDataProvider::class.java.name &&
+            eventClasses == eventDataProviders.map { it::class.java.name }
+        ) {
             forceUpdate()
             return
         }
 
         val activeProviders = eventDataProviders + weatherDataProvider
         val providerCache = activeProviders
-                .associateByTo(mutableMapOf()) { it::class.java.name }
+            .associateByTo(mutableMapOf()) { it::class.java.name }
         val getProvider = { name: String ->
             providerCache.getOrPut(name) { createDataProvider(name) }
         }
@@ -168,9 +172,9 @@ class ZimSmartspaceController(val context: Context) {
         weatherDataProvider.weatherUpdateListener = ::updateWeatherData
         eventDataProviders.clear()
         eventClasses
-                .map { getProvider(it) }
-                .filterTo(eventDataProviders) { it !is BlankDataProvider }
-                .forEach { it.cardUpdateListener = ::updateCardData }
+            .map { getProvider(it) }
+            .filterTo(eventDataProviders) { it !is BlankDataProvider }
+            .forEach { it.cardUpdateListener = ::updateCardData }
 
         val allProviders = providerCache.values.toSet()
         val newProviders = setOf(weatherDataProvider) + eventDataProviders
@@ -200,9 +204,9 @@ class ZimSmartspaceController(val context: Context) {
     private fun initStockProviders() {
         val providers = mutableListOf<DataProvider>()
         stockProviderClasses
-                .map { createDataProvider(it.name) }
-                .filterTo(providers) { it !is BlankDataProvider }
-                .forEach { it.cardUpdateListener = ::updateCardData }
+            .map { createDataProvider(it.name) }
+            .filterTo(providers) { it !is BlankDataProvider }
+            .forEach { it.cardUpdateListener = ::updateCardData }
 
         stockProviders.addAll(providers)
         providers.forEach { it.forceUpdate() }
@@ -219,27 +223,34 @@ class ZimSmartspaceController(val context: Context) {
         if (data.pendingIntent != null) {
             val opts = launcher.getActivityLaunchOptionsAsBundle(v)
             launcher.startIntentSender(
-                    data.pendingIntent.intentSender, null,
-                    Intent.FLAG_ACTIVITY_NEW_TASK,
-                    Intent.FLAG_ACTIVITY_NEW_TASK, 0, opts)
+                data.pendingIntent.intentSender, null,
+                Intent.FLAG_ACTIVITY_NEW_TASK,
+                Intent.FLAG_ACTIVITY_NEW_TASK, 0, opts
+            )
         } else if (data.forecastIntent != null) {
             launcher.startActivitySafely(v, data.forecastIntent, null)
         } else if (PackageManagerHelper.isAppEnabled(launcher.packageManager, "com.google.android.googlequicksearchbox", 0)) {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse("dynact://velour/weather/ProxyActivity")
-            intent.component = ComponentName("com.google.android.googlequicksearchbox",
-                    "com.google.android.apps.gsa.velour.DynamicActivityTrampoline")
+            intent.component = ComponentName(
+                "com.google.android.googlequicksearchbox",
+                "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"
+            )
             launcher.startActivitySafely(v, intent, null)
         } else {
-            Utilities.openURLinBrowser(launcher, data.forecastUrl,
-                    launcher.getViewBounds(v), launcher.getActivityLaunchOptions(v).toBundle())
+            Utilities.openURLinBrowser(
+                launcher, data.forecastUrl,
+                launcher.getViewBounds(v), launcher.getActivityLaunchOptions(v).toBundle()
+            )
         }
     }
 
     private fun createDataProvider(className: String): DataProvider {
         return try {
-            (Class.forName(className).getConstructor(ZimSmartspaceController::class.java)
-                    .newInstance(this) as DataProvider)
+            (
+                Class.forName(className).getConstructor(ZimSmartspaceController::class.java)
+                    .newInstance(this) as DataProvider
+                )
         } catch (t: Throwable) {
             Log.d("LSC", "couldn't create provider", t)
             BlankDataProvider(this)
@@ -292,7 +303,8 @@ class ZimSmartspaceController(val context: Context) {
             val pm = controller.context.packageManager
             try {
                 return pm.getApplicationLabel(
-                        pm.getApplicationInfo(name, PackageManager.GET_META_DATA))
+                    pm.getApplicationInfo(name, PackageManager.GET_META_DATA)
+                )
             } catch (ignored: PackageManager.NameNotFoundException) {
             }
 
@@ -368,7 +380,7 @@ class ZimSmartspaceController(val context: Context) {
     }
 
     abstract class NotificationBasedDataProvider(controller: ZimSmartspaceController) :
-            DataProvider(controller) {
+        DataProvider(controller) {
 
         override fun startSetup(onFinish: (Boolean) -> Unit) {
             if (checkNotificationAccess()) {
@@ -382,25 +394,30 @@ class ZimSmartspaceController(val context: Context) {
             val msg: String
             if (Utilities.ATLEAST_OREO) {
                 intent = Intent(context, SettingsActivity::class.java)
-                        .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARG_KEY, "pref_icon_badging")
-                        .putExtra(TITLE, context.getString(R.string.general_pref_title))
-                        .putExtra(CONTENT_RES_ID, R.xml.zim_preferences_desktop)
-                msg = context.getString(R.string.event_provider_missing_notification_dots,
-                        context.getString(providerName))
+                    .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARG_KEY, "pref_icon_badging")
+                    .putExtra(TITLE, context.getString(R.string.general_pref_title))
+                    .putExtra(CONTENT_RES_ID, R.xml.zim_preferences_desktop)
+                msg = context.getString(
+                    R.string.event_provider_missing_notification_dots,
+                    context.getString(providerName)
+                )
             } else {
                 val cn = ComponentName(context, NotificationListener::class.java)
                 intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .putExtra(":settings:fragment_args_key", cn.flattenToString())
-                msg = context.getString(R.string.event_provider_missing_notification_access,
-                        context.getString(providerName),
-                        context.getString(R.string.derived_app_name))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .putExtra(":settings:fragment_args_key", cn.flattenToString())
+                msg = context.getString(
+                    R.string.event_provider_missing_notification_access,
+                    context.getString(providerName),
+                    context.getString(R.string.derived_app_name)
+                )
             }
             BlankActivity.startActivityWithDialog(
-                    context, intent, 1030,
-                    context.getString(R.string.title_missing_notification_access),
-                    msg,
-                    context.getString(R.string.title_change_settings)) {
+                context, intent, 1030,
+                context.getString(R.string.title_missing_notification_access),
+                msg,
+                context.getString(R.string.title_change_settings)
+            ) {
                 onFinish(checkNotificationAccess())
             }
         }
@@ -408,7 +425,8 @@ class ZimSmartspaceController(val context: Context) {
         private fun checkNotificationAccess(): Boolean {
             val context = controller.context
             val enabledListeners = Settings.Secure.getString(
-                    context.contentResolver, "enabled_notification_listeners")
+                context.contentResolver, "enabled_notification_listeners"
+            )
             val myListener = ComponentName(context, NotificationListener::class.java)
             val listenerEnabled = enabledListeners?.let {
                 it.contains(myListener.flattenToString()) || it.contains(myListener.flattenToString())
@@ -420,38 +438,50 @@ class ZimSmartspaceController(val context: Context) {
         override fun requiresSetup() = !checkNotificationAccess()
     }
 
-    data class WeatherData(val icon: Bitmap,
-                           private val temperature: Temperature,
-                           val forecastUrl: String? = "https://www.google.com/search?q=weather",
-                           val forecastIntent: Intent? = null,
-                           val pendingIntent: PendingIntent? = null) {
+    data class WeatherData(
+        val icon: Bitmap,
+        private val temperature: Temperature,
+        val forecastUrl: String? = "https://www.google.com/search?q=weather",
+        val forecastIntent: Intent? = null,
+        val pendingIntent: PendingIntent? = null
+    ) {
 
         fun getTitle(unit: Temperature.Unit): String {
             return "${temperature.inUnit(unit)} ${unit.suffix}"
         }
     }
 
-    data class CardData(val icon: Bitmap? = null,
-                        val lines: List<Line>,
-                        val onClickListener: View.OnClickListener? = null,
-                        val forceSingleLine: Boolean = false) {
+    data class CardData(
+        val icon: Bitmap? = null,
+        val lines: List<Line>,
+        val onClickListener: View.OnClickListener? = null,
+        val forceSingleLine: Boolean = false
+    ) {
 
-        constructor(icon: Bitmap? = null,
-                    lines: List<Line>,
-                    intent: PendingIntent? = null,
-                    forceSingleLine: Boolean = false) :
-                this(icon, lines, intent?.let { PendingIntentClickListener(it) }, forceSingleLine)
+        constructor(
+            icon: Bitmap? = null,
+            lines: List<Line>,
+            intent: PendingIntent? = null,
+            forceSingleLine: Boolean = false
+        ) :
+            this(icon, lines, intent?.let { PendingIntentClickListener(it) }, forceSingleLine)
 
-        constructor(icon: Bitmap? = null,
-                    lines: List<Line>,
-                    forceSingleLine: Boolean = false) :
-                this(icon, lines, null as View.OnClickListener?, forceSingleLine)
+        constructor(
+            icon: Bitmap? = null,
+            lines: List<Line>,
+            forceSingleLine: Boolean = false
+        ) :
+            this(icon, lines, null as View.OnClickListener?, forceSingleLine)
 
-        constructor(icon: Bitmap?,
-                    title: CharSequence, titleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
-                    subtitle: CharSequence, subtitleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
-                    pendingIntent: PendingIntent? = null)
-                : this(icon, listOf(Line(title, titleEllipsize), Line(subtitle, subtitleEllipsize)), pendingIntent)
+        constructor(
+            icon: Bitmap?,
+            title: CharSequence,
+            titleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
+            subtitle: CharSequence,
+            subtitleEllipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END,
+            pendingIntent: PendingIntent? = null
+        ) :
+            this(icon, listOf(Line(title, titleEllipsize), Line(subtitle, subtitleEllipsize)), pendingIntent)
 
         val isDoubleLine = !forceSingleLine && lines.size >= 2
 
@@ -487,17 +517,18 @@ class ZimSmartspaceController(val context: Context) {
             val opts = launcher.getActivityLaunchOptionsAsBundle(v)
             try {
                 launcher.startIntentSender(
-                        pendingIntent.intentSender, null,
-                        Intent.FLAG_ACTIVITY_NEW_TASK,
-                        Intent.FLAG_ACTIVITY_NEW_TASK, 0, opts)
+                    pendingIntent.intentSender, null,
+                    Intent.FLAG_ACTIVITY_NEW_TASK,
+                    Intent.FLAG_ACTIVITY_NEW_TASK, 0, opts
+                )
             } catch (e: ActivityNotFoundException) {
                 // ignored
             }
         }
     }
 
-    class NotificationClickListener(sbn: StatusBarNotification)
-        : PendingIntentClickListener(sbn.notification.contentIntent) {
+    class NotificationClickListener(sbn: StatusBarNotification) :
+        PendingIntentClickListener(sbn.notification.contentIntent) {
 
         private val key = sbn.key
         private val autoCancel = sbn.notification.flags.hasFlag(Notification.FLAG_AUTO_CANCEL)
@@ -511,8 +542,9 @@ class ZimSmartspaceController(val context: Context) {
     }
 
     data class Line @JvmOverloads constructor(
-            val text: CharSequence,
-            val ellipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END) {
+        val text: CharSequence,
+        val ellipsize: TextUtils.TruncateAt? = TextUtils.TruncateAt.END
+    ) {
 
         constructor(context: Context, textRes: Int) : this(context.getString(textRes))
     }
@@ -525,17 +557,18 @@ class ZimSmartspaceController(val context: Context) {
     companion object {
 
         private val displayNames = mapOf(
-                Pair(BlankDataProvider::class.java.name, R.string.weather_provider_disabled),
-                Pair(SmartspaceDataWidget::class.java.name, R.string.google_app),
-                Pair(SmartspacePixelBridge::class.java.name, R.string.smartspace_provider_bridge),
-                Pair(PEWeatherDataProvider::class.java.name, R.string.weather_provider_pe),
-                Pair(OnePlusWeatherDataProvider::class.java.name, R.string.weather_provider_oneplus_weather),
-                Pair(NowPlayingProvider::class.java.name, R.string.event_provider_now_playing),
-                Pair(NotificationUnreadProvider::class.java.name, R.string.event_provider_unread_notifications),
-                Pair(BatteryStatusProvider::class.java.name, R.string.battery_status),
-                Pair(PersonalityProvider::class.java.name, R.string.personality_provider),
-                Pair(OnboardingProvider::class.java.name, R.string.onbording),
-                Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing))
+            Pair(BlankDataProvider::class.java.name, R.string.weather_provider_disabled),
+            Pair(SmartspaceDataWidget::class.java.name, R.string.google_app),
+            Pair(SmartspacePixelBridge::class.java.name, R.string.smartspace_provider_bridge),
+            Pair(PEWeatherDataProvider::class.java.name, R.string.weather_provider_pe),
+            Pair(OnePlusWeatherDataProvider::class.java.name, R.string.weather_provider_oneplus_weather),
+            Pair(NowPlayingProvider::class.java.name, R.string.event_provider_now_playing),
+            Pair(NotificationUnreadProvider::class.java.name, R.string.event_provider_unread_notifications),
+            Pair(BatteryStatusProvider::class.java.name, R.string.battery_status),
+            Pair(PersonalityProvider::class.java.name, R.string.personality_provider),
+            Pair(OnboardingProvider::class.java.name, R.string.onbording),
+            Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing)
+        )
 
         fun getDisplayName(providerName: String): Int {
             return displayNames[providerName] ?: error("No display name for provider $providerName")

@@ -48,5 +48,5 @@ open class SingletonHolder<out T, in A>(creator: (A) -> T) {
     protected fun dangerousGetInstance() = instance
 }
 
-open class ZimSingletonHolder<out T>(creator: (Context) -> T)
-    : SingletonHolder<T, Context>(ensureOnMainThread(useApplicationContext(creator)))
+open class ZimSingletonHolder<out T>(creator: (Context) -> T) :
+    SingletonHolder<T, Context>(ensureOnMainThread(useApplicationContext(creator)))

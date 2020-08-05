@@ -58,12 +58,12 @@ class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Prefer
                 packList.currentPack().displayName
             } else {
                 packList.appliedPacks
-                        .filter { it !is DefaultPack }
-                        .joinToString(", ") { it.displayName }
+                    .filter { it !is DefaultPack }
+                    .joinToString(", ") { it.displayName }
             }
             icon = packList.currentPack().displayIcon
         } catch (ignored: IllegalStateException) {
-            //TODO: Fix updating pref when scrolled down
+            // TODO: Fix updating pref when scrolled down
         }
     }
 
@@ -75,12 +75,16 @@ class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Prefer
                     setImageDrawable(IconPackManager.getInstance(context).packList.currentPack().displayIcon)
                 }
                 setOnClickListener {
-                    context.startActivity(Intent()
+                    context.startActivity(
+                        Intent()
                             .setClass(context, SettingsActivity::class.java)
                             .putExtra(SettingsActivity.EXTRA_FRAGMENT, IconPackFragment::class.java.name)
-                            .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARGS, Bundle().apply {
-                                putString(SettingsActivity.SubSettingsFragment.TITLE, context.getString(R.string.icon_pack))
-                            })
+                            .putExtra(
+                                SettingsActivity.EXTRA_FRAGMENT_ARGS,
+                                Bundle().apply {
+                                    putString(SettingsActivity.SubSettingsFragment.TITLE, context.getString(R.string.icon_pack))
+                                }
+                            )
                     )
                 }
             }

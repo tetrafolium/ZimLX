@@ -95,18 +95,22 @@ class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
 
     operator fun get(index: Int) = tabs[index]
 
-    class AllAppsTab(matcher: ItemInfoMatcher?, drawerTab: DrawerTabs.Tab)
-        : Tab(drawerTab.getTitle(), matcher, drawerTab = drawerTab)
+    class AllAppsTab(matcher: ItemInfoMatcher?, drawerTab: DrawerTabs.Tab) :
+        Tab(drawerTab.getTitle(), matcher, drawerTab = drawerTab)
 
     private val personalMatcher = ItemInfoMatcher.ofUser(Process.myUserHandle())!!
     private val workMatcher = ItemInfoMatcher.not(personalMatcher)!!
 
-    inner class PersonalTab(matcher: ItemInfoMatcher?, drawerTab: DrawerTabs.Tab)
-        : Tab(drawerTab.getTitle(), matcher, drawerTab = drawerTab)
+    inner class PersonalTab(matcher: ItemInfoMatcher?, drawerTab: DrawerTabs.Tab) :
+        Tab(drawerTab.getTitle(), matcher, drawerTab = drawerTab)
 
-    inner class WorkTab(matcher: ItemInfoMatcher?, drawerTab: DrawerTabs.Tab)
-        : Tab(drawerTab.getTitle(), matcher, true, drawerTab)
+    inner class WorkTab(matcher: ItemInfoMatcher?, drawerTab: DrawerTabs.Tab) :
+        Tab(drawerTab.getTitle(), matcher, true, drawerTab)
 
-    open class Tab(val name: String, val matcher: ItemInfoMatcher?,
-                   val isWork: Boolean = false, val drawerTab: DrawerTabs.Tab)
+    open class Tab(
+        val name: String,
+        val matcher: ItemInfoMatcher?,
+        val isWork: Boolean = false,
+        val drawerTab: DrawerTabs.Tab
+    )
 }

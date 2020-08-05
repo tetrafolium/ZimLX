@@ -45,13 +45,12 @@ import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.iconpack.ZimIconProvider
 import org.zimmob.zimlx.isVisible
 
-
 open class AppsAdapterWithShortcuts(
-        private val context: Context,
-        private val callback: Callback? = null,
-        private val filter: AppFilter? = null)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+    private val context: Context,
+    private val callback: Callback? = null,
+    private val filter: AppFilter? = null
+) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val TYPE_LOADING = 0
@@ -104,8 +103,8 @@ open class AppsAdapterWithShortcuts(
 
     protected open fun loadAppsList() {
         val apps = getAppsList(context)
-                .sortedBy { it.label.toString().toLowerCase() }
-                .map { AppItem(context, it) }
+            .sortedBy { it.label.toString().toLowerCase() }
+            .map { AppItem(context, it) }
         handler.postAtFrontOfQueue { onAppsListLoaded(apps) }
     }
 
@@ -173,7 +172,7 @@ open class AppsAdapterWithShortcuts(
 
         private fun loadShortcuts(): List<ShortcutItem> {
             val shortcuts = shortcutManager.queryForComponent(key) as? List<ShortcutInfoCompat>
-                    ?: emptyList()
+                ?: emptyList()
             return shortcuts.map { ShortcutItem(it) }
         }
 
@@ -193,8 +192,10 @@ open class AppsAdapterWithShortcuts(
 
     class LoadingItem : Item
 
-    inner class AppHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-            View.OnClickListener, ValueAnimator.AnimatorUpdateListener {
+    inner class AppHolder(itemView: View) :
+        RecyclerView.ViewHolder(itemView),
+        View.OnClickListener,
+        ValueAnimator.AnimatorUpdateListener {
 
         private val label: TextView = itemView.findViewById(R.id.label)
         private val icon: ImageView = itemView.findViewById(R.id.icon)
@@ -240,7 +241,7 @@ open class AppsAdapterWithShortcuts(
         private fun animateCaretPointingUp(pointingUp: Boolean) {
             caretPointingUp = pointingUp
             animator = ObjectAnimator.ofFloat(caretDrawable.caretProgress, if (pointingUp) CaretDrawable.PROGRESS_CARET_POINTING_UP else CaretDrawable.PROGRESS_CARET_POINTING_DOWN)
-                    .setDuration(200)
+                .setDuration(200)
         }
 
         override fun onAnimationUpdate(animator: ValueAnimator) {
@@ -273,7 +274,7 @@ open class AppsAdapterWithShortcuts(
         init {
             val progressBar = itemView.findViewById<ProgressBar>(R.id.progress)
             progressBar.indeterminateTintList = ColorStateList
-                    .valueOf(Utilities.getZimPrefs(context).accentColor)
+                .valueOf(Utilities.getZimPrefs(context).accentColor)
         }
     }
 
@@ -295,7 +296,6 @@ open class AppsAdapterWithShortcuts(
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return old[oldItemPosition] === new[newItemPosition]
         }
-
     }
 
     interface Callback {

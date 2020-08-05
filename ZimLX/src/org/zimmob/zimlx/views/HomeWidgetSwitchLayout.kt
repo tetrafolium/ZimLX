@@ -27,7 +27,7 @@ import com.android.launcher3.Utilities
 import org.zimmob.zimlx.ZimPreferences
 
 class HomeWidgetSwitchLayout(context: Context, attrs: AttributeSet?) :
-        FrameLayout(context, attrs), ZimPreferences.OnPreferenceChangeListener {
+    FrameLayout(context, attrs), ZimPreferences.OnPreferenceChangeListener {
 
     private val prefs = Utilities.getZimPrefs(context)
     private var currentLayout = 0

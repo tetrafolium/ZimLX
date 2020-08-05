@@ -48,10 +48,8 @@ class ZimAccessibilityService : AccessibilityService() {
     }
 
     override fun onInterrupt() {
-
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-
     }
 }

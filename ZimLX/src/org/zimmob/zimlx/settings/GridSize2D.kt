@@ -21,11 +21,12 @@ import org.zimmob.zimlx.JavaField
 import org.zimmob.zimlx.ZimPreferences
 
 class GridSize2D(
-        prefs: ZimPreferences,
-        rowsKey: String,
-        columnsKey: String,
-        targetObject: Any,
-        onChangeListener: () -> Unit) : GridSize(prefs, rowsKey, targetObject, onChangeListener) {
+    prefs: ZimPreferences,
+    rowsKey: String,
+    columnsKey: String,
+    targetObject: Any,
+    onChangeListener: () -> Unit
+) : GridSize(prefs, rowsKey, targetObject, onChangeListener) {
 
     var numColumns by JavaField<Int>(targetObject, columnsKey)
     val numColumnsOriginal by JavaField<Int>(targetObject, "${columnsKey}Original")

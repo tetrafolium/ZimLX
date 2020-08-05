@@ -44,10 +44,12 @@ class IconShapeManager(private val context: Context) {
 
     private val systemIconShape = getSystemShape()
     var iconShape by context.zimPrefs.StringBasedPref(
-            THEME_ICON_SHAPE, systemIconShape, ::onShapeChanged,
-            {
-                IconShape.fromString(it) ?: systemIconShape
-            }, IconShape::toString) { /* no dispose */ }
+        THEME_ICON_SHAPE, systemIconShape, ::onShapeChanged,
+        {
+            IconShape.fromString(it) ?: systemIconShape
+        },
+        IconShape::toString
+    ) { /* no dispose */ }
 
     init {
         migratePref()
@@ -91,12 +93,13 @@ class IconShapeManager(private val context: Context) {
         val path = Path()
         val rect = Rect()
         return listOf(
-                IconShape.Circle,
-                IconShape.Square,
-                IconShape.RoundedSquare,
-                IconShape.Squircle,
-                IconShape.Teardrop,
-                IconShape.Cylinder).minBy {
+            IconShape.Circle,
+            IconShape.Square,
+            IconShape.RoundedSquare,
+            IconShape.Squircle,
+            IconShape.Teardrop,
+            IconShape.Cylinder
+        ).minBy {
             path.reset()
             it.addShape(path, 0f, 0f, 50f)
             pathRegion.setPath(path, clip)

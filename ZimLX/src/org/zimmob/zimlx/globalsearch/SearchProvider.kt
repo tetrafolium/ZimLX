@@ -33,8 +33,10 @@ abstract class SearchProvider(protected val context: Context) {
     }
 
     protected fun wrapInShadowDrawable(d: Drawable): Drawable {
-        return ShadowDrawable.wrap(context, d, R.color.qsb_icon_shadow_color,
-                4f, R.color.qsb_dark_icon_tint).apply { applyTheme(context.theme) }
+        return ShadowDrawable.wrap(
+            context, d, R.color.qsb_icon_shadow_color,
+            4f, R.color.qsb_dark_icon_tint
+        ).apply { applyTheme(context.theme) }
     }
 
     fun getIcon(colored: Boolean) = if (colored) getIcon() else getShadowIcon()

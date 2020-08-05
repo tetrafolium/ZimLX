@@ -21,7 +21,6 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.preference.ListPreference
 
-
 class ControlledListPreference(context: Context, attrs: AttributeSet?) :
-        ListPreference(context, attrs),
-        ControlledPreference by ControlledPreference.Delegate(context, attrs)
+    ListPreference(context, attrs),
+    ControlledPreference by ControlledPreference.Delegate(context, attrs)

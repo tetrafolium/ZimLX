@@ -36,8 +36,10 @@ open class EdgeSearchProvider(context: Context) : SearchProvider(context) {
         get() = PackageManagerHelper.isAppEnabled(context.packageManager, PACKAGE, 0)
 
     override fun startSearch(callback: (intent: Intent) -> Unit) {
-        callback(Intent(Intent.ACTION_MAIN)
-                .setClassName(PACKAGE, "com.microsoft.bingsearchsdk.api.ui.activities.RubyBingSearchActivity"))
+        callback(
+            Intent(Intent.ACTION_MAIN)
+                .setClassName(PACKAGE, "com.microsoft.bingsearchsdk.api.ui.activities.RubyBingSearchActivity")
+        )
     }
 
     override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_edge)!!

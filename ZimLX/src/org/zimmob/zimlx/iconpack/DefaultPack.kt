@@ -70,7 +70,6 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     }
 
     override fun loadPack() {
-
     }
 
     override fun getEntryForComponent(key: ComponentKey) = appMap[key]
@@ -93,10 +92,13 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         return gen.result
     }
 
-    override fun getIcon(launcherActivityInfo: LauncherActivityInfo,
-                         iconDpi: Int, flattenDrawable: Boolean,
-                         customIconEntry: IconPackManager.CustomIconEntry?,
-                         iconProvider: ZimIconProvider?): Drawable {
+    override fun getIcon(
+        launcherActivityInfo: LauncherActivityInfo,
+        iconDpi: Int,
+        flattenDrawable: Boolean,
+        customIconEntry: IconPackManager.CustomIconEntry?,
+        iconProvider: ZimIconProvider?
+    ): Drawable {
         ensureInitialLoadComplete()
 
         val key: ComponentKey
@@ -130,9 +132,12 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         return gen.result
     }
 
-    override fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
-                         customIconEntry: IconPackManager.CustomIconEntry?,
-                         drawableFactory: ZimDrawableFactory): FastBitmapDrawable {
+    override fun newIcon(
+        icon: Bitmap,
+        itemInfo: ItemInfo,
+        customIconEntry: IconPackManager.CustomIconEntry?,
+        drawableFactory: ZimDrawableFactory
+    ): FastBitmapDrawable {
         ensureInitialLoadComplete()
 
         if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
@@ -170,8 +175,9 @@ class DefaultPack(context: Context) : IconPack(context, "") {
                         if (name == "application") {
                             appIcon = elementTags["roundIcon"]
                         } else if ((name == "activity" || name == "activity-alias") &&
-                                elementTags.containsKey("name") &&
-                                elementTags["name"] == component.className) {
+                            elementTags.containsKey("name") &&
+                            elementTags["name"] == component.className
+                        ) {
                             appIcon = elementTags["roundIcon"]
                             break
                         }

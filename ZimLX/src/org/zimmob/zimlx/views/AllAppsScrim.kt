@@ -32,8 +32,8 @@ import org.zimmob.zimlx.graphics.NinePatchDrawHelper
  * limitations under the License.
  */
 
-class AllAppsScrim(context: Context, attrs: AttributeSet?)
-    : GradientView(context, attrs), Insettable {
+class AllAppsScrim(context: Context, attrs: AttributeSet?) :
+    GradientView(context, attrs), Insettable {
     private val pStyle = FeatureFlags.LAUNCHER3_P_ALL_APPS
 
     private val mFillPaint = Paint(1)
@@ -115,7 +115,7 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     override fun setInsets(insets: Rect) {
         mInsets.set(insets)
         if (mDeviceProfile.isVerticalBarLayout) {
-            //mPadding.set(mDeviceProfile.getWorkspacePadding(null))
+            // mPadding.set(mDeviceProfile.getWorkspacePadding(null))
             mPadding.bottom = 0
             val rect = mPadding
             rect.left += mInsets.left

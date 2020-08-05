@@ -184,21 +184,25 @@ class RestoreBackupActivity : SettingsBaseActivity(), ZimBackup.MetaLoader.Callb
                     }
                 }
 
-                Handler().postDelayed({
-                    if (fromExternal) {
-                        val intent = Intent(this@RestoreBackupActivity,
-                                RestoreBackupActivity::class.java).putExtra(EXTRA_SUCCESS, true)
-                        startActivity(intent)
-                    }
-                    Utilities.killLauncher()
-                }, 500)
+                Handler().postDelayed(
+                    {
+                        if (fromExternal) {
+                            val intent = Intent(
+                                this@RestoreBackupActivity,
+                                RestoreBackupActivity::class.java
+                            ).putExtra(EXTRA_SUCCESS, true)
+                            startActivity(intent)
+                        }
+                        Utilities.killLauncher()
+                    },
+                    500
+                )
             } else {
                 inProgress = false
 
                 showMessage(R.drawable.ic_close, R.string.restore_failed)
             }
         }
-
     }
 
     private fun showMessage(icon: Int, text: Int) {

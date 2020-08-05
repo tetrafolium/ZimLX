@@ -55,13 +55,14 @@ class NotificationsManager private constructor() : NotificationListener.Notifica
     }
 
     override fun onNotificationPosted(
-            postedPackageUserKey: PackageUserKey?,
-            notificationKey: NotificationKeyData,
-            shouldBeFilteredOut: Boolean) {
+        postedPackageUserKey: PackageUserKey?,
+        notificationKey: NotificationKeyData,
+        shouldBeFilteredOut: Boolean
+    ) {
         runOnUiWorkerThread {
             val sbn = NotificationListener.getInstanceIfConnected()
-                    ?.getNotificationsForKeys(Collections.singletonList(notificationKey))
-                    ?.firstOrNull()
+                ?.getNotificationsForKeys(Collections.singletonList(notificationKey))
+                ?.firstOrNull()
             val key = notificationKey.notificationKey
             if (sbn != null) {
                 bgNotificationsMap[key] = sbn
@@ -73,8 +74,9 @@ class NotificationsManager private constructor() : NotificationListener.Notifica
     }
 
     override fun onNotificationRemoved(
-            removedPackageUserKey: PackageUserKey?,
-            notificationKey: NotificationKeyData) {
+        removedPackageUserKey: PackageUserKey?,
+        notificationKey: NotificationKeyData
+    ) {
         runOnUiWorkerThread {
             bgNotificationsMap.remove(notificationKey.notificationKey)
             onChange()
@@ -82,7 +84,8 @@ class NotificationsManager private constructor() : NotificationListener.Notifica
     }
 
     override fun onNotificationFullRefresh(
-            activeNotifications: MutableList<StatusBarNotification>?) {
+        activeNotifications: MutableList<StatusBarNotification>?
+    ) {
         runOnUiWorkerThread {
             doFullRefresh()
         }
@@ -97,7 +100,7 @@ class NotificationsManager private constructor() : NotificationListener.Notifica
         refreshPending = false
         bgNotificationsMap.clear()
         NotificationListener.getInstanceIfConnected()?.activeNotifications
-                ?.associateByTo(bgNotificationsMap) { it.key }
+            ?.associateByTo(bgNotificationsMap) { it.key }
         onChange()
     }
 

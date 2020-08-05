@@ -21,7 +21,6 @@ import androidx.core.graphics.ColorUtils
 import com.android.launcher3.AppInfo
 import com.android.launcher3.allapps.AppInfoComparator
 
-
 // Reference: https://www.alanzucconi.com/2015/09/30/colour-sorting/ - Step sorting
 class AppColorComparator(context: Context) : AppInfoComparator(context) {
 

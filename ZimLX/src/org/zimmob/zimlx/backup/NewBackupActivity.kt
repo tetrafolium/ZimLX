@@ -66,15 +66,23 @@ class NewBackupActivity : SettingsBaseActivity() {
 
     private fun onStartBackup() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                Snackbar.make(findViewById(R.id.content), R.string.read_external_storage_required,
-                        Snackbar.LENGTH_SHORT).show()
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            ) {
+                Snackbar.make(
+                    findViewById(R.id.content), R.string.read_external_storage_required,
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
-            ActivityCompat.requestPermissions(this,
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    permissionRequestReadExternalStorage)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                permissionRequestReadExternalStorage
+            )
         } else {
             val error = validateOptions()
             if (error == 0) {
@@ -121,12 +129,13 @@ class NewBackupActivity : SettingsBaseActivity() {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     onStartBackup()
                 } else {
-                    Snackbar.make(findViewById(R.id.content), R.string.read_external_storage_required,
-                            Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        findViewById(R.id.content), R.string.read_external_storage_required,
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
             }
             else -> {
-
             }
         }
     }
@@ -135,8 +144,10 @@ class NewBackupActivity : SettingsBaseActivity() {
         if (requestCode == 1 && resultCode == AppCompatActivity.RESULT_OK) {
             if (resultData != null) {
                 val takeFlags = intent.flags and
-                        (Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                    (
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                        )
                 contentResolver.takePersistableUriPermission(resultData.data!!, takeFlags)
                 backupUri = resultData.data
                 startBackup()
@@ -176,10 +187,10 @@ class NewBackupActivity : SettingsBaseActivity() {
                 contents = contents or ZimBackup.INCLUDE_WALLPAPER
             }
             return ZimBackup.create(
-                    context = context,
-                    name = backupName.text.toString(),
-                    location = backupUri,
-                    contents = contents
+                context = context,
+                name = backupName.text.toString(),
+                location = backupUri,
+                contents = contents
             )
         }
 
@@ -194,6 +205,5 @@ class NewBackupActivity : SettingsBaseActivity() {
                 Snackbar.make(findViewById(R.id.content), R.string.backup_failed, Snackbar.LENGTH_SHORT).show()
             }
         }
-
     }
 }

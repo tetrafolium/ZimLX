@@ -41,7 +41,6 @@ class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentComp
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         val size = gridSizePreference.getSize()
         numRows = savedInstanceState?.getInt(SAVE_STATE_ROWS) ?: size
     }
@@ -68,9 +67,12 @@ class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentComp
     override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
         super.onPrepareDialogBuilder(builder)
 
-        builder.setNeutralButton(R.string.grid_size_default, { _, _ ->
-            gridSizePreference.setSize(0)
-        })
+        builder.setNeutralButton(
+            R.string.grid_size_default,
+            { _, _ ->
+                gridSizePreference.setSize(0)
+            }
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -84,13 +86,10 @@ class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentComp
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
     }
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
     }
-
 
     override fun onStart() {
         super.onStart()

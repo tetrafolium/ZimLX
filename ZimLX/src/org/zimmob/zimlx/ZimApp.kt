@@ -52,7 +52,6 @@ class ZimApp : Application() {
         Flowerpot.Manager.getInstance(this)
     }
 
-
     fun restart(recreateLauncher: Boolean = true) {
         if (recreateLauncher) {
             activityHandler.finishAll(recreateLauncher)
@@ -65,8 +64,10 @@ class ZimApp : Application() {
         return if (accessibilityService != null) {
             accessibilityService!!.performGlobalAction(action)
         } else {
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            startActivity(
+                Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
             false
         }
     }
@@ -86,7 +87,6 @@ class ZimApp : Application() {
         }
 
         override fun onActivityPaused(activity: Activity) {
-
         }
 
         override fun onActivityResumed(activity: Activity) {
@@ -94,7 +94,6 @@ class ZimApp : Application() {
         }
 
         override fun onActivityStarted(activity: Activity) {
-
         }
 
         override fun onActivityDestroyed(activity: Activity) {
@@ -104,11 +103,9 @@ class ZimApp : Application() {
         }
 
         override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle?) {
-
         }
 
         override fun onActivityStopped(activity: Activity) {
-
         }
 
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
@@ -119,17 +116,15 @@ class ZimApp : Application() {
     @Keep
     fun checkRecentsComponent(): Boolean {
         if (!Utilities.ATLEAST_P) return false
-        //if (!Utilities.HIDDEN_APIS_ALLOWED) return false
+        // if (!Utilities.HIDDEN_APIS_ALLOWED) return false
 
         val resId = resources.getIdentifier("config_recentsComponentName", "string", "android")
         if (resId == 0) return false
         val recentsComponent = ComponentName.unflattenFromString(resources.getString(resId))
-                ?: return false
+            ?: return false
         return recentsComponent.packageName == packageName
-        //&& recentsComponent.className == RecentsActivity::class.java.name
+        // && recentsComponent.className == RecentsActivity::class.java.name
     }
-
 }
-
 
 val Context.zimApp get() = applicationContext as ZimApp

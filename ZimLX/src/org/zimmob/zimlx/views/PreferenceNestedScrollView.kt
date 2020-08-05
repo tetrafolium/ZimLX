@@ -22,7 +22,9 @@ import android.util.AttributeSet
 import org.zimmob.zimlx.settings.ui.DecorLayout
 
 class PreferenceNestedScrollView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : InsettableNestedScrollView(context, attrs, defStyleAttr) {
 
     private var elevationHelper: DecorLayout.ToolbarElevationHelper? = null
@@ -41,4 +43,3 @@ class PreferenceNestedScrollView @JvmOverloads constructor(
         elevationHelper = null
     }
 }
-

@@ -31,8 +31,8 @@ import org.zimmob.zimlx.isVisible
 import org.zimmob.zimlx.smartspace.*
 import org.zimmob.zimlx.zimPrefs
 
-class SmartspaceEventProvidersAdapter(private val context: Context)
-    : RecyclerView.Adapter<SmartspaceEventProvidersAdapter.Holder>() {
+class SmartspaceEventProvidersAdapter(private val context: Context) :
+    RecyclerView.Adapter<SmartspaceEventProvidersAdapter.Holder>() {
 
     private val prefs = context.zimPrefs
     private val allProviders = ArrayList<ProviderItem>()
@@ -60,8 +60,10 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
             TYPE_HEADER -> createHolder(parent, R.layout.event_provider_text_item, ::HeaderHolder)
             TYPE_ITEM -> createHolder(parent, R.layout.event_provider_dialog_item, ::ProviderHolder)
             TYPE_DIVIDER -> createHolder(parent, R.layout.event_providers_divider_item, ::DividerHolder)
-            else -> throw IllegalArgumentException("type must be either TYPE_TEXT, " +
-                    "TYPE_PROVIDER or TYPE_DIVIDER")
+            else -> throw IllegalArgumentException(
+                "type must be either TYPE_TEXT, " +
+                    "TYPE_PROVIDER or TYPE_DIVIDER"
+            )
         }
     }
 
@@ -83,7 +85,6 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
             val item = iterator.next()
             if (item is ProviderItem) {
                 newSpecs.add(item.info.name)
-
             }
             if (item is DividerItem) break
         }
@@ -162,7 +163,6 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
     abstract class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         open fun bind(item: Item) {
-
         }
     }
 
@@ -188,7 +188,7 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
         private val dragHandle: View = itemView.findViewById(R.id.drag_handle)
         private val packItem
             get() = adapterItems[adapterPosition] as? ProviderItem
-                    ?: throw IllegalArgumentException("item must be ProviderItem")
+                ?: throw IllegalArgumentException("item must be ProviderItem")
 
         init {
             itemView.setOnClickListener(this)
@@ -197,7 +197,7 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
 
         override fun bind(item: Item) {
             val packItem = item as? ProviderItem
-                    ?: throw IllegalArgumentException("item must be ProviderItem")
+                ?: throw IllegalArgumentException("item must be ProviderItem")
             title.text = packItem.info.displayName
             itemView.isClickable = !packItem.isStatic
             dragHandle.isVisible = !packItem.isStatic
@@ -268,7 +268,6 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
         }
     }
 

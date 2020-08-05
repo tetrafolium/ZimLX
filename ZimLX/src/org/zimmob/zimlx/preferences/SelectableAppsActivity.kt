@@ -63,8 +63,10 @@ class SelectableAppsActivity : SettingsActivity() {
             val context = recyclerView.context
             recyclerView.setHasFixedSize(true)
             recyclerView.layoutManager = LinearLayoutManager(context)
-            recyclerView.adapter = SelectableAppsAdapter.ofProperty(activity!!,
-                    ::selection, this, createAppFilter(context, DrawerTabs.getWorkFilter(isWork)))
+            recyclerView.adapter = SelectableAppsAdapter.ofProperty(
+                activity!!,
+                ::selection, this, createAppFilter(context, DrawerTabs.getWorkFilter(isWork))
+            )
         }
 
         override fun onDestroy() {
@@ -72,9 +74,12 @@ class SelectableAppsActivity : SettingsActivity() {
 
             val receiver = arguments?.getParcelable<Parcelable>(KEY_CALLBACK) as ResultReceiver
             if (changed) {
-                receiver.send(Activity.RESULT_OK, Bundle(1).apply {
-                    putStringArrayList(KEY_SELECTION, ArrayList(selection))
-                })
+                receiver.send(
+                    Activity.RESULT_OK,
+                    Bundle(1).apply {
+                        putStringArrayList(KEY_SELECTION, ArrayList(selection))
+                    }
+                )
             } else {
                 receiver.send(Activity.RESULT_CANCELED, null)
             }
@@ -102,22 +107,31 @@ class SelectableAppsActivity : SettingsActivity() {
         private const val KEY_CALLBACK = "callback"
         private const val KEY_FILTER_IS_WORK = "filterIsWork"
 
-        fun start(context: Context, selection: Collection<ComponentKey>,
-                  callback: (Collection<ComponentKey>?) -> Unit, filterIsWork: Boolean? = null) {
+        fun start(
+            context: Context,
+            selection: Collection<ComponentKey>,
+            callback: (Collection<ComponentKey>?) -> Unit,
+            filterIsWork: Boolean? = null
+        ) {
             val intent = Intent(context, SelectableAppsActivity::class.java).apply {
                 putStringArrayListExtra(KEY_SELECTION, ArrayList(selection.map { it.toString() }))
-                putExtra(KEY_CALLBACK, object : ResultReceiver(Handler()) {
+                putExtra(
+                    KEY_CALLBACK,
+                    object : ResultReceiver(Handler()) {
 
-                    override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
-                        if (resultCode == Activity.RESULT_OK) {
-                            callback(resultData!!.getStringArrayList(KEY_SELECTION)!!.map {
-                                ComponentKey(context, it)
-                            })
-                        } else {
-                            callback(null)
+                        override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                            if (resultCode == Activity.RESULT_OK) {
+                                callback(
+                                    resultData!!.getStringArrayList(KEY_SELECTION)!!.map {
+                                        ComponentKey(context, it)
+                                    }
+                                )
+                            } else {
+                                callback(null)
+                            }
                         }
                     }
-                })
+                )
                 filterIsWork?.let { putExtra(KEY_FILTER_IS_WORK, it) }
             }
             context.startActivity(intent)

@@ -135,8 +135,11 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-            return SettingsEntryHolder(LayoutInflater.from(parent.context).inflate(
-                    R.layout.search_intent_item, parent, false))
+            return SettingsEntryHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.search_intent_item, parent, false
+                )
+            )
         }
 
         override fun onBindViewHolder(holder: Holder, position: Int) {
@@ -196,7 +199,7 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
 
                 if (entry.iconRes != 0) {
                     iconView.setImageResource(entry.iconRes)
-                    //iconView.tintDrawable()
+                    // iconView.tintDrawable()
                 }
                 bindBreadcrumbView(entry)
                 if (itemView.context.zimPrefs.showDebugInfo) {
@@ -238,8 +241,9 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
     }
 
     class SearchResultDiffCallback(
-            private val oldList: List<SearchIndex.SettingsEntry>,
-            private val newList: List<SearchIndex.SettingsEntry>) : DiffUtil.Callback() {
+        private val oldList: List<SearchIndex.SettingsEntry>,
+        private val newList: List<SearchIndex.SettingsEntry>
+    ) : DiffUtil.Callback() {
 
         override fun getOldListSize() = oldList.size
 

@@ -27,12 +27,15 @@ class DoubleTapGesture(controller: GestureController) : Gesture(controller) {
     private val handler by controller.createHandlerPref("pref_gesture_double_tap")
     override val isEnabled = true
 
-    private val detector = GestureDetector(controller.launcher, object : GestureDetector.SimpleOnGestureListener() {
-        override fun onDoubleTap(e: MotionEvent): Boolean {
-            handler.onGestureTrigger(controller)
-            return true
+    private val detector = GestureDetector(
+        controller.launcher,
+        object : GestureDetector.SimpleOnGestureListener() {
+            override fun onDoubleTap(e: MotionEvent): Boolean {
+                handler.onGestureTrigger(controller)
+                return true
+            }
         }
-    })
+    )
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         return detector.onTouchEvent(ev)

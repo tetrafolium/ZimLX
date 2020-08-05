@@ -17,7 +17,6 @@
 
 package org.zimmob.zimlx.blur
 
-
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.Log
@@ -27,9 +26,10 @@ import com.hoko.blur.task.AsyncBlurTask
 import org.zimmob.zimlx.blur.BlurWallpaperProvider.Companion.DOWNSAMPLE_FACTOR
 
 class LegacyBlurDrawable internal constructor(
-        private val mProvider: BlurWallpaperProvider,
-        private val mRadii: FloatArray,
-        private val mAllowTransparencyMode: Boolean) : Drawable(), BlurWallpaperProvider.Listener {
+    private val mProvider: BlurWallpaperProvider,
+    private val mRadii: FloatArray,
+    private val mAllowTransparencyMode: Boolean
+) : Drawable(), BlurWallpaperProvider.Listener {
 
     private val mSimpleRound = mRadii.none { it != mRadii[0] }
     private val mTopRadius = mRadii.take(4).reduce { acc, radius -> Math.max(acc, radius) }
@@ -42,13 +42,13 @@ class LegacyBlurDrawable internal constructor(
     private val mPaint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
     private val mShaderPaint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
     private val mCornerPaint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
-            .apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN) }
+        .apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN) }
     private val mBlurPaint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
     private val mOpacityPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-            .apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN) }
+        .apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN) }
     private val mColorPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val mColorCornerPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-            .apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP) }
+        .apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP) }
     private val mClipPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val mClearPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
     private val mRect = RectF()
@@ -130,14 +130,18 @@ class LegacyBlurDrawable internal constructor(
                 mClipPaint.color = -1
                 if (mTopRounded) {
                     mTopRoundBitmap?.recycle()
-                    mTopRoundBitmap = Bitmap.createBitmap(width, mTopRadius.toInt(),
-                            Bitmap.Config.ARGB_8888)
+                    mTopRoundBitmap = Bitmap.createBitmap(
+                        width, mTopRadius.toInt(),
+                        Bitmap.Config.ARGB_8888
+                    )
                     mTopCanvas.setBitmap(mTopRoundBitmap)
                 }
                 if (mBottomRounded) {
                     mBottomRoundBitmap?.recycle()
-                    mBottomRoundBitmap = Bitmap.createBitmap(width, mBottomRadius.toInt(),
-                            Bitmap.Config.ARGB_8888)
+                    mBottomRoundBitmap = Bitmap.createBitmap(
+                        width, mBottomRadius.toInt(),
+                        Bitmap.Config.ARGB_8888
+                    )
                     mBottomCanvas.setBitmap(mBottomRoundBitmap)
                 }
             }
@@ -268,8 +272,9 @@ class LegacyBlurDrawable internal constructor(
         val width = mBlurredView!!.width
         val height = mBlurredView!!.height
 
-        if (mBlurringCanvas == null || mDownsampleFactorChanged
-                || mBlurredViewWidth != width || mBlurredViewHeight != height) {
+        if (mBlurringCanvas == null || mDownsampleFactorChanged ||
+            mBlurredViewWidth != width || mBlurredViewHeight != height
+        ) {
             mDownsampleFactorChanged = false
 
             mBlurredViewWidth = width
@@ -284,14 +289,16 @@ class LegacyBlurDrawable internal constructor(
 
     private fun blur() {
         HokoBlur.with(mProvider.context)
-                .scheme(HokoBlur.SCHEME_OPENGL)
-                .mode(HokoBlur.MODE_STACK)
-                .radius(mProvider.blurRadius)
-                .sampleFactor(DOWNSAMPLE_FACTOR.toFloat())
-                .forceCopy(false)
-                .needUpscale(false)
-                .processor()
-                .asyncBlur(mBitmapToBlur, object : AsyncBlurTask.Callback {
+            .scheme(HokoBlur.SCHEME_OPENGL)
+            .mode(HokoBlur.MODE_STACK)
+            .radius(mProvider.blurRadius)
+            .sampleFactor(DOWNSAMPLE_FACTOR.toFloat())
+            .forceCopy(false)
+            .needUpscale(false)
+            .processor()
+            .asyncBlur(
+                mBitmapToBlur,
+                object : AsyncBlurTask.Callback {
                     override fun onBlurSuccess(bitmap: Bitmap?) {
                         mBlurredBitmap?.recycle()
                         mBlurredBitmap = bitmap
@@ -303,7 +310,8 @@ class LegacyBlurDrawable internal constructor(
                         mBlurredBitmap = mBitmapToBlur
                         invalidateBlur()
                     }
-                })
+                }
+            )
     }
 
     val bitmap: Bitmap?
@@ -329,7 +337,6 @@ class LegacyBlurDrawable internal constructor(
     }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
-
     }
 
     override fun getOpacity(): Int {
@@ -369,8 +376,10 @@ class LegacyBlurDrawable internal constructor(
             outline.setRoundRect(bounds, mRadius)
         } else {
             mRoundPath.reset()
-            mRoundPath.addRoundRect(bounds.left.toFloat(), bounds.top.toFloat(),
-                    bounds.right.toFloat(), bounds.bottom.toFloat(), mRadii, Path.Direction.CW)
+            mRoundPath.addRoundRect(
+                bounds.left.toFloat(), bounds.top.toFloat(),
+                bounds.right.toFloat(), bounds.bottom.toFloat(), mRadii, Path.Direction.CW
+            )
             outline.setConvexPath(mRoundPath)
         }
     }

@@ -63,8 +63,10 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
             TYPE_PACK -> createHolder(parent, R.layout.icon_pack_dialog_item, ::IconPackHolder)
             TYPE_DIVIDER -> createHolder(parent, R.layout.icon_pack_divider_item, ::DividerHolder)
             TYPE_DOWNLOAD -> createHolder(parent, R.layout.icon_pack_dialog_item, ::DownloadHolder)
-            else -> throw IllegalArgumentException("type must be either TYPE_TEXT, " +
-                    "TYPE_PACK, TYPE_DIVIDER or TYPE_DOWNLOAD")
+            else -> throw IllegalArgumentException(
+                "type must be either TYPE_TEXT, " +
+                    "TYPE_PACK, TYPE_DIVIDER or TYPE_DOWNLOAD"
+            )
         }
     }
 
@@ -169,7 +171,6 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
     abstract class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         open fun bind(item: Item) {
-
         }
     }
 
@@ -188,7 +189,7 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
         private val dragHandle: View = itemView.findViewById(R.id.drag_handle)
         private val packItem
             get() = adapterItems[adapterPosition] as? IconPackItem
-                    ?: throw IllegalArgumentException("item must be IconPackItem")
+                ?: throw IllegalArgumentException("item must be IconPackItem")
 
         init {
             itemView.setOnClickListener(this)
@@ -197,7 +198,7 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
 
         override fun bind(item: Item) {
             val packItem = item as? IconPackItem
-                    ?: throw IllegalArgumentException("item must be IconPackItem")
+                ?: throw IllegalArgumentException("item must be IconPackItem")
             icon.setImageDrawable(packItem.info.displayIcon)
             title.text = packItem.info.displayName
             itemView.isClickable = !packItem.isStatic
@@ -247,14 +248,15 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
 
         init {
             val context = itemView.context
-            icon.setImageDrawable(context.getDrawable(R.drawable.ic_add)?.apply {
-                setTint(Utilities.getZimPrefs(context).accentColor)
-            })
+            icon.setImageDrawable(
+                context.getDrawable(R.drawable.ic_add)?.apply {
+                    setTint(Utilities.getZimPrefs(context).accentColor)
+                }
+            )
             title.setText(R.string.get_more_icon_packs)
         }
 
         override fun bind(item: Item) {
-
         }
 
         override fun onClick(v: View) {
@@ -288,7 +290,6 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
         }
     }
 

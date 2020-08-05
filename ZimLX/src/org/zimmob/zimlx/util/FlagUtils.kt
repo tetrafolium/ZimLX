@@ -17,7 +17,6 @@
 
 package org.zimmob.zimlx.util
 
-
 fun Int.hasFlag(flag: Int): Boolean {
     return (this and flag) != 0
 }

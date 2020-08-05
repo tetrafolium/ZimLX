@@ -25,10 +25,14 @@ import org.zimmob.zimlx.util.Temperature
 class FakeDataProvider(controller: ZimSmartspaceController) : ZimSmartspaceController.DataProvider(controller) {
 
     private val iconProvider = WeatherIconProvider(controller.context)
-    private val weather = ZimSmartspaceController.WeatherData(iconProvider.getIcon("-1"),
-            Temperature(0, Temperature.Unit.Celsius), "")
-    private val card = ZimSmartspaceController.CardData(iconProvider.getIcon("-1"),
-            "Title", TextUtils.TruncateAt.END, "Subtitle", TextUtils.TruncateAt.END)
+    private val weather = ZimSmartspaceController.WeatherData(
+        iconProvider.getIcon("-1"),
+        Temperature(0, Temperature.Unit.Celsius), ""
+    )
+    private val card = ZimSmartspaceController.CardData(
+        iconProvider.getIcon("-1"),
+        "Title", TextUtils.TruncateAt.END, "Subtitle", TextUtils.TruncateAt.END
+    )
 
     init {
         updateData(weather, card)

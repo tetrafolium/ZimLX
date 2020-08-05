@@ -23,7 +23,6 @@ import android.graphics.drawable.Drawable
 import com.android.launcher3.R
 import org.zimmob.zimlx.globalsearch.SearchProvider
 
-
 class DisabledDummySearchProvider(context: Context) : SearchProvider(context) {
     override val name: String
         get() = context.getString(R.string.special_greeting)
@@ -41,5 +40,4 @@ class DisabledDummySearchProvider(context: Context) : SearchProvider(context) {
     override fun getIcon(): Drawable {
         TODO("not implemented")
     }
-
 }

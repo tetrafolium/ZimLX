@@ -75,16 +75,22 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
         return null
     }
 
-    abstract fun getIcon(launcherActivityInfo: LauncherActivityInfo,
-                         iconDpi: Int, flattenDrawable: Boolean,
-                         customIconEntry: IconPackManager.CustomIconEntry?,
-                         iconProvider: ZimIconProvider?): Drawable?
+    abstract fun getIcon(
+        launcherActivityInfo: LauncherActivityInfo,
+        iconDpi: Int,
+        flattenDrawable: Boolean,
+        customIconEntry: IconPackManager.CustomIconEntry?,
+        iconProvider: ZimIconProvider?
+    ): Drawable?
 
     abstract fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable?
 
-    abstract fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
-                         customIconEntry: IconPackManager.CustomIconEntry?,
-                         drawableFactory: ZimDrawableFactory): FastBitmapDrawable?
+    abstract fun newIcon(
+        icon: Bitmap,
+        itemInfo: ItemInfo,
+        customIconEntry: IconPackManager.CustomIconEntry?,
+        drawableFactory: ZimDrawableFactory
+    ): FastBitmapDrawable?
 
     open fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean, filter: (item: String) -> Boolean = { _ -> true }) {
         ensureInitialLoadComplete()

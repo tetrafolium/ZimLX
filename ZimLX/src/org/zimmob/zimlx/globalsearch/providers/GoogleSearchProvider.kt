@@ -17,10 +17,9 @@ class GoogleSearchProvider(context: Context) : SearchProvider(context) {
     override val supportsFeed = true
     override val settingsIntent: Intent
         get() = Intent("com.google.android.googlequicksearchbox.TEXT_ASSIST")
-                .setPackage(PACKAGE).addFlags(268435456)
+            .setPackage(PACKAGE).addFlags(268435456)
     override val isBroadcast: Boolean
         get() = true
-
 
     override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent().setClassName(PACKAGE, "$PACKAGE.SearchActivity"))
 
@@ -33,7 +32,7 @@ class GoogleSearchProvider(context: Context) : SearchProvider(context) {
         if (launcher.googleNow != null) {
             launcher.googleNow?.showOverlay(true)
         } else {
-        callback(Intent(Intent.ACTION_MAIN).setClassName(PACKAGE, "$PACKAGE.SearchActivity"))
+            callback(Intent(Intent.ACTION_MAIN).setClassName(PACKAGE, "$PACKAGE.SearchActivity"))
         }
     }
 

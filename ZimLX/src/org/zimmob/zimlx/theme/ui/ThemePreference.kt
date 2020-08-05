@@ -47,8 +47,9 @@ import org.zimmob.zimlx.util.hasFlags
 import org.zimmob.zimlx.zimPrefs
 
 @Keep
-class ThemePreference(context: Context, attrs: AttributeSet?) : PreferenceDialogPreference(context, attrs),
-        ZimPreferences.OnPreferenceChangeListener {
+class ThemePreference(context: Context, attrs: AttributeSet?) :
+    PreferenceDialogPreference(context, attrs),
+    ZimPreferences.OnPreferenceChangeListener {
 
     private val prefs = context.zimPrefs
 

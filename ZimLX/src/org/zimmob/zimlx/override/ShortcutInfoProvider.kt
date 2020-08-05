@@ -80,6 +80,9 @@ class ShortcutInfoProvider private constructor(context: Context) : CustomInfoPro
         return launcherApps.resolveActivity(info.getIntent(), info.user)
     }
 
-    companion object : SingletonHolder<ShortcutInfoProvider, Context>(ensureOnMainThread(
-            useApplicationContext(::ShortcutInfoProvider)))
+    companion object : SingletonHolder<ShortcutInfoProvider, Context>(
+        ensureOnMainThread(
+            useApplicationContext(::ShortcutInfoProvider)
+        )
+    )
 }

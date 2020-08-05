@@ -25,7 +25,7 @@ import com.android.launcher3.R
 import kotlinx.android.synthetic.zim.icon_shape_customize_view.view.*
 
 class IconShapeCustomizeView(context: Context, attrs: AttributeSet?) :
-        LinearLayout(context, attrs) {
+    LinearLayout(context, attrs) {
 
     private val previousShape = IconShapeManager.getInstance(context).iconShape
     private var topLeft = previousShape.topLeft
@@ -67,17 +67,16 @@ class IconShapeCustomizeView(context: Context, attrs: AttributeSet?) :
         super.onFinishInflate()
         shapePreview.setImageDrawable(previewDrawable)
         (topLeftRow as IconShapeCornerRow)
-                .init(R.string.icon_shape_top_left, topLeft) { topLeft = it }
+            .init(R.string.icon_shape_top_left, topLeft) { topLeft = it }
         (topRightRow as IconShapeCornerRow)
-                .init(R.string.icon_shape_top_right, topRight) { topRight = it }
+            .init(R.string.icon_shape_top_right, topRight) { topRight = it }
         (bottomLeftRow as IconShapeCornerRow)
-                .init(R.string.icon_shape_bottom_left, bottomLeft) { bottomLeft = it }
+            .init(R.string.icon_shape_bottom_left, bottomLeft) { bottomLeft = it }
         (bottomRightRow as IconShapeCornerRow)
-                .init(R.string.icon_shape_bottom_right, bottomRight) { bottomRight = it }
+            .init(R.string.icon_shape_bottom_right, bottomRight) { bottomRight = it }
     }
 
     private fun rebuildShape() {
         currentShape = IconShape(topLeft, topRight, bottomLeft, bottomRight)
     }
 }
-

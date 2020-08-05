@@ -27,14 +27,14 @@ import org.zimmob.zimlx.comparing
 import org.zimmob.zimlx.then
 import kotlin.reflect.KMutableProperty0
 
-abstract class SelectableAppsAdapter(context: Context, private val callback: Callback? = null, filter: AppFilter? = null)
-    : AppsAdapter(context, null, filter) {
+abstract class SelectableAppsAdapter(context: Context, private val callback: Callback? = null, filter: AppFilter? = null) :
+    AppsAdapter(context, null, filter) {
 
     private val selections = HashSet<ComponentKey>()
     private val accentTintList = ColorStateList.valueOf(Utilities.getZimPrefs(context).accentColor)
 
     override val comparator = comparing<App, Int> { if (isSelected(it.key)) 0 else 1 }
-            .then { it.info.label.toString().toLowerCase() }
+        .then { it.info.label.toString().toLowerCase() }
 
     init {
         postLoadApps()
@@ -105,8 +105,12 @@ abstract class SelectableAppsAdapter(context: Context, private val callback: Cal
 
     companion object {
 
-        fun ofProperty(context: Context, property: KMutableProperty0<Set<String>>,
-                       callback: Callback? = null, filter: AppFilter? = null) = object : SelectableAppsAdapter(context, callback, filter) {
+        fun ofProperty(
+            context: Context,
+            property: KMutableProperty0<Set<String>>,
+            callback: Callback? = null,
+            filter: AppFilter? = null
+        ) = object : SelectableAppsAdapter(context, callback, filter) {
 
             override fun getInitialSelections() = HashSet(property.get().map { ComponentKey(context, it) })
 

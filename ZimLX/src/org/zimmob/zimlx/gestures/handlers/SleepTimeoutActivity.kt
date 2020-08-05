@@ -62,7 +62,6 @@ class SleepTimeoutActivity : Activity() {
     }
 
     override fun onBackPressed() {
-
     }
 
     private fun putSettings(timeout: Int, stayOnWhilePluggedIn: Int) {

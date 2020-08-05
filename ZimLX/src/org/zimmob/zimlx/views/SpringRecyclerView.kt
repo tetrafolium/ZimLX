@@ -29,7 +29,9 @@ import org.zimmob.zimlx.getColorAttr
 import org.zimmob.zimlx.zimPrefs
 
 open class SpringRecyclerView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
     private val springManager = SpringEdgeEffect.Manager(this)

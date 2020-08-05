@@ -57,11 +57,11 @@ abstract class WebSearchProvider(context: Context) : SearchProvider(context) {
         try {
             val response = client.newCall(Request.Builder().url(suggestionsUrl!!.format(query)).build()).execute()
             return JSONArray(response.body?.string())
-                    .getJSONArray(1)
-                    .toArrayList<String>()
-                    .take(MAX_SUGGESTIONS)
+                .getJSONArray(1)
+                .toArrayList<String>()
+                .take(MAX_SUGGESTIONS)
         } catch (ex: Exception) {
-            //e(ex.message ?: "", ex)
+            // e(ex.message ?: "", ex)
         }
         return emptyList()
     }

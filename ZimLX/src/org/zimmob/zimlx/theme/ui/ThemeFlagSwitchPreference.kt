@@ -28,8 +28,9 @@ import org.zimmob.zimlx.util.setFlag
 import org.zimmob.zimlx.zimPrefs
 
 @Keep
-open class ThemeFlagSwitchPreference(context: Context, attrs: AttributeSet) : SwitchPreference(context, attrs),
-        ZimPreferences.OnPreferenceChangeListener {
+open class ThemeFlagSwitchPreference(context: Context, attrs: AttributeSet) :
+    SwitchPreference(context, attrs),
+    ZimPreferences.OnPreferenceChangeListener {
 
     protected val prefs = context.zimPrefs
     private var switchFlag = 0

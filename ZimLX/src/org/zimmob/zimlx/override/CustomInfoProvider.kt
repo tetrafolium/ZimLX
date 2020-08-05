@@ -63,8 +63,8 @@ abstract class CustomInfoProvider<in T : ItemInfo>(val context: Context) {
         }
 
         fun isEditable(info: ItemInfo): Boolean {
-            return info is AppInfo || (info is ShortcutInfo && !info.hasPromiseIconUi())
-                    || info is FolderInfo
+            return info is AppInfo || (info is ShortcutInfo && !info.hasPromiseIconUi()) ||
+                info is FolderInfo
         }
     }
 }

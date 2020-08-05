@@ -41,18 +41,22 @@ class SFinderSearchProvider(context: Context) : SearchProvider(context) {
         get() = PackageManagerHelper.isAppEnabled(context.packageManager, PACKAGE, 0)
 
     override fun startSearch(callback: (intent: Intent) -> Unit) {
-        callback(Intent(Intent.ACTION_MAIN)
-                .setClassName(PACKAGE, CLASS))
+        callback(
+            Intent(Intent.ACTION_MAIN)
+                .setClassName(PACKAGE, CLASS)
+        )
     }
 
     override fun startVoiceSearch(callback: (intent: Intent) -> Unit) {
-        callback(Intent(Intent.ACTION_MAIN)
+        callback(
+            Intent(Intent.ACTION_MAIN)
                 .setClassName(PACKAGE, CLASS)
-                .putExtra("launch_mode", "voice_input"))
+                .putExtra("launch_mode", "voice_input")
+        )
     }
 
     override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_search)!!.mutate().apply {
-        //setTint(ColorEngine.getInstance(context).accent)
+        // setTint(ColorEngine.getInstance(context).accent)
         setTint(Utilities.getZimPrefs(context).accentColor)
     }
 

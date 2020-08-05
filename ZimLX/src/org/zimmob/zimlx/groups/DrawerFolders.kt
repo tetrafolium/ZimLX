@@ -52,17 +52,17 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
     }
 
     private fun getFolderInfos(getAppInfo: (ComponentKey) -> AppInfo?): List<DrawerFolderInfo> = getGroups()
-            .asSequence()
-            .filter { !it.isEmpty }
-            .map { it.toFolderInfo(getAppInfo) }
-            .toList()
+        .asSequence()
+        .filter { !it.isEmpty }
+        .map { it.toFolderInfo(getAppInfo) }
+        .toList()
 
     fun getHiddenComponents() = getGroups()
-            .asSequence()
-            .filterIsInstance<CustomFolder>()
-            .filter { it.hideFromAllApps.value() }
-            .mapNotNull { it.contents.value }
-            .flatMapTo(mutableSetOf()) { it.asSequence() }
+        .asSequence()
+        .filterIsInstance<CustomFolder>()
+        .filter { it.hideFromAllApps.value() }
+        .mapNotNull { it.contents.value }
+        .flatMapTo(mutableSetOf()) { it.asSequence() }
 
     abstract class Folder(val context: Context, type: Int, titleRes: Int) : Group(type, context, titleRes) {
         // Ensure icon customization sticks across group changes
@@ -83,8 +83,10 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
 
     class CustomFolder(context: Context) : Folder(context, TYPE_CUSTOM, R.string.default_folder_name) {
 
-        val hideFromAllApps = SwitchRow(R.drawable.tab_hide_from_main, R.string.tab_hide_from_main,
-                KEY_HIDE_FROM_ALL_APPS, true)
+        val hideFromAllApps = SwitchRow(
+            R.drawable.tab_hide_from_main, R.string.tab_hide_from_main,
+            KEY_HIDE_FROM_ALL_APPS, true
+        )
         val contents = AppsRow(KEY_ITEMS, mutableSetOf())
         override val isEmpty get() = contents.value.isNullOrEmpty()
 

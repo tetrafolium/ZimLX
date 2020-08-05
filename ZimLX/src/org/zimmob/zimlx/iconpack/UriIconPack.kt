@@ -17,7 +17,6 @@
 
 package org.zimmob.zimlx.iconpack
 
-
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.graphics.Bitmap
@@ -43,11 +42,9 @@ class UriIconPack(context: Context) : IconPack(context, "zimUriPack") {
     private val entryCache = mutableMapOf<String, UriEntry>()
 
     override fun loadPack() {
-
     }
 
     override fun onDateChanged() {
-
     }
 
     override fun getEntryForComponent(key: ComponentKey): Entry? {
@@ -73,9 +70,13 @@ class UriIconPack(context: Context) : IconPack(context, "zimUriPack") {
         throw NotImplementedError()
     }
 
-    override fun getIcon(launcherActivityInfo: LauncherActivityInfo, iconDpi: Int,
-                         flattenDrawable: Boolean, customIconEntry: IconPackManager.CustomIconEntry?,
-                         iconProvider: ZimIconProvider?): Drawable? {
+    override fun getIcon(
+        launcherActivityInfo: LauncherActivityInfo,
+        iconDpi: Int,
+        flattenDrawable: Boolean,
+        customIconEntry: IconPackManager.CustomIconEntry?,
+        iconProvider: ZimIconProvider?
+    ): Drawable? {
         val entry = getUriEntry(customIconEntry)
         val icon = entry?.drawable
         if (icon != null) {
@@ -86,9 +87,12 @@ class UriIconPack(context: Context) : IconPack(context, "zimUriPack") {
         return null
     }
 
-    override fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
-                         customIconEntry: IconPackManager.CustomIconEntry?,
-                         drawableFactory: ZimDrawableFactory): FastBitmapDrawable? {
+    override fun newIcon(
+        icon: Bitmap,
+        itemInfo: ItemInfo,
+        customIconEntry: IconPackManager.CustomIconEntry?,
+        drawableFactory: ZimDrawableFactory
+    ): FastBitmapDrawable? {
         return FastBitmapDrawable(icon)
     }
 
@@ -137,5 +141,3 @@ class UriIconPack(context: Context) : IconPack(context, "zimUriPack") {
         }
     }
 }
-
-

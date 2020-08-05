@@ -42,12 +42,12 @@ class Snackbar(context: Context, attributeSet: AttributeSet?) : AbstractFloating
         if (mIsOpen) {
             if (z) {
                 animate()
-                        .alpha(0f)
-                        .withLayer()
-                        .setStartDelay(0)
-                        .setDuration(180)
-                        .setInterpolator(Interpolators.ACCEL)
-                        .withEndAction(::onClosed).start()
+                    .alpha(0f)
+                    .withLayer()
+                    .setStartDelay(0)
+                    .setDuration(180)
+                    .setInterpolator(Interpolators.ACCEL)
+                    .withEndAction(::onClosed).start()
             } else {
                 animate().cancel()
                 onClosed()

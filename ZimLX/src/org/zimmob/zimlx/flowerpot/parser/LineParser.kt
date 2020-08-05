@@ -43,11 +43,12 @@ object LineParser {
                 Rule.CodeRule(ruleName, args.toTypedArray())
             }
             // Package
-            else -> if (!line[0].isLetter()) {
-                throw FlowerpotFormatException("Unknown rule identifier '${line[0]}' for version $version")
-            } else {
-                Rule.Package(line)
-            }
+            else ->
+                if (!line[0].isLetter()) {
+                    throw FlowerpotFormatException("Unknown rule identifier '${line[0]}' for version $version")
+                } else {
+                    Rule.Package(line)
+                }
         }.apply {
             if (version == null && !(this is Rule.None || this is Rule.Version)) {
                 throw FlowerpotFormatException("Version has to be specified before any other rules")

@@ -85,7 +85,6 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
     open class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         open fun bind(position: Int) {
-
         }
     }
 
@@ -127,7 +126,7 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
                 backupItem.isEnabled = true
                 title.text = metaLoader.meta?.name ?: context.getString(R.string.backup_invalid)
                 summary.text = metaLoader.meta?.localizedTimestamp
-                        ?: context.getString(R.string.backup_invalid)
+                    ?: context.getString(R.string.backup_invalid)
                 metaLoader.meta?.preview?.apply {
                     previewContainer.isVisible = true
                     preview.setImageBitmap(first)

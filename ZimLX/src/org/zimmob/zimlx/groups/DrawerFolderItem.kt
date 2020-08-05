@@ -34,4 +34,3 @@ class DrawerFolderItem(private val info: DrawerFolderInfo, private val index: In
         }
     }
 }
-

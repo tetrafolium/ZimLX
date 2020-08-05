@@ -23,8 +23,10 @@ import org.zimmob.zimlx.gestures.handlers.OpenOverviewGestureHandler
 
 class LongPressGesture(controller: GestureController) : Gesture(controller) {
 
-    private val handler by controller.createHandlerPref("pref_gesture_long_press",
-            OpenOverviewGestureHandler(controller.launcher, null))
+    private val handler by controller.createHandlerPref(
+        "pref_gesture_long_press",
+        OpenOverviewGestureHandler(controller.launcher, null)
+    )
     override val isEnabled = true
 
     override fun onEvent(): Boolean {

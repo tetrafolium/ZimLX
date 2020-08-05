@@ -124,8 +124,8 @@ class ARGBColorResolver(config: Config) : ColorEngine.ColorResolver(config) {
     override fun getDisplayName() = "#${String.format("%07X", color.toLong() and 0xFFFFFFFF)}"
 }
 
-abstract class WallpaperColorResolver(config: Config)
-    : ColorEngine.ColorResolver(config), WallpaperColorInfo.OnChangeListener {
+abstract class WallpaperColorResolver(config: Config) :
+    ColorEngine.ColorResolver(config), WallpaperColorInfo.OnChangeListener {
 
     protected val colorInfo = WallpaperColorInfo.getInstance(engine.context) as WallpaperColorInfo
 
@@ -144,9 +144,8 @@ abstract class WallpaperColorResolver(config: Config)
     }
 }
 
-
 abstract class ThemeAttributeColorResolver(config: Config) :
-        ColorEngine.ColorResolver(config) {
+    ColorEngine.ColorResolver(config) {
 
     protected abstract val colorAttr: Int
     override val themeAware = true

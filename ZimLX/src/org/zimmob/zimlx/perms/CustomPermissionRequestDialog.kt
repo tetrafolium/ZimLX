@@ -49,27 +49,36 @@ class CustomPermissionRequestDialog private constructor(private val context: Con
             return
         }
         SHOWING[key] = this
-        val themedContext = ThemedContextProvider(context.zimApp.activityHandler.foregroundActivity
-                ?: context, null, ThemeOverride.Settings()).get()
+        val themedContext = ThemedContextProvider(
+            context.zimApp.activityHandler.foregroundActivity
+                ?: context,
+            null, ThemeOverride.Settings()
+        ).get()
         AlertDialog.Builder(themedContext, ThemeOverride.AlertDialog().getTheme(context))
-                .setView(DialogView(context, string, icon, explanation))
-                .setIcon(icon)
-                .setPositiveButton(context.getString(R.string.allow).toUpperCase(), DialogInterface.OnClickListener { _, _ ->
+            .setView(DialogView(context, string, icon, explanation))
+            .setIcon(icon)
+            .setPositiveButton(
+                context.getString(R.string.allow).toUpperCase(),
+                DialogInterface.OnClickListener { _, _ ->
                     SHOWING.remove(key)
                     listeners.forEach { it(true) }
-                })
-                .setNegativeButton(context.getString(R.string.deny).toUpperCase(), DialogInterface.OnClickListener { _, _ ->
+                }
+            )
+            .setNegativeButton(
+                context.getString(R.string.deny).toUpperCase(),
+                DialogInterface.OnClickListener { _, _ ->
                     SHOWING.remove(key)
                     listeners.forEach { it(false) }
-                })
-                .setOnDismissListener {
-                    SHOWING.remove(key)
                 }
-                .create()
-                .apply {
-                    applyAccent()
-                    show()
-                }
+            )
+            .setOnDismissListener {
+                SHOWING.remove(key)
+            }
+            .create()
+            .apply {
+                applyAccent()
+                show()
+            }
     }
 
     companion object {

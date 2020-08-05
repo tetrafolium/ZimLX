@@ -36,8 +36,8 @@ import org.zimmob.zimlx.preferences.DrawerTabEditBottomSheet
 import org.zimmob.zimlx.tintDrawable
 import org.zimmob.zimlx.zimPrefs
 
-abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : AppGroups.Group>(val context: Context)
-    : RecyclerView.Adapter<AppGroupsAdapter.Holder>() {
+abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : AppGroups.Group>(val context: Context) :
+    RecyclerView.Adapter<AppGroupsAdapter.Holder>() {
 
     private var saved = true
 
@@ -246,7 +246,6 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
         }
     }
 

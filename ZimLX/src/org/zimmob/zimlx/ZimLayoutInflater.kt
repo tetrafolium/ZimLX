@@ -39,9 +39,13 @@ class ZimLayoutInflater(original: LayoutInflater, newContext: Context) : LayoutI
 
             private fun onCreateViewImpl(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {
                 if (name == "android.support.v7.widget.DialogTitle") {
-                    return (Class.forName(name).getConstructor(Context::class.java,
-                            AttributeSet::class.java)
-                            .newInstance(context, attrs) as TextView)
+                    return (
+                        Class.forName(name).getConstructor(
+                            Context::class.java,
+                            AttributeSet::class.java
+                        )
+                            .newInstance(context, attrs) as TextView
+                        )
                 }
                 return delegate.createView(parent, name, context, attrs)
             }
@@ -49,7 +53,6 @@ class ZimLayoutInflater(original: LayoutInflater, newContext: Context) : LayoutI
             override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
                 return onCreateView(null, name, context, attrs)
             }
-
         }
     }
 
@@ -59,7 +62,7 @@ class ZimLayoutInflater(original: LayoutInflater, newContext: Context) : LayoutI
 
     private fun onViewCreated(view: View, attrs: AttributeSet?) {
         if (view is TextView) {
-            //fontManager.loadCustomFont(view, attrs)
+            // fontManager.loadCustomFont(view, attrs)
         }
     }
 
@@ -83,7 +86,6 @@ class ZimLayoutInflater(original: LayoutInflater, newContext: Context) : LayoutI
                 // In this case we want to let the base class take a crack
                 // at it.
             }
-
         }
 
         return super.onCreateView(name, attrs)
@@ -97,7 +99,6 @@ class ZimLayoutInflater(original: LayoutInflater, newContext: Context) : LayoutI
 
     private fun hookInflate(view: View) {
         if (view is TextView) {
-
         }
     }
 

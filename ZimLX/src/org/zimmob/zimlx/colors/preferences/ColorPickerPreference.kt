@@ -26,8 +26,8 @@ import com.android.launcher3.R
 import me.priyesh.chroma.ColorMode
 import org.zimmob.zimlx.colors.ColorEngine
 
-open class ColorPickerPreference(context: Context, attrs: AttributeSet?)
-    : Preference(context, attrs), ColorEngine.OnColorChangeListener {
+open class ColorPickerPreference(context: Context, attrs: AttributeSet?) :
+    Preference(context, attrs), ColorEngine.OnColorChangeListener {
 
     private val engine = ColorEngine.getInstance(context)
     private val colorMode: ColorMode
@@ -79,4 +79,3 @@ open class ColorPickerPreference(context: Context, attrs: AttributeSet?)
 }
 
 internal fun Array<String>.mapToResolvers(engine: ColorEngine) = map { engine.createColorResolver("PickerPreference", it) }.filter { Color.alpha(it.resolveColor()) > 0 }
-

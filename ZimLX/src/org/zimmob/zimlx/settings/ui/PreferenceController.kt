@@ -47,7 +47,7 @@ open class PreferenceController(val context: Context) {
             }
             return try {
                 Class.forName(controllerClass!!).getConstructor(Context::class.java)
-                        .newInstance(context) as PreferenceController
+                    .newInstance(context) as PreferenceController
             } catch (t: Throwable) {
                 null
             }

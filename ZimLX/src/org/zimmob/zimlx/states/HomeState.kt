@@ -26,7 +26,7 @@ import org.zimmob.zimlx.util.SingletonHolder
 import org.zimmob.zimlx.zimPrefs
 
 open class HomeState(id: Int, containerType: Int, transitionDuration: Int, flags: Int) :
-        LauncherState(id, containerType, transitionDuration, flags) {
+    LauncherState(id, containerType, transitionDuration, flags) {
 
     override fun getScrimProgress(launcher: Launcher): Float {
         if (!launcher.zimPrefs.dockGradientStyle) {

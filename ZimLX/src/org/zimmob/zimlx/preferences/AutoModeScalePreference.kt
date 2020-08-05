@@ -25,7 +25,7 @@ import androidx.annotation.Keep
 
 @Keep
 class AutoModeScalePreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        AutoModeSeekbarPreference(context, attrs, defStyleAttr) {
+    AutoModeSeekbarPreference(context, attrs, defStyleAttr) {
 
     override fun updateDisplayedValue() {
         super.updateDisplayedValue()

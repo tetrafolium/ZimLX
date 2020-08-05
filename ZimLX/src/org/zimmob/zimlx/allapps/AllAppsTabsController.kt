@@ -37,11 +37,13 @@ class AllAppsTabsController(val tabs: AllAppsTabs, private val container: AllApp
 
     fun createHolders(): AdapterHolders {
         while (holders.size < tabsCount) {
-            holders.add(container.createHolder(false).apply {
-                padding.bottom = bottomPadding
-                padding.left = horizontalPadding
-                padding.right = horizontalPadding
-            })
+            holders.add(
+                container.createHolder(false).apply {
+                    padding.bottom = bottomPadding
+                    padding.left = horizontalPadding
+                    padding.right = horizontalPadding
+                }
+            )
         }
         return holders.toTypedArray()
     }

@@ -24,7 +24,7 @@ import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceDataContainer
 
 class SmartspacePixelBridge(controller: ZimSmartspaceController) :
-        ZimSmartspaceController.DataProvider(controller), ISmartspace, Runnable {
+    ZimSmartspaceController.DataProvider(controller), ISmartspace, Runnable {
 
     private val smartspaceController = SmartspaceController.get(controller.context)
     private val handler = Handler()

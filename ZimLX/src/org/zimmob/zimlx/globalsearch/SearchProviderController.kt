@@ -88,27 +88,27 @@ class SearchProviderController(private val context: Context) {
 
     companion object : SingletonHolder<SearchProviderController, Context>(ensureOnMainThread(useApplicationContext(::SearchProviderController))) {
         fun getSearchProviders(context: Context) = listOf(
-                AppSearchSearchProvider(context),
-                GoogleSearchProvider(context),
-                // TODO: fall back to this if google is not available per default
-                GoogleWebSearchProvider(context),
-                SFinderSearchProvider(context),
-                GoogleGoSearchProvider(context),
-                FirefoxSearchProvider(context),
-                DuckDuckGoSearchProvider(context),
-                DDGWebSearchProvider(context),
-                BingSearchProvider(context),
-                BingWebSearchProvider(context),
-                BaiduSearchProvider(context),
-                BaiduWebSearchProvider(context),
-                YandexSearchProvider(context),
-                YandexWebSearchProvider(context),
-                QwantSearchProvider(context),
-                QwantWebSearchProvider(context),
-                SearchLiteSearchProvider(context),
-                CoolSearchSearchProvider(context),
-                EdgeSearchProvider(context),
-                YahooWebSearchProvider(context)
+            AppSearchSearchProvider(context),
+            GoogleSearchProvider(context),
+            // TODO: fall back to this if google is not available per default
+            GoogleWebSearchProvider(context),
+            SFinderSearchProvider(context),
+            GoogleGoSearchProvider(context),
+            FirefoxSearchProvider(context),
+            DuckDuckGoSearchProvider(context),
+            DDGWebSearchProvider(context),
+            BingSearchProvider(context),
+            BingWebSearchProvider(context),
+            BaiduSearchProvider(context),
+            BaiduWebSearchProvider(context),
+            YandexSearchProvider(context),
+            YandexWebSearchProvider(context),
+            QwantSearchProvider(context),
+            QwantWebSearchProvider(context),
+            SearchLiteSearchProvider(context),
+            CoolSearchSearchProvider(context),
+            EdgeSearchProvider(context),
+            YahooWebSearchProvider(context)
         ).filter { it.isAvailable }
     }
 }

@@ -28,7 +28,7 @@ import org.zimmob.zimlx.util.Temperature
 
 @Keep
 class PEWeatherDataProvider(controller: ZimSmartspaceController) :
-        ZimSmartspaceController.PeriodicDataProvider(controller) {
+    ZimSmartspaceController.PeriodicDataProvider(controller) {
 
     private val contentResolver = context.contentResolver
 
@@ -47,8 +47,10 @@ class PEWeatherDataProvider(controller: ZimSmartspaceController) :
                 if (status == 0) {
                     val conditions = cursor.getString(1)
                     val temperature = cursor.getInt(2)
-                    return ZimSmartspaceController.WeatherData(getConditionIcon(conditions),
-                            Temperature(temperature, Temperature.Unit.Celsius), "")
+                    return ZimSmartspaceController.WeatherData(
+                        getConditionIcon(conditions),
+                        Temperature(temperature, Temperature.Unit.Celsius), ""
+                    )
                 }
             }
         }
@@ -97,7 +99,7 @@ class PEWeatherDataProvider(controller: ZimSmartspaceController) :
 
         fun isAvailable(context: Context): Boolean {
             val providerInfo = context.packageManager.resolveContentProvider(authority, 0)
-                    ?: return false
+                ?: return false
             return ContextCompat.checkSelfPermission(context, providerInfo.readPermission) == PackageManager.PERMISSION_GRANTED
         }
     }

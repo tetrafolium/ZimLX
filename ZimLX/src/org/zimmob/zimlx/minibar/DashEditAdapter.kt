@@ -97,8 +97,10 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
             TYPE_HEADER -> createHolder(parent, R.layout.dash_text_item, ::HeaderHolder)
             TYPE_DASH_ITEM -> createHolder(parent, R.layout.dash_dialog_item, ::DashItemHolder)
             TYPE_DIVIDER -> createHolder(parent, R.layout.dash_divider_item, ::DividerHolder)
-            else -> throw IllegalArgumentException("type must be either TYPE_TEXT, " +
-                    "TYPE_DASH_ITEM, TYPE_DIVIDER or TYPE_ENABLE")
+            else -> throw IllegalArgumentException(
+                "type must be either TYPE_TEXT, " +
+                    "TYPE_DASH_ITEM, TYPE_DIVIDER or TYPE_ENABLE"
+            )
         }
     }
 
@@ -123,7 +125,6 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
                 } else if (item.info.viewType == VIEW_TYPE_DASH_APP) {
                     items.add(item.info.component)
                 }
-
             } else if (item is DividerItem)
                 break
             iterator.remove()
@@ -135,7 +136,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
     private fun fillItems() {
         enabledItems.clear()
         enabledItems.addAll(allItems)
-        //Fill Adapter
+        // Fill Adapter
         adapterItems.clear()
         adapterItems.add(EnableItem())
         adapterItems.add(HeaderItem())
@@ -157,9 +158,9 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         while (iterator.hasNext()) {
             val item = iterator.next()
             if (item.info.title == s) {
-                //if(item.type== TYPE_DASH_ITEM){
+                // if(item.type== TYPE_DASH_ITEM){
                 iterator.remove()
-                //}
+                // }
 
                 return item
             }
@@ -213,7 +214,6 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
     abstract class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         open fun bind(item: Item) {
-
         }
     }
 
@@ -225,9 +225,10 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
             super.bind(item)
             val context = Launcher.mContext
             val states = arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf(android.R.attr.state_checked), intArrayOf())
-            val colors = intArrayOf(androidx.preference.R.color.switch_thumb_normal_material_light, //Normal
-                    prefs.accentColor, //checked
-                    androidx.preference.R.color.switch_thumb_disabled_material_light//Disabled
+            val colors = intArrayOf(
+                androidx.preference.R.color.switch_thumb_normal_material_light, // Normal
+                prefs.accentColor, // checked
+                androidx.preference.R.color.switch_thumb_disabled_material_light // Disabled
             )
             val thstateList = ColorStateList(states, colors)
             CompoundButtonCompat.setButtonTintList(switchEnable, thstateList)
@@ -240,7 +241,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
                 buttonView.setText(if (isChecked) R.string.on else R.string.off)
                 prefs.setMinibarEnable(isChecked)
                 Launcher.getLauncher(context).drawerLayout
-                        .setDrawerLockMode(if (isChecked) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                    .setDrawerLockMode(if (isChecked) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
             }
         }
     }
@@ -260,7 +261,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         private val dragHandle: View = itemView.findViewById(R.id.drag_handle)
         private val dashItem
             get() = adapterItems[adapterPosition] as? CustomDashItem
-                    ?: throw IllegalArgumentException("item must be DashItem")
+                ?: throw IllegalArgumentException("item must be DashItem")
 
         init {
             itemView.setOnClickListener(this)
@@ -269,7 +270,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
 
         override fun bind(item: Item) {
             val packDash = item as? CustomDashItem
-                    ?: throw IllegalArgumentException("item must be CustomDashItem")
+                ?: throw IllegalArgumentException("item must be CustomDashItem")
             val drawable = itemView.context.resources.getDrawable(packDash.info.icon, null)
             icon.setImageDrawable(drawable)
             title.text = packDash.info.title
@@ -301,7 +302,6 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
             }
             return false
         }
-
     }
 
     inner class DividerHolder(itemView: View) : Holder(itemView) {
@@ -342,7 +342,6 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
         }
     }
 

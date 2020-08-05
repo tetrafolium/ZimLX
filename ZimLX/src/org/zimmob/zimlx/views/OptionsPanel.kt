@@ -15,7 +15,6 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 package org.zimmob.zimlx.views
 
 import android.content.Context
@@ -34,8 +33,11 @@ import org.zimmob.zimlx.forEachChild
 import org.zimmob.zimlx.isVisible
 import org.zimmob.zimlx.zimPrefs
 
-class OptionsPanel(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs),
-        Insettable, View.OnClickListener, ZimPreferences.OnPreferenceChangeListener {
+class OptionsPanel(context: Context, attrs: AttributeSet) :
+    LinearLayout(context, attrs),
+    Insettable,
+    View.OnClickListener,
+    ZimPreferences.OnPreferenceChangeListener {
 
     private val launcher = Launcher.getLauncher(context)
 

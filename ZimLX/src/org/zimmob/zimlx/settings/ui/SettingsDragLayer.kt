@@ -87,9 +87,11 @@ class SettingsDragLayer(context: Context, attrs: AttributeSet?) : InsettableFram
         mTmpXY[1] = 0
         val scale = getDescendantCoordRelativeToSelf(descendant, mTmpXY)
 
-        r.set(mTmpXY[0], mTmpXY[1],
-                (mTmpXY[0] + scale * descendant.measuredWidth).toInt(),
-                (mTmpXY[1] + scale * descendant.measuredHeight).toInt())
+        r.set(
+            mTmpXY[0], mTmpXY[1],
+            (mTmpXY[0] + scale * descendant.measuredWidth).toInt(),
+            (mTmpXY[1] + scale * descendant.measuredHeight).toInt()
+        )
         return scale
     }
 
@@ -97,9 +99,14 @@ class SettingsDragLayer(context: Context, attrs: AttributeSet?) : InsettableFram
         return getDescendantCoordRelativeToSelf(descendant, coord, false)
     }
 
-    private fun getDescendantCoordRelativeToSelf(descendant: View, coord: IntArray,
-                                                 includeRootScroll: Boolean): Float {
-        return Utilities.getDescendantCoordRelativeToAncestor(descendant, this,
-                coord, includeRootScroll)
+    private fun getDescendantCoordRelativeToSelf(
+        descendant: View,
+        coord: IntArray,
+        includeRootScroll: Boolean
+    ): Float {
+        return Utilities.getDescendantCoordRelativeToAncestor(
+            descendant, this,
+            coord, includeRootScroll
+        )
     }
 }

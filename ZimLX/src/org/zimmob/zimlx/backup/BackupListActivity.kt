@@ -46,15 +46,23 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
 
     private fun loadLocalBackups() {
         if (checkSelfPermission(this, READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                            READ_EXTERNAL_STORAGE)) {
-                Snackbar.make(findViewById(android.R.id.content), R.string.read_external_storage_required,
-                        Snackbar.LENGTH_SHORT).show()
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                READ_EXTERNAL_STORAGE
+            )
+            ) {
+                Snackbar.make(
+                    findViewById(android.R.id.content), R.string.read_external_storage_required,
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
-            ActivityCompat.requestPermissions(this,
-                    arrayOf(READ_EXTERNAL_STORAGE),
-                    permissionRequestReadExternalStorage)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(READ_EXTERNAL_STORAGE),
+                permissionRequestReadExternalStorage
+            )
         } else {
             adapter.setData(ZimBackup.listLocalBackups(this))
         }
@@ -68,7 +76,6 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
                 }
             }
             else -> {
-
             }
         }
     }
@@ -86,21 +93,25 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
     }
 
     override fun openRestore(position: Int) {
-        startActivity(Intent(this, RestoreBackupActivity::class.java).apply {
-            putExtra(RestoreBackupActivity.EXTRA_URI, adapter[position].uri.toString())
-        })
+        startActivity(
+            Intent(this, RestoreBackupActivity::class.java).apply {
+                putExtra(RestoreBackupActivity.EXTRA_URI, adapter[position].uri.toString())
+            }
+        )
     }
 
     override fun openEdit(position: Int) {
         currentPosition = position
         val visibility = if (adapter[position].meta != null) View.VISIBLE else View.GONE
 
-        val bottomSheetView = layoutInflater.inflate(R.layout.backup_bottom_sheet,
-                findViewById(android.R.id.content), false)
+        val bottomSheetView = layoutInflater.inflate(
+            R.layout.backup_bottom_sheet,
+            findViewById(android.R.id.content), false
+        )
         bottomSheetView.findViewById<TextView>(android.R.id.title).text =
-                adapter[position].meta?.name ?: getString(R.string.backup_invalid)
+            adapter[position].meta?.name ?: getString(R.string.backup_invalid)
         bottomSheetView.findViewById<TextView>(android.R.id.summary).text =
-                adapter[position].meta?.localizedTimestamp ?: getString(R.string.backup_invalid)
+            adapter[position].meta?.localizedTimestamp ?: getString(R.string.backup_invalid)
 
         val restoreBackup = bottomSheetView.findViewById<View>(R.id.action_restore_backup)
         val shareBackup = bottomSheetView.findViewById<View>(R.id.action_share_backup)
@@ -162,8 +173,10 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
         } else if (requestCode == 2 && resultCode == AppCompatActivity.RESULT_OK) {
             if (resultData != null) {
                 val takeFlags = intent.flags and
-                        (Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                    (
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                        )
                 contentResolver.takePersistableUriPermission(resultData.data!!, takeFlags)
                 val uri = resultData.data
                 if (!Utilities.getZimPrefs(this).recentBackups.contains(uri!!)) {

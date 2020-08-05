@@ -25,8 +25,8 @@ import org.zimmob.zimlx.ZimPreferences
 import org.zimmob.zimlx.smartspace.*
 import org.zimmob.zimlx.util.buildEntries
 
-class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
-    : ListPreference(context, attrs), ZimPreferences.OnPreferenceChangeListener {
+class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?) :
+    ListPreference(context, attrs), ZimPreferences.OnPreferenceChangeListener {
 
     private val prefs = Utilities.getZimPrefs(context)
     private val forWeather by lazy { key == "pref_smartspace_widget_provider" }
@@ -54,8 +54,8 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
             list.add(SmartspaceDataWidget::class.java.name)
         if (FeedBridge.getInstance(context).resolveBridge()?.supportsSmartspace == true)
             list.add(SmartspacePixelBridge::class.java.name)
-        //list.add(AccuWeatherDataProvider::class.java.name)
-        //list.add(OWMWeatherDataProvider::class.java.name)
+        // list.add(AccuWeatherDataProvider::class.java.name)
+        // list.add(OWMWeatherDataProvider::class.java.name)
         if (PEWeatherDataProvider.isAvailable(context))
             list.add(PEWeatherDataProvider::class.java.name)
         if (OnePlusWeatherDataProvider.isAvailable(context))

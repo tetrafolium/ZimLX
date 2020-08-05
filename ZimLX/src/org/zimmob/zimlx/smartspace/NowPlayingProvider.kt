@@ -30,7 +30,7 @@ import org.zimmob.zimlx.toBitmap
 
 @Keep
 class NowPlayingProvider(controller: ZimSmartspaceController) :
-        ZimSmartspaceController.NotificationBasedDataProvider(controller) {
+    ZimSmartspaceController.NotificationBasedDataProvider(controller) {
 
     private val media = MediaListener(context, this::reload, Handler(LauncherModel.getUiWorkerLooper()))
     private val defaultIcon = context.getDrawable(R.drawable.ic_music_note)!!.toBitmap()!!
@@ -62,9 +62,13 @@ class NowPlayingProvider(controller: ZimSmartspaceController) :
         return if (intent != null) {
             CardData(icon, lines, intent, true)
         } else {
-            CardData(icon, lines, View.OnClickListener {
-                media.toggle(true)
-            }, true)
+            CardData(
+                icon, lines,
+                View.OnClickListener {
+                    media.toggle(true)
+                },
+                true
+            )
         }
     }
 

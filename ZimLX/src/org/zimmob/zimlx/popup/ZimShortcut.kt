@@ -38,13 +38,13 @@ import java.net.URISyntaxException
 class ZimShortcut(private val context: Context) {
 
     private val shortcuts = listOf(
-            ShortcutEntry("dash", DashAdd(), false),
-            ShortcutEntry("edit", Edit(), true),
-            ShortcutEntry("info", SystemShortcut.AppInfo(), true),
-            ShortcutEntry("widgets", SystemShortcut.Widgets(), true),
-            ShortcutEntry("install", SystemShortcut.Install(), true),
-            ShortcutEntry("remove", Remove(), false),
-            ShortcutEntry("uninstall", Uninstall(), false)
+        ShortcutEntry("dash", DashAdd(), false),
+        ShortcutEntry("edit", Edit(), true),
+        ShortcutEntry("info", SystemShortcut.AppInfo(), true),
+        ShortcutEntry("widgets", SystemShortcut.Widgets(), true),
+        ShortcutEntry("install", SystemShortcut.Install(), true),
+        ShortcutEntry("remove", Remove(), false),
+        ShortcutEntry("uninstall", Uninstall(), false)
     )
 
     inner class ShortcutEntry(key: String, val shortcut: SystemShortcut<*>, enabled: Boolean) {
@@ -68,8 +68,8 @@ class ZimShortcut(private val context: Context) {
                     AbstractFloatingView.closeAllOpenViews(launcher)
                     try {
                         val i = Intent.parseUri(launcher.getString(R.string.delete_package_intent), 0)
-                                .setData(Uri.fromParts("package", cn.packageName, cn.className))
-                                .putExtra(Intent.EXTRA_USER, itemInfo.user)
+                            .setData(Uri.fromParts("package", cn.packageName, cn.className))
+                            .putExtra(Intent.EXTRA_USER, itemInfo.user)
                         launcher.startActivity(i)
                     } catch (e: URISyntaxException) {
                     }
@@ -140,9 +140,8 @@ class ZimShortcut(private val context: Context) {
         }
 
         private fun validateDashItems(itemInfo: ItemInfo) {
-            //TODO VALIDAR DUPLICADOS Y ELIMINADOS
+            // TODO VALIDAR DUPLICADOS Y ELIMINADOS
         }
-
     }
 
     companion object : ZimSingletonHolder<ZimShortcut>(::ZimShortcut)
