@@ -21,44 +21,39 @@ import android.graphics.Bitmap;
 
 /**
  * This class represents the model for a discovered app via app discovery.
- * It holds all information for one result retrieved from an app discovery service.
+ * It holds all information for one result retrieved from an app discovery
+ * service.
  */
 public class AppDiscoveryItem {
 
-    public final String packageName;
-    public final boolean isInstantApp;
-    public final boolean isRecent;
-    public final float starRating;
-    public final long reviewCount;
-    public final Intent launchIntent;
-    public final Intent installIntent;
-    public final CharSequence title;
-    public final String publisher;
-    public final String price;
-    public final Bitmap bitmap;
+  public final String packageName;
+  public final boolean isInstantApp;
+  public final boolean isRecent;
+  public final float starRating;
+  public final long reviewCount;
+  public final Intent launchIntent;
+  public final Intent installIntent;
+  public final CharSequence title;
+  public final String publisher;
+  public final String price;
+  public final Bitmap bitmap;
 
-    public AppDiscoveryItem(final String packageName,
-                            final boolean isInstantApp,
-                            final boolean isRecent,
-                            final float starRating,
-                            final long reviewCount,
-                            final CharSequence title,
-                            final String publisher,
-                            final Bitmap bitmap,
-                            final String price,
-                            final Intent launchIntent,
-                            final Intent installIntent) {
-        this.packageName = packageName;
-        this.isInstantApp = isInstantApp;
-        this.isRecent = isRecent;
-        this.starRating = starRating;
-        this.reviewCount = reviewCount;
-        this.launchIntent = launchIntent;
-        this.installIntent = installIntent;
-        this.title = title;
-        this.publisher = publisher;
-        this.price = price;
-        this.bitmap = bitmap;
-    }
-
+  public AppDiscoveryItem(final String packageName, final boolean isInstantApp,
+                          final boolean isRecent, final float starRating,
+                          final long reviewCount, final CharSequence title,
+                          final String publisher, final Bitmap bitmap,
+                          final String price, final Intent launchIntent,
+                          final Intent installIntent) {
+    this.packageName = packageName;
+    this.isInstantApp = isInstantApp;
+    this.isRecent = isRecent;
+    this.starRating = starRating;
+    this.reviewCount = reviewCount;
+    this.launchIntent = launchIntent;
+    this.installIntent = installIntent;
+    this.title = title;
+    this.publisher = publisher;
+    this.price = price;
+    this.bitmap = bitmap;
+  }
 }

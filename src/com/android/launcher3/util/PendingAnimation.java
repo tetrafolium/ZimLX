@@ -18,46 +18,45 @@ package com.android.launcher3.util;
 import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.os.Build;
-
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
 /**
  * Utility class to keep track of a running animation.
  * <p>
- * This class allows attaching end callbacks to an animation is intended to be used with
- * {@link com.android.launcher3.anim.AnimatorPlaybackController}, since in that case
- * AnimationListeners are not properly dispatched.
+ * This class allows attaching end callbacks to an animation is intended to be
+ * used with
+ * {@link com.android.launcher3.anim.AnimatorPlaybackController}, since in that
+ * case AnimationListeners are not properly dispatched.
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class PendingAnimation {
 
-    private final ArrayList<Consumer<OnEndListener>> mEndListeners = new ArrayList<>();
+  private final ArrayList<Consumer<OnEndListener>> mEndListeners =
+      new ArrayList<>();
 
-    public final AnimatorSet anim;
+  public final AnimatorSet anim;
 
-    public PendingAnimation(final AnimatorSet anim) {
-        this.anim = anim;
+  public PendingAnimation(final AnimatorSet anim) { this.anim = anim; }
+
+  public void finish(final boolean isSuccess, final int logAction) {
+    for (Consumer<OnEndListener> listeners : mEndListeners) {
+      listeners.accept(new OnEndListener(isSuccess, logAction));
     }
+    mEndListeners.clear();
+  }
 
-    public void finish(final boolean isSuccess, final int logAction) {
-        for (Consumer<OnEndListener> listeners : mEndListeners) {
-            listeners.accept(new OnEndListener(isSuccess, logAction));
-        }
-        mEndListeners.clear();
+  public void addEndListener(final Consumer<OnEndListener> listener) {
+    mEndListeners.add(listener);
+  }
+
+  public static class OnEndListener {
+    public boolean isSuccess;
+    public int logAction;
+
+    public OnEndListener(final boolean isSuccess, final int logAction) {
+      this.isSuccess = isSuccess;
+      this.logAction = logAction;
     }
-
-    public void addEndListener(final Consumer<OnEndListener> listener) {
-        mEndListeners.add(listener);
-    }
-
-    public static class OnEndListener {
-        public boolean isSuccess;
-        public int logAction;
-
-        public OnEndListener(final boolean isSuccess, final int logAction) {
-            this.isSuccess = isSuccess;
-            this.logAction = logAction;
-        }
-    }
+  }
 }

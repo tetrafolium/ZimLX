@@ -28,200 +28,221 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.PropertyResetListener;
 import com.android.launcher3.util.Themes;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
  * A {@link FrameLayout} that contains only icons of notifications.
- * If there are more than {@link #MAX_FOOTER_NOTIFICATIONS} icons, we add a "..." overflow.
+ * If there are more than {@link #MAX_FOOTER_NOTIFICATIONS} icons, we add a
+ * "..." overflow.
  */
 public class NotificationFooterLayout extends FrameLayout {
 
-    public interface IconAnimationEndListener {
-        void onIconAnimationEnd(NotificationInfo animatedNotification);
+  public interface IconAnimationEndListener {
+    void onIconAnimationEnd(NotificationInfo animatedNotification);
+  }
+
+  private static final int MAX_FOOTER_NOTIFICATIONS = 5;
+
+  private static final Rect sTempRect = new Rect();
+
+  private final List<NotificationInfo> mNotifications = new ArrayList<>();
+  private final List<NotificationInfo> mOverflowNotifications =
+      new ArrayList<>();
+  private final boolean mRtl;
+  private final int mBackgroundColor;
+
+  FrameLayout.LayoutParams mIconLayoutParams;
+  private View mOverflowEllipsis;
+  private LinearLayout mIconRow;
+  private NotificationItemView mContainer;
+
+  public NotificationFooterLayout(final Context context) {
+    this(context, null, 0);
+  }
+
+  public NotificationFooterLayout(final Context context,
+                                  final AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
+
+  public NotificationFooterLayout(final Context context,
+                                  final AttributeSet attrs,
+                                  final int defStyle) {
+    super(context, attrs, defStyle);
+
+    Resources res = getResources();
+    mRtl = Utilities.isRtl(res);
+
+    int iconSize =
+        res.getDimensionPixelSize(R.dimen.notification_footer_icon_size);
+    mIconLayoutParams = new LayoutParams(iconSize, iconSize);
+    mIconLayoutParams.gravity = Gravity.CENTER_VERTICAL;
+    // Compute margin start for each icon such that the icons between the first
+    // one and the ellipsis are evenly spaced out.
+    int paddingEnd =
+        res.getDimensionPixelSize(R.dimen.notification_footer_icon_row_padding);
+    int ellipsisSpace =
+        res.getDimensionPixelSize(R.dimen.horizontal_ellipsis_offset) +
+        res.getDimensionPixelSize(R.dimen.horizontal_ellipsis_size);
+    int footerWidth = res.getDimensionPixelSize(R.dimen.bg_popup_item_width);
+    int availableIconRowSpace = footerWidth - paddingEnd - ellipsisSpace -
+                                iconSize * MAX_FOOTER_NOTIFICATIONS;
+    mIconLayoutParams.setMarginStart(availableIconRowSpace /
+                                     MAX_FOOTER_NOTIFICATIONS);
+
+    mBackgroundColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
+  }
+
+  @Override
+  protected void onFinishInflate() {
+    super.onFinishInflate();
+    mOverflowEllipsis = findViewById(R.id.overflow);
+    mIconRow = findViewById(R.id.icon_row);
+  }
+
+  void setContainer(final NotificationItemView container) {
+    mContainer = container;
+  }
+
+  /**
+   * Keep track of the NotificationInfo, and then update the UI when
+   * {@link #commitNotificationInfos()} is called.
+   */
+  public void addNotificationInfo(final NotificationInfo notificationInfo) {
+    if (mNotifications.size() < MAX_FOOTER_NOTIFICATIONS) {
+      mNotifications.add(notificationInfo);
+    } else {
+      mOverflowNotifications.add(notificationInfo);
     }
+  }
 
-    private static final int MAX_FOOTER_NOTIFICATIONS = 5;
+  /**
+   * Adds icons and potentially overflow text for all of the NotificationInfo's
+   * added using {@link #addNotificationInfo(NotificationInfo)}.
+   */
+  public void commitNotificationInfos() {
+    mIconRow.removeAllViews();
 
-    private static final Rect sTempRect = new Rect();
-
-    private final List<NotificationInfo> mNotifications = new ArrayList<>();
-    private final List<NotificationInfo> mOverflowNotifications = new ArrayList<>();
-    private final boolean mRtl;
-    private final int mBackgroundColor;
-
-    FrameLayout.LayoutParams mIconLayoutParams;
-    private View mOverflowEllipsis;
-    private LinearLayout mIconRow;
-    private NotificationItemView mContainer;
-
-    public NotificationFooterLayout(final Context context) {
-        this(context, null, 0);
+    for (int i = 0; i < mNotifications.size(); i++) {
+      NotificationInfo info = mNotifications.get(i);
+      addNotificationIconForInfo(info);
     }
+    updateOverflowEllipsisVisibility();
+  }
 
-    public NotificationFooterLayout(final Context context, final AttributeSet attrs) {
-        this(context, attrs, 0);
+  private void updateOverflowEllipsisVisibility() {
+    mOverflowEllipsis.setVisibility(mOverflowNotifications.isEmpty() ? GONE
+                                                                     : VISIBLE);
+  }
+
+  /**
+   * Creates an icon for the given NotificationInfo, and adds it to the icon
+   * row.
+   * @return the icon view that was added
+   */
+  private View addNotificationIconForInfo(final NotificationInfo info) {
+    View icon = new View(getContext());
+    icon.setBackground(
+        info.getIconForBackground(getContext(), mBackgroundColor));
+    icon.setOnClickListener(info);
+    icon.setTag(info);
+    icon.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
+    mIconRow.addView(icon, 0, mIconLayoutParams);
+    return icon;
+  }
+
+  public void
+  animateFirstNotificationTo(final Rect toBounds,
+                             final IconAnimationEndListener callback) {
+    AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
+    final View firstNotification =
+        mIconRow.getChildAt(mIconRow.getChildCount() - 1);
+
+    Rect fromBounds = sTempRect;
+    firstNotification.getGlobalVisibleRect(fromBounds);
+    float scale = (float)toBounds.height() / fromBounds.height();
+    Animator moveAndScaleIcon = LauncherAnimUtils.ofPropertyValuesHolder(
+        firstNotification,
+        new PropertyListBuilder()
+            .scale(scale)
+            .translationY(toBounds.top - fromBounds.top +
+                          (fromBounds.height() * scale - fromBounds.height()) /
+                              2)
+            .build());
+    moveAndScaleIcon.addListener(new AnimatorListenerAdapter() {
+      @Override
+      public void onAnimationEnd(final Animator animation) {
+        callback.onIconAnimationEnd(
+            (NotificationInfo)firstNotification.getTag());
+        removeViewFromIconRow(firstNotification);
+      }
+    });
+    animation.play(moveAndScaleIcon);
+
+    // Shift all notifications (not the overflow) over to fill the gap.
+    int gapWidth = mIconLayoutParams.width + mIconLayoutParams.getMarginStart();
+    if (mRtl) {
+      gapWidth = -gapWidth;
     }
-
-    public NotificationFooterLayout(final Context context, final AttributeSet attrs, final int defStyle) {
-        super(context, attrs, defStyle);
-
-        Resources res = getResources();
-        mRtl = Utilities.isRtl(res);
-
-        int iconSize = res.getDimensionPixelSize(R.dimen.notification_footer_icon_size);
-        mIconLayoutParams = new LayoutParams(iconSize, iconSize);
-        mIconLayoutParams.gravity = Gravity.CENTER_VERTICAL;
-        // Compute margin start for each icon such that the icons between the first one
-        // and the ellipsis are evenly spaced out.
-        int paddingEnd = res.getDimensionPixelSize(R.dimen.notification_footer_icon_row_padding);
-        int ellipsisSpace = res.getDimensionPixelSize(R.dimen.horizontal_ellipsis_offset)
-                            + res.getDimensionPixelSize(R.dimen.horizontal_ellipsis_size);
-        int footerWidth = res.getDimensionPixelSize(R.dimen.bg_popup_item_width);
-        int availableIconRowSpace = footerWidth - paddingEnd - ellipsisSpace
-                                    - iconSize * MAX_FOOTER_NOTIFICATIONS;
-        mIconLayoutParams.setMarginStart(availableIconRowSpace / MAX_FOOTER_NOTIFICATIONS);
-
-        mBackgroundColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
+    if (!mOverflowNotifications.isEmpty()) {
+      NotificationInfo notification = mOverflowNotifications.remove(0);
+      mNotifications.add(notification);
+      View iconFromOverflow = addNotificationIconForInfo(notification);
+      animation.play(ObjectAnimator.ofFloat(iconFromOverflow, ALPHA, 0, 1));
     }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mOverflowEllipsis = findViewById(R.id.overflow);
-        mIconRow = findViewById(R.id.icon_row);
+    int numIcons =
+        mIconRow.getChildCount() - 1; // All children besides the one leaving.
+    // We have to reset the translation X to 0 when the new main notification
+    // is removed from the footer.
+    PropertyResetListener<View, Float> propertyResetListener =
+        new PropertyResetListener<>(TRANSLATION_X, 0f);
+    for (int i = 0; i < numIcons; i++) {
+      final View child = mIconRow.getChildAt(i);
+      Animator shiftChild =
+          ObjectAnimator.ofFloat(child, TRANSLATION_X, gapWidth);
+      shiftChild.addListener(propertyResetListener);
+      animation.play(shiftChild);
     }
+    animation.start();
+  }
 
-    void setContainer(final NotificationItemView container) {
-        mContainer = container;
+  private void removeViewFromIconRow(final View child) {
+    mIconRow.removeView(child);
+    mNotifications.remove(child.getTag());
+    updateOverflowEllipsisVisibility();
+    if (mIconRow.getChildCount() == 0) {
+      // There are no more icons in the footer, so hide it.
+      if (mContainer != null) {
+        mContainer.removeFooter();
+      }
     }
+  }
 
-    /**
-     * Keep track of the NotificationInfo, and then update the UI when
-     * {@link #commitNotificationInfos()} is called.
-     */
-    public void addNotificationInfo(final NotificationInfo notificationInfo) {
-        if (mNotifications.size() < MAX_FOOTER_NOTIFICATIONS) {
-            mNotifications.add(notificationInfo);
-        } else {
-            mOverflowNotifications.add(notificationInfo);
-        }
+  public void trimNotifications(final List<String> notifications) {
+    if (!isAttachedToWindow() || mIconRow.getChildCount() == 0) {
+      return;
     }
-
-    /**
-     * Adds icons and potentially overflow text for all of the NotificationInfo's
-     * added using {@link #addNotificationInfo(NotificationInfo)}.
-     */
-    public void commitNotificationInfos() {
-        mIconRow.removeAllViews();
-
-        for (int i = 0; i < mNotifications.size(); i++) {
-            NotificationInfo info = mNotifications.get(i);
-            addNotificationIconForInfo(info);
-        }
-        updateOverflowEllipsisVisibility();
+    Iterator<NotificationInfo> overflowIterator =
+        mOverflowNotifications.iterator();
+    while (overflowIterator.hasNext()) {
+      if (!notifications.contains(overflowIterator.next().notificationKey)) {
+        overflowIterator.remove();
+      }
     }
-
-    private void updateOverflowEllipsisVisibility() {
-        mOverflowEllipsis.setVisibility(mOverflowNotifications.isEmpty() ? GONE : VISIBLE);
+    for (int i = mIconRow.getChildCount() - 1; i >= 0; i--) {
+      View child = mIconRow.getChildAt(i);
+      NotificationInfo childInfo = (NotificationInfo)child.getTag();
+      if (!notifications.contains(childInfo.notificationKey)) {
+        removeViewFromIconRow(child);
+      }
     }
-
-    /**
-     * Creates an icon for the given NotificationInfo, and adds it to the icon row.
-     * @return the icon view that was added
-     */
-    private View addNotificationIconForInfo(final NotificationInfo info) {
-        View icon = new View(getContext());
-        icon.setBackground(info.getIconForBackground(getContext(), mBackgroundColor));
-        icon.setOnClickListener(info);
-        icon.setTag(info);
-        icon.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
-        mIconRow.addView(icon, 0, mIconLayoutParams);
-        return icon;
-    }
-
-    public void animateFirstNotificationTo(final Rect toBounds,
-                                           final IconAnimationEndListener callback) {
-        AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
-        final View firstNotification = mIconRow.getChildAt(mIconRow.getChildCount() - 1);
-
-        Rect fromBounds = sTempRect;
-        firstNotification.getGlobalVisibleRect(fromBounds);
-        float scale = (float) toBounds.height() / fromBounds.height();
-        Animator moveAndScaleIcon = LauncherAnimUtils.ofPropertyValuesHolder(firstNotification,
-                                    new PropertyListBuilder().scale(scale).translationY(toBounds.top - fromBounds.top
-                                            + (fromBounds.height() * scale - fromBounds.height()) / 2).build());
-        moveAndScaleIcon.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(final Animator animation) {
-                callback.onIconAnimationEnd((NotificationInfo) firstNotification.getTag());
-                removeViewFromIconRow(firstNotification);
-            }
-        });
-        animation.play(moveAndScaleIcon);
-
-        // Shift all notifications (not the overflow) over to fill the gap.
-        int gapWidth = mIconLayoutParams.width + mIconLayoutParams.getMarginStart();
-        if (mRtl) {
-            gapWidth = -gapWidth;
-        }
-        if (!mOverflowNotifications.isEmpty()) {
-            NotificationInfo notification = mOverflowNotifications.remove(0);
-            mNotifications.add(notification);
-            View iconFromOverflow = addNotificationIconForInfo(notification);
-            animation.play(ObjectAnimator.ofFloat(iconFromOverflow, ALPHA, 0, 1));
-        }
-        int numIcons = mIconRow.getChildCount() - 1; // All children besides the one leaving.
-        // We have to reset the translation X to 0 when the new main notification
-        // is removed from the footer.
-        PropertyResetListener<View, Float> propertyResetListener
-            = new PropertyResetListener<>(TRANSLATION_X, 0f);
-        for (int i = 0; i < numIcons; i++) {
-            final View child = mIconRow.getChildAt(i);
-            Animator shiftChild = ObjectAnimator.ofFloat(child, TRANSLATION_X, gapWidth);
-            shiftChild.addListener(propertyResetListener);
-            animation.play(shiftChild);
-        }
-        animation.start();
-    }
-
-    private void removeViewFromIconRow(final View child) {
-        mIconRow.removeView(child);
-        mNotifications.remove(child.getTag());
-        updateOverflowEllipsisVisibility();
-        if (mIconRow.getChildCount() == 0) {
-            // There are no more icons in the footer, so hide it.
-            if (mContainer != null) {
-                mContainer.removeFooter();
-            }
-        }
-    }
-
-    public void trimNotifications(final List<String> notifications) {
-        if (!isAttachedToWindow() || mIconRow.getChildCount() == 0) {
-            return;
-        }
-        Iterator<NotificationInfo> overflowIterator = mOverflowNotifications.iterator();
-        while (overflowIterator.hasNext()) {
-            if (!notifications.contains(overflowIterator.next().notificationKey)) {
-                overflowIterator.remove();
-            }
-        }
-        for (int i = mIconRow.getChildCount() - 1; i >= 0; i--) {
-            View child = mIconRow.getChildAt(i);
-            NotificationInfo childInfo = (NotificationInfo) child.getTag();
-            if (!notifications.contains(childInfo.notificationKey)) {
-                removeViewFromIconRow(child);
-            }
-        }
-    }
+  }
 }

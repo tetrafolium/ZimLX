@@ -20,33 +20,26 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Contains data related to a group of notifications, like the group summary key and the child keys.
+ * Contains data related to a group of notifications, like the group summary key
+ * and the child keys.
  */
 public class NotificationGroup {
-    private String mGroupSummaryKey;
-    private Set<String> mChildKeys;
+  private String mGroupSummaryKey;
+  private Set<String> mChildKeys;
 
-    public NotificationGroup() {
-        mChildKeys = new HashSet<>();
-    }
+  public NotificationGroup() { mChildKeys = new HashSet<>(); }
 
-    public void setGroupSummaryKey(final String groupSummaryKey) {
-        mGroupSummaryKey = groupSummaryKey;
-    }
+  public void setGroupSummaryKey(final String groupSummaryKey) {
+    mGroupSummaryKey = groupSummaryKey;
+  }
 
-    public String getGroupSummaryKey() {
-        return mGroupSummaryKey;
-    }
+  public String getGroupSummaryKey() { return mGroupSummaryKey; }
 
-    public void addChildKey(final String childKey) {
-        mChildKeys.add(childKey);
-    }
+  public void addChildKey(final String childKey) { mChildKeys.add(childKey); }
 
-    public void removeChildKey(final String childKey) {
-        mChildKeys.remove(childKey);
-    }
+  public void removeChildKey(final String childKey) {
+    mChildKeys.remove(childKey);
+  }
 
-    public boolean isEmpty() {
-        return mChildKeys.isEmpty();
-    }
+  public boolean isEmpty() { return mChildKeys.isEmpty(); }
 }

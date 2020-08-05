@@ -18,50 +18,52 @@ package com.android.launcher3.notification;
 
 import android.app.Notification;
 import android.service.notification.StatusBarNotification;
-
+import androidx.annotation.NonNull;
 import com.android.launcher3.Utilities;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-
 /**
- * The key data associated with the notification, used to determine what to include
- * in badges and dummy popup views before they are populated.
+ * The key data associated with the notification, used to determine what to
+ * include in badges and dummy popup views before they are populated.
  *
  * @see NotificationInfo for the full data used when populating the dummy views.
  */
 public class NotificationKeyData {
-    public final String notificationKey;
-    public final String shortcutId;
-    public int count;
+  public final String notificationKey;
+  public final String shortcutId;
+  public int count;
 
-    private NotificationKeyData(final String notificationKey, final String shortcutId, final int count) {
-        this.notificationKey = notificationKey;
-        this.shortcutId = shortcutId;
-        this.count = Math.max(1, count);
-    }
+  private NotificationKeyData(final String notificationKey,
+                              final String shortcutId, final int count) {
+    this.notificationKey = notificationKey;
+    this.shortcutId = shortcutId;
+    this.count = Math.max(1, count);
+  }
 
-    public static NotificationKeyData fromNotification(final StatusBarNotification sbn) {
-        Notification notif = sbn.getNotification();
-        return new NotificationKeyData(sbn.getKey(), Utilities.ATLEAST_OREO ? notif.getShortcutId() : null, notif.number);
-    }
+  public static NotificationKeyData
+  fromNotification(final StatusBarNotification sbn) {
+    Notification notif = sbn.getNotification();
+    return new NotificationKeyData(
+        sbn.getKey(), Utilities.ATLEAST_OREO ? notif.getShortcutId() : null,
+        notif.number);
+  }
 
-    public static List<String> extractKeysOnly(final @NonNull List<NotificationKeyData> notificationKeys) {
-        List<String> keysOnly = new ArrayList<>(notificationKeys.size());
-        for (NotificationKeyData notificationKeyData : notificationKeys) {
-            keysOnly.add(notificationKeyData.notificationKey);
-        }
-        return keysOnly;
+  public static List<String>
+  extractKeysOnly(final @NonNull List<NotificationKeyData> notificationKeys) {
+    List<String> keysOnly = new ArrayList<>(notificationKeys.size());
+    for (NotificationKeyData notificationKeyData : notificationKeys) {
+      keysOnly.add(notificationKeyData.notificationKey);
     }
+    return keysOnly;
+  }
 
-    @Override
-    public boolean equals(final Object obj) {
-        if (!(obj instanceof NotificationKeyData)) {
-            return false;
-        }
-        // Only compare the keys.
-        return ((NotificationKeyData) obj).notificationKey.equals(notificationKey);
+  @Override
+  public boolean equals(final Object obj) {
+    if (!(obj instanceof NotificationKeyData)) {
+      return false;
     }
+    // Only compare the keys.
+    return ((NotificationKeyData)obj).notificationKey.equals(notificationKey);
+  }
 }

@@ -23,15 +23,16 @@ import android.view.OrientationEventListener;
  */
 public class DisplayRotationListener extends OrientationEventListener {
 
-    private final Runnable mCallback;
+  private final Runnable mCallback;
 
-    public DisplayRotationListener(final Context context, final Runnable callback) {
-        super(context);
-        mCallback = callback;
-    }
+  public DisplayRotationListener(final Context context,
+                                 final Runnable callback) {
+    super(context);
+    mCallback = callback;
+  }
 
-    @Override
-    public void onOrientationChanged(final int i) {
-        mCallback.run();
-    }
+  @Override
+  public void onOrientationChanged(final int i) {
+    mCallback.run();
+  }
 }

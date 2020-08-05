@@ -18,7 +18,6 @@ package com.android.launcher3.util;
 
 import android.os.Looper;
 import android.os.MessageQueue;
-
 import com.android.launcher3.Utilities;
 
 /**
@@ -26,46 +25,47 @@ import com.android.launcher3.Utilities;
  */
 public class LooperIdleLock implements MessageQueue.IdleHandler, Runnable {
 
-    private final Object mLock;
+  private final Object mLock;
 
-    private boolean mIsLocked;
+  private boolean mIsLocked;
 
-    public LooperIdleLock(final Object lock, final Looper looper) {
-        mLock = lock;
-        mIsLocked = true;
-        if (Utilities.ATLEAST_MARSHMALLOW) {
-            looper.getQueue().addIdleHandler(this);
-        } else {
-            // Looper.myQueue() only gives the current queue. Move the execution to the UI thread
-            // so that the IdleHandler is attached to the correct message queue.
-            new LooperExecutor(looper).execute(this);
-        }
+  public LooperIdleLock(final Object lock, final Looper looper) {
+    mLock = lock;
+    mIsLocked = true;
+    if (Utilities.ATLEAST_MARSHMALLOW) {
+      looper.getQueue().addIdleHandler(this);
+    } else {
+      // Looper.myQueue() only gives the current queue. Move the execution to
+      // the UI thread so that the IdleHandler is attached to the correct
+      // message queue.
+      new LooperExecutor(looper).execute(this);
     }
+  }
 
-    @Override
-    public void run() {
-        Looper.myQueue().addIdleHandler(this);
-    }
+  @Override
+  public void run() {
+    Looper.myQueue().addIdleHandler(this);
+  }
 
-    @Override
-    public boolean queueIdle() {
-        synchronized (mLock) {
-            mIsLocked = false;
-            mLock.notify();
-        }
-        return false;
+  @Override
+  public boolean queueIdle() {
+    synchronized (mLock) {
+      mIsLocked = false;
+      mLock.notify();
     }
+    return false;
+  }
 
-    public boolean awaitLocked(final long ms) {
-        if (mIsLocked) {
-            try {
-                // Just in case mFlushingWorkerThread changes but we aren't woken up,
-                // wait no longer than 1sec at a time
-                mLock.wait(ms);
-            } catch (InterruptedException ex) {
-                // Ignore
-            }
-        }
-        return mIsLocked;
+  public boolean awaitLocked(final long ms) {
+    if (mIsLocked) {
+      try {
+        // Just in case mFlushingWorkerThread changes but we aren't woken up,
+        // wait no longer than 1sec at a time
+        mLock.wait(ms);
+      } catch (InterruptedException ex) {
+        // Ignore
+      }
     }
+    return mIsLocked;
+  }
 }

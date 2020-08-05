@@ -21,34 +21,36 @@ import android.graphics.drawable.Drawable;
  * Manages the parameters used to draw a Folder preview item.
  */
 class PreviewItemDrawingParams {
-    public boolean hidden;
-    float transX;
-    float transY;
-    float scale;
-    float overlayAlpha;
-    FolderPreviewItemAnim anim;
-    Drawable drawable;
+  public boolean hidden;
+  float transX;
+  float transY;
+  float scale;
+  float overlayAlpha;
+  FolderPreviewItemAnim anim;
+  Drawable drawable;
 
-    PreviewItemDrawingParams(final float transX, final float transY, final float scale, final float overlayAlpha) {
-        this.transX = transX;
-        this.transY = transY;
-        this.scale = scale;
-        this.overlayAlpha = overlayAlpha;
+  PreviewItemDrawingParams(final float transX, final float transY,
+                           final float scale, final float overlayAlpha) {
+    this.transX = transX;
+    this.transY = transY;
+    this.scale = scale;
+    this.overlayAlpha = overlayAlpha;
+  }
+
+  public void update(final float transX, final float transY,
+                     final float scale) {
+    // We ensure the update will not interfere with an animation on the layout
+    // params If the final values differ, we cancel the animation.
+    if (anim != null) {
+      if (anim.finalTransX == transX || anim.finalTransY == transY ||
+          anim.finalScale == scale) {
+        return;
+      }
+      anim.cancel();
     }
 
-    public void update(final float transX, final float transY, final float scale) {
-        // We ensure the update will not interfere with an animation on the layout params
-        // If the final values differ, we cancel the animation.
-        if (anim != null) {
-            if (anim.finalTransX == transX || anim.finalTransY == transY
-                    || anim.finalScale == scale) {
-                return;
-            }
-            anim.cancel();
-        }
-
-        this.transX = transX;
-        this.transY = transY;
-        this.scale = scale;
-    }
+    this.transX = transX;
+    this.transY = transY;
+    this.scale = scale;
+  }
 }

@@ -26,13 +26,11 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.SparseArray;
-
 import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Thunk;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,149 +38,147 @@ import java.util.List;
 
 public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
-    private static final boolean DEBUG = false;
+  private static final boolean DEBUG = false;
 
-    @Thunk
-    final SparseArray<String> mActiveSessions = new SparseArray<>();
+  @Thunk final SparseArray<String> mActiveSessions = new SparseArray<>();
 
-    @Thunk
-    final PackageInstaller mInstaller;
-    private final IconCache mCache;
-    private final Handler mWorker;
-    private final Context mAppContext;
-    private final HashMap<String, Boolean> mSessionVerifiedMap = new HashMap<>();
+  @Thunk final PackageInstaller mInstaller;
+  private final IconCache mCache;
+  private final Handler mWorker;
+  private final Context mAppContext;
+  private final HashMap<String, Boolean> mSessionVerifiedMap = new HashMap<>();
 
-    PackageInstallerCompatVL(final Context context) {
-        mAppContext = context.getApplicationContext();
-        mInstaller = context.getPackageManager().getPackageInstaller();
-        mCache = LauncherAppState.getInstance(context).getIconCache();
-        mWorker = new Handler(LauncherModel.getWorkerLooper());
-        mInstaller.registerSessionCallback(mCallback, mWorker);
+  PackageInstallerCompatVL(final Context context) {
+    mAppContext = context.getApplicationContext();
+    mInstaller = context.getPackageManager().getPackageInstaller();
+    mCache = LauncherAppState.getInstance(context).getIconCache();
+    mWorker = new Handler(LauncherModel.getWorkerLooper());
+    mInstaller.registerSessionCallback(mCallback, mWorker);
+  }
+
+  @Override
+  public HashMap<String, SessionInfo> updateAndGetActiveSessionCache() {
+    HashMap<String, SessionInfo> activePackages = new HashMap<>();
+    UserHandle user = Process.myUserHandle();
+    for (SessionInfo info : getAllVerifiedSessions()) {
+      addSessionInfoToCache(info, user);
+      if (info.getAppPackageName() != null) {
+        activePackages.put(info.getAppPackageName(), info);
+        mActiveSessions.put(info.getSessionId(), info.getAppPackageName());
+      }
     }
+    return activePackages;
+  }
 
+  @Thunk
+  void addSessionInfoToCache(final SessionInfo info, final UserHandle user) {
+    String packageName = info.getAppPackageName();
+    if (packageName != null) {
+      mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
+                                     info.getAppLabel());
+    }
+  }
+
+  @Override
+  public void onStop() {
+    mInstaller.unregisterSessionCallback(mCallback);
+  }
+
+  @Thunk
+  void sendUpdate(final PackageInstallInfo info) {
+    LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+    if (app != null) {
+      app.getModel().setPackageState(info);
+    }
+  }
+
+  private final SessionCallback mCallback = new SessionCallback() {
     @Override
-    public HashMap<String, SessionInfo> updateAndGetActiveSessionCache() {
-        HashMap<String, SessionInfo> activePackages = new HashMap<>();
-        UserHandle user = Process.myUserHandle();
-        for (SessionInfo info : getAllVerifiedSessions()) {
-            addSessionInfoToCache(info, user);
-            if (info.getAppPackageName() != null) {
-                activePackages.put(info.getAppPackageName(), info);
-                mActiveSessions.put(info.getSessionId(), info.getAppPackageName());
-            }
-        }
-        return activePackages;
-    }
-
-    @Thunk
-    void addSessionInfoToCache(final SessionInfo info, final UserHandle user) {
-        String packageName = info.getAppPackageName();
-        if (packageName != null) {
-            mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
-                                           info.getAppLabel());
-        }
-    }
-
-    @Override
-    public void onStop() {
-        mInstaller.unregisterSessionCallback(mCallback);
-    }
-
-    @Thunk
-    void sendUpdate(final PackageInstallInfo info) {
+    public void onCreated(final int sessionId) {
+      SessionInfo sessionInfo = pushSessionDisplayToLauncher(sessionId);
+      if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS &&
+          sessionInfo != null) {
         LauncherAppState app = LauncherAppState.getInstanceNoCreate();
         if (app != null) {
-            app.getModel().setPackageState(info);
+          app.getModel().onInstallSessionCreated(
+              PackageInstallInfo.fromInstallingState(sessionInfo));
         }
-    }
-
-    private final SessionCallback mCallback = new SessionCallback() {
-
-        @Override
-        public void onCreated(final int sessionId) {
-            SessionInfo sessionInfo = pushSessionDisplayToLauncher(sessionId);
-            if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS && sessionInfo != null) {
-                LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-                if (app != null) {
-                    app.getModel().onInstallSessionCreated(
-                        PackageInstallInfo.fromInstallingState(sessionInfo));
-                }
-            }
-        }
-
-        @Override
-        public void onFinished(final int sessionId, final boolean success) {
-            // For a finished session, we can't get the session info. So use the
-            // packageName from our local cache.
-            String packageName = mActiveSessions.get(sessionId);
-            mActiveSessions.remove(sessionId);
-
-            if (packageName != null) {
-                sendUpdate(PackageInstallInfo.fromState(
-                               success ? STATUS_INSTALLED : STATUS_FAILED,
-                               packageName));
-            }
-        }
-
-        @Override
-        public void onProgressChanged(final int sessionId, final float progress) {
-            SessionInfo session = verify(mInstaller.getSessionInfo(sessionId));
-            if (session != null && session.getAppPackageName() != null) {
-                sendUpdate(PackageInstallInfo.fromInstallingState(session));
-            }
-        }
-
-        @Override
-        public void onActiveChanged(final int sessionId, final boolean active) {
-        }
-
-        @Override
-        public void onBadgingChanged(final int sessionId) {
-            pushSessionDisplayToLauncher(sessionId);
-        }
-
-        private SessionInfo pushSessionDisplayToLauncher(final int sessionId) {
-            SessionInfo session = verify(mInstaller.getSessionInfo(sessionId));
-            if (session != null && session.getAppPackageName() != null) {
-                mActiveSessions.put(sessionId, session.getAppPackageName());
-                addSessionInfoToCache(session, Process.myUserHandle());
-                LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-                if (app != null) {
-                    app.getModel().updateSessionDisplayInfo(session.getAppPackageName());
-                }
-                return session;
-            }
-            return null;
-        }
-    };
-
-    private PackageInstaller.SessionInfo verify(final PackageInstaller.SessionInfo sessionInfo) {
-        if (sessionInfo == null
-                || sessionInfo.getInstallerPackageName() == null
-                || TextUtils.isEmpty(sessionInfo.getAppPackageName())) {
-            return null;
-        }
-        String pkg = sessionInfo.getInstallerPackageName();
-        synchronized (mSessionVerifiedMap) {
-            if (!mSessionVerifiedMap.containsKey(pkg)) {
-                LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mAppContext);
-                boolean hasSystemFlag = launcherApps.getApplicationInfo(pkg,
-                                        ApplicationInfo.FLAG_SYSTEM, Process.myUserHandle()) != null;
-                mSessionVerifiedMap.put(pkg, DEBUG || hasSystemFlag);
-            }
-        }
-        return mSessionVerifiedMap.get(pkg) ? sessionInfo : null;
+      }
     }
 
     @Override
-    public List<SessionInfo> getAllVerifiedSessions() {
-        List<SessionInfo> list = new ArrayList<>(mInstaller.getAllSessions());
-        Iterator<SessionInfo> it = list.iterator();
-        while (it.hasNext()) {
-            if (verify(it.next()) == null) {
-                it.remove();
-            }
-        }
-        return list;
+    public void onFinished(final int sessionId, final boolean success) {
+      // For a finished session, we can't get the session info. So use the
+      // packageName from our local cache.
+      String packageName = mActiveSessions.get(sessionId);
+      mActiveSessions.remove(sessionId);
+
+      if (packageName != null) {
+        sendUpdate(PackageInstallInfo.fromState(
+            success ? STATUS_INSTALLED : STATUS_FAILED, packageName));
+      }
     }
+
+    @Override
+    public void onProgressChanged(final int sessionId, final float progress) {
+      SessionInfo session = verify(mInstaller.getSessionInfo(sessionId));
+      if (session != null && session.getAppPackageName() != null) {
+        sendUpdate(PackageInstallInfo.fromInstallingState(session));
+      }
+    }
+
+    @Override
+    public void onActiveChanged(final int sessionId, final boolean active) {}
+
+    @Override
+    public void onBadgingChanged(final int sessionId) {
+      pushSessionDisplayToLauncher(sessionId);
+    }
+
+    private SessionInfo pushSessionDisplayToLauncher(final int sessionId) {
+      SessionInfo session = verify(mInstaller.getSessionInfo(sessionId));
+      if (session != null && session.getAppPackageName() != null) {
+        mActiveSessions.put(sessionId, session.getAppPackageName());
+        addSessionInfoToCache(session, Process.myUserHandle());
+        LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+        if (app != null) {
+          app.getModel().updateSessionDisplayInfo(session.getAppPackageName());
+        }
+        return session;
+      }
+      return null;
+    }
+  };
+
+  private PackageInstaller.SessionInfo
+  verify(final PackageInstaller.SessionInfo sessionInfo) {
+    if (sessionInfo == null || sessionInfo.getInstallerPackageName() == null ||
+        TextUtils.isEmpty(sessionInfo.getAppPackageName())) {
+      return null;
+    }
+    String pkg = sessionInfo.getInstallerPackageName();
+    synchronized (mSessionVerifiedMap) {
+      if (!mSessionVerifiedMap.containsKey(pkg)) {
+        LauncherAppsCompat launcherApps =
+            LauncherAppsCompat.getInstance(mAppContext);
+        boolean hasSystemFlag =
+            launcherApps.getApplicationInfo(pkg, ApplicationInfo.FLAG_SYSTEM,
+                                            Process.myUserHandle()) != null;
+        mSessionVerifiedMap.put(pkg, DEBUG || hasSystemFlag);
+      }
+    }
+    return mSessionVerifiedMap.get(pkg) ? sessionInfo : null;
+  }
+
+  @Override
+  public List<SessionInfo> getAllVerifiedSessions() {
+    List<SessionInfo> list = new ArrayList<>(mInstaller.getAllSessions());
+    Iterator<SessionInfo> it = list.iterator();
+    while (it.hasNext()) {
+      if (verify(it.next()) == null) {
+        it.remove();
+      }
+    }
+    return list;
+  }
 }

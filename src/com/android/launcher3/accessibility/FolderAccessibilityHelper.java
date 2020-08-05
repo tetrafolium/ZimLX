@@ -21,37 +21,40 @@ import com.android.launcher3.R;
 import com.android.launcher3.folder.FolderPagedView;
 
 /**
- * Implementation of {@link DragAndDropAccessibilityDelegate} to support DnD in a folder.
+ * Implementation of {@link DragAndDropAccessibilityDelegate} to support DnD in
+ * a folder.
  */
-public class FolderAccessibilityHelper extends DragAndDropAccessibilityDelegate {
+public class FolderAccessibilityHelper
+    extends DragAndDropAccessibilityDelegate {
 
-    /**
-     * 0-index position for the first cell in {@link #mView} in {@link #mParent}.
-     */
-    private final int mStartPosition;
+  /**
+   * 0-index position for the first cell in {@link #mView} in {@link #mParent}.
+   */
+  private final int mStartPosition;
 
-    private final FolderPagedView mParent;
+  private final FolderPagedView mParent;
 
-    public FolderAccessibilityHelper(final CellLayout layout) {
-        super(layout);
-        mParent = (FolderPagedView) layout.getParent();
+  public FolderAccessibilityHelper(final CellLayout layout) {
+    super(layout);
+    mParent = (FolderPagedView)layout.getParent();
 
-        int index = mParent.indexOfChild(layout);
-        mStartPosition = index * layout.getCountX() * layout.getCountY();
-    }
+    int index = mParent.indexOfChild(layout);
+    mStartPosition = index * layout.getCountX() * layout.getCountY();
+  }
 
-    @Override
-    protected int intersectsValidDropTarget(final int id) {
-        return Math.min(id, mParent.getAllocatedContentSize() - mStartPosition - 1);
-    }
+  @Override
+  protected int intersectsValidDropTarget(final int id) {
+    return Math.min(id, mParent.getAllocatedContentSize() - mStartPosition - 1);
+  }
 
-    @Override
-    protected String getLocationDescriptionForIconDrop(final int id) {
-        return mContext.getString(R.string.move_to_position, id + mStartPosition + 1);
-    }
+  @Override
+  protected String getLocationDescriptionForIconDrop(final int id) {
+    return mContext.getString(R.string.move_to_position,
+                              id + mStartPosition + 1);
+  }
 
-    @Override
-    protected String getConfirmationForIconDrop(final int id) {
-        return mContext.getString(R.string.item_moved);
-    }
+  @Override
+  protected String getConfirmationForIconDrop(final int id) {
+    return mContext.getString(R.string.item_moved);
+  }
 }

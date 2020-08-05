@@ -22,9 +22,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.UserHandle;
-
 import androidx.annotation.Nullable;
-
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
@@ -32,63 +30,74 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.custom.CustomWidgetParser;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 public abstract class AppWidgetManagerCompat {
 
-    private static final List<String> EMUI_BLACKLIST = Arrays.asList("com.android.systemui", "com.android.gallery3d", "com.android.mediacenter", "com.android.settings");
-    private static final Object sInstanceLock = new Object();
-    private static AppWidgetManagerCompat sInstance;
-    final AppWidgetManager mAppWidgetManager;
-    final Context mContext;
+  private static final List<String> EMUI_BLACKLIST =
+      Arrays.asList("com.android.systemui", "com.android.gallery3d",
+                    "com.android.mediacenter", "com.android.settings");
+  private static final Object sInstanceLock = new Object();
+  private static AppWidgetManagerCompat sInstance;
+  final AppWidgetManager mAppWidgetManager;
+  final Context mContext;
 
-    AppWidgetManagerCompat(final Context context) {
-        mContext = context;
-        mAppWidgetManager = AppWidgetManager.getInstance(context);
-    }
+  AppWidgetManagerCompat(final Context context) {
+    mContext = context;
+    mAppWidgetManager = AppWidgetManager.getInstance(context);
+  }
 
-    boolean isBlacklisted(final String packageName) {
-        return Utilities.isEmui() && (packageName.toLowerCase().contains("huawei") || EMUI_BLACKLIST.contains(packageName));
-    }
+  boolean isBlacklisted(final String packageName) {
+    return Utilities.isEmui() &&
+        (packageName.toLowerCase().contains("huawei") ||
+         EMUI_BLACKLIST.contains(packageName));
+  }
 
-    public static AppWidgetManagerCompat getInstance(final Context context) {
-        synchronized (sInstanceLock) {
-            if (sInstance == null) {
-                if (Utilities.ATLEAST_OREO) {
-                    sInstance = new AppWidgetManagerCompatVO(context.getApplicationContext());
-                } else {
-                    sInstance = new AppWidgetManagerCompatVL(context.getApplicationContext());
-                }
-            }
-            return sInstance;
+  public static AppWidgetManagerCompat getInstance(final Context context) {
+    synchronized (sInstanceLock) {
+      if (sInstance == null) {
+        if (Utilities.ATLEAST_OREO) {
+          sInstance =
+              new AppWidgetManagerCompatVO(context.getApplicationContext());
+        } else {
+          sInstance =
+              new AppWidgetManagerCompatVL(context.getApplicationContext());
         }
+      }
+      return sInstance;
+    }
+  }
+
+  public AppWidgetProviderInfo getAppWidgetInfo(final int appWidgetId) {
+    return mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+  }
+
+  public LauncherAppWidgetProviderInfo
+  getLauncherAppWidgetInfo(final int appWidgetId) {
+    if (FeatureFlags.ENABLE_CUSTOM_WIDGETS &&
+        appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
+      return CustomWidgetParser.getWidgetProvider(mContext, appWidgetId);
     }
 
-    public AppWidgetProviderInfo getAppWidgetInfo(final int appWidgetId) {
-        return mAppWidgetManager.getAppWidgetInfo(appWidgetId);
-    }
+    AppWidgetProviderInfo info =
+        mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+    return info == null
+        ? null
+        : LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
+  }
 
-    public LauncherAppWidgetProviderInfo getLauncherAppWidgetInfo(final int appWidgetId) {
-        if (FeatureFlags.ENABLE_CUSTOM_WIDGETS
-                && appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
-            return CustomWidgetParser.getWidgetProvider(mContext, appWidgetId);
-        }
+  public abstract List<AppWidgetProviderInfo>
+  getAllProviders(@Nullable PackageUserKey packageUser);
 
-        AppWidgetProviderInfo info = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
-        return info == null ? null : LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
-    }
+  public abstract boolean bindAppWidgetIdIfAllowed(int appWidgetId,
+                                                   AppWidgetProviderInfo info,
+                                                   Bundle options);
 
-    public abstract List<AppWidgetProviderInfo> getAllProviders(
-        @Nullable PackageUserKey packageUser);
+  public abstract LauncherAppWidgetProviderInfo
+  findProvider(ComponentName provider, UserHandle user);
 
-    public abstract boolean bindAppWidgetIdIfAllowed(
-        int appWidgetId, AppWidgetProviderInfo info, Bundle options);
-
-    public abstract LauncherAppWidgetProviderInfo findProvider(
-        ComponentName provider, UserHandle user);
-
-    public abstract HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap();
+  public abstract HashMap<ComponentKey, AppWidgetProviderInfo>
+  getAllProvidersMap();
 }

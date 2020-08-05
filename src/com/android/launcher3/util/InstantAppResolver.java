@@ -20,11 +20,9 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
-
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -33,31 +31,29 @@ import java.util.List;
  */
 public class InstantAppResolver {
 
-    public static InstantAppResolver newInstance(final Context context) {
-        return Utilities.getOverrideObject(
-                   InstantAppResolver.class, context, R.string.instant_app_resolver_class);
-    }
+  public static InstantAppResolver newInstance(final Context context) {
+    return Utilities.getOverrideObject(InstantAppResolver.class, context,
+                                       R.string.instant_app_resolver_class);
+  }
 
-    public boolean isInstantApp(final ApplicationInfo info) {
-        return false;
-    }
+  public boolean isInstantApp(final ApplicationInfo info) { return false; }
 
-    public boolean isInstantApp(final AppInfo info) {
-        return false;
-    }
+  public boolean isInstantApp(final AppInfo info) { return false; }
 
-    public boolean isInstantApp(final Context context, final String packageName) {
-        PackageManager packageManager = context.getPackageManager();
-        try {
-            return isInstantApp(packageManager.getPackageInfo(packageName, 0).applicationInfo);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e("InstantAppResolver", "Failed to determine whether package is instant app "
-                  + packageName, e);
-        }
-        return false;
+  public boolean isInstantApp(final Context context, final String packageName) {
+    PackageManager packageManager = context.getPackageManager();
+    try {
+      return isInstantApp(
+          packageManager.getPackageInfo(packageName, 0).applicationInfo);
+    } catch (PackageManager.NameNotFoundException e) {
+      Log.e("InstantAppResolver",
+            "Failed to determine whether package is instant app " + packageName,
+            e);
     }
+    return false;
+  }
 
-    public List<ApplicationInfo> getInstantApps() {
-        return Collections.emptyList();
-    }
+  public List<ApplicationInfo> getInstantApps() {
+    return Collections.emptyList();
+  }
 }

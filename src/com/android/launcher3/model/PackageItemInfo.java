@@ -23,17 +23,17 @@ import com.android.launcher3.ItemInfoWithIcon;
  */
 public class PackageItemInfo extends ItemInfoWithIcon {
 
-    /**
-     * Package name of the {@link PackageItemInfo}.
-     */
-    public String packageName;
+  /**
+   * Package name of the {@link PackageItemInfo}.
+   */
+  public String packageName;
 
-    public PackageItemInfo(final String packageName) {
-        this.packageName = packageName;
-    }
+  public PackageItemInfo(final String packageName) {
+    this.packageName = packageName;
+  }
 
-    @Override
-    protected String dumpProperties() {
-        return super.dumpProperties() + " packageName=" + packageName;
-    }
+  @Override
+  protected String dumpProperties() {
+    return super.dumpProperties() + " packageName=" + packageName;
+  }
 }

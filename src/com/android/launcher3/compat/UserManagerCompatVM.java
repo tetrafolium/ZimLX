@@ -24,12 +24,10 @@ import android.os.UserHandle;
 @TargetApi(Build.VERSION_CODES.M)
 public class UserManagerCompatVM extends UserManagerCompatVL {
 
-    UserManagerCompatVM(final Context context) {
-        super(context);
-    }
+  UserManagerCompatVM(final Context context) { super(context); }
 
-    @Override
-    public long getUserCreationTime(final UserHandle user) {
-        return mUserManager.getUserCreationTime(user);
-    }
+  @Override
+  public long getUserCreationTime(final UserHandle user) {
+    return mUserManager.getUserCreationTime(user);
+  }
 }

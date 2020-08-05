@@ -22,20 +22,23 @@ import android.animation.ObjectAnimator;
 import android.util.Property;
 
 /**
- * An AnimatorListener that sets the given property to the given value at the end of the animation.
+ * An AnimatorListener that sets the given property to the given value at the
+ * end of the animation.
  */
 public class PropertyResetListener<T, V> extends AnimatorListenerAdapter {
 
-    private Property<T, V> mPropertyToReset;
-    private V mResetToValue;
+  private Property<T, V> mPropertyToReset;
+  private V mResetToValue;
 
-    public PropertyResetListener(final Property<T, V> propertyToReset, final V resetToValue) {
-        mPropertyToReset = propertyToReset;
-        mResetToValue = resetToValue;
-    }
+  public PropertyResetListener(final Property<T, V> propertyToReset,
+                               final V resetToValue) {
+    mPropertyToReset = propertyToReset;
+    mResetToValue = resetToValue;
+  }
 
-    @Override
-    public void onAnimationEnd(final Animator animation) {
-        mPropertyToReset.set((T) ((ObjectAnimator) animation).getTarget(), mResetToValue);
-    }
+  @Override
+  public void onAnimationEnd(final Animator animation) {
+    mPropertyToReset.set((T)((ObjectAnimator)animation).getTarget(),
+                         mResetToValue);
+  }
 }

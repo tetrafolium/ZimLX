@@ -19,47 +19,50 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.view.View;
 import android.view.animation.Interpolator;
-
+import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
-
-import androidx.core.graphics.ColorUtils;
 
 /**
  * Simple scrim which draws a color
  */
 public class ColorScrim extends ViewScrim {
 
-    private final int mColor;
-    private final Interpolator mInterpolator;
-    private int mCurrentColor;
+  private final int mColor;
+  private final Interpolator mInterpolator;
+  private int mCurrentColor;
 
-    public ColorScrim(final View view, final int color, final Interpolator interpolator) {
-        super(view);
-        mColor = color;
-        mInterpolator = interpolator;
-    }
+  public ColorScrim(final View view, final int color,
+                    final Interpolator interpolator) {
+    super(view);
+    mColor = color;
+    mInterpolator = interpolator;
+  }
 
-    @Override
-    protected void onProgressChanged() {
-        mCurrentColor = ColorUtils.setAlphaComponent(mColor,
-                        Math.round(mInterpolator.getInterpolation(mProgress) * Color.alpha(mColor)));
-    }
+  @Override
+  protected void onProgressChanged() {
+    mCurrentColor = ColorUtils.setAlphaComponent(
+        mColor, Math.round(mInterpolator.getInterpolation(mProgress) *
+                           Color.alpha(mColor)));
+  }
 
-    @Override
-    public void draw(final Canvas canvas, final int width, final int height) {
-        if (mProgress > 0) {
-            canvas.drawColor(mCurrentColor);
-        }
+  @Override
+  public void draw(final Canvas canvas, final int width, final int height) {
+    if (mProgress > 0) {
+      canvas.drawColor(mCurrentColor);
     }
+  }
 
-    public static ColorScrim createExtractedColorScrim(final View view) {
-        WallpaperColorInfo colors = WallpaperColorInfo.getInstance(view.getContext());
-        int alpha = view.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
-        ColorScrim scrim = new ColorScrim(view, ColorUtils.setAlphaComponent(
-                                              colors.getSecondaryColor(), alpha), Interpolators.LINEAR);
-        scrim.attach();
-        return scrim;
-    }
+  public static ColorScrim createExtractedColorScrim(final View view) {
+    WallpaperColorInfo colors =
+        WallpaperColorInfo.getInstance(view.getContext());
+    int alpha = view.getResources().getInteger(
+        R.integer.extracted_color_gradient_alpha);
+    ColorScrim scrim = new ColorScrim(
+        view, ColorUtils.setAlphaComponent(colors.getSecondaryColor(), alpha),
+        Interpolators.LINEAR);
+    scrim.attach();
+    return scrim;
+  }
 }

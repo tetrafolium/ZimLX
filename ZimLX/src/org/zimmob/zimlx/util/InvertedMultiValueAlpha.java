@@ -16,88 +16,85 @@
 package org.zimmob.zimlx.util;
 
 import android.util.Property;
-
 import java.util.function.Consumer;
 
 /**
- * Utility class to handle separating a single value as a factor of multiple values
+ * Utility class to handle separating a single value as a factor of multiple
+ * values
  */
 public class InvertedMultiValueAlpha {
 
-    public static final Property<InvertedAlphaProperty, Float> VALUE =
-    new Property<InvertedAlphaProperty, Float>(Float.TYPE, "value") {
-
+  public static final Property<InvertedAlphaProperty, Float> VALUE =
+      new Property<InvertedAlphaProperty, Float>(Float.TYPE, "value") {
         @Override
         public Float get(final InvertedAlphaProperty alphaProperty) {
-            return 1 - alphaProperty.mValue;
+          return 1 - alphaProperty.mValue;
         }
 
         @Override
         public void set(final InvertedAlphaProperty object, final Float value) {
-            object.setValue(value);
+          object.setValue(value);
         }
-    };
+      };
 
-    private final Consumer<Float> mConsumer;
-    private final InvertedAlphaProperty[] mMyProperties;
+  private final Consumer<Float> mConsumer;
+  private final InvertedAlphaProperty[] mMyProperties;
 
-    private int mValidMask;
+  private int mValidMask;
 
-    public InvertedMultiValueAlpha(final Consumer<Float> consumer, final int size) {
-        mConsumer = consumer;
-        mMyProperties = new InvertedAlphaProperty[size];
+  public InvertedMultiValueAlpha(final Consumer<Float> consumer,
+                                 final int size) {
+    mConsumer = consumer;
+    mMyProperties = new InvertedAlphaProperty[size];
 
-        mValidMask = 0;
-        for (int i = 0; i < size; i++) {
-            int myMask = 1 << i;
-            mValidMask |= myMask;
-            mMyProperties[i] = new InvertedAlphaProperty(myMask);
+    mValidMask = 0;
+    for (int i = 0; i < size; i++) {
+      int myMask = 1 << i;
+      mValidMask |= myMask;
+      mMyProperties[i] = new InvertedAlphaProperty(myMask);
+    }
+  }
+
+  public InvertedAlphaProperty getProperty(final int index) {
+    return mMyProperties[index];
+  }
+
+  public class InvertedAlphaProperty {
+
+    private final int mMyMask;
+
+    private float mValue = 1;
+    // Factor of all other alpha channels, only valid if mMyMask is present in
+    // mValidMask.
+    private float mOthers = 1;
+
+    InvertedAlphaProperty(final int myMask) { mMyMask = myMask; }
+
+    public void setValue(final float value) {
+      value = 1 - value;
+      if (mValue == value) {
+        return;
+      }
+
+      if ((mValidMask & mMyMask) == 0) {
+        // Our cache value is not correct, recompute it.
+        mOthers = 1;
+        for (InvertedAlphaProperty prop : mMyProperties) {
+          if (prop != this) {
+            mOthers *= prop.mValue;
+          }
         }
+      }
+
+      // Since we have changed our value, all other caches except our own need
+      // to be recomputed. Change mValidMask to indicate the new valid caches
+      // (only our own).
+      mValidMask = mMyMask;
+      mValue = value;
+
+      mConsumer.accept(1 - mOthers * mValue);
     }
 
-    public InvertedAlphaProperty getProperty(final int index) {
-        return mMyProperties[index];
-    }
-
-    public class InvertedAlphaProperty {
-
-        private final int mMyMask;
-
-        private float mValue = 1;
-        // Factor of all other alpha channels, only valid if mMyMask is present in mValidMask.
-        private float mOthers = 1;
-
-        InvertedAlphaProperty(final int myMask) {
-            mMyMask = myMask;
-        }
-
-        public void setValue(final float value) {
-            value = 1 - value;
-            if (mValue == value) {
-                return;
-            }
-
-            if ((mValidMask & mMyMask) == 0) {
-                // Our cache value is not correct, recompute it.
-                mOthers = 1;
-                for (InvertedAlphaProperty prop : mMyProperties) {
-                    if (prop != this) {
-                        mOthers *= prop.mValue;
-                    }
-                }
-            }
-
-            // Since we have changed our value, all other caches except our own need to be
-            // recomputed. Change mValidMask to indicate the new valid caches (only our own).
-            mValidMask = mMyMask;
-            mValue = value;
-
-            mConsumer.accept(1 - mOthers * mValue);
-        }
-
-        public float getValue() {
-            return 1 - mValue;
-        }
-    }
+    public float getValue() { return 1 - mValue; }
+  }
 }
-

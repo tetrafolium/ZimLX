@@ -15,6 +15,15 @@
  */
 package com.android.launcher3.views;
 
+import static android.content.Context.ACCESSIBILITY_SERVICE;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static androidx.core.graphics.ColorUtils.compositeColors;
+import static androidx.core.graphics.ColorUtils.setAlphaComponent;
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.Keyframe;
@@ -36,14 +45,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityManager.AccessibilityStateChangeListener;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat;
 import androidx.customview.widget.ExploreByTouchHelper;
-
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
@@ -57,401 +64,403 @@ import com.android.launcher3.dynamicui.WallpaperColorInfo.OnChangeListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.Themes;
-
 import java.util.List;
-
-import static android.content.Context.ACCESSIBILITY_SERVICE;
-import static android.view.MotionEvent.ACTION_DOWN;
-import static androidx.core.graphics.ColorUtils.compositeColors;
-import static androidx.core.graphics.ColorUtils.setAlphaComponent;
-import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.anim.Interpolators.ACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
 
 /**
  * Simple scrim which draws a flat color
  */
 public class ScrimView extends View implements Insettable, OnChangeListener,
-    AccessibilityStateChangeListener, StateListener {
+                                               AccessibilityStateChangeListener,
+                                               StateListener {
 
-    public static final Property<ScrimView, Integer> DRAG_HANDLE_ALPHA =
-    new Property<ScrimView, Integer>(Integer.TYPE, "dragHandleAlpha") {
-
+  public static final Property<ScrimView, Integer> DRAG_HANDLE_ALPHA =
+      new Property<ScrimView, Integer>(Integer.TYPE, "dragHandleAlpha") {
         @Override
         public Integer get(final ScrimView scrimView) {
-            return scrimView.mDragHandleAlpha;
+          return scrimView.mDragHandleAlpha;
         }
 
         @Override
         public void set(final ScrimView scrimView, final Integer value) {
-            scrimView.setDragHandleAlpha(value);
+          scrimView.setDragHandleAlpha(value);
         }
-    };
-    private static final int WALLPAPERS = R.string.wallpaper_button_text;
-    private static final int WIDGETS = R.string.widget_button_text;
-    private static final int SETTINGS = R.string.settings_button_text;
+      };
+  private static final int WALLPAPERS = R.string.wallpaper_button_text;
+  private static final int WIDGETS = R.string.widget_button_text;
+  private static final int SETTINGS = R.string.settings_button_text;
 
-    private final Rect mTempRect = new Rect();
-    private final int[] mTempPos = new int[2];
+  private final Rect mTempRect = new Rect();
+  private final int[] mTempPos = new int[2];
 
-    protected final Launcher mLauncher;
-    private final WallpaperColorInfo mWallpaperColorInfo;
-    private final AccessibilityManager mAM;
-    public int mEndScrim;
+  protected final Launcher mLauncher;
+  private final WallpaperColorInfo mWallpaperColorInfo;
+  private final AccessibilityManager mAM;
+  public int mEndScrim;
 
-    protected float mMaxScrimAlpha;
+  protected float mMaxScrimAlpha;
 
-    protected float mProgress = 1;
-    protected int mScrimColor;
+  protected float mProgress = 1;
+  protected int mScrimColor;
 
-    protected int mCurrentFlatColor;
-    protected int mEndFlatColor;
-    protected int mEndFlatColorAlpha;
+  protected int mCurrentFlatColor;
+  protected int mEndFlatColor;
+  protected int mEndFlatColorAlpha;
 
-    protected final int mDragHandleSize;
-    protected float mDragHandleOffset;
-    protected final Rect mDragHandleBounds;
-    private final RectF mHitRect = new RectF();
+  protected final int mDragHandleSize;
+  protected float mDragHandleOffset;
+  protected final Rect mDragHandleBounds;
+  private final RectF mHitRect = new RectF();
 
-    private final AccessibilityHelper mAccessibilityHelper;
-    @Nullable
-    protected Drawable mDragHandle;
+  private final AccessibilityHelper mAccessibilityHelper;
+  @Nullable protected Drawable mDragHandle;
 
-    private int mDragHandleAlpha = 255;
+  private int mDragHandleAlpha = 255;
 
-    public ScrimView(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-        mLauncher = Launcher.getLauncher(context);
-        mWallpaperColorInfo = WallpaperColorInfo.getInstance(context);
-        mEndScrim = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
+  public ScrimView(final Context context, final AttributeSet attrs) {
+    super(context, attrs);
+    mLauncher = Launcher.getLauncher(context);
+    mWallpaperColorInfo = WallpaperColorInfo.getInstance(context);
+    mEndScrim = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
 
-        mMaxScrimAlpha = 0.7f;
+    mMaxScrimAlpha = 0.7f;
 
-        mDragHandleSize = context.getResources()
-                          .getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
-        mDragHandleBounds = new Rect(0, 0, mDragHandleSize, mDragHandleSize);
+    mDragHandleSize = context.getResources().getDimensionPixelSize(
+        R.dimen.vertical_drag_handle_size);
+    mDragHandleBounds = new Rect(0, 0, mDragHandleSize, mDragHandleSize);
 
-        mAccessibilityHelper = createAccessibilityHelper();
-        ViewCompat.setAccessibilityDelegate(this, mAccessibilityHelper);
+    mAccessibilityHelper = createAccessibilityHelper();
+    ViewCompat.setAccessibilityDelegate(this, mAccessibilityHelper);
 
-        mAM = (AccessibilityManager) context.getSystemService(ACCESSIBILITY_SERVICE);
-        setFocusable(false);
+    mAM = (AccessibilityManager)context.getSystemService(ACCESSIBILITY_SERVICE);
+    setFocusable(false);
+  }
+
+  @NonNull
+  protected AccessibilityHelper createAccessibilityHelper() {
+    return new AccessibilityHelper();
+  }
+
+  @Override
+  public void setInsets(final Rect insets) {
+    updateDragHandleBounds();
+    updateDragHandleVisibility(null);
+  }
+
+  @Override
+  protected void onMeasure(final int widthMeasureSpec,
+                           final int heightMeasureSpec) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    updateDragHandleBounds();
+  }
+
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    mWallpaperColorInfo.addOnChangeListener(this);
+    onExtractedColorsChanged(mWallpaperColorInfo);
+
+    mAM.addAccessibilityStateChangeListener(this);
+    onAccessibilityStateChanged(mAM.isEnabled());
+  }
+
+  @Override
+  protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    mWallpaperColorInfo.removeOnChangeListener(this);
+    mAM.removeAccessibilityStateChangeListener(this);
+  }
+
+  @Override
+  public boolean hasOverlappingRendering() {
+    return false;
+  }
+
+  @Override
+  public void
+  onExtractedColorsChanged(final WallpaperColorInfo wallpaperColorInfo) {
+    mScrimColor = wallpaperColorInfo.getMainColor();
+    mEndFlatColor = compositeColors(
+        mEndScrim,
+        setAlphaComponent(mScrimColor, Math.round(mMaxScrimAlpha * 255)));
+    mEndFlatColorAlpha = Color.alpha(mEndFlatColor);
+    updateColors();
+    invalidate();
+  }
+
+  public void setProgress(final float progress) {
+    if (mProgress != progress) {
+      mProgress = progress;
+      updateColors();
+      updateDragHandleAlpha();
+      invalidate();
     }
+  }
 
-    @NonNull
-    protected AccessibilityHelper createAccessibilityHelper() {
-        return new AccessibilityHelper();
+  public void reInitUi() {}
+
+  protected void updateColors() {
+    mCurrentFlatColor =
+        mProgress >= 1
+            ? 0
+            : setAlphaComponent(mEndFlatColor, Math.round((1 - mProgress) *
+                                                          mEndFlatColorAlpha));
+  }
+
+  protected void updateDragHandleAlpha() {
+    if (mDragHandle != null) {
+      mDragHandle.setAlpha(mDragHandleAlpha);
     }
+  }
 
-    @Override
-    public void setInsets(final Rect insets) {
-        updateDragHandleBounds();
-        updateDragHandleVisibility(null);
-    }
-
-    @Override
-    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        updateDragHandleBounds();
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mWallpaperColorInfo.addOnChangeListener(this);
-        onExtractedColorsChanged(mWallpaperColorInfo);
-
-        mAM.addAccessibilityStateChangeListener(this);
-        onAccessibilityStateChanged(mAM.isEnabled());
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mWallpaperColorInfo.removeOnChangeListener(this);
-        mAM.removeAccessibilityStateChangeListener(this);
-    }
-
-    @Override
-    public boolean hasOverlappingRendering() {
-        return false;
-    }
-
-    @Override
-    public void onExtractedColorsChanged(final WallpaperColorInfo wallpaperColorInfo) {
-        mScrimColor = wallpaperColorInfo.getMainColor();
-        mEndFlatColor = compositeColors(mEndScrim, setAlphaComponent(
-                                            mScrimColor, Math.round(mMaxScrimAlpha * 255)));
-        mEndFlatColorAlpha = Color.alpha(mEndFlatColor);
-        updateColors();
+  private void setDragHandleAlpha(final int alpha) {
+    if (alpha != mDragHandleAlpha) {
+      mDragHandleAlpha = alpha;
+      if (mDragHandle != null) {
+        mDragHandle.setAlpha(mDragHandleAlpha);
         invalidate();
+      }
     }
+  }
 
-    public void setProgress(final float progress) {
-        if (mProgress != progress) {
-            mProgress = progress;
-            updateColors();
-            updateDragHandleAlpha();
-            invalidate();
-        }
+  @Override
+  protected void onDraw(final Canvas canvas) {
+    if (mCurrentFlatColor != 0) {
+      canvas.drawColor(mCurrentFlatColor);
     }
+    drawDragHandle(canvas);
+  }
 
-    public void reInitUi() {
+  protected void drawDragHandle(final Canvas canvas) {
+    if (mDragHandle != null) {
+      canvas.translate(0, -mDragHandleOffset);
+      mDragHandle.draw(canvas);
+      canvas.translate(0, mDragHandleOffset);
     }
+  }
 
-    protected void updateColors() {
-        mCurrentFlatColor = mProgress >= 1 ? 0 : setAlphaComponent(
-                                mEndFlatColor, Math.round((1 - mProgress) * mEndFlatColorAlpha));
-    }
+  @Override
+  public boolean onTouchEvent(final MotionEvent event) {
+    boolean value = super.onTouchEvent(event);
+    if (!value && mDragHandle != null && event.getAction() == ACTION_DOWN &&
+        mDragHandle.getAlpha() == 255 &&
+        mHitRect.contains(event.getX(), event.getY())) {
 
-    protected void updateDragHandleAlpha() {
-        if (mDragHandle != null) {
-            mDragHandle.setAlpha(mDragHandleAlpha);
-        }
-    }
+      final Drawable drawable = mDragHandle;
+      mDragHandle = null;
 
-    private void setDragHandleAlpha(final int alpha) {
-        if (alpha != mDragHandleAlpha) {
-            mDragHandleAlpha = alpha;
-            if (mDragHandle != null) {
-                mDragHandle.setAlpha(mDragHandleAlpha);
-                invalidate();
-            }
-        }
-    }
+      Rect bounds = new Rect(mDragHandleBounds);
+      bounds.offset(0, -(int)mDragHandleOffset);
+      drawable.setBounds(bounds);
 
-    @Override
-    protected void onDraw(final Canvas canvas) {
-        if (mCurrentFlatColor != 0) {
-            canvas.drawColor(mCurrentFlatColor);
-        }
-        drawDragHandle(canvas);
-    }
+      Rect topBounds = new Rect(bounds);
+      topBounds.offset(0, -bounds.height() / 2);
 
-    protected void drawDragHandle(final Canvas canvas) {
-        if (mDragHandle != null) {
-            canvas.translate(0, -mDragHandleOffset);
-            mDragHandle.draw(canvas);
-            canvas.translate(0, mDragHandleOffset);
-        }
-    }
+      Rect invalidateRegion = new Rect(bounds);
+      invalidateRegion.top = topBounds.top;
 
-    @Override
-    public boolean onTouchEvent(final MotionEvent event) {
-        boolean value = super.onTouchEvent(event);
-        if (!value && mDragHandle != null && event.getAction() == ACTION_DOWN
-                && mDragHandle.getAlpha() == 255
-                && mHitRect.contains(event.getX(), event.getY())) {
+      Keyframe frameTop = Keyframe.ofObject(0.6f, topBounds);
+      frameTop.setInterpolator(DEACCEL);
+      Keyframe frameBot = Keyframe.ofObject(1, bounds);
+      frameBot.setInterpolator(ACCEL);
+      PropertyValuesHolder holder = PropertyValuesHolder.ofKeyframe(
+          "bounds", Keyframe.ofObject(0, bounds), frameTop, frameBot);
+      holder.setEvaluator(new RectEvaluator());
 
-            final Drawable drawable = mDragHandle;
-            mDragHandle = null;
-
-            Rect bounds = new Rect(mDragHandleBounds);
-            bounds.offset(0, -(int) mDragHandleOffset);
-            drawable.setBounds(bounds);
-
-            Rect topBounds = new Rect(bounds);
-            topBounds.offset(0, -bounds.height() / 2);
-
-            Rect invalidateRegion = new Rect(bounds);
-            invalidateRegion.top = topBounds.top;
-
-            Keyframe frameTop = Keyframe.ofObject(0.6f, topBounds);
-            frameTop.setInterpolator(DEACCEL);
-            Keyframe frameBot = Keyframe.ofObject(1, bounds);
-            frameBot.setInterpolator(ACCEL);
-            PropertyValuesHolder holder = PropertyValuesHolder.ofKeyframe("bounds",
-                                          Keyframe.ofObject(0, bounds), frameTop, frameBot);
-            holder.setEvaluator(new RectEvaluator());
-
-            ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(drawable, holder);
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(final Animator animation) {
-                    getOverlay().remove(drawable);
-                    updateDragHandleVisibility(drawable);
-                }
-            });
-            anim.addUpdateListener((v) -> invalidate(invalidateRegion));
-            getOverlay().add(drawable);
-            anim.start();
-        }
-        return value;
-    }
-
-    protected void updateDragHandleBounds() {
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        final int left;
-        final int width = getMeasuredWidth();
-        final int top = getMeasuredHeight() - mDragHandleSize - grid.getInsets().bottom;
-        final int topMargin;
-
-        if (grid.isVerticalBarLayout()) {
-            topMargin = grid.workspacePadding.bottom;
-            if (grid.isSeascape()) {
-                left = width - grid.getInsets().right - mDragHandleSize;
-            } else {
-                left = mDragHandleSize + grid.getInsets().left;
-            }
-        } else {
-            left = (width - mDragHandleSize) / 2;
-            topMargin = grid.hotseatBarSizePx;
-        }
-        mDragHandleBounds.offsetTo(left, top - topMargin);
-        mHitRect.set(mDragHandleBounds);
-        float inset = -mDragHandleSize / 2;
-        mHitRect.inset(inset, inset);
-
-        if (mDragHandle != null) {
-            mDragHandle.setBounds(mDragHandleBounds);
-        }
-    }
-
-    @Override
-    public void onAccessibilityStateChanged(final boolean enabled) {
-        LauncherStateManager stateManager = mLauncher.getStateManager();
-        stateManager.removeStateListener(this);
-
-        if (enabled) {
-            stateManager.addStateListener(this);
-            onStateSetImmediately(mLauncher.getStateManager().getState());
-        } else {
-            setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
-        }
-        updateDragHandleVisibility(null);
-    }
-
-    protected void updateDragHandleVisibility() {
-        updateDragHandleVisibility(null);
-    }
-
-    public void updateDragHandleVisibility(final Drawable recycle) {
-        boolean visible = mLauncher.getDeviceProfile().isVerticalBarLayout() || mAM.isEnabled() || Utilities.getZimPrefs(mLauncher).getDockShowArrow();
-        boolean wasVisible = mDragHandle != null;
-        if (visible != wasVisible) {
-            if (visible) {
-                mDragHandle = recycle != null ? recycle
-                              : mLauncher.getDrawable(R.drawable.drag_handle_indicator);
-                mDragHandle.setBounds(mDragHandleBounds);
-
-                updateDragHandleAlpha();
-            } else {
-                mDragHandle = null;
-            }
-            invalidate();
-        }
-    }
-
-    @Override
-    public boolean dispatchHoverEvent(final MotionEvent event) {
-        return mAccessibilityHelper.dispatchHoverEvent(event) || super.dispatchHoverEvent(event);
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(final KeyEvent event) {
-        return mAccessibilityHelper.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
-    }
-
-    @Override
-    public void onFocusChanged(final boolean gainFocus, final int direction,
-                               final Rect previouslyFocusedRect) {
-        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
-        mAccessibilityHelper.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
-    }
-
-    @Override
-    public void onStateTransitionStart(final LauncherState toState) {
-    }
-
-    @Override
-    public void onStateTransitionComplete(final LauncherState finalState) {
-        onStateSetImmediately(finalState);
-    }
-
-    @Override
-    public void onStateSetImmediately(final LauncherState state) {
-        setImportantForAccessibility(state == ALL_APPS
-                                     ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
-                                     : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
-    }
-
-    protected class AccessibilityHelper extends ExploreByTouchHelper {
-
-        private static final int DRAG_HANDLE_ID = 1;
-
-        public AccessibilityHelper() {
-            super(ScrimView.this);
-        }
-
+      ObjectAnimator anim =
+          ObjectAnimator.ofPropertyValuesHolder(drawable, holder);
+      anim.addListener(new AnimatorListenerAdapter() {
         @Override
-        protected int getVirtualViewAt(final float x, final float y) {
-            return mDragHandleBounds.contains((int) x, (int) y)
-                   ? DRAG_HANDLE_ID : INVALID_ID;
+        public void onAnimationEnd(final Animator animation) {
+          getOverlay().remove(drawable);
+          updateDragHandleVisibility(drawable);
         }
+      });
+      anim.addUpdateListener((v) -> invalidate(invalidateRegion));
+      getOverlay().add(drawable);
+      anim.start();
+    }
+    return value;
+  }
 
-        @Override
-        protected void getVisibleVirtualViews(final List<Integer> virtualViewIds) {
-            virtualViewIds.add(DRAG_HANDLE_ID);
-        }
+  protected void updateDragHandleBounds() {
+    DeviceProfile grid = mLauncher.getDeviceProfile();
+    final int left;
+    final int width = getMeasuredWidth();
+    final int top =
+        getMeasuredHeight() - mDragHandleSize - grid.getInsets().bottom;
+    final int topMargin;
 
-        @Override
-        protected void onPopulateNodeForVirtualView(final int virtualViewId,
-                final AccessibilityNodeInfoCompat node) {
-            node.setContentDescription(getContext().getString(R.string.all_apps_button_label));
-            node.setBoundsInParent(mDragHandleBounds);
+    if (grid.isVerticalBarLayout()) {
+      topMargin = grid.workspacePadding.bottom;
+      if (grid.isSeascape()) {
+        left = width - grid.getInsets().right - mDragHandleSize;
+      } else {
+        left = mDragHandleSize + grid.getInsets().left;
+      }
+    } else {
+      left = (width - mDragHandleSize) / 2;
+      topMargin = grid.hotseatBarSizePx;
+    }
+    mDragHandleBounds.offsetTo(left, top - topMargin);
+    mHitRect.set(mDragHandleBounds);
+    float inset = -mDragHandleSize / 2;
+    mHitRect.inset(inset, inset);
 
-            getLocationOnScreen(mTempPos);
-            mTempRect.set(mDragHandleBounds);
-            mTempRect.offset(mTempPos[0], mTempPos[1]);
-            node.setBoundsInScreen(mTempRect);
+    if (mDragHandle != null) {
+      mDragHandle.setBounds(mDragHandleBounds);
+    }
+  }
 
-            node.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
-            node.setClickable(true);
-            node.setFocusable(true);
+  @Override
+  public void onAccessibilityStateChanged(final boolean enabled) {
+    LauncherStateManager stateManager = mLauncher.getStateManager();
+    stateManager.removeStateListener(this);
 
-            if (mLauncher.isInState(NORMAL)) {
-                Context context = getContext();
-                if (Utilities.isWallpaperAllowed(context)) {
-                    node.addAction(
-                        new AccessibilityActionCompat(WALLPAPERS, context.getText(WALLPAPERS)));
-                }
-                node.addAction(new AccessibilityActionCompat(WIDGETS, context.getText(WIDGETS)));
-                node.addAction(new AccessibilityActionCompat(SETTINGS, context.getText(SETTINGS)));
-            }
-        }
+    if (enabled) {
+      stateManager.addStateListener(this);
+      onStateSetImmediately(mLauncher.getStateManager().getState());
+    } else {
+      setImportantForAccessibility(
+          IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+    }
+    updateDragHandleVisibility(null);
+  }
 
-        @Override
-        protected boolean onPerformActionForVirtualView(
-            final int virtualViewId, final int action, final Bundle arguments) {
-            if (action == AccessibilityNodeInfoCompat.ACTION_CLICK) {
-                mLauncher.getUserEventDispatcher().logActionOnControl(
-                    Action.Touch.TAP, ControlType.ALL_APPS_BUTTON,
-                    mLauncher.getStateManager().getState().containerType);
-                mLauncher.getStateManager().goToState(ALL_APPS);
-                return true;
-            } else if (action == WALLPAPERS) {
-                return OptionsPopupView.startWallpaperPicker(ScrimView.this);
-            } else if (action == WIDGETS) {
-                return OptionsPopupView.onWidgetsClicked(ScrimView.this);
-            } else if (action == SETTINGS) {
-                return OptionsPopupView.startSettings(ScrimView.this);
-            }
+  protected void updateDragHandleVisibility() {
+    updateDragHandleVisibility(null);
+  }
 
-            return false;
-        }
+  public void updateDragHandleVisibility(final Drawable recycle) {
+    boolean visible = mLauncher.getDeviceProfile().isVerticalBarLayout() ||
+                      mAM.isEnabled() ||
+                      Utilities.getZimPrefs(mLauncher).getDockShowArrow();
+    boolean wasVisible = mDragHandle != null;
+    if (visible != wasVisible) {
+      if (visible) {
+        mDragHandle =
+            recycle != null
+                ? recycle
+                : mLauncher.getDrawable(R.drawable.drag_handle_indicator);
+        mDragHandle.setBounds(mDragHandleBounds);
+
+        updateDragHandleAlpha();
+      } else {
+        mDragHandle = null;
+      }
+      invalidate();
+    }
+  }
+
+  @Override
+  public boolean dispatchHoverEvent(final MotionEvent event) {
+    return mAccessibilityHelper.dispatchHoverEvent(event) ||
+        super.dispatchHoverEvent(event);
+  }
+
+  @Override
+  public boolean dispatchKeyEvent(final KeyEvent event) {
+    return mAccessibilityHelper.dispatchKeyEvent(event) ||
+        super.dispatchKeyEvent(event);
+  }
+
+  @Override
+  public void onFocusChanged(final boolean gainFocus, final int direction,
+                             final Rect previouslyFocusedRect) {
+    super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+    mAccessibilityHelper.onFocusChanged(gainFocus, direction,
+                                        previouslyFocusedRect);
+  }
+
+  @Override
+  public void onStateTransitionStart(final LauncherState toState) {}
+
+  @Override
+  public void onStateTransitionComplete(final LauncherState finalState) {
+    onStateSetImmediately(finalState);
+  }
+
+  @Override
+  public void onStateSetImmediately(final LauncherState state) {
+    setImportantForAccessibility(
+        state == ALL_APPS ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                          : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
+  }
+
+  protected class AccessibilityHelper extends ExploreByTouchHelper {
+
+    private static final int DRAG_HANDLE_ID = 1;
+
+    public AccessibilityHelper() { super(ScrimView.this); }
+
+    @Override
+    protected int getVirtualViewAt(final float x, final float y) {
+      return mDragHandleBounds.contains((int)x, (int)y) ? DRAG_HANDLE_ID
+                                                        : INVALID_ID;
     }
 
-    public int getDragHandleSize() {
-        return mDragHandleSize;
+    @Override
+    protected void getVisibleVirtualViews(final List<Integer> virtualViewIds) {
+      virtualViewIds.add(DRAG_HANDLE_ID);
     }
 
-    protected void onDrawRoundRect(final Canvas canvas, final float left, final float top, final float right, final float bottom,
-                                   final float rx, final float ry, final Paint paint) {
+    @Override
+    protected void
+    onPopulateNodeForVirtualView(final int virtualViewId,
+                                 final AccessibilityNodeInfoCompat node) {
+      node.setContentDescription(
+          getContext().getString(R.string.all_apps_button_label));
+      node.setBoundsInParent(mDragHandleBounds);
 
+      getLocationOnScreen(mTempPos);
+      mTempRect.set(mDragHandleBounds);
+      mTempRect.offset(mTempPos[0], mTempPos[1]);
+      node.setBoundsInScreen(mTempRect);
+
+      node.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
+      node.setClickable(true);
+      node.setFocusable(true);
+
+      if (mLauncher.isInState(NORMAL)) {
+        Context context = getContext();
+        if (Utilities.isWallpaperAllowed(context)) {
+          node.addAction(new AccessibilityActionCompat(
+              WALLPAPERS, context.getText(WALLPAPERS)));
+        }
+        node.addAction(
+            new AccessibilityActionCompat(WIDGETS, context.getText(WIDGETS)));
+        node.addAction(
+            new AccessibilityActionCompat(SETTINGS, context.getText(SETTINGS)));
+      }
     }
 
-    protected void onDrawFlatColor(final Canvas canvas) {
+    @Override
+    protected boolean onPerformActionForVirtualView(final int virtualViewId,
+                                                    final int action,
+                                                    final Bundle arguments) {
+      if (action == AccessibilityNodeInfoCompat.ACTION_CLICK) {
+        mLauncher.getUserEventDispatcher().logActionOnControl(
+            Action.Touch.TAP, ControlType.ALL_APPS_BUTTON,
+            mLauncher.getStateManager().getState().containerType);
+        mLauncher.getStateManager().goToState(ALL_APPS);
+        return true;
+      } else if (action == WALLPAPERS) {
+        return OptionsPopupView.startWallpaperPicker(ScrimView.this);
+      } else if (action == WIDGETS) {
+        return OptionsPopupView.onWidgetsClicked(ScrimView.this);
+      } else if (action == SETTINGS) {
+        return OptionsPopupView.startSettings(ScrimView.this);
+      }
 
+      return false;
     }
+  }
+
+  public int getDragHandleSize() { return mDragHandleSize; }
+
+  protected void onDrawRoundRect(final Canvas canvas, final float left,
+                                 final float top, final float right,
+                                 final float bottom, final float rx,
+                                 final float ry, final Paint paint) {}
+
+  protected void onDrawFlatColor(final Canvas canvas) {}
 }

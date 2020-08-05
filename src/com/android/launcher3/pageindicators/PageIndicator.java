@@ -20,9 +20,9 @@ package com.android.launcher3.pageindicators;
  */
 public interface PageIndicator {
 
-    void setScroll(int currentScroll, int totalScroll);
+  void setScroll(int currentScroll, int totalScroll);
 
-    void setActiveMarker(int activePage);
+  void setActiveMarker(int activePage);
 
-    void setMarkersCount(int numMarkers);
+  void setMarkersCount(int numMarkers);
 }

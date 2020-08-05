@@ -20,7 +20,4 @@ import android.appwidget.AppWidgetProvider;
 /**
  * A simple app widget without any configuration screen.
  */
-public class AppWidgetNoConfig extends AppWidgetProvider {
-
-
-}
+public class AppWidgetNoConfig extends AppWidgetProvider {}

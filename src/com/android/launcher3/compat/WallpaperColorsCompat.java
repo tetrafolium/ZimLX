@@ -20,36 +20,27 @@ package com.android.launcher3.compat;
  */
 public class WallpaperColorsCompat {
 
-    public static final int HINT_SUPPORTS_DARK_TEXT = 0x1;
-    public static final int HINT_SUPPORTS_DARK_THEME = 0x2;
+  public static final int HINT_SUPPORTS_DARK_TEXT = 0x1;
+  public static final int HINT_SUPPORTS_DARK_THEME = 0x2;
 
-    private final int mPrimaryColor;
-    private final int mSecondaryColor;
-    private final int mTertiaryColor;
-    private final int mColorHints;
+  private final int mPrimaryColor;
+  private final int mSecondaryColor;
+  private final int mTertiaryColor;
+  private final int mColorHints;
 
-    public WallpaperColorsCompat(final int primaryColor, final int secondaryColor, final int tertiaryColor,
-                                 final int colorHints) {
-        mPrimaryColor = primaryColor;
-        mSecondaryColor = secondaryColor;
-        mTertiaryColor = tertiaryColor;
-        mColorHints = colorHints;
-    }
+  public WallpaperColorsCompat(final int primaryColor, final int secondaryColor,
+                               final int tertiaryColor, final int colorHints) {
+    mPrimaryColor = primaryColor;
+    mSecondaryColor = secondaryColor;
+    mTertiaryColor = tertiaryColor;
+    mColorHints = colorHints;
+  }
 
-    public int getPrimaryColor() {
-        return mPrimaryColor;
-    }
+  public int getPrimaryColor() { return mPrimaryColor; }
 
-    public int getSecondaryColor() {
-        return mSecondaryColor;
-    }
+  public int getSecondaryColor() { return mSecondaryColor; }
 
-    public int getTertiaryColor() {
-        return mTertiaryColor;
-    }
+  public int getTertiaryColor() { return mTertiaryColor; }
 
-    public int getColorHints() {
-        return mColorHints;
-    }
-
+  public int getColorHints() { return mColorHints; }
 }

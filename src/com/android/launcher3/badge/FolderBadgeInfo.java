@@ -25,44 +25,40 @@ import com.android.launcher3.Utilities;
  */
 public class FolderBadgeInfo extends BadgeInfo {
 
-    private static final int MIN_COUNT = 0;
+  private static final int MIN_COUNT = 0;
 
-    private int mNumNotifications;
+  private int mNumNotifications;
 
-    public FolderBadgeInfo() {
-        super(null);
+  public FolderBadgeInfo() { super(null); }
+
+  public void addBadgeInfo(final BadgeInfo badgeToAdd) {
+    if (badgeToAdd == null) {
+      return;
     }
+    mNumNotifications += badgeToAdd.getNotificationKeys().size();
+    mNumNotifications = Utilities.boundToRange(mNumNotifications, MIN_COUNT,
+                                               BadgeInfo.MAX_COUNT);
+  }
 
-    public void addBadgeInfo(final BadgeInfo badgeToAdd) {
-        if (badgeToAdd == null) {
-            return;
-        }
-        mNumNotifications += badgeToAdd.getNotificationKeys().size();
-        mNumNotifications = Utilities.boundToRange(
-                                mNumNotifications, MIN_COUNT, BadgeInfo.MAX_COUNT);
+  public void subtractBadgeInfo(final BadgeInfo badgeToSubtract) {
+    if (badgeToSubtract == null) {
+      return;
     }
+    mNumNotifications -= badgeToSubtract.getNotificationKeys().size();
+    mNumNotifications = Utilities.boundToRange(mNumNotifications, MIN_COUNT,
+                                               BadgeInfo.MAX_COUNT);
+  }
 
-    public void subtractBadgeInfo(final BadgeInfo badgeToSubtract) {
-        if (badgeToSubtract == null) {
-            return;
-        }
-        mNumNotifications -= badgeToSubtract.getNotificationKeys().size();
-        mNumNotifications = Utilities.boundToRange(
-                                mNumNotifications, MIN_COUNT, BadgeInfo.MAX_COUNT);
+  @Override
+  public int getNotificationCount() {
+    boolean showBadgeCount = Launcher.showNotificationCount;
+    if (showBadgeCount) {
+      return mNumNotifications;
+    } else {
+      // This forces the folder badge to always show up as a dot.
+      return 0;
     }
+  }
 
-    @Override
-    public int getNotificationCount() {
-        boolean showBadgeCount = Launcher.showNotificationCount;
-        if (showBadgeCount) {
-            return mNumNotifications;
-        } else {
-            // This forces the folder badge to always show up as a dot.
-            return 0;
-        }
-    }
-
-    public boolean hasBadge() {
-        return mNumNotifications > 0;
-    }
+  public boolean hasBadge() { return mNumNotifications > 0; }
 }

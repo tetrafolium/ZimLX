@@ -17,6 +17,8 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
@@ -34,7 +36,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
-
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTargetBar;
@@ -51,524 +52,585 @@ import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.BaseDragLayer;
-
-import org.zimmob.zimlx.touch.WorkspaceOptionModeTouchHelper;
-
 import java.util.ArrayList;
-
-import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+import org.zimmob.zimlx.touch.WorkspaceOptionModeTouchHelper;
 
 /**
  * A ViewGroup that coordinates dragging across its descendants
  */
 public class DragLayer extends BaseDragLayer<Launcher> {
 
-    public static final int ALPHA_INDEX_OVERLAY = 0;
-    public static final int ALPHA_INDEX_LAUNCHER_LOAD = 1;
-    private static final int ALPHA_CHANNEL_COUNT = 4;
+  public static final int ALPHA_INDEX_OVERLAY = 0;
+  public static final int ALPHA_INDEX_LAUNCHER_LOAD = 1;
+  private static final int ALPHA_CHANNEL_COUNT = 4;
 
-    public static final int ANIMATION_END_DISAPPEAR = 0;
-    public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
+  public static final int ANIMATION_END_DISAPPEAR = 0;
+  public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
 
-    @Thunk
-    DragController mDragController;
+  @Thunk DragController mDragController;
 
-    // Variables relating to animation of views after drop
-    private ValueAnimator mDropAnim = null;
-    private final TimeInterpolator mCubicEaseOutInterpolator = Interpolators.DEACCEL_1_5;
-    @Thunk
-    DragView mDropView = null;
-    @Thunk
-    int mAnchorViewInitialScrollX = 0;
-    @Thunk
-    View mAnchorView = null;
+  // Variables relating to animation of views after drop
+  private ValueAnimator mDropAnim = null;
+  private final TimeInterpolator mCubicEaseOutInterpolator =
+      Interpolators.DEACCEL_1_5;
+  @Thunk DragView mDropView = null;
+  @Thunk int mAnchorViewInitialScrollX = 0;
+  @Thunk View mAnchorView = null;
 
-    private boolean mHoverPointClosesFolder = false;
+  private boolean mHoverPointClosesFolder = false;
 
-    private int mTopViewIndex;
-    private int mChildCountOnLastUpdate = -1;
+  private int mTopViewIndex;
+  private int mChildCountOnLastUpdate = -1;
 
-    // Related to adjacent page hints
-    private final ViewGroupFocusHelper mFocusIndicatorHelper;
-    private final WorkspaceAndHotseatScrim mScrim;
+  // Related to adjacent page hints
+  private final ViewGroupFocusHelper mFocusIndicatorHelper;
+  private final WorkspaceAndHotseatScrim mScrim;
 
+  private final WorkspaceOptionModeTouchHelper mWorkspaceOptionModeTouchHelper;
 
-    private final WorkspaceOptionModeTouchHelper mWorkspaceOptionModeTouchHelper;
+  /**
+   * Used to create a new DragLayer from XML.
+   *
+   * @param context The application's context.
+   * @param attrs The attributes set containing the Workspace's customization
+   *     values.
+   */
+  public DragLayer(final Context context, final AttributeSet attrs) {
+    super(context, attrs, ALPHA_CHANNEL_COUNT);
 
-    /**
-     * Used to create a new DragLayer from XML.
-     *
-     * @param context The application's context.
-     * @param attrs The attributes set containing the Workspace's customization values.
-     */
-    public DragLayer(final Context context, final AttributeSet attrs) {
-        super(context, attrs, ALPHA_CHANNEL_COUNT);
+    // Disable multitouch across the workspace/all apps/customize tray
+    setMotionEventSplittingEnabled(false);
+    setChildrenDrawingOrderEnabled(true);
 
-        // Disable multitouch across the workspace/all apps/customize tray
-        setMotionEventSplittingEnabled(false);
-        setChildrenDrawingOrderEnabled(true);
+    mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
+    mScrim = new WorkspaceAndHotseatScrim(this);
+    mWorkspaceOptionModeTouchHelper =
+        new WorkspaceOptionModeTouchHelper(Launcher.getLauncher(context));
+  }
 
-        mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
-        mScrim = new WorkspaceAndHotseatScrim(this);
-        mWorkspaceOptionModeTouchHelper = new WorkspaceOptionModeTouchHelper(Launcher.getLauncher(context));
+  public void setup(final DragController dragController,
+                    final Workspace workspace) {
+    mDragController = dragController;
+    mScrim.setWorkspace(workspace);
+    recreateControllers();
+  }
 
+  public void recreateControllers() {
+    mControllers = UiFactory.createTouchControllers(mActivity);
+  }
+
+  public ViewGroupFocusHelper getFocusIndicatorHelper() {
+    return mFocusIndicatorHelper;
+  }
+
+  @Override
+  public boolean dispatchKeyEvent(final KeyEvent event) {
+    return mDragController.dispatchKeyEvent(event) ||
+        super.dispatchKeyEvent(event);
+  }
+
+  @Override
+  protected boolean drawChild(final Canvas canvas, final View child,
+                              final long drawingTime) {
+    ViewScrim scrim = ViewScrim.get(child);
+    if (scrim != null) {
+      scrim.draw(canvas, getWidth(), getHeight());
     }
+    return super.drawChild(canvas, child, drawingTime);
+  }
 
-    public void setup(final DragController dragController, final Workspace workspace) {
-        mDragController = dragController;
-        mScrim.setWorkspace(workspace);
-        recreateControllers();
+  @Override
+  protected boolean findActiveController(final MotionEvent ev) {
+    if (mActivity.getStateManager().getState().disableInteraction) {
+      // You Shall Not Pass!!!
+      mActiveController = null;
+      return true;
     }
+    return super.findActiveController(ev);
+  }
 
-    public void recreateControllers() {
-        mControllers = UiFactory.createTouchControllers(mActivity);
+  private boolean isEventOverAccessibleDropTargetBar(final MotionEvent ev) {
+    return isInAccessibleDrag() &&
+        isEventOverView(mActivity.getDropTargetBar(), ev);
+  }
+
+  @Override
+  public boolean onInterceptHoverEvent(final MotionEvent ev) {
+    if (mActivity == null || mActivity.getWorkspace() == null) {
+      return false;
     }
-
-    public ViewGroupFocusHelper getFocusIndicatorHelper() {
-        return mFocusIndicatorHelper;
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(final KeyEvent event) {
-        return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
-    }
-
-    @Override
-    protected boolean drawChild(final Canvas canvas, final View child, final long drawingTime) {
-        ViewScrim scrim = ViewScrim.get(child);
-        if (scrim != null) {
-            scrim.draw(canvas, getWidth(), getHeight());
-        }
-        return super.drawChild(canvas, child, drawingTime);
-    }
-
-    @Override
-    protected boolean findActiveController(final MotionEvent ev) {
-        if (mActivity.getStateManager().getState().disableInteraction) {
-            // You Shall Not Pass!!!
-            mActiveController = null;
+    AbstractFloatingView topView =
+        AbstractFloatingView.getTopOpenView(mActivity);
+    if (!(topView instanceof Folder)) {
+      return false;
+    } else {
+      AccessibilityManager accessibilityManager =
+          (AccessibilityManager)getContext().getSystemService(
+              Context.ACCESSIBILITY_SERVICE);
+      if (accessibilityManager.isTouchExplorationEnabled()) {
+        Folder currentFolder = (Folder)topView;
+        final int action = ev.getAction();
+        boolean isOverFolderOrSearchBar;
+        switch (action) {
+        case MotionEvent.ACTION_HOVER_ENTER:
+          isOverFolderOrSearchBar = isEventOverView(topView, ev) ||
+                                    isEventOverAccessibleDropTargetBar(ev);
+          if (!isOverFolderOrSearchBar) {
+            sendTapOutsideFolderAccessibilityEvent(
+                currentFolder.isEditingName());
+            mHoverPointClosesFolder = true;
             return true;
-        }
-        return super.findActiveController(ev);
-    }
-
-    private boolean isEventOverAccessibleDropTargetBar(final MotionEvent ev) {
-        return isInAccessibleDrag() && isEventOverView(mActivity.getDropTargetBar(), ev);
-    }
-
-    @Override
-    public boolean onInterceptHoverEvent(final MotionEvent ev) {
-        if (mActivity == null || mActivity.getWorkspace() == null) {
-            return false;
-        }
-        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
-        if (!(topView instanceof Folder)) {
-            return false;
-        } else {
-            AccessibilityManager accessibilityManager = (AccessibilityManager)
-                    getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-            if (accessibilityManager.isTouchExplorationEnabled()) {
-                Folder currentFolder = (Folder) topView;
-                final int action = ev.getAction();
-                boolean isOverFolderOrSearchBar;
-                switch (action) {
-                case MotionEvent.ACTION_HOVER_ENTER:
-                    isOverFolderOrSearchBar = isEventOverView(topView, ev)
-                                              || isEventOverAccessibleDropTargetBar(ev);
-                    if (!isOverFolderOrSearchBar) {
-                        sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
-                        mHoverPointClosesFolder = true;
-                        return true;
-                    }
-                    mHoverPointClosesFolder = false;
-                    break;
-                case MotionEvent.ACTION_HOVER_MOVE:
-                    isOverFolderOrSearchBar = isEventOverView(topView, ev)
-                                              || isEventOverAccessibleDropTargetBar(ev);
-                    if (!isOverFolderOrSearchBar && !mHoverPointClosesFolder) {
-                        sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
-                        mHoverPointClosesFolder = true;
-                        return true;
-                    } else if (!isOverFolderOrSearchBar) {
-                        return true;
-                    }
-                    mHoverPointClosesFolder = false;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void sendTapOutsideFolderAccessibilityEvent(final boolean isEditingName) {
-        int stringId = isEditingName ? R.string.folder_tap_to_rename : R.string.folder_tap_to_close;
-        sendCustomAccessibilityEvent(
-            this, AccessibilityEvent.TYPE_VIEW_FOCUSED, getContext().getString(stringId));
-    }
-
-    @Override
-    public boolean onHoverEvent(final MotionEvent ev) {
-        // If we've received this, we've already done the necessary handling
-        // in onInterceptHoverEvent. Return true to consume the event.
-        return false;
-    }
-
-
-    private boolean isInAccessibleDrag() {
-        return mActivity.getAccessibilityDelegate().isInAccessibleDrag();
-    }
-
-    @Override
-    public boolean onRequestSendAccessibilityEvent(final View child, final AccessibilityEvent event) {
-        if (isInAccessibleDrag() && child instanceof DropTargetBar) {
+          }
+          mHoverPointClosesFolder = false;
+          break;
+        case MotionEvent.ACTION_HOVER_MOVE:
+          isOverFolderOrSearchBar = isEventOverView(topView, ev) ||
+                                    isEventOverAccessibleDropTargetBar(ev);
+          if (!isOverFolderOrSearchBar && !mHoverPointClosesFolder) {
+            sendTapOutsideFolderAccessibilityEvent(
+                currentFolder.isEditingName());
+            mHoverPointClosesFolder = true;
             return true;
+          } else if (!isOverFolderOrSearchBar) {
+            return true;
+          }
+          mHoverPointClosesFolder = false;
         }
-        return super.onRequestSendAccessibilityEvent(child, event);
+      }
+    }
+    return false;
+  }
+
+  private void
+  sendTapOutsideFolderAccessibilityEvent(final boolean isEditingName) {
+    int stringId = isEditingName ? R.string.folder_tap_to_rename
+                                 : R.string.folder_tap_to_close;
+    sendCustomAccessibilityEvent(this, AccessibilityEvent.TYPE_VIEW_FOCUSED,
+                                 getContext().getString(stringId));
+  }
+
+  @Override
+  public boolean onHoverEvent(final MotionEvent ev) {
+    // If we've received this, we've already done the necessary handling
+    // in onInterceptHoverEvent. Return true to consume the event.
+    return false;
+  }
+
+  private boolean isInAccessibleDrag() {
+    return mActivity.getAccessibilityDelegate().isInAccessibleDrag();
+  }
+
+  @Override
+  public boolean
+  onRequestSendAccessibilityEvent(final View child,
+                                  final AccessibilityEvent event) {
+    if (isInAccessibleDrag() && child instanceof DropTargetBar) {
+      return true;
+    }
+    return super.onRequestSendAccessibilityEvent(child, event);
+  }
+
+  @Override
+  public void
+  addChildrenForAccessibility(final ArrayList<View> childrenForAccessibility) {
+    View topView = AbstractFloatingView.getTopOpenViewWithType(
+        mActivity, AbstractFloatingView.TYPE_ACCESSIBLE);
+    if (topView != null) {
+      addAccessibleChildToList(topView, childrenForAccessibility);
+      if (isInAccessibleDrag()) {
+        addAccessibleChildToList(mActivity.getDropTargetBar(),
+                                 childrenForAccessibility);
+      }
+    } else {
+      super.addChildrenForAccessibility(childrenForAccessibility);
+    }
+  }
+
+  @Override
+  public boolean dispatchUnhandledMove(final View focused,
+                                       final int direction) {
+    return super.dispatchUnhandledMove(focused, direction) ||
+        mDragController.dispatchUnhandledMove(focused, direction);
+  }
+
+  @Override
+  public boolean dispatchTouchEvent(final MotionEvent ev) {
+    ev.offsetLocation(getTranslationX(), 0);
+    try {
+      return mWorkspaceOptionModeTouchHelper.dispatchTouchEvent(ev) ||
+          super.dispatchTouchEvent(ev);
+    } finally {
+      ev.offsetLocation(-getTranslationX(), 0);
+    }
+  }
+
+  public void animateViewIntoPosition(final DragView dragView, final int[] pos,
+                                      final float alpha, final float scaleX,
+                                      final float scaleY,
+                                      final int animationEndStyle,
+                                      final Runnable onFinishRunnable,
+                                      final int duration) {
+    Rect r = new Rect();
+    getViewRectRelativeToSelf(dragView, r);
+    final int fromX = r.left;
+    final int fromY = r.top;
+
+    animateViewIntoPosition(dragView, fromX, fromY, pos[0], pos[1], alpha, 1, 1,
+                            scaleX, scaleY, onFinishRunnable, animationEndStyle,
+                            duration, null);
+  }
+
+  public void animateViewIntoPosition(final DragView dragView, final View child,
+                                      final View anchorView) {
+    animateViewIntoPosition(dragView, child, -1, anchorView);
+  }
+
+  public void animateViewIntoPosition(final DragView dragView, final View child,
+                                      final int duration,
+                                      final View anchorView) {
+    ShortcutAndWidgetContainer parentChildren =
+        (ShortcutAndWidgetContainer)child.getParent();
+    CellLayout.LayoutParams lp =
+        (CellLayout.LayoutParams)child.getLayoutParams();
+    parentChildren.measureChild(child);
+
+    Rect r = new Rect();
+    getViewRectRelativeToSelf(dragView, r);
+
+    int[] coord = new int[2];
+    float childScale = child.getScaleX();
+    coord[0] = lp.x + (int)(child.getMeasuredWidth() * (1 - childScale) / 2);
+    coord[1] = lp.y + (int)(child.getMeasuredHeight() * (1 - childScale) / 2);
+
+    // Since the child hasn't necessarily been laid out, we force the lp to be
+    // updated with the correct coordinates (above) and use these to determine
+    // the final location
+    float scale =
+        getDescendantCoordRelativeToSelf((View)child.getParent(), coord);
+    // We need to account for the scale of the child itself, as the above only
+    // accounts for for the scale in parents.
+    scale *= childScale;
+    int toX = coord[0];
+    int toY = coord[1];
+    float toScale = scale;
+    if (child instanceof TextView) {
+      TextView tv = (TextView)child;
+      // Account for the source scale of the icon (ie. from AllApps to
+      // Workspace, in which the workspace may have smaller icon bounds).
+      toScale = scale / dragView.getIntrinsicIconScaleFactor();
+
+      // The child may be scaled (always about the center of the view) so to
+      // account for it, we have to offset the position by the scaled size. Once
+      // we do that, we can center the drag view about the scaled child view.
+      toY += Math.round(toScale * tv.getPaddingTop());
+      toY -= dragView.getMeasuredHeight() * (1 - toScale) / 2;
+      if (dragView.getDragVisualizeOffset() != null) {
+        toY -= Math.round(toScale * dragView.getDragVisualizeOffset().y);
+      }
+
+      toX -= (dragView.getMeasuredWidth() -
+              Math.round(scale * child.getMeasuredWidth())) /
+             2;
+    } else if (child instanceof FolderIcon) {
+      // Account for holographic blur padding on the drag view
+      toY += Math.round(scale *
+                        (child.getPaddingTop() - dragView.getDragRegionTop()));
+      toY -= scale * dragView.getBlurSizeOutline() / 2;
+      toY -= (1 - scale) * dragView.getMeasuredHeight() / 2;
+      // Center in the x coordinate about the target's drawable
+      toX -= (dragView.getMeasuredWidth() -
+              Math.round(scale * child.getMeasuredWidth())) /
+             2;
+    } else {
+      toY -= (Math.round(scale *
+                         (dragView.getHeight() - child.getMeasuredHeight()))) /
+             2;
+      toX -= (Math.round(scale * (dragView.getMeasuredWidth() -
+                                  child.getMeasuredWidth()))) /
+             2;
     }
 
-    @Override
-    public void addChildrenForAccessibility(final ArrayList<View> childrenForAccessibility) {
-        View topView = AbstractFloatingView.getTopOpenViewWithType(mActivity,
-                       AbstractFloatingView.TYPE_ACCESSIBLE);
-        if (topView != null) {
-            addAccessibleChildToList(topView, childrenForAccessibility);
-            if (isInAccessibleDrag()) {
-                addAccessibleChildToList(mActivity.getDropTargetBar(), childrenForAccessibility);
-            }
-        } else {
-            super.addChildrenForAccessibility(childrenForAccessibility);
+    final int fromX = r.left;
+    final int fromY = r.top;
+    child.setVisibility(INVISIBLE);
+    Runnable onCompleteRunnable = () -> child.setVisibility(VISIBLE);
+    animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, toScale,
+                            toScale, onCompleteRunnable,
+                            ANIMATION_END_DISAPPEAR, duration, anchorView);
+  }
+
+  public void animateViewIntoPosition(
+      final DragView view, final int fromX, final int fromY, final int toX,
+      final int toY, final float finalAlpha, final float initScaleX,
+      final float initScaleY, final float finalScaleX, final float finalScaleY,
+      final Runnable onCompleteRunnable, final int animationEndStyle,
+      final int duration, final View anchorView) {
+    Rect from = new Rect(fromX, fromY, fromX + view.getMeasuredWidth(),
+                         fromY + view.getMeasuredHeight());
+    Rect to = new Rect(toX, toY, toX + view.getMeasuredWidth(),
+                       toY + view.getMeasuredHeight());
+    animateView(view, from, to, finalAlpha, initScaleX, initScaleY, finalScaleX,
+                finalScaleY, duration, null, null, onCompleteRunnable,
+                animationEndStyle, anchorView);
+  }
+
+  /**
+   * This method animates a view at the end of a drag and drop animation.
+   *
+   * @param view The view to be animated. This view is drawn directly into
+   *     DragLayer, and so
+   *        doesn't need to be a child of DragLayer.
+   * @param from The initial location of the view. Only the left and top
+   *     parameters are used.
+   * @param to The final location of the view. Only the left and top parameters
+   *     are used. This
+   *        location doesn't account for scaling, and so should be centered
+   * about the desired final location (including scaling).
+   * @param finalAlpha The final alpha of the view, in case we want it to fade
+   *     as it animates.
+   * @param finalScaleX The final scale of the view. The view is scaled about
+   *     its center.
+   * @param finalScaleY The final scale of the view. The view is scaled about
+   *     its center.
+   * @param duration The duration of the animation.
+   * @param motionInterpolator The interpolator to use for the location of the
+   *     view.
+   * @param alphaInterpolator The interpolator to use for the alpha of the view.
+   * @param onCompleteRunnable Optional runnable to run on animation completion.
+   * @param animationEndStyle Whether or not to fade out the view once the
+   *     animation completes.
+   *        {@link #ANIMATION_END_DISAPPEAR} or {@link
+   * #ANIMATION_END_REMAIN_VISIBLE}.
+   * @param anchorView If not null, this represents the view which the animated
+   *     view stays
+   *        anchored to in case scrolling is currently taking place. Note:
+   * currently this is only used for the X dimension for the case of the
+   * workspace.
+   */
+  public void animateView(final DragView view, final Rect from, final Rect to,
+                          final float finalAlpha, final float initScaleX,
+                          final float initScaleY, final float finalScaleX,
+                          final float finalScaleY, final int duration,
+                          final Interpolator motionInterpolator,
+                          final Interpolator alphaInterpolator,
+                          final Runnable onCompleteRunnable,
+                          final int animationEndStyle, final View anchorView) {
+
+    // Calculate the duration of the animation based on the object's distance
+    final float dist =
+        (float)Math.hypot(to.left - from.left, to.top - from.top);
+    final Resources res = getResources();
+    final float maxDist =
+        (float)res.getInteger(R.integer.config_dropAnimMaxDist);
+
+    // If duration < 0, this is a cue to compute the duration based on the
+    // distance
+    if (duration < 0) {
+      duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
+      if (dist < maxDist) {
+        duration *= mCubicEaseOutInterpolator.getInterpolation(dist / maxDist);
+      }
+      duration = Math.max(duration,
+                          res.getInteger(R.integer.config_dropAnimMinDuration));
+    }
+
+    // Fall back to cubic ease out interpolator for the animation if none is
+    // specified
+    TimeInterpolator interpolator = null;
+    if (alphaInterpolator == null || motionInterpolator == null) {
+      interpolator = mCubicEaseOutInterpolator;
+    }
+
+    // Animate the view
+    final float initAlpha = view.getAlpha();
+    final float dropViewScale = view.getScaleX();
+    AnimatorUpdateListener updateCb = new AnimatorUpdateListener() {
+      @Override
+      public void onAnimationUpdate(final ValueAnimator animation) {
+        final float percent = (Float)animation.getAnimatedValue();
+        final int width = view.getMeasuredWidth();
+        final int height = view.getMeasuredHeight();
+
+        float alphaPercent = alphaInterpolator == null
+                                 ? percent
+                                 : alphaInterpolator.getInterpolation(percent);
+        float motionPercent =
+            motionInterpolator == null
+                ? percent
+                : motionInterpolator.getInterpolation(percent);
+
+        float initialScaleX = initScaleX * dropViewScale;
+        float initialScaleY = initScaleY * dropViewScale;
+        float scaleX = finalScaleX * percent + initialScaleX * (1 - percent);
+        float scaleY = finalScaleY * percent + initialScaleY * (1 - percent);
+        float alpha =
+            finalAlpha * alphaPercent + initAlpha * (1 - alphaPercent);
+
+        float fromLeft = from.left + (initialScaleX - 1f) * width / 2;
+        float fromTop = from.top + (initialScaleY - 1f) * height / 2;
+
+        int x = (int)(fromLeft +
+                      Math.round(((to.left - fromLeft) * motionPercent)));
+        int y =
+            (int)(fromTop + Math.round(((to.top - fromTop) * motionPercent)));
+
+        int anchorAdjust =
+            mAnchorView == null
+                ? 0
+                : (int)(mAnchorView.getScaleX() *
+                        (mAnchorViewInitialScrollX - mAnchorView.getScrollX()));
+
+        int xPos = x - mDropView.getScrollX() + anchorAdjust;
+        int yPos = y - mDropView.getScrollY();
+
+        mDropView.setTranslationX(xPos);
+        mDropView.setTranslationY(yPos);
+        mDropView.setScaleX(scaleX);
+        mDropView.setScaleY(scaleY);
+        mDropView.setAlpha(alpha);
+      }
+    };
+    animateView(view, updateCb, duration, interpolator, onCompleteRunnable,
+                animationEndStyle, anchorView);
+  }
+
+  public void animateView(final DragView view,
+                          final AnimatorUpdateListener updateCb,
+                          final int duration,
+                          final TimeInterpolator interpolator,
+                          final Runnable onCompleteRunnable,
+                          final int animationEndStyle, final View anchorView) {
+    // Clean up the previous animations
+    if (mDropAnim != null)
+      mDropAnim.cancel();
+
+    // Show the drop view if it was previously hidden
+    mDropView = view;
+    mDropView.cancelAnimation();
+    mDropView.requestLayout();
+
+    // Set the anchor view if the page is scrolling
+    if (anchorView != null) {
+      mAnchorViewInitialScrollX = anchorView.getScrollX();
+    }
+    mAnchorView = anchorView;
+
+    // Create and start the animation
+    mDropAnim = new ValueAnimator();
+    mDropAnim.setInterpolator(interpolator);
+    mDropAnim.setDuration(duration);
+    mDropAnim.setFloatValues(0f, 1f);
+    mDropAnim.addUpdateListener(updateCb);
+    mDropAnim.addListener(new AnimatorListenerAdapter() {
+      public void onAnimationEnd(final Animator animation) {
+        if (onCompleteRunnable != null) {
+          onCompleteRunnable.run();
         }
-    }
-
-    @Override
-    public boolean dispatchUnhandledMove(final View focused, final int direction) {
-        return super.dispatchUnhandledMove(focused, direction)
-               || mDragController.dispatchUnhandledMove(focused, direction);
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(final MotionEvent ev) {
-        ev.offsetLocation(getTranslationX(), 0);
-        try {
-            return mWorkspaceOptionModeTouchHelper.dispatchTouchEvent(ev) || super.dispatchTouchEvent(ev);
-        } finally {
-            ev.offsetLocation(-getTranslationX(), 0);
-        }
-    }
-
-    public void animateViewIntoPosition(final DragView dragView, final int[] pos, final float alpha,
-                                        final float scaleX, final float scaleY, final int animationEndStyle, final Runnable onFinishRunnable,
-                                        final int duration) {
-        Rect r = new Rect();
-        getViewRectRelativeToSelf(dragView, r);
-        final int fromX = r.left;
-        final int fromY = r.top;
-
-        animateViewIntoPosition(dragView, fromX, fromY, pos[0], pos[1], alpha, 1, 1, scaleX, scaleY,
-                                onFinishRunnable, animationEndStyle, duration, null);
-    }
-
-    public void animateViewIntoPosition(final DragView dragView, final View child, final View anchorView) {
-        animateViewIntoPosition(dragView, child, -1, anchorView);
-    }
-
-    public void animateViewIntoPosition(final DragView dragView, final View child, final int duration,
-                                        final View anchorView) {
-        ShortcutAndWidgetContainer parentChildren = (ShortcutAndWidgetContainer) child.getParent();
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-        parentChildren.measureChild(child);
-
-        Rect r = new Rect();
-        getViewRectRelativeToSelf(dragView, r);
-
-        int[] coord = new int[2];
-        float childScale = child.getScaleX();
-        coord[0] = lp.x + (int) (child.getMeasuredWidth() * (1 - childScale) / 2);
-        coord[1] = lp.y + (int) (child.getMeasuredHeight() * (1 - childScale) / 2);
-
-        // Since the child hasn't necessarily been laid out, we force the lp to be updated with
-        // the correct coordinates (above) and use these to determine the final location
-        float scale = getDescendantCoordRelativeToSelf((View) child.getParent(), coord);
-        // We need to account for the scale of the child itself, as the above only accounts for
-        // for the scale in parents.
-        scale *= childScale;
-        int toX = coord[0];
-        int toY = coord[1];
-        float toScale = scale;
-        if (child instanceof TextView) {
-            TextView tv = (TextView) child;
-            // Account for the source scale of the icon (ie. from AllApps to Workspace, in which
-            // the workspace may have smaller icon bounds).
-            toScale = scale / dragView.getIntrinsicIconScaleFactor();
-
-            // The child may be scaled (always about the center of the view) so to account for it,
-            // we have to offset the position by the scaled size.  Once we do that, we can center
-            // the drag view about the scaled child view.
-            toY += Math.round(toScale * tv.getPaddingTop());
-            toY -= dragView.getMeasuredHeight() * (1 - toScale) / 2;
-            if (dragView.getDragVisualizeOffset() != null) {
-                toY -= Math.round(toScale * dragView.getDragVisualizeOffset().y);
-            }
-
-            toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
-        } else if (child instanceof FolderIcon) {
-            // Account for holographic blur padding on the drag view
-            toY += Math.round(scale * (child.getPaddingTop() - dragView.getDragRegionTop()));
-            toY -= scale * dragView.getBlurSizeOutline() / 2;
-            toY -= (1 - scale) * dragView.getMeasuredHeight() / 2;
-            // Center in the x coordinate about the target's drawable
-            toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
-        } else {
-            toY -= (Math.round(scale * (dragView.getHeight() - child.getMeasuredHeight()))) / 2;
-            toX -= (Math.round(scale * (dragView.getMeasuredWidth()
-                                        - child.getMeasuredWidth()))) / 2;
-        }
-
-        final int fromX = r.left;
-        final int fromY = r.top;
-        child.setVisibility(INVISIBLE);
-        Runnable onCompleteRunnable = () -> child.setVisibility(VISIBLE);
-        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, toScale, toScale,
-                                onCompleteRunnable, ANIMATION_END_DISAPPEAR, duration, anchorView);
-    }
-
-    public void animateViewIntoPosition(final DragView view, final int fromX, final int fromY,
-                                        final int toX, final int toY, final float finalAlpha, final float initScaleX, final float initScaleY,
-                                        final float finalScaleX, final float finalScaleY, final Runnable onCompleteRunnable,
-                                        final int animationEndStyle, final int duration, final View anchorView) {
-        Rect from = new Rect(fromX, fromY, fromX
-                             + view.getMeasuredWidth(), fromY + view.getMeasuredHeight());
-        Rect to = new Rect(toX, toY, toX + view.getMeasuredWidth(), toY + view.getMeasuredHeight());
-        animateView(view, from, to, finalAlpha, initScaleX, initScaleY, finalScaleX, finalScaleY, duration,
-                    null, null, onCompleteRunnable, animationEndStyle, anchorView);
-    }
-
-    /**
-     * This method animates a view at the end of a drag and drop animation.
-     *
-     * @param view The view to be animated. This view is drawn directly into DragLayer, and so
-     *        doesn't need to be a child of DragLayer.
-     * @param from The initial location of the view. Only the left and top parameters are used.
-     * @param to The final location of the view. Only the left and top parameters are used. This
-     *        location doesn't account for scaling, and so should be centered about the desired
-     *        final location (including scaling).
-     * @param finalAlpha The final alpha of the view, in case we want it to fade as it animates.
-     * @param finalScaleX The final scale of the view. The view is scaled about its center.
-     * @param finalScaleY The final scale of the view. The view is scaled about its center.
-     * @param duration The duration of the animation.
-     * @param motionInterpolator The interpolator to use for the location of the view.
-     * @param alphaInterpolator The interpolator to use for the alpha of the view.
-     * @param onCompleteRunnable Optional runnable to run on animation completion.
-     * @param animationEndStyle Whether or not to fade out the view once the animation completes.
-     *        {@link #ANIMATION_END_DISAPPEAR} or {@link #ANIMATION_END_REMAIN_VISIBLE}.
-     * @param anchorView If not null, this represents the view which the animated view stays
-     *        anchored to in case scrolling is currently taking place. Note: currently this is
-     *        only used for the X dimension for the case of the workspace.
-     */
-    public void animateView(final DragView view, final Rect from, final Rect to,
-                            final float finalAlpha, final float initScaleX, final float initScaleY,
-                            final float finalScaleX, final float finalScaleY, final int duration,
-                            final Interpolator motionInterpolator, final Interpolator alphaInterpolator,
-                            final Runnable onCompleteRunnable, final int animationEndStyle, final View anchorView) {
-
-        // Calculate the duration of the animation based on the object's distance
-        final float dist = (float) Math.hypot(to.left - from.left, to.top - from.top);
-        final Resources res = getResources();
-        final float maxDist = (float) res.getInteger(R.integer.config_dropAnimMaxDist);
-
-        // If duration < 0, this is a cue to compute the duration based on the distance
-        if (duration < 0) {
-            duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
-            if (dist < maxDist) {
-                duration *= mCubicEaseOutInterpolator.getInterpolation(dist / maxDist);
-            }
-            duration = Math.max(duration, res.getInteger(R.integer.config_dropAnimMinDuration));
-        }
-
-        // Fall back to cubic ease out interpolator for the animation if none is specified
-        TimeInterpolator interpolator = null;
-        if (alphaInterpolator == null || motionInterpolator == null) {
-            interpolator = mCubicEaseOutInterpolator;
-        }
-
-        // Animate the view
-        final float initAlpha = view.getAlpha();
-        final float dropViewScale = view.getScaleX();
-        AnimatorUpdateListener updateCb = new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(final ValueAnimator animation) {
-                final float percent = (Float) animation.getAnimatedValue();
-                final int width = view.getMeasuredWidth();
-                final int height = view.getMeasuredHeight();
-
-                float alphaPercent = alphaInterpolator == null ? percent
-                                     : alphaInterpolator.getInterpolation(percent);
-                float motionPercent = motionInterpolator == null ? percent
-                                      : motionInterpolator.getInterpolation(percent);
-
-                float initialScaleX = initScaleX * dropViewScale;
-                float initialScaleY = initScaleY * dropViewScale;
-                float scaleX = finalScaleX * percent + initialScaleX * (1 - percent);
-                float scaleY = finalScaleY * percent + initialScaleY * (1 - percent);
-                float alpha = finalAlpha * alphaPercent + initAlpha * (1 - alphaPercent);
-
-                float fromLeft = from.left + (initialScaleX - 1f) * width / 2;
-                float fromTop = from.top + (initialScaleY - 1f) * height / 2;
-
-                int x = (int) (fromLeft + Math.round(((to.left - fromLeft) * motionPercent)));
-                int y = (int) (fromTop + Math.round(((to.top - fromTop) * motionPercent)));
-
-                int anchorAdjust = mAnchorView == null ? 0 : (int) (mAnchorView.getScaleX()
-                                   * (mAnchorViewInitialScrollX - mAnchorView.getScrollX()));
-
-                int xPos = x - mDropView.getScrollX() + anchorAdjust;
-                int yPos = y - mDropView.getScrollY();
-
-                mDropView.setTranslationX(xPos);
-                mDropView.setTranslationY(yPos);
-                mDropView.setScaleX(scaleX);
-                mDropView.setScaleY(scaleY);
-                mDropView.setAlpha(alpha);
-            }
-        };
-        animateView(view, updateCb, duration, interpolator, onCompleteRunnable, animationEndStyle,
-                    anchorView);
-    }
-
-    public void animateView(final DragView view, final AnimatorUpdateListener updateCb, final int duration,
-                            final TimeInterpolator interpolator, final Runnable onCompleteRunnable,
-                            final int animationEndStyle, final View anchorView) {
-        // Clean up the previous animations
-        if (mDropAnim != null) mDropAnim.cancel();
-
-        // Show the drop view if it was previously hidden
-        mDropView = view;
-        mDropView.cancelAnimation();
-        mDropView.requestLayout();
-
-        // Set the anchor view if the page is scrolling
-        if (anchorView != null) {
-            mAnchorViewInitialScrollX = anchorView.getScrollX();
-        }
-        mAnchorView = anchorView;
-
-        // Create and start the animation
-        mDropAnim = new ValueAnimator();
-        mDropAnim.setInterpolator(interpolator);
-        mDropAnim.setDuration(duration);
-        mDropAnim.setFloatValues(0f, 1f);
-        mDropAnim.addUpdateListener(updateCb);
-        mDropAnim.addListener(new AnimatorListenerAdapter() {
-            public void onAnimationEnd(final Animator animation) {
-                if (onCompleteRunnable != null) {
-                    onCompleteRunnable.run();
-                }
-                switch (animationEndStyle) {
-                case ANIMATION_END_DISAPPEAR:
-                    clearAnimatedView();
-                    break;
-                case ANIMATION_END_REMAIN_VISIBLE:
-                    break;
-                }
-                mDropAnim = null;
-            }
-        });
-        mDropAnim.start();
-    }
-
-    public void clearAnimatedView() {
-        if (mDropAnim != null) {
-            mDropAnim.cancel();
+        switch (animationEndStyle) {
+        case ANIMATION_END_DISAPPEAR:
+          clearAnimatedView();
+          break;
+        case ANIMATION_END_REMAIN_VISIBLE:
+          break;
         }
         mDropAnim = null;
-        if (mDropView != null) {
-            mDragController.onDeferredEndDrag(mDropView);
-        }
-        mDropView = null;
-        invalidate();
+      }
+    });
+    mDropAnim.start();
+  }
+
+  public void clearAnimatedView() {
+    if (mDropAnim != null) {
+      mDropAnim.cancel();
+    }
+    mDropAnim = null;
+    if (mDropView != null) {
+      mDragController.onDeferredEndDrag(mDropView);
+    }
+    mDropView = null;
+    invalidate();
+  }
+
+  public View getAnimatedView() { return mDropView; }
+
+  @Override
+  public void onViewAdded(final View child) {
+    super.onViewAdded(child);
+    updateChildIndices();
+    UiFactory.onLauncherStateOrFocusChanged(mActivity);
+  }
+
+  @Override
+  public void onViewRemoved(final View child) {
+    super.onViewRemoved(child);
+    updateChildIndices();
+    UiFactory.onLauncherStateOrFocusChanged(mActivity);
+  }
+
+  @Override
+  public void bringChildToFront(final View child) {
+    super.bringChildToFront(child);
+    updateChildIndices();
+  }
+
+  private void updateChildIndices() {
+    mTopViewIndex = -1;
+    int childCount = getChildCount();
+    for (int i = 0; i < childCount; i++) {
+      if (getChildAt(i) instanceof DragView) {
+        mTopViewIndex = i;
+      }
+    }
+    mChildCountOnLastUpdate = childCount;
+  }
+
+  @Override
+  protected int getChildDrawingOrder(final int childCount, final int i) {
+    if (mChildCountOnLastUpdate != childCount) {
+      // between platform versions 17 and 18, behavior for onChildViewRemoved /
+      // Added changed. Pre-18, the child was not added / removed by the time of
+      // those callbacks. We need to force update our representation of things
+      // here to avoid crashing on pre-18 devices in certain instances.
+      updateChildIndices();
     }
 
-    public View getAnimatedView() {
-        return mDropView;
+    // i represents the current draw iteration
+    if (mTopViewIndex == -1) {
+      // in general we do nothing
+      return i;
+    } else if (i == childCount - 1) {
+      // if we have a top index, we return it when drawing last item (highest
+      // z-order)
+      return mTopViewIndex;
+    } else if (i < mTopViewIndex) {
+      return i;
+    } else {
+      // for indexes greater than the top index, we fetch one item above to
+      // shift for the displacement of the top index
+      return i + 1;
     }
+  }
 
-    @Override
-    public void onViewAdded(final View child) {
-        super.onViewAdded(child);
-        updateChildIndices();
-        UiFactory.onLauncherStateOrFocusChanged(mActivity);
-    }
+  @Override
+  protected void dispatchDraw(final Canvas canvas) {
+    // Draw the background below children.
+    mScrim.draw(canvas);
+    mFocusIndicatorHelper.draw(canvas);
+    super.dispatchDraw(canvas);
+  }
 
-    @Override
-    public void onViewRemoved(final View child) {
-        super.onViewRemoved(child);
-        updateChildIndices();
-        UiFactory.onLauncherStateOrFocusChanged(mActivity);
-    }
+  @Override
+  protected void onSizeChanged(final int w, final int h, final int oldw,
+                               final int oldh) {
+    super.onSizeChanged(w, h, oldw, oldh);
+    mScrim.setSize(w, h);
+  }
 
-    @Override
-    public void bringChildToFront(final View child) {
-        super.bringChildToFront(child);
-        updateChildIndices();
-    }
+  @Override
+  public void setInsets(final Rect insets) {
+    super.setInsets(insets);
+    mScrim.onInsetsChanged(insets);
+  }
 
-    private void updateChildIndices() {
-        mTopViewIndex = -1;
-        int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            if (getChildAt(i) instanceof DragView) {
-                mTopViewIndex = i;
-            }
-        }
-        mChildCountOnLastUpdate = childCount;
-    }
-
-    @Override
-    protected int getChildDrawingOrder(final int childCount, final int i) {
-        if (mChildCountOnLastUpdate != childCount) {
-            // between platform versions 17 and 18, behavior for onChildViewRemoved / Added changed.
-            // Pre-18, the child was not added / removed by the time of those callbacks. We need to
-            // force update our representation of things here to avoid crashing on pre-18 devices
-            // in certain instances.
-            updateChildIndices();
-        }
-
-        // i represents the current draw iteration
-        if (mTopViewIndex == -1) {
-            // in general we do nothing
-            return i;
-        } else if (i == childCount - 1) {
-            // if we have a top index, we return it when drawing last item (highest z-order)
-            return mTopViewIndex;
-        } else if (i < mTopViewIndex) {
-            return i;
-        } else {
-            // for indexes greater than the top index, we fetch one item above to shift for the
-            // displacement of the top index
-            return i + 1;
-        }
-    }
-
-    @Override
-    protected void dispatchDraw(final Canvas canvas) {
-        // Draw the background below children.
-        mScrim.draw(canvas);
-        mFocusIndicatorHelper.draw(canvas);
-        super.dispatchDraw(canvas);
-    }
-
-    @Override
-    protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        mScrim.setSize(w, h);
-    }
-
-    @Override
-    public void setInsets(final Rect insets) {
-        super.setInsets(insets);
-        mScrim.onInsetsChanged(insets);
-    }
-
-    public WorkspaceAndHotseatScrim getScrim() {
-        return mScrim;
-    }
+  public WorkspaceAndHotseatScrim getScrim() { return mScrim; }
 }

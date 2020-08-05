@@ -17,74 +17,67 @@
 package com.android.launcher3;
 
 import android.view.View;
-
 import com.android.launcher3.util.Thunk;
 
 public class CheckLongPressHelper {
 
-    public static final int DEFAULT_LONG_PRESS_TIMEOUT = 300;
+  public static final int DEFAULT_LONG_PRESS_TIMEOUT = 300;
 
-    @Thunk
-    View mView;
-    @Thunk
-    View.OnLongClickListener mListener;
-    @Thunk
-    boolean mHasPerformedLongPress;
-    private int mLongPressTimeout = DEFAULT_LONG_PRESS_TIMEOUT;
-    private CheckForLongPress mPendingCheckForLongPress;
+  @Thunk View mView;
+  @Thunk View.OnLongClickListener mListener;
+  @Thunk boolean mHasPerformedLongPress;
+  private int mLongPressTimeout = DEFAULT_LONG_PRESS_TIMEOUT;
+  private CheckForLongPress mPendingCheckForLongPress;
 
-    public CheckLongPressHelper(final View v) {
-        mView = v;
+  public CheckLongPressHelper(final View v) { mView = v; }
+
+  public CheckLongPressHelper(final View v,
+                              final View.OnLongClickListener listener) {
+    mView = v;
+    mListener = listener;
+  }
+
+  /**
+   * Overrides the default long press timeout.
+   */
+  public void setLongPressTimeout(final int longPressTimeout) {
+    mLongPressTimeout = longPressTimeout;
+  }
+
+  public void postCheckForLongPress() {
+    mHasPerformedLongPress = false;
+
+    if (mPendingCheckForLongPress == null) {
+      mPendingCheckForLongPress = new CheckForLongPress();
     }
+    mView.postDelayed(mPendingCheckForLongPress, mLongPressTimeout);
+  }
 
-    public CheckLongPressHelper(final View v, final View.OnLongClickListener listener) {
-        mView = v;
-        mListener = listener;
+  public void cancelLongPress() {
+    mHasPerformedLongPress = false;
+    if (mPendingCheckForLongPress != null) {
+      mView.removeCallbacks(mPendingCheckForLongPress);
+      mPendingCheckForLongPress = null;
     }
+  }
 
-    /**
-     * Overrides the default long press timeout.
-     */
-    public void setLongPressTimeout(final int longPressTimeout) {
-        mLongPressTimeout = longPressTimeout;
-    }
+  public boolean hasPerformedLongPress() { return mHasPerformedLongPress; }
 
-    public void postCheckForLongPress() {
-        mHasPerformedLongPress = false;
-
-        if (mPendingCheckForLongPress == null) {
-            mPendingCheckForLongPress = new CheckForLongPress();
+  class CheckForLongPress implements Runnable {
+    public void run() {
+      if ((mView.getParent() != null) && mView.hasWindowFocus() &&
+          !mHasPerformedLongPress) {
+        boolean handled;
+        if (mListener != null) {
+          handled = mListener.onLongClick(mView);
+        } else {
+          handled = mView.performLongClick();
         }
-        mView.postDelayed(mPendingCheckForLongPress, mLongPressTimeout);
-    }
-
-    public void cancelLongPress() {
-        mHasPerformedLongPress = false;
-        if (mPendingCheckForLongPress != null) {
-            mView.removeCallbacks(mPendingCheckForLongPress);
-            mPendingCheckForLongPress = null;
+        if (handled) {
+          mView.setPressed(false);
+          mHasPerformedLongPress = true;
         }
+      }
     }
-
-    public boolean hasPerformedLongPress() {
-        return mHasPerformedLongPress;
-    }
-
-    class CheckForLongPress implements Runnable {
-        public void run() {
-            if ((mView.getParent() != null) && mView.hasWindowFocus()
-                    && !mHasPerformedLongPress) {
-                boolean handled;
-                if (mListener != null) {
-                    handled = mListener.onLongClick(mView);
-                } else {
-                    handled = mView.performLongClick();
-                }
-                if (handled) {
-                    mView.setPressed(false);
-                    mHasPerformedLongPress = true;
-                }
-            }
-        }
-    }
+  }
 }

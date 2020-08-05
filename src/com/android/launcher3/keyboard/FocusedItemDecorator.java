@@ -20,7 +20,6 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
-
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration;
 import androidx.recyclerview.widget.RecyclerView.State;
@@ -30,24 +29,22 @@ import androidx.recyclerview.widget.RecyclerView.State;
  */
 public class FocusedItemDecorator extends ItemDecoration {
 
-    private FocusIndicatorHelper mHelper;
+  private FocusIndicatorHelper mHelper;
 
-    public FocusedItemDecorator(final View container) {
-        mHelper = new FocusIndicatorHelper(container) {
+  public FocusedItemDecorator(final View container) {
+    mHelper = new FocusIndicatorHelper(container) {
+      @Override
+      public void viewToRect(final View v, final Rect outRect) {
+        outRect.set(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+      }
+    };
+  }
 
-            @Override
-            public void viewToRect(final View v, final Rect outRect) {
-                outRect.set(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
-            }
-        };
-    }
+  public OnFocusChangeListener getFocusListener() { return mHelper; }
 
-    public OnFocusChangeListener getFocusListener() {
-        return mHelper;
-    }
-
-    @Override
-    public void onDraw(final Canvas c, final RecyclerView parent, final State state) {
-        mHelper.draw(c);
-    }
+  @Override
+  public void onDraw(final Canvas c, final RecyclerView parent,
+                     final State state) {
+    mHelper.draw(c);
+  }
 }

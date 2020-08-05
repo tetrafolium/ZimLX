@@ -20,117 +20,121 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-
 import org.zimmob.zimlx.views.Snackbar;
 
 public class DeleteDropTarget extends ButtonDropTarget {
 
-    private int mControlType = ControlType.DEFAULT_CONTROLTYPE;
+  private int mControlType = ControlType.DEFAULT_CONTROLTYPE;
 
-    public DeleteDropTarget(final Context context, final AttributeSet attrs) {
-        this(context, attrs, 0);
+  public DeleteDropTarget(final Context context, final AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
+
+  public DeleteDropTarget(final Context context, final AttributeSet attrs,
+                          final int defStyle) {
+    super(context, attrs, defStyle);
+  }
+
+  @Override
+  protected void onFinishInflate() {
+    super.onFinishInflate();
+    // Get the hover color
+    mHoverColor = getResources().getColor(R.color.delete_target_hover_tint);
+
+    setDrawable(R.drawable.ic_remove_shadow);
+  }
+
+  @Override
+  public void onDragStart(final DropTarget.DragObject dragObject,
+                          final DragOptions options) {
+    super.onDragStart(dragObject, options);
+    setTextBasedOnDragSource(dragObject.dragInfo);
+    setControlTypeBasedOnDragSource(dragObject.dragInfo);
+  }
+
+  /**
+   * @return true for items that should have a "Remove" action in accessibility.
+   */
+  @Override
+  public boolean supportsAccessibilityDrop(final ItemInfo info,
+                                           final View view) {
+    return (info instanceof ShortcutInfo) ||
+        (info instanceof LauncherAppWidgetInfo) || (info instanceof FolderInfo);
+  }
+
+  @Override
+  public int getAccessibilityAction() {
+    return LauncherAccessibilityDelegate.REMOVE;
+  }
+
+  @Override
+  protected boolean supportsDrop(final ItemInfo info) {
+    return true;
+  }
+
+  /**
+   * Set the drop target's text to either "Remove" or "Cancel" depending on the
+   * drag item.
+   */
+  private void setTextBasedOnDragSource(final ItemInfo item) {
+    if (!TextUtils.isEmpty(mText)) {
+      mText = getResources().getString(item.id != ItemInfo.NO_ID
+                                           ? R.string.remove_drop_target_label
+                                           : android.R.string.cancel);
+      requestLayout();
     }
+  }
 
-    public DeleteDropTarget(final Context context, final AttributeSet attrs, final int defStyle) {
-        super(context, attrs, defStyle);
+  /**
+   * Set mControlType depending on the drag item.
+   */
+  private void setControlTypeBasedOnDragSource(final ItemInfo item) {
+    mControlType = item.id != ItemInfo.NO_ID ? ControlType.REMOVE_TARGET
+                                             : ControlType.CANCEL_TARGET;
+  }
+
+  @Override
+  public void completeDrop(final DragObject d) {
+    ItemInfo item = d.dragInfo;
+    if ((d.dragSource instanceof Workspace) ||
+        (d.dragSource instanceof Folder)) {
+      mLauncher.getModelWriter().prepareToUndo();
+
+      onAccessibilityDrop(null, item);
+
+      int currentPage = this.mLauncher.getWorkspace().getCurrentPage();
+      Snackbar.show(mLauncher, R.string.item_removed, R.string.undo,
+                    ()
+                        -> mLauncher.getModelWriter().commitDelete(),
+                    () -> mLauncher.getModelWriter().undoDelete(currentPage));
     }
+  }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        // Get the hover color
-        mHoverColor = getResources().getColor(R.color.delete_target_hover_tint);
+  /**
+   * Removes the item from the workspace. If the view is not null, it also
+   * removes the view.
+   */
+  @Override
+  public void onAccessibilityDrop(final View view, final ItemInfo item) {
+    // Remove the item from launcher and the db, we can ignore the containerInfo
+    // in this call because we already remove the drag view from the folder (if
+    // the drag originated from a folder) in Folder.beginDrag()
+    mLauncher.removeItem(view, item, true /* deleteFromDb */);
+    mLauncher.getWorkspace().stripEmptyScreens();
+    mLauncher.getDragLayer().announceForAccessibility(
+        getContext().getString(R.string.item_removed));
+  }
 
-        setDrawable(R.drawable.ic_remove_shadow);
-    }
-
-    @Override
-    public void onDragStart(final DropTarget.DragObject dragObject, final DragOptions options) {
-        super.onDragStart(dragObject, options);
-        setTextBasedOnDragSource(dragObject.dragInfo);
-        setControlTypeBasedOnDragSource(dragObject.dragInfo);
-    }
-
-    /**
-     * @return true for items that should have a "Remove" action in accessibility.
-     */
-    @Override
-    public boolean supportsAccessibilityDrop(final ItemInfo info, final View view) {
-        return (info instanceof ShortcutInfo)
-               || (info instanceof LauncherAppWidgetInfo)
-               || (info instanceof FolderInfo);
-    }
-
-    @Override
-    public int getAccessibilityAction() {
-        return LauncherAccessibilityDelegate.REMOVE;
-    }
-
-    @Override
-    protected boolean supportsDrop(final ItemInfo info) {
-        return true;
-    }
-
-    /**
-     * Set the drop target's text to either "Remove" or "Cancel" depending on the drag item.
-     */
-    private void setTextBasedOnDragSource(final ItemInfo item) {
-        if (!TextUtils.isEmpty(mText)) {
-            mText = getResources().getString(item.id != ItemInfo.NO_ID
-                                             ? R.string.remove_drop_target_label
-                                             : android.R.string.cancel);
-            requestLayout();
-        }
-    }
-
-    /**
-     * Set mControlType depending on the drag item.
-     */
-    private void setControlTypeBasedOnDragSource(final ItemInfo item) {
-        mControlType = item.id != ItemInfo.NO_ID ? ControlType.REMOVE_TARGET
-                       : ControlType.CANCEL_TARGET;
-    }
-
-    @Override
-    public void completeDrop(final DragObject d) {
-        ItemInfo item = d.dragInfo;
-        if ((d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder)) {
-            mLauncher.getModelWriter().prepareToUndo();
-
-            onAccessibilityDrop(null, item);
-
-            int currentPage = this.mLauncher.getWorkspace().getCurrentPage();
-            Snackbar.show(mLauncher, R.string.item_removed, R.string.undo,
-                          () -> mLauncher.getModelWriter().commitDelete(),
-                          () -> mLauncher.getModelWriter().undoDelete(currentPage));
-        }
-    }
-
-    /**
-     * Removes the item from the workspace. If the view is not null, it also removes the view.
-     */
-    @Override
-    public void onAccessibilityDrop(final View view, final ItemInfo item) {
-        // Remove the item from launcher and the db, we can ignore the containerInfo in this call
-        // because we already remove the drag view from the folder (if the drag originated from
-        // a folder) in Folder.beginDrag()
-        mLauncher.removeItem(view, item, true /* deleteFromDb */);
-        mLauncher.getWorkspace().stripEmptyScreens();
-        mLauncher.getDragLayer()
-        .announceForAccessibility(getContext().getString(R.string.item_removed));
-    }
-
-    @Override
-    public Target getDropTargetForLogging() {
-        Target t = LoggerUtils.newTarget(Target.Type.CONTROL);
-        t.controlType = mControlType;
-        return t;
-    }
+  @Override
+  public Target getDropTargetForLogging() {
+    Target t = LoggerUtils.newTarget(Target.Type.CONTROL);
+    t.controlType = mControlType;
+    return t;
+  }
 }

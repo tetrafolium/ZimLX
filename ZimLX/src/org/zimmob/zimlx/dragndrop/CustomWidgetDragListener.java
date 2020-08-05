@@ -18,7 +18,6 @@ package org.zimmob.zimlx.dragndrop;
 import android.graphics.Rect;
 import android.os.CancellationSignal;
 import android.view.View;
-
 import com.android.launcher3.DragSource;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -31,49 +30,54 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingItemDragHelper;
 
 /**
- * {@link DragSource} for handling drop from a different window. This object is initialized
- * in the source window and is passed on to the Launcher activity as an Intent extra.
+ * {@link DragSource} for handling drop from a different window. This object is
+ * initialized in the source window and is passed on to the Launcher activity as
+ * an Intent extra.
  */
 public class CustomWidgetDragListener extends BaseItemDragListener {
 
-    private final LauncherAppWidgetProviderInfo mProvider;
-    private final CancellationSignal mCancelSignal;
+  private final LauncherAppWidgetProviderInfo mProvider;
+  private final CancellationSignal mCancelSignal;
 
-    public CustomWidgetDragListener(final LauncherAppWidgetProviderInfo provider, final Rect previewRect,
-                                    final int previewBitmapWidth, final int previewViewWidth) {
-        super(previewRect, previewBitmapWidth, previewViewWidth);
-        mProvider = provider;
-        mCancelSignal = new CancellationSignal();
+  public CustomWidgetDragListener(final LauncherAppWidgetProviderInfo provider,
+                                  final Rect previewRect,
+                                  final int previewBitmapWidth,
+                                  final int previewViewWidth) {
+    super(previewRect, previewBitmapWidth, previewViewWidth);
+    mProvider = provider;
+    mCancelSignal = new CancellationSignal();
+  }
+
+  @Override
+  public boolean init(final Launcher launcher, final boolean alreadyOnHome) {
+    super.init(launcher, alreadyOnHome);
+    if (!alreadyOnHome) {
+      UiFactory.useFadeOutAnimationForLauncherStart(launcher, mCancelSignal);
     }
+    return false;
+  }
 
-    @Override
-    public boolean init(final Launcher launcher, final boolean alreadyOnHome) {
-        super.init(launcher, alreadyOnHome);
-        if (!alreadyOnHome) {
-            UiFactory.useFadeOutAnimationForLauncherStart(launcher, mCancelSignal);
-        }
-        return false;
-    }
+  @Override
+  protected PendingItemDragHelper createDragHelper() {
+    final PendingAddItemInfo item;
+    item = new PendingAddWidgetInfo(mProvider);
+    View view = new View(mLauncher);
+    view.setTag(item);
 
-    @Override
-    protected PendingItemDragHelper createDragHelper() {
-        final PendingAddItemInfo item;
-        item = new PendingAddWidgetInfo(mProvider);
-        View view = new View(mLauncher);
-        view.setTag(item);
+    return new PendingItemDragHelper(view);
+  }
 
-        return new PendingItemDragHelper(view);
-    }
+  @Override
+  public void
+  fillInLogContainerData(final View v, final ItemInfo info,
+                         final LauncherLogProto.Target target,
+                         final LauncherLogProto.Target targetParent) {
+    targetParent.containerType = LauncherLogProto.ContainerType.PINITEM;
+  }
 
-    @Override
-    public void fillInLogContainerData(final View v, final ItemInfo info, final LauncherLogProto.Target target,
-                                       final LauncherLogProto.Target targetParent) {
-        targetParent.containerType = LauncherLogProto.ContainerType.PINITEM;
-    }
-
-    @Override
-    protected void postCleanup() {
-        super.postCleanup();
-        mCancelSignal.cancel();
-    }
+  @Override
+  protected void postCleanup() {
+    super.postCleanup();
+    mCancelSignal.cancel();
+  }
 }

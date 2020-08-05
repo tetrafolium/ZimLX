@@ -23,71 +23,69 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
-
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.popup.PopupContainerWithArrow;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Handles showing a popup menu with available custom actions for a launcher icon.
- * This allows exposing various custom actions using keyboard shortcuts.
+ * Handles showing a popup menu with available custom actions for a launcher
+ * icon. This allows exposing various custom actions using keyboard shortcuts.
  */
 public class CustomActionsPopup implements OnMenuItemClickListener {
 
-    private final Launcher mLauncher;
-    private final LauncherAccessibilityDelegate mDelegate;
-    private final View mIcon;
+  private final Launcher mLauncher;
+  private final LauncherAccessibilityDelegate mDelegate;
+  private final View mIcon;
 
-    public CustomActionsPopup(final Launcher launcher, final View icon) {
-        mLauncher = launcher;
-        mIcon = icon;
-        PopupContainerWithArrow container = PopupContainerWithArrow.getOpen(launcher);
-        if (container != null) {
-            mDelegate = container.getAccessibilityDelegate();
-        } else {
-            mDelegate = launcher.getAccessibilityDelegate();
-        }
+  public CustomActionsPopup(final Launcher launcher, final View icon) {
+    mLauncher = launcher;
+    mIcon = icon;
+    PopupContainerWithArrow container =
+        PopupContainerWithArrow.getOpen(launcher);
+    if (container != null) {
+      mDelegate = container.getAccessibilityDelegate();
+    } else {
+      mDelegate = launcher.getAccessibilityDelegate();
+    }
+  }
+
+  private List<AccessibilityAction> getActionList() {
+    if (mIcon == null || !(mIcon.getTag() instanceof ItemInfo)) {
+      return Collections.EMPTY_LIST;
     }
 
-    private List<AccessibilityAction> getActionList() {
-        if (mIcon == null || !(mIcon.getTag() instanceof ItemInfo)) {
-            return Collections.EMPTY_LIST;
-        }
+    AccessibilityNodeInfo info = AccessibilityNodeInfo.obtain();
+    mDelegate.addSupportedActions(mIcon, info, true);
+    List<AccessibilityAction> result = new ArrayList<>(info.getActionList());
+    info.recycle();
+    return result;
+  }
 
-        AccessibilityNodeInfo info = AccessibilityNodeInfo.obtain();
-        mDelegate.addSupportedActions(mIcon, info, true);
-        List<AccessibilityAction> result = new ArrayList<>(info.getActionList());
-        info.recycle();
-        return result;
+  public boolean canShow() { return !getActionList().isEmpty(); }
+
+  public boolean show() {
+    List<AccessibilityAction> actions = getActionList();
+    if (actions.isEmpty()) {
+      return false;
     }
 
-    public boolean canShow() {
-        return !getActionList().isEmpty();
+    PopupMenu popup = new PopupMenu(mLauncher, mIcon);
+    popup.setOnMenuItemClickListener(this);
+    Menu menu = popup.getMenu();
+    for (AccessibilityAction action : actions) {
+      menu.add(Menu.NONE, action.getId(), Menu.NONE, action.getLabel());
     }
+    popup.show();
+    return true;
+  }
 
-    public boolean show() {
-        List<AccessibilityAction> actions = getActionList();
-        if (actions.isEmpty()) {
-            return false;
-        }
-
-        PopupMenu popup = new PopupMenu(mLauncher, mIcon);
-        popup.setOnMenuItemClickListener(this);
-        Menu menu = popup.getMenu();
-        for (AccessibilityAction action : actions) {
-            menu.add(Menu.NONE, action.getId(), Menu.NONE, action.getLabel());
-        }
-        popup.show();
-        return true;
-    }
-
-    @Override
-    public boolean onMenuItemClick(final MenuItem menuItem) {
-        return mDelegate.performAction(mIcon, (ItemInfo) mIcon.getTag(), menuItem.getItemId());
-    }
+  @Override
+  public boolean onMenuItemClick(final MenuItem menuItem) {
+    return mDelegate.performAction(mIcon, (ItemInfo)mIcon.getTag(),
+                                   menuItem.getItemId());
+  }
 }

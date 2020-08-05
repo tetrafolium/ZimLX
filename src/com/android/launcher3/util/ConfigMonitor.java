@@ -29,29 +29,30 @@ import android.util.Log;
  */
 public class ConfigMonitor extends BroadcastReceiver {
 
-    private final Context mContext;
-    private final float mFontScale;
-    private final int mDensity;
+  private final Context mContext;
+  private final float mFontScale;
+  private final int mDensity;
 
-    public ConfigMonitor(final Context context) {
-        mContext = context;
+  public ConfigMonitor(final Context context) {
+    mContext = context;
 
-        Configuration config = context.getResources().getConfiguration();
-        mFontScale = config.fontScale;
-        mDensity = config.densityDpi;
+    Configuration config = context.getResources().getConfiguration();
+    mFontScale = config.fontScale;
+    mDensity = config.densityDpi;
+  }
+
+  @Override
+  public void onReceive(final Context context, final Intent intent) {
+    Configuration config = context.getResources().getConfiguration();
+    if (mFontScale != config.fontScale || mDensity != config.densityDpi) {
+      Log.d("ConfigMonitor", "Configuration changed, restarting launcher");
+      mContext.unregisterReceiver(this);
+      android.os.Process.killProcess(android.os.Process.myPid());
     }
+  }
 
-    @Override
-    public void onReceive(final Context context, final Intent intent) {
-        Configuration config = context.getResources().getConfiguration();
-        if (mFontScale != config.fontScale || mDensity != config.densityDpi) {
-            Log.d("ConfigMonitor", "Configuration changed, restarting launcher");
-            mContext.unregisterReceiver(this);
-            android.os.Process.killProcess(android.os.Process.myPid());
-        }
-    }
-
-    public void register() {
-        mContext.registerReceiver(this, new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED));
-    }
+  public void register() {
+    mContext.registerReceiver(
+        this, new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED));
+  }
 }

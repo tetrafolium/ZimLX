@@ -16,6 +16,9 @@
 
 package com.android.launcher3.util;
 
+import static android.database.sqlite.SQLiteDatabase.NO_LOCALIZED_COLLATORS;
+import static com.android.launcher3.Utilities.ATLEAST_P;
+
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.database.DatabaseErrorHandler;
@@ -24,32 +27,35 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteDatabase.OpenParams;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static android.database.sqlite.SQLiteDatabase.NO_LOCALIZED_COLLATORS;
-import static com.android.launcher3.Utilities.ATLEAST_P;
-
 /**
- * Extension of {@link SQLiteOpenHelper} which avoids creating default locale table by
- * A context wrapper which creates databases without support for localized collators.
+ * Extension of {@link SQLiteOpenHelper} which avoids creating default locale
+ * table by A context wrapper which creates databases without support for
+ * localized collators.
  */
 public abstract class NoLocaleSQLiteHelper extends SQLiteOpenHelper {
 
-    public NoLocaleSQLiteHelper(final Context context, final String name, final int version) {
-        super(ATLEAST_P ? context : new NoLocalContext(context), name, null, version);
-        if (ATLEAST_P) {
-            setOpenParams(new OpenParams.Builder().addOpenFlags(NO_LOCALIZED_COLLATORS).build());
-        }
+  public NoLocaleSQLiteHelper(final Context context, final String name,
+                              final int version) {
+    super(ATLEAST_P ? context : new NoLocalContext(context), name, null,
+          version);
+    if (ATLEAST_P) {
+      setOpenParams(new OpenParams.Builder()
+                        .addOpenFlags(NO_LOCALIZED_COLLATORS)
+                        .build());
     }
+  }
 
-    private static class NoLocalContext extends ContextWrapper {
-        public NoLocalContext(final Context base) {
-            super(base);
-        }
+  private static class NoLocalContext extends ContextWrapper {
+    public NoLocalContext(final Context base) { super(base); }
 
-        @Override
-        public SQLiteDatabase openOrCreateDatabase(
-            final String name, final int mode, final CursorFactory factory, final DatabaseErrorHandler errorHandler) {
-            return super.openOrCreateDatabase(
-                       name, mode | Context.MODE_NO_LOCALIZED_COLLATORS, factory, errorHandler);
-        }
+    @Override
+    public SQLiteDatabase
+    openOrCreateDatabase(final String name, final int mode,
+                         final CursorFactory factory,
+                         final DatabaseErrorHandler errorHandler) {
+      return super.openOrCreateDatabase(
+          name, mode | Context.MODE_NO_LOCALIZED_COLLATORS, factory,
+          errorHandler);
     }
+  }
 }

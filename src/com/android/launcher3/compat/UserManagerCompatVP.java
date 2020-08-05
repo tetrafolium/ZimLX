@@ -23,12 +23,11 @@ import android.os.UserHandle;
 @TargetApi(Build.VERSION_CODES.P)
 public class UserManagerCompatVP extends UserManagerCompatVNMr1 {
 
-    UserManagerCompatVP(final Context context) {
-        super(context);
-    }
+  UserManagerCompatVP(final Context context) { super(context); }
 
-    @Override
-    public boolean requestQuietModeEnabled(final boolean enableQuietMode, final UserHandle user) {
-        return mUserManager.requestQuietModeEnabled(enableQuietMode, user);
-    }
+  @Override
+  public boolean requestQuietModeEnabled(final boolean enableQuietMode,
+                                         final UserHandle user) {
+    return mUserManager.requestQuietModeEnabled(enableQuietMode, user);
+  }
 }

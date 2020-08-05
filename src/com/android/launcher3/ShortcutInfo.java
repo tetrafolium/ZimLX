@@ -23,238 +23,251 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.text.TextUtils;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ContentWriter;
-
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.iconpack.IconPackManager;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
  */
 public class ShortcutInfo extends ItemInfoWithIcon {
 
-    public static final int DEFAULT = 0;
+  public static final int DEFAULT = 0;
 
-    /**
-     * The shortcut was restored from a backup and it not ready to be used. This is automatically
-     * set during backup/restore
-     */
-    public static final int FLAG_RESTORED_ICON = 1;
+  /**
+   * The shortcut was restored from a backup and it not ready to be used. This
+   * is automatically set during backup/restore
+   */
+  public static final int FLAG_RESTORED_ICON = 1;
 
-    /**
-     * The icon was added as an auto-install app, and is not ready to be used. This flag can't
-     * be present along with {@link #FLAG_RESTORED_ICON}, and is set during default layout
-     * parsing.
-     */
-    public static final int FLAG_AUTOINSTALL_ICON = 2; //0B10;
+  /**
+   * The icon was added as an auto-install app, and is not ready to be used.
+   * This flag can't be present along with {@link #FLAG_RESTORED_ICON}, and is
+   * set during default layout parsing.
+   */
+  public static final int FLAG_AUTOINSTALL_ICON = 2; // 0B10;
 
-    /**
-     * The icon is being installed. If {@link #FLAG_RESTORED_ICON} or {@link #FLAG_AUTOINSTALL_ICON}
-     * is set, then the icon is either being installed or is in a broken state.
-     */
-    public static final int FLAG_INSTALL_SESSION_ACTIVE = 4; // 0B100;
+  /**
+   * The icon is being installed. If {@link #FLAG_RESTORED_ICON} or {@link
+   * #FLAG_AUTOINSTALL_ICON} is set, then the icon is either being installed or
+   * is in a broken state.
+   */
+  public static final int FLAG_INSTALL_SESSION_ACTIVE = 4; // 0B100;
 
-    /**
-     * Indicates that the widget restore has started.
-     */
-    public static final int FLAG_RESTORE_STARTED = 8; //0B1000;
+  /**
+   * Indicates that the widget restore has started.
+   */
+  public static final int FLAG_RESTORE_STARTED = 8; // 0B1000;
 
-    /**
-     * Web UI supported.
-     */
-    public static final int FLAG_SUPPORTS_WEB_UI = 16; //0B10000;
+  /**
+   * Web UI supported.
+   */
+  public static final int FLAG_SUPPORTS_WEB_UI = 16; // 0B10000;
 
-    /**
-     * The intent used to start the application.
-     */
-    public Intent intent;
+  /**
+   * The intent used to start the application.
+   */
+  public Intent intent;
 
-    /**
-     * If isShortcut=true and customIcon=false, this contains a reference to the
-     * shortcut icon as an application's resource.
-     */
-    public Intent.ShortcutIconResource iconResource;
+  /**
+   * If isShortcut=true and customIcon=false, this contains a reference to the
+   * shortcut icon as an application's resource.
+   */
+  public Intent.ShortcutIconResource iconResource;
 
-    /**
-     * A message to display when the user tries to start a disabled shortcut.
-     * This is currently only used for deep shortcuts.
-     */
-    public CharSequence disabledMessage;
+  /**
+   * A message to display when the user tries to start a disabled shortcut.
+   * This is currently only used for deep shortcuts.
+   */
+  public CharSequence disabledMessage;
 
-    public int status;
+  public int status;
 
-    /**
-     * The installation progress [0-100] of the package that this shortcut represents.
-     */
-    private int mInstallProgress;
+  /**
+   * The installation progress [0-100] of the package that this shortcut
+   * represents.
+   */
+  private int mInstallProgress;
 
-    public CharSequence customTitle;
+  public CharSequence customTitle;
 
-    public Bitmap customIcon;
+  public Bitmap customIcon;
 
-    public IconPackManager.CustomIconEntry customIconEntry;
+  public IconPackManager.CustomIconEntry customIconEntry;
 
-    public String swipeUpAction;
+  public String swipeUpAction;
 
-    public ShortcutInfoCompat shortcutInfo;
+  public ShortcutInfoCompat shortcutInfo;
 
-    public ShortcutInfo() {
-        itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
-    }
+  public ShortcutInfo() {
+    itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
+  }
 
-    public ShortcutInfo(final ShortcutInfo info) {
-        super(info);
-        title = info.title;
-        intent = new Intent(info.intent);
-        iconResource = info.iconResource;
-        status = info.status;
-        mInstallProgress = info.mInstallProgress;
-    }
+  public ShortcutInfo(final ShortcutInfo info) {
+    super(info);
+    title = info.title;
+    intent = new Intent(info.intent);
+    iconResource = info.iconResource;
+    status = info.status;
+    mInstallProgress = info.mInstallProgress;
+  }
 
-    /**
-     * TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut.
-     */
-    public ShortcutInfo(final AppInfo info) {
-        super(info);
-        title = Utilities.trim(info.title);
-        intent = new Intent(info.intent);
-    }
+  /**
+   * TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut.
+   */
+  public ShortcutInfo(final AppInfo info) {
+    super(info);
+    title = Utilities.trim(info.title);
+    intent = new Intent(info.intent);
+  }
 
-    /**
-     * Creates a {@link ShortcutInfo} from a {@link ShortcutInfoCompat}.
-     */
-    @TargetApi(Build.VERSION_CODES.N)
-    public ShortcutInfo(final ShortcutInfoCompat shortcutInfo, final Context context) {
-        user = shortcutInfo.getUserHandle();
-        itemType = LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
-        updateFromDeepShortcutInfo(shortcutInfo, context);
-    }
+  /**
+   * Creates a {@link ShortcutInfo} from a {@link ShortcutInfoCompat}.
+   */
+  @TargetApi(Build.VERSION_CODES.N)
+  public ShortcutInfo(final ShortcutInfoCompat shortcutInfo,
+                      final Context context) {
+    user = shortcutInfo.getUserHandle();
+    itemType = LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+    updateFromDeepShortcutInfo(shortcutInfo, context);
+  }
 
-    @Override
-    public void onAddToDatabase(final ContentWriter writer) {
-        super.onAddToDatabase(writer);
-        writer.put(LauncherSettings.BaseLauncherColumns.TITLE, title)
+  @Override
+  public void onAddToDatabase(final ContentWriter writer) {
+    super.onAddToDatabase(writer);
+    writer.put(LauncherSettings.BaseLauncherColumns.TITLE, title)
         .put(LauncherSettings.BaseLauncherColumns.INTENT, getIntent())
         .put(LauncherSettings.Favorites.RESTORED, status);
 
-        if (!usingLowResIcon) {
-            writer.putIcon(iconBitmap, user);
-        }
-        if (iconResource != null) {
-            writer.put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE, iconResource.packageName)
-            .put(LauncherSettings.BaseLauncherColumns.ICON_RESOURCE,
-                 iconResource.resourceName);
-        }
+    if (!usingLowResIcon) {
+      writer.putIcon(iconBitmap, user);
     }
-
-    @Override
-    public Intent getIntent() {
-        return intent;
+    if (iconResource != null) {
+      writer
+          .put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE,
+               iconResource.packageName)
+          .put(LauncherSettings.BaseLauncherColumns.ICON_RESOURCE,
+               iconResource.resourceName);
     }
+  }
 
-    public boolean hasStatusFlag(final int flag) {
-        return (status & flag) != 0;
+  @Override
+  public Intent getIntent() {
+    return intent;
+  }
+
+  public boolean hasStatusFlag(final int flag) { return (status & flag) != 0; }
+
+  public final boolean isPromise() {
+    return hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON);
+  }
+
+  public boolean hasPromiseIconUi() {
+    return isPromise() && !hasStatusFlag(FLAG_SUPPORTS_WEB_UI);
+  }
+
+  public int getInstallProgress() { return mInstallProgress; }
+
+  public void setInstallProgress(final int progress) {
+    mInstallProgress = progress;
+    status |= FLAG_INSTALL_SESSION_ACTIVE;
+  }
+
+  public void updateFromDeepShortcutInfo(final ShortcutInfoCompat shortcutInfo,
+                                         final Context context) {
+    // {@link ShortcutInfoCompat#getActivity} can change during an update.
+    // Recreate the intent
+    intent = shortcutInfo.makeIntent();
+    title = shortcutInfo.getShortLabel();
+
+    CharSequence label = shortcutInfo.getLongLabel();
+    if (TextUtils.isEmpty(label)) {
+      label = shortcutInfo.getShortLabel();
     }
-
-
-    public final boolean isPromise() {
-        return hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON);
+    contentDescription =
+        UserManagerCompat.getInstance(context).getBadgedLabelForUser(label,
+                                                                     user);
+    if (shortcutInfo.isEnabled()) {
+      runtimeStatusFlags &= ~FLAG_DISABLED_BY_PUBLISHER;
+    } else {
+      runtimeStatusFlags |= FLAG_DISABLED_BY_PUBLISHER;
     }
+    disabledMessage = shortcutInfo.getDisabledMessage();
+  }
 
-    public boolean hasPromiseIconUi() {
-        return isPromise() && !hasStatusFlag(FLAG_SUPPORTS_WEB_UI);
+  /** Returns the ShortcutInfo id associated with the deep shortcut. */
+  public String getDeepShortcutId() {
+    return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT
+        ? getIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID)
+        : null;
+  }
+
+  @Override
+  public ComponentName getTargetComponent() {
+    ComponentName cn = super.getTargetComponent();
+    if (cn == null &&
+        (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
+         hasStatusFlag(FLAG_SUPPORTS_WEB_UI))) {
+      // Legacy shortcuts and promise icons with web UI may not have a
+      // componentName but just a packageName. In that case create a dummy
+      // componentName instead of adding additional check everywhere.
+      String pkg = intent.getPackage();
+      return pkg == null ? null
+                         : new ComponentName(pkg, IconCache.EMPTY_CLASS_NAME);
     }
+    return cn;
+  }
 
-    public int getInstallProgress() {
-        return mInstallProgress;
-    }
+  private void updateDatabase(final Context context, final boolean updateIcon,
+                              final boolean reload) {
+    if (updateIcon)
+      ModelWriter.modifyItemInDatabase(context, this, (String)customTitle,
+                                       swipeUpAction, customIconEntry,
+                                       customIcon, true, reload);
+    else
+      ModelWriter.modifyItemInDatabase(context, this, (String)customTitle,
+                                       swipeUpAction, null, null, false,
+                                       reload);
+  }
 
-    public void setInstallProgress(final int progress) {
-        mInstallProgress = progress;
-        status |= FLAG_INSTALL_SESSION_ACTIVE;
-    }
+  public void
+  onLoadCustomizations(final String titleAlias, final String swipeUpAction,
+                       final IconPackManager.CustomIconEntry customIcon,
+                       final Bitmap icon) {
+    customTitle = titleAlias;
+    customIconEntry = customIcon;
+    this.customIcon = icon;
+    this.swipeUpAction = swipeUpAction;
+  }
 
-    public void updateFromDeepShortcutInfo(final ShortcutInfoCompat shortcutInfo, final Context context) {
-        // {@link ShortcutInfoCompat#getActivity} can change during an update. Recreate the intent
-        intent = shortcutInfo.makeIntent();
-        title = shortcutInfo.getShortLabel();
+  public void setTitle(final @NotNull Context context,
+                       final @Nullable String title) {
+    customTitle = title;
+    updateDatabase(context, false, true);
+  }
 
-        CharSequence label = shortcutInfo.getLongLabel();
-        if (TextUtils.isEmpty(label)) {
-            label = shortcutInfo.getShortLabel();
-        }
-        contentDescription = UserManagerCompat.getInstance(context)
-                             .getBadgedLabelForUser(label, user);
-        if (shortcutInfo.isEnabled()) {
-            runtimeStatusFlags &= ~FLAG_DISABLED_BY_PUBLISHER;
-        } else {
-            runtimeStatusFlags |= FLAG_DISABLED_BY_PUBLISHER;
-        }
-        disabledMessage = shortcutInfo.getDisabledMessage();
-    }
+  public void
+  setIconEntry(final @NotNull Context context,
+               final @Nullable IconPackManager.CustomIconEntry iconEntry) {
+    customIconEntry = iconEntry;
+    updateDatabase(context, true, false);
+  }
 
-    /** Returns the ShortcutInfo id associated with the deep shortcut. */
-    public String getDeepShortcutId() {
-        return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT
-               ? getIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
-    }
+  public void setIcon(final @NotNull Context context,
+                      final @Nullable Bitmap icon) {
+    customIcon = icon;
+    updateDatabase(context, true, true);
+  }
 
-    @Override
-    public ComponentName getTargetComponent() {
-        ComponentName cn = super.getTargetComponent();
-        if (cn == null && (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
-                           || hasStatusFlag(FLAG_SUPPORTS_WEB_UI))) {
-            // Legacy shortcuts and promise icons with web UI may not have a componentName but just
-            // a packageName. In that case create a dummy componentName instead of adding additional
-            // check everywhere.
-            String pkg = intent.getPackage();
-            return pkg == null ? null : new ComponentName(pkg, IconCache.EMPTY_CLASS_NAME);
-        }
-        return cn;
-    }
-
-    private void updateDatabase(final Context context, final boolean updateIcon, final boolean reload) {
-        if (updateIcon)
-            ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, swipeUpAction
-, customIconEntry, customIcon, true, reload);
-        else
-            ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, swipeUpAction
-, null, null, false, reload);
-    }
-
-    public void onLoadCustomizations(final String titleAlias, final String swipeUpAction,
-                                     final IconPackManager.CustomIconEntry customIcon, final Bitmap icon) {
-        customTitle = titleAlias;
-        customIconEntry = customIcon;
-        this.customIcon = icon;
-        this.swipeUpAction = swipeUpAction;
-    }
-
-    public void setTitle(final @NotNull Context context, final @Nullable String title) {
-        customTitle = title;
-        updateDatabase(context, false, true);
-    }
-
-    public void setIconEntry(final @NotNull Context context, final @Nullable IconPackManager.CustomIconEntry iconEntry) {
-        customIconEntry = iconEntry;
-        updateDatabase(context, true, false);
-    }
-
-    public void setIcon(final @NotNull Context context, final @Nullable Bitmap icon) {
-        customIcon = icon;
-        updateDatabase(context, true, true);
-    }
-
-    public void setSwipeUpAction(final @NonNull Context context, final @Nullable String action) {
-        swipeUpAction = action;
-        updateDatabase(context, false, true);
-    }
+  public void setSwipeUpAction(final @NonNull Context context,
+                               final @Nullable String action) {
+    swipeUpAction = action;
+    updateDatabase(context, false, true);
+  }
 }

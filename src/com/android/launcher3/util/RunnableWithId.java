@@ -20,17 +20,15 @@ package com.android.launcher3.util;
  */
 public abstract class RunnableWithId implements Runnable {
 
-    public static final int RUNNABLE_ID_BIND_APPS = 1;
-    public static final int RUNNABLE_ID_BIND_WIDGETS = 2;
+  public static final int RUNNABLE_ID_BIND_APPS = 1;
+  public static final int RUNNABLE_ID_BIND_WIDGETS = 2;
 
-    public final int id;
+  public final int id;
 
-    public RunnableWithId(final int id) {
-        this.id = id;
-    }
+  public RunnableWithId(final int id) { this.id = id; }
 
-    @Override
-    public boolean equals(final Object obj) {
-        return obj instanceof RunnableWithId && ((RunnableWithId) obj).id == id;
-    }
+  @Override
+  public boolean equals(final Object obj) {
+    return obj instanceof RunnableWithId && ((RunnableWithId)obj).id == id;
+  }
 }

@@ -26,7 +26,6 @@ import android.os.CancellationSignal;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.RemoteViews;
-
 import com.android.launcher3.DragSource;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -40,87 +39,93 @@ import com.android.launcher3.widget.PendingItemDragHelper;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 
 /**
- * {@link DragSource} for handling drop from a different window. This object is initialized
- * in the source window and is passed on to the Launcher activity as an Intent extra.
+ * {@link DragSource} for handling drop from a different window. This object is
+ * initialized in the source window and is passed on to the Launcher activity as
+ * an Intent extra.
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class PinItemDragListener extends BaseItemDragListener {
 
-    private final PinItemRequest mRequest;
-    private final CancellationSignal mCancelSignal;
+  private final PinItemRequest mRequest;
+  private final CancellationSignal mCancelSignal;
 
-    public PinItemDragListener(final PinItemRequest request, final Rect previewRect,
-                               final int previewBitmapWidth, final int previewViewWidth) {
-        super(previewRect, previewBitmapWidth, previewViewWidth);
-        mRequest = request;
-        mCancelSignal = new CancellationSignal();
+  public PinItemDragListener(final PinItemRequest request,
+                             final Rect previewRect,
+                             final int previewBitmapWidth,
+                             final int previewViewWidth) {
+    super(previewRect, previewBitmapWidth, previewViewWidth);
+    mRequest = request;
+    mCancelSignal = new CancellationSignal();
+  }
+
+  @Override
+  protected boolean onDragStart(final DragEvent event) {
+    if (!mRequest.isValid()) {
+      return false;
     }
+    return super.onDragStart(event);
+  }
 
-    @Override
-    protected boolean onDragStart(final DragEvent event) {
-        if (!mRequest.isValid()) {
-            return false;
+  @Override
+  public boolean init(final Launcher launcher, final boolean alreadyOnHome) {
+    super.init(launcher, alreadyOnHome);
+    if (!alreadyOnHome) {
+      UiFactory.useFadeOutAnimationForLauncherStart(launcher, mCancelSignal);
+    }
+    return false;
+  }
+
+  @Override
+  protected PendingItemDragHelper createDragHelper() {
+    final PendingAddItemInfo item;
+    if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
+      item = new PendingAddShortcutInfo(
+          new PinShortcutRequestActivityInfo(mRequest, mLauncher));
+    } else {
+      // mRequest.getRequestType() ==
+      // PinItemRequestCompat.REQUEST_TYPE_APPWIDGET
+      LauncherAppWidgetProviderInfo providerInfo =
+          LauncherAppWidgetProviderInfo.fromProviderInfo(
+              mLauncher, mRequest.getAppWidgetProviderInfo(mLauncher));
+      final PinWidgetFlowHandler flowHandler =
+          new PinWidgetFlowHandler(providerInfo, mRequest);
+      item = new PendingAddWidgetInfo(providerInfo) {
+        @Override
+        public WidgetAddFlowHandler getHandler() {
+          return flowHandler;
         }
-        return super.onDragStart(event);
+      };
     }
+    View view = new View(mLauncher);
+    view.setTag(item);
 
-    @Override
-    public boolean init(final Launcher launcher, final boolean alreadyOnHome) {
-        super.init(launcher, alreadyOnHome);
-        if (!alreadyOnHome) {
-            UiFactory.useFadeOutAnimationForLauncherStart(launcher, mCancelSignal);
-        }
-        return false;
+    PendingItemDragHelper dragHelper = new PendingItemDragHelper(view);
+    if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_APPWIDGET) {
+      dragHelper.setPreview(getPreview(mRequest));
     }
+    return dragHelper;
+  }
 
-    @Override
-    protected PendingItemDragHelper createDragHelper() {
-        final PendingAddItemInfo item;
-        if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
-            item = new PendingAddShortcutInfo(
-                new PinShortcutRequestActivityInfo(mRequest, mLauncher));
-        } else {
-            // mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_APPWIDGET
-            LauncherAppWidgetProviderInfo providerInfo =
-                LauncherAppWidgetProviderInfo.fromProviderInfo(
-                    mLauncher, mRequest.getAppWidgetProviderInfo(mLauncher));
-            final PinWidgetFlowHandler flowHandler =
-                new PinWidgetFlowHandler(providerInfo, mRequest);
-            item = new PendingAddWidgetInfo(providerInfo) {
-                @Override
-                public WidgetAddFlowHandler getHandler() {
-                    return flowHandler;
-                }
-            };
-        }
-        View view = new View(mLauncher);
-        view.setTag(item);
+  @Override
+  public void
+  fillInLogContainerData(final View v, final ItemInfo info,
+                         final LauncherLogProto.Target target,
+                         final LauncherLogProto.Target targetParent) {
+    targetParent.containerType = LauncherLogProto.ContainerType.PINITEM;
+  }
 
-        PendingItemDragHelper dragHelper = new PendingItemDragHelper(view);
-        if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_APPWIDGET) {
-            dragHelper.setPreview(getPreview(mRequest));
-        }
-        return dragHelper;
+  @Override
+  protected void postCleanup() {
+    super.postCleanup();
+    mCancelSignal.cancel();
+  }
+
+  public static RemoteViews getPreview(final PinItemRequest request) {
+    Bundle extras = request.getExtras();
+    if (extras != null && extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW)
+                                  instanceof RemoteViews) {
+      return (RemoteViews)extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW);
     }
-
-    @Override
-    public void fillInLogContainerData(final View v, final ItemInfo info, final LauncherLogProto.Target target,
-                                       final LauncherLogProto.Target targetParent) {
-        targetParent.containerType = LauncherLogProto.ContainerType.PINITEM;
-    }
-
-    @Override
-    protected void postCleanup() {
-        super.postCleanup();
-        mCancelSignal.cancel();
-    }
-
-    public static RemoteViews getPreview(final PinItemRequest request) {
-        Bundle extras = request.getExtras();
-        if (extras != null
-                && extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW) instanceof RemoteViews) {
-            return (RemoteViews) extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW);
-        }
-        return null;
-    }
+    return null;
+  }
 }

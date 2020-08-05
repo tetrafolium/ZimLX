@@ -38,9 +38,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.widget.TextView;
-
 import androidx.core.graphics.ColorUtils;
-
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.Launcher.OnResumeCallback;
@@ -52,7 +50,7 @@ import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
-
+import java.text.NumberFormat;
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.ZimUtilsKt;
@@ -62,681 +60,697 @@ import org.zimmob.zimlx.gestures.GestureHandler;
 import org.zimmob.zimlx.gestures.handlers.ViewSwipeUpGestureHandler;
 import org.zimmob.zimlx.override.CustomInfoProvider;
 
-import java.text.NumberFormat;
-
 /**
- * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
- * because we want to make the bubble taller than the text and TextView's clip is
- * too aggressive.
+ * TextView that draws a bubble behind the text. We cannot use a
+ * LineBackgroundSpan because we want to make the bubble taller than the text
+ * and TextView's clip is too aggressive.
  */
-public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback {
+public class BubbleTextView
+    extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback {
 
-    private static final int DISPLAY_WORKSPACE = 0;
-    private static final int DISPLAY_ALL_APPS = 1;
-    private static final int DISPLAY_FOLDER = 2;
-    private static final int DISPLAY_DRAWER_FOLDER = 5;
+  private static final int DISPLAY_WORKSPACE = 0;
+  private static final int DISPLAY_ALL_APPS = 1;
+  private static final int DISPLAY_FOLDER = 2;
+  private static final int DISPLAY_DRAWER_FOLDER = 5;
 
-    private static final int[] STATE_PRESSED = new int[] {android.R.attr.state_pressed};
+  private static final int[] STATE_PRESSED =
+      new int[] {android.R.attr.state_pressed};
 
-
-    private static final Property<BubbleTextView, Float> BADGE_SCALE_PROPERTY
-    = new Property<BubbleTextView, Float>(Float.TYPE, "badgeScale") {
+  private static final Property<BubbleTextView, Float> BADGE_SCALE_PROPERTY =
+      new Property<BubbleTextView, Float>(Float.TYPE, "badgeScale") {
         @Override
         public Float get(final BubbleTextView bubbleTextView) {
-            return bubbleTextView.mBadgeScale;
+          return bubbleTextView.mBadgeScale;
         }
 
         @Override
-        public void set(final BubbleTextView bubbleTextView, final Float value) {
-            bubbleTextView.mBadgeScale = value;
-            bubbleTextView.invalidate();
+        public void set(final BubbleTextView bubbleTextView,
+                        final Float value) {
+          bubbleTextView.mBadgeScale = value;
+          bubbleTextView.invalidate();
         }
-    };
+      };
 
-    public static final Property<BubbleTextView, Float> TEXT_ALPHA_PROPERTY
-    = new Property<BubbleTextView, Float>(Float.class, "textAlpha") {
+  public static final Property<BubbleTextView, Float> TEXT_ALPHA_PROPERTY =
+      new Property<BubbleTextView, Float>(Float.class, "textAlpha") {
         @Override
         public Float get(final BubbleTextView bubbleTextView) {
-            return bubbleTextView.mTextAlpha;
+          return bubbleTextView.mTextAlpha;
         }
 
         @Override
-        public void set(final BubbleTextView bubbleTextView, final Float alpha) {
-            bubbleTextView.setTextAlpha(alpha);
+        public void set(final BubbleTextView bubbleTextView,
+                        final Float alpha) {
+          bubbleTextView.setTextAlpha(alpha);
         }
-    };
+      };
 
-    private final BaseDraggingActivity mActivity;
-    private Drawable mIcon;
-    private final boolean mCenterVertically;
+  private final BaseDraggingActivity mActivity;
+  private Drawable mIcon;
+  private final boolean mCenterVertically;
 
-    private final CheckLongPressHelper mLongPressHelper;
-    private final StylusEventHelper mStylusEventHelper;
-    private final float mSlop;
+  private final CheckLongPressHelper mLongPressHelper;
+  private final StylusEventHelper mStylusEventHelper;
+  private final float mSlop;
 
-    private final boolean mLayoutHorizontal;
-    private int mIconSize;
+  private final boolean mLayoutHorizontal;
+  private int mIconSize;
 
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private boolean mIsIconVisible = true;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private int mTextColor;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private float mTextAlpha = 1;
+  @ViewDebug.ExportedProperty(category = "launcher")
+  private boolean mIsIconVisible = true;
+  @ViewDebug.ExportedProperty(category = "launcher") private int mTextColor;
+  @ViewDebug.ExportedProperty(category = "launcher")
+  private float mTextAlpha = 1;
 
-    private BadgeInfo mBadgeInfo;
-    private BadgeRenderer mBadgeRenderer;
-    private int mBadgeColor;
-    private float mBadgeScale;
-    private boolean mForceHideBadge;
-    private Point mTempSpaceForBadgeOffset = new Point();
-    private Rect mTempIconBounds = new Rect();
+  private BadgeInfo mBadgeInfo;
+  private BadgeRenderer mBadgeRenderer;
+  private int mBadgeColor;
+  private float mBadgeScale;
+  private boolean mForceHideBadge;
+  private Point mTempSpaceForBadgeOffset = new Point();
+  private Rect mTempIconBounds = new Rect();
 
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private boolean mStayPressed;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private boolean mIgnorePressedStateChange;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private boolean mDisableRelayout = false;
+  @ViewDebug.ExportedProperty(category = "launcher")
+  private boolean mStayPressed;
+  @ViewDebug.ExportedProperty(category = "launcher")
+  private boolean mIgnorePressedStateChange;
+  @ViewDebug.ExportedProperty(category = "launcher")
+  private boolean mDisableRelayout = false;
 
-    private IconLoadRequest mIconLoadRequest;
+  private IconLoadRequest mIconLoadRequest;
 
-    private GestureHandler mSwipeUpHandler;
+  private GestureHandler mSwipeUpHandler;
 
-    private boolean mHideText;
-    public BubbleTextView(final Context context) {
-        this(context, null, 0);
+  private boolean mHideText;
+  public BubbleTextView(final Context context) { this(context, null, 0); }
+
+  public BubbleTextView(final Context context, final AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
+
+  public BubbleTextView(final Context context, final AttributeSet attrs,
+                        final int defStyle) {
+    super(context, attrs, defStyle);
+    mActivity = ZimUtilsKt.getBaseDraggingActivityOrNull(context);
+
+    if (mActivity == null) {
+      mLayoutHorizontal = false;
+      mIconSize = 0;
+      mCenterVertically = true;
+      mLongPressHelper = null;
+      mStylusEventHelper = null;
+      mSlop = 0;
+      return;
+    }
+    DeviceProfile grid = mActivity.getDeviceProfile();
+    mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+
+    TypedArray a = context.obtainStyledAttributes(
+        attrs, R.styleable.BubbleTextView, defStyle, 0);
+    mLayoutHorizontal =
+        a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
+
+    int display =
+        a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
+    int defaultIconSize = grid.iconSizePx;
+    ZimPreferences prefs = Utilities.getZimPrefs(context);
+    if (display == DISPLAY_WORKSPACE) {
+      mHideText = prefs.getHideAppLabels();
+      setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
+      setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
+      int lines = prefs.getHomeLabelRows();
+      setLineCount(lines);
+    } else if (display == DISPLAY_ALL_APPS) {
+      mHideText = prefs.getHideAllAppsAppLabels();
+      setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                  isTextHidden() ? 0 : grid.allAppsIconTextSizePx);
+      setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
+      setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
+      defaultIconSize = grid.allAppsIconSizePx;
+      int lines = prefs.getDrawerLabelRows();
+      setLineCount(lines);
+    } else if (display == DISPLAY_FOLDER) {
+      mHideText = prefs.getHideAppLabels();
+      setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                  isTextHidden() ? 0 : grid.folderChildTextSizePx);
+      setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.folderChildTextSizePx);
+      setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
+      defaultIconSize = grid.folderChildIconSizePx;
+      int lines = prefs.getHomeLabelRows();
+      setLineCount(lines);
+    } else if (display == DISPLAY_DRAWER_FOLDER) {
+      mHideText = prefs.getHideAllAppsAppLabels();
+      setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                  isTextHidden() ? 0 : grid.allAppsFolderChildTextSizePx);
+      setCompoundDrawablePadding(grid.allAppsFolderChildDrawablePaddingPx);
+      defaultIconSize = grid.allAppsFolderChildIconSizePx;
+      int lines = prefs.getDrawerLabelRows();
+      setLineCount(lines);
     }
 
-    public BubbleTextView(final Context context, final AttributeSet attrs) {
-        this(context, attrs, 0);
+    mCenterVertically =
+        a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
+
+    mIconSize = a.getDimensionPixelSize(
+        R.styleable.BubbleTextView_iconSizeOverride, defaultIconSize);
+    a.recycle();
+
+    mLongPressHelper = new CheckLongPressHelper(this);
+    mStylusEventHelper =
+        new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
+
+    setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
+    setTextAlpha(1f);
+  }
+
+  public void setLineCount(final int lines) {
+    setMaxLines(lines);
+    setSingleLine(lines == 1);
+    setEllipsize(TextUtils.TruncateAt.END);
+    // This shouldn't even be needed, what is going on?!
+    setLines(lines);
+  }
+
+  @Override
+  protected void onFocusChanged(final boolean focused, final int direction,
+                                final Rect previouslyFocusedRect) {
+    // Disable marques when not focused to that, so that updating text does not
+    // cause relayout.
+    setEllipsize(focused ? TruncateAt.MARQUEE : TruncateAt.END);
+    super.onFocusChanged(focused, direction, previouslyFocusedRect);
+  }
+
+  /**
+   * Resets the view so it can be recycled.
+   */
+  public void reset() {
+    mBadgeInfo = null;
+    mBadgeColor = Color.TRANSPARENT;
+    mBadgeScale = 0f;
+    mForceHideBadge = false;
+  }
+
+  public void applyFromShortcutInfo(final ShortcutInfo info) {
+    applyFromShortcutInfo(info, false);
+  }
+
+  public void applyFromShortcutInfo(final ShortcutInfo info,
+                                    final boolean promiseStateChanged) {
+    applyIconAndLabel(info);
+    applySwipeUpAction(info);
+    setTag(info);
+    if (promiseStateChanged || (info.hasPromiseIconUi())) {
+      applyPromiseState(promiseStateChanged);
     }
 
-    public BubbleTextView(final Context context, final AttributeSet attrs, final int defStyle) {
-        super(context, attrs, defStyle);
-        mActivity = ZimUtilsKt.getBaseDraggingActivityOrNull(context);
+    applyBadgeState(info, false /* animate */);
+  }
 
-        if (mActivity == null) {
-            mLayoutHorizontal = false;
-            mIconSize = 0;
-            mCenterVertically = true;
-            mLongPressHelper = null;
-            mStylusEventHelper = null;
-            mSlop = 0;
-            return;
-        }
-        DeviceProfile grid = mActivity.getDeviceProfile();
-        mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+  public void applyFromApplicationInfo(final AppInfo info) {
+    applyIconAndLabel(info);
 
-        TypedArray a = context.obtainStyledAttributes(attrs,
-                       R.styleable.BubbleTextView, defStyle, 0);
-        mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
+    // We don't need to check the info since it's not a ShortcutInfo
+    super.setTag(info);
 
-        int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
-        int defaultIconSize = grid.iconSizePx;
-        ZimPreferences prefs = Utilities.getZimPrefs(context);
-        if (display == DISPLAY_WORKSPACE) {
-            mHideText = prefs.getHideAppLabels();
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
-            setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
-            int lines = prefs.getHomeLabelRows();
-            setLineCount(lines);
-        } else if (display == DISPLAY_ALL_APPS) {
-            mHideText = prefs.getHideAllAppsAppLabels();
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.allAppsIconTextSizePx);
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
-            setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
-            defaultIconSize = grid.allAppsIconSizePx;
-            int lines = prefs.getDrawerLabelRows();
-            setLineCount(lines);
-        } else if (display == DISPLAY_FOLDER) {
-            mHideText = prefs.getHideAppLabels();
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.folderChildTextSizePx);
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.folderChildTextSizePx);
-            setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
-            defaultIconSize = grid.folderChildIconSizePx;
-            int lines = prefs.getHomeLabelRows();
-            setLineCount(lines);
-        } else if (display == DISPLAY_DRAWER_FOLDER) {
-            mHideText = prefs.getHideAllAppsAppLabels();
-            setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                        isTextHidden() ? 0 : grid.allAppsFolderChildTextSizePx);
-            setCompoundDrawablePadding(grid.allAppsFolderChildDrawablePaddingPx);
-            defaultIconSize = grid.allAppsFolderChildIconSizePx;
-            int lines = prefs.getDrawerLabelRows();
-            setLineCount(lines);
-        }
+    // Verify high res immediately
+    verifyHighRes();
 
-        mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
+    if (info instanceof PromiseAppInfo) {
+      PromiseAppInfo promiseAppInfo = (PromiseAppInfo)info;
+      applyProgressLevel(promiseAppInfo.level);
+    }
+    applyBadgeState(info, false /* animate */);
+  }
 
-        mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
-                                            defaultIconSize);
-        a.recycle();
+  public void applyFromPackageItemInfo(final PackageItemInfo info) {
+    applyIconAndLabel(info);
+    // We don't need to check the info since it's not a ShortcutInfo
+    super.setTag(info);
 
-        mLongPressHelper = new CheckLongPressHelper(this);
-        mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
+    // Verify high res immediately
+    verifyHighRes();
+  }
 
-        setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
-        setTextAlpha(1f);
+  private void applyIconAndLabel(final ItemInfoWithIcon info) {
+    FastBitmapDrawable iconDrawable =
+        DrawableFactory.get(getContext()).newIcon(info);
+    mBadgeColor = IconPalette.getMutedColor(info.iconColor, 0.54f);
+
+    setIcon(iconDrawable);
+    if (!isTextHidden())
+      setText(info.title);
+    if (info.contentDescription != null) {
+      setContentDescription(info.isDisabled() ? getContext().getString(
+                                                    R.string.disabled_app_label,
+                                                    info.contentDescription)
+                                              : info.contentDescription);
+    }
+  }
+
+  public void applyIcon(final ItemInfoWithIcon info) {
+    FastBitmapDrawable iconDrawable =
+        DrawableFactory.get(getContext()).newIcon(info);
+    mBadgeColor =
+        IconPalette.getMutedColor(getContext(), info.iconColor, 0.54f);
+
+    setIcon(iconDrawable);
+  }
+
+  public void applyIcon(final BitmapInfo info) {
+    FastBitmapDrawable iconDrawable = new FastBitmapDrawable(info);
+    mBadgeColor = IconPalette.getMutedColor(getContext(), info.color, 0.54f);
+
+    setIcon(iconDrawable);
+  }
+  private void applySwipeUpAction(final ShortcutInfo info) {
+    GestureHandler handler = GestureController.Companion.createGestureHandler(
+        getContext(), info.swipeUpAction,
+        new BlankGestureHandler(getContext(), null));
+    if (handler instanceof BlankGestureHandler) {
+      mSwipeUpHandler = null;
+    } else {
+      mSwipeUpHandler = new ViewSwipeUpGestureHandler(this, handler);
+    }
+  }
+
+  private CharSequence getTitle(final ItemInfo info) {
+    CustomInfoProvider<ItemInfo> customInfoProvider =
+        CustomInfoProvider.Companion.forItem(getContext(), info);
+    if (customInfoProvider != null) {
+      return customInfoProvider.getTitle(info);
+    } else {
+      return info.title;
+    }
+  }
+
+  /**
+   * Overrides the default long press timeout.
+   */
+  public void setLongPressTimeout(final int longPressTimeout) {
+    mLongPressHelper.setLongPressTimeout(longPressTimeout);
+  }
+
+  @Override
+  public void setTag(final Object tag) {
+    if (tag != null) {
+      LauncherModel.checkItemInfo((ItemInfo)tag);
+    }
+    super.setTag(tag);
+  }
+
+  @Override
+  public void refreshDrawableState() {
+    if (!mIgnorePressedStateChange) {
+      super.refreshDrawableState();
+    }
+  }
+
+  @Override
+  protected int[] onCreateDrawableState(final int extraSpace) {
+    final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
+    if (mStayPressed) {
+      mergeDrawableStates(drawableState, STATE_PRESSED);
+    }
+    return drawableState;
+  }
+
+  /**
+   * Returns the icon for this view.
+   */
+  public Drawable getIcon() { return mIcon; }
+
+  @Override
+  public boolean onTouchEvent(final MotionEvent event) {
+    // Call the superclass onTouchEvent first, because sometimes it changes the
+    // state to isPressed() on an ACTION_UP
+    boolean result = super.onTouchEvent(event);
+
+    // Check for a stylus button press, if it occurs cancel any long press
+    // checks.
+    if (mStylusEventHelper.onMotionEvent(event)) {
+      mLongPressHelper.cancelLongPress();
+      result = true;
     }
 
-    public void setLineCount(final int lines) {
-        setMaxLines(lines);
-        setSingleLine(lines == 1);
-        setEllipsize(TextUtils.TruncateAt.END);
-        // This shouldn't even be needed, what is going on?!
-        setLines(lines);
-    }
-
-    @Override
-    protected void onFocusChanged(final boolean focused, final int direction, final Rect previouslyFocusedRect) {
-        // Disable marques when not focused to that, so that updating text does not cause relayout.
-        setEllipsize(focused ? TruncateAt.MARQUEE : TruncateAt.END);
-        super.onFocusChanged(focused, direction, previouslyFocusedRect);
-    }
-
-    /**
-     * Resets the view so it can be recycled.
-     */
-    public void reset() {
-        mBadgeInfo = null;
-        mBadgeColor = Color.TRANSPARENT;
-        mBadgeScale = 0f;
-        mForceHideBadge = false;
-    }
-
-    public void applyFromShortcutInfo(final ShortcutInfo info) {
-        applyFromShortcutInfo(info, false);
-    }
-
-    public void applyFromShortcutInfo(final ShortcutInfo info, final boolean promiseStateChanged) {
-        applyIconAndLabel(info);
-        applySwipeUpAction(info);
-        setTag(info);
-        if (promiseStateChanged || (info.hasPromiseIconUi())) {
-            applyPromiseState(promiseStateChanged);
-        }
-
-        applyBadgeState(info, false /* animate */);
-    }
-
-    public void applyFromApplicationInfo(final AppInfo info) {
-        applyIconAndLabel(info);
-
-        // We don't need to check the info since it's not a ShortcutInfo
-        super.setTag(info);
-
-        // Verify high res immediately
-        verifyHighRes();
-
-        if (info instanceof PromiseAppInfo) {
-            PromiseAppInfo promiseAppInfo = (PromiseAppInfo) info;
-            applyProgressLevel(promiseAppInfo.level);
-        }
-        applyBadgeState(info, false /* animate */);
-    }
-
-    public void applyFromPackageItemInfo(final PackageItemInfo info) {
-        applyIconAndLabel(info);
-        // We don't need to check the info since it's not a ShortcutInfo
-        super.setTag(info);
-
-        // Verify high res immediately
-        verifyHighRes();
-    }
-
-    private void applyIconAndLabel(final ItemInfoWithIcon info) {
-        FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(info);
-        mBadgeColor = IconPalette.getMutedColor(info.iconColor, 0.54f);
-
-        setIcon(iconDrawable);
-        if (!isTextHidden())
-            setText(info.title);
-        if (info.contentDescription != null) {
-            setContentDescription(info.isDisabled()
-                                  ? getContext().getString(R.string.disabled_app_label, info.contentDescription)
-                                  : info.contentDescription);
-        }
-    }
-
-    public void applyIcon(final ItemInfoWithIcon info) {
-        FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(info);
-        mBadgeColor = IconPalette.getMutedColor(getContext(), info.iconColor, 0.54f);
-
-        setIcon(iconDrawable);
-    }
-
-    public void applyIcon(final BitmapInfo info) {
-        FastBitmapDrawable iconDrawable = new FastBitmapDrawable(info);
-        mBadgeColor = IconPalette.getMutedColor(getContext(), info.color, 0.54f);
-
-        setIcon(iconDrawable);
-    }
-    private void applySwipeUpAction(final ShortcutInfo info) {
-        GestureHandler handler = GestureController.Companion.createGestureHandler(
-                                     getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), null));
-        if (handler instanceof BlankGestureHandler) {
-            mSwipeUpHandler = null;
-        } else {
-            mSwipeUpHandler = new ViewSwipeUpGestureHandler(this, handler);
-        }
-    }
-
-    private CharSequence getTitle(final ItemInfo info) {
-        CustomInfoProvider<ItemInfo> customInfoProvider = CustomInfoProvider.Companion.forItem(getContext(), info);
-        if (customInfoProvider != null) {
-            return customInfoProvider.getTitle(info);
-        } else {
-            return info.title;
-        }
-    }
-
-    /**
-     * Overrides the default long press timeout.
-     */
-    public void setLongPressTimeout(final int longPressTimeout) {
-        mLongPressHelper.setLongPressTimeout(longPressTimeout);
-    }
-
-    @Override
-    public void setTag(final Object tag) {
-        if (tag != null) {
-            LauncherModel.checkItemInfo((ItemInfo) tag);
-        }
-        super.setTag(tag);
-    }
-
-    @Override
-    public void refreshDrawableState() {
-        if (!mIgnorePressedStateChange) {
-            super.refreshDrawableState();
-        }
-    }
-
-    @Override
-    protected int[] onCreateDrawableState(final int extraSpace) {
-        final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
-        if (mStayPressed) {
-            mergeDrawableStates(drawableState, STATE_PRESSED);
-        }
-        return drawableState;
-    }
-
-    /**
-     * Returns the icon for this view.
-     */
-    public Drawable getIcon() {
-        return mIcon;
-    }
-
-    @Override
-    public boolean onTouchEvent(final MotionEvent event) {
-        // Call the superclass onTouchEvent first, because sometimes it changes the state to
-        // isPressed() on an ACTION_UP
-        boolean result = super.onTouchEvent(event);
-
-        // Check for a stylus button press, if it occurs cancel any long press checks.
-        if (mStylusEventHelper.onMotionEvent(event)) {
-            mLongPressHelper.cancelLongPress();
-            result = true;
-        }
-
-        switch (event.getAction()) {
-        case MotionEvent.ACTION_DOWN:
-            // If we're in a stylus button press, don't check for long press.
-            if (!mStylusEventHelper.inStylusButtonPressed()) {
-                mLongPressHelper.postCheckForLongPress();
-            }
-            break;
-        case MotionEvent.ACTION_CANCEL:
-        case MotionEvent.ACTION_UP:
-            mLongPressHelper.cancelLongPress();
-            break;
-        case MotionEvent.ACTION_MOVE:
-            if (!Utilities.pointInView(this, event.getX(), event.getY(), mSlop)) {
-                mLongPressHelper.cancelLongPress();
-            }
-            break;
-        }
-
-        Launcher launcher = ZimUtilsKt.getLauncherOrNull(getContext());
-        if (launcher instanceof ZimLauncher && mSwipeUpHandler != null) {
-            ((ZimLauncher) launcher).getGestureController()
-            .setSwipeUpOverride(mSwipeUpHandler, event.getDownTime());
-        }
-
-        return result;
-    }
-
-    public void setStayPressed(final boolean stayPressed) {
-        mStayPressed = stayPressed;
-        refreshDrawableState();
-    }
-
-    @Override
-    public void onLauncherResume() {
-        // Reset the pressed state of icon that was locked in the press state while activity
-        // was launching
-        setStayPressed(false);
-    }
-
-    void clearPressedBackground() {
-        setPressed(false);
-        setStayPressed(false);
-    }
-
-    @Override
-    public boolean onKeyUp(final int keyCode, final KeyEvent event) {
-        // Unlike touch events, keypress event propagate pressed state change immediately,
-        // without waiting for onClickHandler to execute. Disable pressed state changes here
-        // to avoid flickering.
-        mIgnorePressedStateChange = true;
-        boolean result = super.onKeyUp(keyCode, event);
-        mIgnorePressedStateChange = false;
-        refreshDrawableState();
-        return result;
-    }
-
-    @SuppressWarnings("wrongcall")
-    protected void drawWithoutBadge(final Canvas canvas) {
-        super.onDraw(canvas);
-    }
-
-    @Override
-    public void onDraw(final Canvas canvas) {
-        super.onDraw(canvas);
-        drawBadgeIfNecessary(canvas);
-    }
-
-    /**
-     * Draws the icon badge in the top right corner of the icon bounds.
-     * @param canvas The canvas to draw to.
-     */
-    protected void drawBadgeIfNecessary(final Canvas canvas) {
-        if (!mForceHideBadge && (hasBadge() || mBadgeScale > 0)) {
-            getIconBounds(mTempIconBounds);
-            mTempSpaceForBadgeOffset.set((getWidth() - mIconSize) / 2, getPaddingTop());
-            final int scrollX = getScrollX();
-            final int scrollY = getScrollY();
-            canvas.translate(scrollX, scrollY);
-            mBadgeRenderer.draw(canvas, mBadgeInfo, mTempIconBounds, mBadgeScale,
-                                mTempSpaceForBadgeOffset);
-            canvas.translate(-scrollX, -scrollY);
-        }
-    }
-
-    public void forceHideBadge(final boolean forceHideBadge) {
-        if (mForceHideBadge == forceHideBadge) {
-            return;
-        }
-        mForceHideBadge = forceHideBadge;
-
-        if (forceHideBadge) {
-            invalidate();
-        } else if (hasBadge()) {
-            ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, 0, 1).start();
-        }
-    }
-
-    private boolean hasBadge() {
-        return mBadgeInfo != null;
-    }
-
-    public void getIconBounds(final Rect outBounds) {
-        int top = getPaddingTop();
-        int left = (getWidth() - mIconSize) / 2;
-        int right = left + mIconSize;
-        int bottom = top + mIconSize;
-        outBounds.set(left, top, right, bottom);
-    }
-
-    @Override
-    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-        if (mCenterVertically) {
-            Paint.FontMetrics fm = getPaint().getFontMetrics();
-            int cellHeightPx = mIconSize + getCompoundDrawablePadding()
-                               + (int) Math.ceil(fm.bottom - fm.top);
-            int height = MeasureSpec.getSize(heightMeasureSpec);
-            setPadding(getPaddingLeft(), (height - cellHeightPx) / 2, getPaddingRight(),
-                       getPaddingBottom());
-        }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    @Override
-    public void setTextColor(final int color) {
-        mTextColor = color;
-        super.setTextColor(getModifiedColor());
-    }
-
-    @Override
-    public void setTextColor(final ColorStateList colors) {
-        mTextColor = colors.getDefaultColor();
-        if (Float.compare(mTextAlpha, 1) == 0) {
-            super.setTextColor(colors);
-        } else {
-            super.setTextColor(getModifiedColor());
-        }
-    }
-
-    public boolean shouldTextBeVisible() {
-        // Text should be visible everywhere but the hotseat.
-        Object tag = getParent() instanceof FolderIcon ? ((View) getParent()).getTag() : getTag();
-        ItemInfo info = tag instanceof ItemInfo ? (ItemInfo) tag : null;
-        return info == null || info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT;
-    }
-
-    public void setTextVisibility(final boolean visible) {
-        setTextAlpha(visible ? 1 : 0);
-    }
-
-    private void setTextAlpha(final float alpha) {
-        mTextAlpha = alpha;
-        super.setTextColor(getModifiedColor());
-    }
-
-    private int getModifiedColor() {
-        if (mTextAlpha == 0) {
-            // Special case to prevent text shadows in high contrast mode
-            return Color.TRANSPARENT;
-        }
-        return ColorUtils.setAlphaComponent(
-                   mTextColor, Math.round(Color.alpha(mTextColor) * mTextAlpha));
-    }
-
-    /**
-     * Creates an animator to fade the text in or out.
-     * @param fadeIn Whether the text should fade in or fade out.
-     */
-    public ObjectAnimator createTextAlphaAnimator(final boolean fadeIn) {
-        float toAlpha = shouldTextBeVisible() && fadeIn ? 1 : 0;
-        return ObjectAnimator.ofFloat(this, TEXT_ALPHA_PROPERTY, toAlpha);
-    }
-
-    @Override
-    public void cancelLongPress() {
-        super.cancelLongPress();
-
+    switch (event.getAction()) {
+    case MotionEvent.ACTION_DOWN:
+      // If we're in a stylus button press, don't check for long press.
+      if (!mStylusEventHelper.inStylusButtonPressed()) {
+        mLongPressHelper.postCheckForLongPress();
+      }
+      break;
+    case MotionEvent.ACTION_CANCEL:
+    case MotionEvent.ACTION_UP:
+      mLongPressHelper.cancelLongPress();
+      break;
+    case MotionEvent.ACTION_MOVE:
+      if (!Utilities.pointInView(this, event.getX(), event.getY(), mSlop)) {
         mLongPressHelper.cancelLongPress();
+      }
+      break;
     }
 
-    public void applyPromiseState(final boolean promiseStateChanged) {
-        if (getTag() instanceof ShortcutInfo) {
-            ShortcutInfo info = (ShortcutInfo) getTag();
-            final boolean isPromise = info.hasPromiseIconUi();
-            final int progressLevel = isPromise
-                                      ? ((info.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE)
-                                        ? info.getInstallProgress() : 0)) : 100;
-
-            PreloadIconDrawable preloadDrawable = applyProgressLevel(progressLevel);
-            if (preloadDrawable != null && promiseStateChanged) {
-                preloadDrawable.maybePerformFinishedAnimation();
-            }
-        }
+    Launcher launcher = ZimUtilsKt.getLauncherOrNull(getContext());
+    if (launcher instanceof ZimLauncher && mSwipeUpHandler != null) {
+      ((ZimLauncher)launcher)
+          .getGestureController()
+          .setSwipeUpOverride(mSwipeUpHandler, event.getDownTime());
     }
 
-    public PreloadIconDrawable applyProgressLevel(final int progressLevel) {
-        if (getTag() instanceof ItemInfoWithIcon) {
-            ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
-            if (progressLevel >= 100) {
-                setContentDescription(info.contentDescription != null
-                                      ? info.contentDescription : "");
-            } else if (progressLevel > 0) {
-                setContentDescription(getContext()
-                                      .getString(R.string.app_downloading_title, info.title,
-                                                 NumberFormat.getPercentInstance().format(progressLevel * 0.01)));
-            } else {
-                setContentDescription(getContext()
-                                      .getString(R.string.app_waiting_download_title, info.title));
-            }
-            if (mIcon != null) {
-                final PreloadIconDrawable preloadDrawable;
-                if (mIcon instanceof PreloadIconDrawable) {
-                    preloadDrawable = (PreloadIconDrawable) mIcon;
-                    preloadDrawable.setLevel(progressLevel);
-                } else {
-                    preloadDrawable = DrawableFactory.get(getContext())
-                                      .newPendingIcon(info, getContext());
-                    preloadDrawable.setLevel(progressLevel);
-                    setIcon(preloadDrawable);
-                }
-                return preloadDrawable;
-            }
-        }
-        return null;
+    return result;
+  }
+
+  public void setStayPressed(final boolean stayPressed) {
+    mStayPressed = stayPressed;
+    refreshDrawableState();
+  }
+
+  @Override
+  public void onLauncherResume() {
+    // Reset the pressed state of icon that was locked in the press state while
+    // activity was launching
+    setStayPressed(false);
+  }
+
+  void clearPressedBackground() {
+    setPressed(false);
+    setStayPressed(false);
+  }
+
+  @Override
+  public boolean onKeyUp(final int keyCode, final KeyEvent event) {
+    // Unlike touch events, keypress event propagate pressed state change
+    // immediately, without waiting for onClickHandler to execute. Disable
+    // pressed state changes here to avoid flickering.
+    mIgnorePressedStateChange = true;
+    boolean result = super.onKeyUp(keyCode, event);
+    mIgnorePressedStateChange = false;
+    refreshDrawableState();
+    return result;
+  }
+
+  @SuppressWarnings("wrongcall")
+  protected void drawWithoutBadge(final Canvas canvas) {
+    super.onDraw(canvas);
+  }
+
+  @Override
+  public void onDraw(final Canvas canvas) {
+    super.onDraw(canvas);
+    drawBadgeIfNecessary(canvas);
+  }
+
+  /**
+   * Draws the icon badge in the top right corner of the icon bounds.
+   * @param canvas The canvas to draw to.
+   */
+  protected void drawBadgeIfNecessary(final Canvas canvas) {
+    if (!mForceHideBadge && (hasBadge() || mBadgeScale > 0)) {
+      getIconBounds(mTempIconBounds);
+      mTempSpaceForBadgeOffset.set((getWidth() - mIconSize) / 2,
+                                   getPaddingTop());
+      final int scrollX = getScrollX();
+      final int scrollY = getScrollY();
+      canvas.translate(scrollX, scrollY);
+      mBadgeRenderer.draw(canvas, mBadgeInfo, mTempIconBounds, mBadgeScale,
+                          mTempSpaceForBadgeOffset);
+      canvas.translate(-scrollX, -scrollY);
     }
+  }
 
-    public void applyBadgeState(final ItemInfo itemInfo, final boolean animate) {
-        if (mIcon instanceof FastBitmapDrawable) {
-            boolean wasBadged = mBadgeInfo != null;
-            mBadgeInfo = mActivity.getBadgeInfoForItem(itemInfo);
-            boolean isBadged = mBadgeInfo != null;
-            float newBadgeScale = isBadged ? 1f : 0;
-            mBadgeRenderer = mActivity.getDeviceProfile().mBadgeRenderer;
-            if (wasBadged || isBadged) {
-                // Animate when a badge is first added or when it is removed.
-                if (animate && (wasBadged ^ isBadged) && isShown()) {
-                    ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, newBadgeScale).start();
-                } else {
-                    mBadgeScale = newBadgeScale;
-                    invalidate();
-                }
-            }
-            if (itemInfo.contentDescription != null) {
-                if (hasBadge()) {
-                    int count = mBadgeInfo.getNotificationCount();
-                    setContentDescription(getContext().getResources().getQuantityString(
-                                              R.plurals.badged_app_label, count, itemInfo.contentDescription, count));
-                } else {
-                    setContentDescription(itemInfo.contentDescription);
-                }
-            }
-        }
+  public void forceHideBadge(final boolean forceHideBadge) {
+    if (mForceHideBadge == forceHideBadge) {
+      return;
     }
+    mForceHideBadge = forceHideBadge;
 
-    /**
-     * Sets the icon for this view based on the layout direction.
-     */
-    private void setIcon(final Drawable icon) {
-        if (mIsIconVisible) {
-            applyCompoundDrawables(icon);
-        }
-        mIcon = icon;
+    if (forceHideBadge) {
+      invalidate();
+    } else if (hasBadge()) {
+      ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, 0, 1).start();
     }
+  }
 
-    public void clearIcon() {
-        mIcon = null;
-        setCompoundDrawables(null, null, null, null);
+  private boolean hasBadge() { return mBadgeInfo != null; }
+
+  public void getIconBounds(final Rect outBounds) {
+    int top = getPaddingTop();
+    int left = (getWidth() - mIconSize) / 2;
+    int right = left + mIconSize;
+    int bottom = top + mIconSize;
+    outBounds.set(left, top, right, bottom);
+  }
+
+  @Override
+  protected void onMeasure(final int widthMeasureSpec,
+                           final int heightMeasureSpec) {
+    if (mCenterVertically) {
+      Paint.FontMetrics fm = getPaint().getFontMetrics();
+      int cellHeightPx = mIconSize + getCompoundDrawablePadding() +
+                         (int)Math.ceil(fm.bottom - fm.top);
+      int height = MeasureSpec.getSize(heightMeasureSpec);
+      setPadding(getPaddingLeft(), (height - cellHeightPx) / 2,
+                 getPaddingRight(), getPaddingBottom());
     }
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+  }
 
-    public void setIconVisible(final boolean visible) {
-        mIsIconVisible = visible;
-        Drawable icon = visible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
-        applyCompoundDrawables(icon);
+  @Override
+  public void setTextColor(final int color) {
+    mTextColor = color;
+    super.setTextColor(getModifiedColor());
+  }
+
+  @Override
+  public void setTextColor(final ColorStateList colors) {
+    mTextColor = colors.getDefaultColor();
+    if (Float.compare(mTextAlpha, 1) == 0) {
+      super.setTextColor(colors);
+    } else {
+      super.setTextColor(getModifiedColor());
     }
+  }
 
-    protected void applyCompoundDrawables(final Drawable icon) {
-        // If we had already set an icon before, disable relayout as the icon size is the
-        // same as before.
-        mDisableRelayout = mIcon != null;
+  public boolean shouldTextBeVisible() {
+    // Text should be visible everywhere but the hotseat.
+    Object tag = getParent() instanceof FolderIcon
+                     ? ((View)getParent()).getTag()
+                     : getTag();
+    ItemInfo info = tag instanceof ItemInfo ? (ItemInfo)tag : null;
+    return info == null ||
+        info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+  }
 
-        icon.setBounds(0, 0, mIconSize, mIconSize);
-        if (mLayoutHorizontal) {
-            setCompoundDrawablesRelative(icon, null, null, null);
+  public void setTextVisibility(final boolean visible) {
+    setTextAlpha(visible ? 1 : 0);
+  }
+
+  private void setTextAlpha(final float alpha) {
+    mTextAlpha = alpha;
+    super.setTextColor(getModifiedColor());
+  }
+
+  private int getModifiedColor() {
+    if (mTextAlpha == 0) {
+      // Special case to prevent text shadows in high contrast mode
+      return Color.TRANSPARENT;
+    }
+    return ColorUtils.setAlphaComponent(
+        mTextColor, Math.round(Color.alpha(mTextColor) * mTextAlpha));
+  }
+
+  /**
+   * Creates an animator to fade the text in or out.
+   * @param fadeIn Whether the text should fade in or fade out.
+   */
+  public ObjectAnimator createTextAlphaAnimator(final boolean fadeIn) {
+    float toAlpha = shouldTextBeVisible() && fadeIn ? 1 : 0;
+    return ObjectAnimator.ofFloat(this, TEXT_ALPHA_PROPERTY, toAlpha);
+  }
+
+  @Override
+  public void cancelLongPress() {
+    super.cancelLongPress();
+
+    mLongPressHelper.cancelLongPress();
+  }
+
+  public void applyPromiseState(final boolean promiseStateChanged) {
+    if (getTag() instanceof ShortcutInfo) {
+      ShortcutInfo info = (ShortcutInfo)getTag();
+      final boolean isPromise = info.hasPromiseIconUi();
+      final int progressLevel =
+          isPromise
+              ? ((info.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE)
+                      ? info.getInstallProgress()
+                      : 0))
+              : 100;
+
+      PreloadIconDrawable preloadDrawable = applyProgressLevel(progressLevel);
+      if (preloadDrawable != null && promiseStateChanged) {
+        preloadDrawable.maybePerformFinishedAnimation();
+      }
+    }
+  }
+
+  public PreloadIconDrawable applyProgressLevel(final int progressLevel) {
+    if (getTag() instanceof ItemInfoWithIcon) {
+      ItemInfoWithIcon info = (ItemInfoWithIcon)getTag();
+      if (progressLevel >= 100) {
+        setContentDescription(
+            info.contentDescription != null ? info.contentDescription : "");
+      } else if (progressLevel > 0) {
+        setContentDescription(getContext().getString(
+            R.string.app_downloading_title, info.title,
+            NumberFormat.getPercentInstance().format(progressLevel * 0.01)));
+      } else {
+        setContentDescription(getContext().getString(
+            R.string.app_waiting_download_title, info.title));
+      }
+      if (mIcon != null) {
+        final PreloadIconDrawable preloadDrawable;
+        if (mIcon instanceof PreloadIconDrawable) {
+          preloadDrawable = (PreloadIconDrawable)mIcon;
+          preloadDrawable.setLevel(progressLevel);
         } else {
-            setCompoundDrawables(null, icon, null, null);
+          preloadDrawable = DrawableFactory.get(getContext())
+                                .newPendingIcon(info, getContext());
+          preloadDrawable.setLevel(progressLevel);
+          setIcon(preloadDrawable);
         }
-        mDisableRelayout = false;
+        return preloadDrawable;
+      }
     }
+    return null;
+  }
 
-    @Override
-    public void requestLayout() {
-        if (!mDisableRelayout) {
-            super.requestLayout();
+  public void applyBadgeState(final ItemInfo itemInfo, final boolean animate) {
+    if (mIcon instanceof FastBitmapDrawable) {
+      boolean wasBadged = mBadgeInfo != null;
+      mBadgeInfo = mActivity.getBadgeInfoForItem(itemInfo);
+      boolean isBadged = mBadgeInfo != null;
+      float newBadgeScale = isBadged ? 1f : 0;
+      mBadgeRenderer = mActivity.getDeviceProfile().mBadgeRenderer;
+      if (wasBadged || isBadged) {
+        // Animate when a badge is first added or when it is removed.
+        if (animate && (wasBadged ^ isBadged) && isShown()) {
+          ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, newBadgeScale)
+              .start();
+        } else {
+          mBadgeScale = newBadgeScale;
+          invalidate();
         }
-    }
-
-    /**
-     * Applies the item info if it is same as what the view is pointing to currently.
-     */
-    @Override
-    public void reapplyItemInfo(final ItemInfoWithIcon info) {
-        if (getTag() == info) {
-            mIconLoadRequest = null;
-            mDisableRelayout = true;
-
-            // Optimization: Starting in N, pre-uploads the bitmap to RenderThread.
-            info.iconBitmap.prepareToDraw();
-
-            if (info instanceof AppInfo) {
-                applyFromApplicationInfo((AppInfo) info);
-            } else if (info instanceof ShortcutInfo) {
-                applyFromShortcutInfo((ShortcutInfo) info);
-                mActivity.invalidateParent(info);
-            } else if (info instanceof PackageItemInfo) {
-                applyFromPackageItemInfo((PackageItemInfo) info);
-            }
-
-            mDisableRelayout = false;
+      }
+      if (itemInfo.contentDescription != null) {
+        if (hasBadge()) {
+          int count = mBadgeInfo.getNotificationCount();
+          setContentDescription(getContext().getResources().getQuantityString(
+              R.plurals.badged_app_label, count, itemInfo.contentDescription,
+              count));
+        } else {
+          setContentDescription(itemInfo.contentDescription);
         }
+      }
     }
+  }
 
-    /**
-     * Verifies that the current icon is high-res otherwise posts a request to load the icon.
-     */
-    public void verifyHighRes() {
-        verifyHighRes(BubbleTextView.this);
+  /**
+   * Sets the icon for this view based on the layout direction.
+   */
+  private void setIcon(final Drawable icon) {
+    if (mIsIconVisible) {
+      applyCompoundDrawables(icon);
     }
+    mIcon = icon;
+  }
 
-    public void verifyHighRes(final ItemInfoUpdateReceiver callback) {
-        if (mIconLoadRequest != null) {
-            mIconLoadRequest.cancel();
-            mIconLoadRequest = null;
-        }
-        if (getTag() instanceof ItemInfoWithIcon) {
-            ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
-            if (info.usingLowResIcon) {
-                mIconLoadRequest = LauncherAppState.getInstance(getContext()).getIconCache()
-                                   .updateIconInBackground(callback, info);
-            }
-        }
+  public void clearIcon() {
+    mIcon = null;
+    setCompoundDrawables(null, null, null, null);
+  }
+
+  public void setIconVisible(final boolean visible) {
+    mIsIconVisible = visible;
+    Drawable icon = visible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
+    applyCompoundDrawables(icon);
+  }
+
+  protected void applyCompoundDrawables(final Drawable icon) {
+    // If we had already set an icon before, disable relayout as the icon size
+    // is the same as before.
+    mDisableRelayout = mIcon != null;
+
+    icon.setBounds(0, 0, mIconSize, mIconSize);
+    if (mLayoutHorizontal) {
+      setCompoundDrawablesRelative(icon, null, null, null);
+    } else {
+      setCompoundDrawables(null, icon, null, null);
     }
+    mDisableRelayout = false;
+  }
 
-
-    public int getIconSize() {
-        return mIconSize;
+  @Override
+  public void requestLayout() {
+    if (!mDisableRelayout) {
+      super.requestLayout();
     }
+  }
 
-    public void setIconSize(final int iconSize) {
-        mIconSize = iconSize;
-        setIcon(mIcon);
-    }
+  /**
+   * Applies the item info if it is same as what the view is pointing to
+   * currently.
+   */
+  @Override
+  public void reapplyItemInfo(final ItemInfoWithIcon info) {
+    if (getTag() == info) {
+      mIconLoadRequest = null;
+      mDisableRelayout = true;
 
-    protected boolean isTextHidden() {
-        return mHideText;
-    }
+      // Optimization: Starting in N, pre-uploads the bitmap to RenderThread.
+      info.iconBitmap.prepareToDraw();
 
-    public int getBadgeColor() {
-        return mBadgeColor;
+      if (info instanceof AppInfo) {
+        applyFromApplicationInfo((AppInfo)info);
+      } else if (info instanceof ShortcutInfo) {
+        applyFromShortcutInfo((ShortcutInfo)info);
+        mActivity.invalidateParent(info);
+      } else if (info instanceof PackageItemInfo) {
+        applyFromPackageItemInfo((PackageItemInfo)info);
+      }
+
+      mDisableRelayout = false;
     }
+  }
+
+  /**
+   * Verifies that the current icon is high-res otherwise posts a request to
+   * load the icon.
+   */
+  public void verifyHighRes() { verifyHighRes(BubbleTextView.this); }
+
+  public void verifyHighRes(final ItemInfoUpdateReceiver callback) {
+    if (mIconLoadRequest != null) {
+      mIconLoadRequest.cancel();
+      mIconLoadRequest = null;
+    }
+    if (getTag() instanceof ItemInfoWithIcon) {
+      ItemInfoWithIcon info = (ItemInfoWithIcon)getTag();
+      if (info.usingLowResIcon) {
+        mIconLoadRequest = LauncherAppState.getInstance(getContext())
+                               .getIconCache()
+                               .updateIconInBackground(callback, info);
+      }
+    }
+  }
+
+  public int getIconSize() { return mIconSize; }
+
+  public void setIconSize(final int iconSize) {
+    mIconSize = iconSize;
+    setIcon(mIcon);
+  }
+
+  protected boolean isTextHidden() { return mHideText; }
+
+  public int getBadgeColor() { return mBadgeColor; }
 }

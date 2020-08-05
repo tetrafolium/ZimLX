@@ -15,70 +15,75 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
+import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
-import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
-import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-
 /**
  * Definition for AllApps state
  */
 public class AllAppsState extends LauncherState {
 
-    private static final float PARALLAX_COEFFICIENT = .125f;
+  private static final float PARALLAX_COEFFICIENT = .125f;
 
-    private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY;
+  private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY;
 
-    private static final PageAlphaProvider PAGE_ALPHA_PROVIDER = new PageAlphaProvider(DEACCEL_2) {
+  private static final PageAlphaProvider PAGE_ALPHA_PROVIDER =
+      new PageAlphaProvider(DEACCEL_2) {
         @Override
         public float getPageAlpha(final int pageIndex) {
-            return 0;
+          return 0;
         }
-    };
+      };
 
-    public AllAppsState(final int id) {
-        super(id, ContainerType.ALLAPPS, ALL_APPS_TRANSITION_MS, STATE_FLAGS);
+  public AllAppsState(final int id) {
+    super(id, ContainerType.ALLAPPS, ALL_APPS_TRANSITION_MS, STATE_FLAGS);
+  }
+
+  @Override
+  public void onStateEnabled(final Launcher launcher) {
+    if (!launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)) {
+      launcher.getSharedPrefs()
+          .edit()
+          .putBoolean(HOME_BOUNCE_SEEN, true)
+          .apply();
     }
 
-    @Override
-    public void onStateEnabled(final Launcher launcher) {
-        if (!launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)) {
-            launcher.getSharedPrefs().edit().putBoolean(HOME_BOUNCE_SEEN, true).apply();
-        }
+    AbstractFloatingView.closeAllOpenViews(launcher);
+    dispatchWindowStateChanged(launcher);
+  }
 
-        AbstractFloatingView.closeAllOpenViews(launcher);
-        dispatchWindowStateChanged(launcher);
-    }
+  @Override
+  public String getDescription(final Launcher launcher) {
+    return launcher.getString(R.string.all_apps_button_label);
+  }
 
-    @Override
-    public String getDescription(final Launcher launcher) {
-        return launcher.getString(R.string.all_apps_button_label);
-    }
+  @Override
+  public int getVisibleElements(final Launcher launcher) {
+    return ALL_APPS_HEADER | ALL_APPS_CONTENT;
+  }
 
-    @Override
-    public int getVisibleElements(final Launcher launcher) {
-        return ALL_APPS_HEADER | ALL_APPS_CONTENT;
-    }
+  @Override
+  public float[] getWorkspaceScaleAndTranslation(final Launcher launcher) {
+    return new float[] {1f, 0,
+                        -launcher.getAllAppsController().getShiftRange() *
+                            PARALLAX_COEFFICIENT};
+  }
 
-    @Override
-    public float[] getWorkspaceScaleAndTranslation(final Launcher launcher) {
-        return new float[] {1f, 0,
-                            -launcher.getAllAppsController().getShiftRange() * PARALLAX_COEFFICIENT
-                           };
-    }
+  @Override
+  public PageAlphaProvider
+  getWorkspacePageAlphaProvider(final Launcher launcher) {
+    return PAGE_ALPHA_PROVIDER;
+  }
 
-    @Override
-    public PageAlphaProvider getWorkspacePageAlphaProvider(final Launcher launcher) {
-        return PAGE_ALPHA_PROVIDER;
-    }
-
-    @Override
-    public float getVerticalProgress(final Launcher launcher) {
-        return 0f;
-    }
+  @Override
+  public float getVerticalProgress(final Launcher launcher) {
+    return 0f;
+  }
 }

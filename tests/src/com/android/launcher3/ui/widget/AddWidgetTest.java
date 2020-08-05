@@ -15,8 +15,13 @@
  */
 package com.android.launcher3.ui.widget;
 
-import android.view.View;
+import static org.junit.Assert.assertTrue;
 
+import android.view.View;
+import androidx.test.filters.LargeTest;
+import androidx.test.runner.AndroidJUnit4;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiObject2;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
@@ -27,17 +32,9 @@ import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.LauncherActivityRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.WidgetCell;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import androidx.test.filters.LargeTest;
-import androidx.test.runner.AndroidJUnit4;
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.UiObject2;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test to add widget from widget tray
@@ -46,45 +43,52 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class AddWidgetTest extends AbstractLauncherUiTest {
 
-    @Rule
-    public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
-    @Rule
-    public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
+  @Rule
+  public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
+  @Rule
+  public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
 
-    @Test
-    public void testDragIcon_portrait() throws Throwable {
-        lockRotation(true);
-        performTest();
-    }
+  @Test
+  public void testDragIcon_portrait() throws Throwable {
+    lockRotation(true);
+    performTest();
+  }
 
-    @Test
-    public void testDragIcon_landscape() throws Throwable {
-        lockRotation(false);
-        performTest();
-    }
+  @Test
+  public void testDragIcon_landscape() throws Throwable {
+    lockRotation(false);
+    performTest();
+  }
 
-    private void performTest() throws Throwable {
-        clearHomescreen();
-        mActivityMonitor.startLauncher();
+  private void performTest() throws Throwable {
+    clearHomescreen();
+    mActivityMonitor.startLauncher();
 
-        final LauncherAppWidgetProviderInfo widgetInfo =
-            findWidgetProvider(false /* hasConfigureScreen */);
+    final LauncherAppWidgetProviderInfo widgetInfo =
+        findWidgetProvider(false /* hasConfigureScreen */);
 
-        // Open widget tray and wait for load complete.
-        final UiObject2 widgetContainer = openWidgetsTray();
-        assertTrue(Wait.atMost(Condition.minChildCount(widgetContainer, 2), DEFAULT_UI_TIMEOUT));
+    // Open widget tray and wait for load complete.
+    final UiObject2 widgetContainer = openWidgetsTray();
+    assertTrue(Wait.atMost(Condition.minChildCount(widgetContainer, 2),
+                           DEFAULT_UI_TIMEOUT));
 
-        // Drag widget to homescreen
-        UiObject2 widget = scrollAndFind(widgetContainer, By.clazz(WidgetCell.class)
-                                         .hasDescendant(By.text(widgetInfo.getLabel(mTargetContext.getPackageManager()))));
-        dragToWorkspace(widget, false);
+    // Drag widget to homescreen
+    UiObject2 widget = scrollAndFind(
+        widgetContainer, By.clazz(WidgetCell.class)
+                             .hasDescendant(By.text(widgetInfo.getLabel(
+                                 mTargetContext.getPackageManager()))));
+    dragToWorkspace(widget, false);
 
-        assertTrue(mActivityMonitor.itemExists(new ItemOperator() {
-            @Override
-            public boolean evaluate(final ItemInfo info, final View view) {
-                return info instanceof LauncherAppWidgetInfo
-                       && ((LauncherAppWidgetInfo) info).providerName.equals(widgetInfo.provider);
-            }
-        }).call());
-    }
+    assertTrue(mActivityMonitor
+                   .itemExists(new ItemOperator() {
+                     @Override
+                     public boolean evaluate(final ItemInfo info,
+                                             final View view) {
+                       return info instanceof LauncherAppWidgetInfo &&
+                           ((LauncherAppWidgetInfo)info)
+                               .providerName.equals(widgetInfo.provider);
+                     }
+                   })
+                   .call());
+  }
 }

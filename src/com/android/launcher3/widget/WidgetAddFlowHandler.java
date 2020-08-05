@@ -19,7 +19,6 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetInfo;
@@ -31,70 +30,75 @@ import com.android.launcher3.util.PendingRequestArgs;
  */
 public class WidgetAddFlowHandler implements Parcelable {
 
-    public static final Parcelable.Creator<WidgetAddFlowHandler> CREATOR =
-    new Parcelable.Creator<WidgetAddFlowHandler>() {
+  public static final Parcelable.Creator<WidgetAddFlowHandler> CREATOR =
+      new Parcelable.Creator<WidgetAddFlowHandler>() {
         public WidgetAddFlowHandler createFromParcel(final Parcel source) {
-            return new WidgetAddFlowHandler(source);
+          return new WidgetAddFlowHandler(source);
         }
 
         public WidgetAddFlowHandler[] newArray(final int size) {
-            return new WidgetAddFlowHandler[size];
+          return new WidgetAddFlowHandler[size];
         }
-    };
-    private final AppWidgetProviderInfo mProviderInfo;
+      };
+  private final AppWidgetProviderInfo mProviderInfo;
 
-    public WidgetAddFlowHandler(final AppWidgetProviderInfo providerInfo) {
-        mProviderInfo = providerInfo;
-    }
+  public WidgetAddFlowHandler(final AppWidgetProviderInfo providerInfo) {
+    mProviderInfo = providerInfo;
+  }
 
-    protected WidgetAddFlowHandler(final Parcel parcel) {
-        mProviderInfo = AppWidgetProviderInfo.CREATOR.createFromParcel(parcel);
-    }
+  protected WidgetAddFlowHandler(final Parcel parcel) {
+    mProviderInfo = AppWidgetProviderInfo.CREATOR.createFromParcel(parcel);
+  }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+  @Override
+  public int describeContents() {
+    return 0;
+  }
 
-    @Override
-    public void writeToParcel(final Parcel parcel, final int i) {
-        mProviderInfo.writeToParcel(parcel, i);
-    }
+  @Override
+  public void writeToParcel(final Parcel parcel, final int i) {
+    mProviderInfo.writeToParcel(parcel, i);
+  }
 
-    public void startBindFlow(final Launcher launcher, final int appWidgetId, final ItemInfo info, final int requestCode) {
-        launcher.setWaitingForResult(PendingRequestArgs.forWidgetInfo(appWidgetId, this, info));
-        launcher.getAppWidgetHost()
-        .startBindFlow(launcher, appWidgetId, mProviderInfo, requestCode);
-    }
+  public void startBindFlow(final Launcher launcher, final int appWidgetId,
+                            final ItemInfo info, final int requestCode) {
+    launcher.setWaitingForResult(
+        PendingRequestArgs.forWidgetInfo(appWidgetId, this, info));
+    launcher.getAppWidgetHost().startBindFlow(launcher, appWidgetId,
+                                              mProviderInfo, requestCode);
+  }
 
-    /**
-     * @see #startConfigActivity(Launcher, int, ItemInfo, int)
-     */
-    public boolean startConfigActivity(final Launcher launcher, final LauncherAppWidgetInfo info,
-                                       final int requestCode) {
-        return startConfigActivity(launcher, info.appWidgetId, info, requestCode);
-    }
+  /**
+   * @see #startConfigActivity(Launcher, int, ItemInfo, int)
+   */
+  public boolean startConfigActivity(final Launcher launcher,
+                                     final LauncherAppWidgetInfo info,
+                                     final int requestCode) {
+    return startConfigActivity(launcher, info.appWidgetId, info, requestCode);
+  }
 
-    /**
-     * Starts the widget configuration flow if needed.
-     *
-     * @return true if the configuration flow was started, false otherwise.
-     */
-    public boolean startConfigActivity(final Launcher launcher, final int appWidgetId, final ItemInfo info,
-                                       final int requestCode) {
-        if (!needsConfigure()) {
-            return false;
-        }
-        launcher.setWaitingForResult(PendingRequestArgs.forWidgetInfo(appWidgetId, this, info));
-        launcher.getAppWidgetHost().startConfigActivity(launcher, appWidgetId, requestCode);
-        return true;
+  /**
+   * Starts the widget configuration flow if needed.
+   *
+   * @return true if the configuration flow was started, false otherwise.
+   */
+  public boolean startConfigActivity(final Launcher launcher,
+                                     final int appWidgetId, final ItemInfo info,
+                                     final int requestCode) {
+    if (!needsConfigure()) {
+      return false;
     }
+    launcher.setWaitingForResult(
+        PendingRequestArgs.forWidgetInfo(appWidgetId, this, info));
+    launcher.getAppWidgetHost().startConfigActivity(launcher, appWidgetId,
+                                                    requestCode);
+    return true;
+  }
 
-    public boolean needsConfigure() {
-        return mProviderInfo.configure != null;
-    }
+  public boolean needsConfigure() { return mProviderInfo.configure != null; }
 
-    public LauncherAppWidgetProviderInfo getProviderInfo(final Context context) {
-        return LauncherAppWidgetProviderInfo.fromProviderInfo(context, mProviderInfo);
-    }
+  public LauncherAppWidgetProviderInfo getProviderInfo(final Context context) {
+    return LauncherAppWidgetProviderInfo.fromProviderInfo(context,
+                                                          mProviderInfo);
+  }
 }

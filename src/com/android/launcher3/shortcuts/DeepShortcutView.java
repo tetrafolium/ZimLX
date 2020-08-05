@@ -23,7 +23,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
-
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -33,114 +32,115 @@ import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.touch.ItemClickHandler;
 
 /**
- * A {@link android.widget.FrameLayout} that contains a {@link DeepShortcutView}.
- * This lets us animate the DeepShortcutView (icon and text) separately from the background.
+ * A {@link android.widget.FrameLayout} that contains a {@link
+ * DeepShortcutView}. This lets us animate the DeepShortcutView (icon and text)
+ * separately from the background.
  */
 public class DeepShortcutView extends FrameLayout {
 
-    private static final Point sTempPoint = new Point();
+  private static final Point sTempPoint = new Point();
 
-    private final Rect mPillRect;
+  private final Rect mPillRect;
 
-    private BubbleTextView mBubbleText;
-    private View mIconView;
-    private View mDivider;
+  private BubbleTextView mBubbleText;
+  private View mIconView;
+  private View mDivider;
 
-    private ShortcutInfo mInfo;
-    private ShortcutInfoCompat mDetail;
+  private ShortcutInfo mInfo;
+  private ShortcutInfoCompat mDetail;
 
-    public DeepShortcutView(final Context context) {
-        this(context, null, 0);
+  public DeepShortcutView(final Context context) { this(context, null, 0); }
+
+  public DeepShortcutView(final Context context, final AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
+
+  public DeepShortcutView(final Context context, final AttributeSet attrs,
+                          final int defStyle) {
+    super(context, attrs, defStyle);
+
+    mPillRect = new Rect();
+  }
+
+  @Override
+  protected void onFinishInflate() {
+    super.onFinishInflate();
+    mBubbleText = findViewById(R.id.bubble_text);
+    mIconView = findViewById(R.id.icon);
+    mDivider = findViewById(R.id.divider);
+  }
+
+  public void setDividerVisibility(final int visibility) {
+    mDivider.setVisibility(visibility);
+  }
+
+  public BubbleTextView getBubbleText() { return mBubbleText; }
+
+  public void setWillDrawIcon(final boolean willDraw) {
+    mIconView.setVisibility(willDraw ? View.VISIBLE : View.INVISIBLE);
+  }
+
+  public boolean willDrawIcon() {
+    return mIconView.getVisibility() == View.VISIBLE;
+  }
+
+  /**
+   * Returns the position of the center of the icon relative to the container.
+   */
+  public Point getIconCenter() {
+    sTempPoint.y = sTempPoint.x = getMeasuredHeight() / 2;
+    if (Utilities.isRtl(getResources())) {
+      sTempPoint.x = getMeasuredWidth() - sTempPoint.x;
     }
+    return sTempPoint;
+  }
 
-    public DeepShortcutView(final Context context, final AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
+  @Override
+  protected void onMeasure(final int widthMeasureSpec,
+                           final int heightMeasureSpec) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    mPillRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
+  }
 
-    public DeepShortcutView(final Context context, final AttributeSet attrs, final int defStyle) {
-        super(context, attrs, defStyle);
+  /**
+   * package private
+   **/
+  public void applyShortcutInfo(final ShortcutInfo info,
+                                final ShortcutInfoCompat detail,
+                                final PopupContainerWithArrow container) {
+    mInfo = info;
+    mDetail = detail;
+    mBubbleText.applyFromShortcutInfo(info);
+    mIconView.setBackground(mBubbleText.getIcon());
 
-        mPillRect = new Rect();
-    }
+    // Use the long label as long as it exists and fits.
+    CharSequence longLabel = mDetail.getLongLabel();
+    int availableWidth = mBubbleText.getWidth() -
+                         mBubbleText.getTotalPaddingLeft() -
+                         mBubbleText.getTotalPaddingRight();
+    boolean usingLongLabel = !TextUtils.isEmpty(longLabel) &&
+                             mBubbleText.getPaint().measureText(
+                                 longLabel.toString()) <= availableWidth;
+    mBubbleText.setText(usingLongLabel ? longLabel : mDetail.getShortLabel());
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mBubbleText = findViewById(R.id.bubble_text);
-        mIconView = findViewById(R.id.icon);
-        mDivider = findViewById(R.id.divider);
-    }
+    // TODO: Add the click handler to this view directly and not the child view.
+    mBubbleText.setOnClickListener(ItemClickHandler.INSTANCE);
+    mBubbleText.setOnLongClickListener(container);
+    mBubbleText.setOnTouchListener(container);
+  }
 
-    public void setDividerVisibility(final int visibility) {
-        mDivider.setVisibility(visibility);
-    }
-
-    public BubbleTextView getBubbleText() {
-        return mBubbleText;
-    }
-
-    public void setWillDrawIcon(final boolean willDraw) {
-        mIconView.setVisibility(willDraw ? View.VISIBLE : View.INVISIBLE);
-    }
-
-    public boolean willDrawIcon() {
-        return mIconView.getVisibility() == View.VISIBLE;
-    }
-
-    /**
-     * Returns the position of the center of the icon relative to the container.
-     */
-    public Point getIconCenter() {
-        sTempPoint.y = sTempPoint.x = getMeasuredHeight() / 2;
-        if (Utilities.isRtl(getResources())) {
-            sTempPoint.x = getMeasuredWidth() - sTempPoint.x;
-        }
-        return sTempPoint;
-    }
-
-    @Override
-    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        mPillRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
-    }
-
-    /**
-     * package private
-     **/
-    public void applyShortcutInfo(final ShortcutInfo info, final ShortcutInfoCompat detail,
-                                  final PopupContainerWithArrow container) {
-        mInfo = info;
-        mDetail = detail;
-        mBubbleText.applyFromShortcutInfo(info);
-        mIconView.setBackground(mBubbleText.getIcon());
-
-        // Use the long label as long as it exists and fits.
-        CharSequence longLabel = mDetail.getLongLabel();
-        int availableWidth = mBubbleText.getWidth() - mBubbleText.getTotalPaddingLeft()
-                             - mBubbleText.getTotalPaddingRight();
-        boolean usingLongLabel = !TextUtils.isEmpty(longLabel)
-                                 && mBubbleText.getPaint().measureText(longLabel.toString()) <= availableWidth;
-        mBubbleText.setText(usingLongLabel ? longLabel : mDetail.getShortLabel());
-
-        // TODO: Add the click handler to this view directly and not the child view.
-        mBubbleText.setOnClickListener(ItemClickHandler.INSTANCE);
-        mBubbleText.setOnLongClickListener(container);
-        mBubbleText.setOnTouchListener(container);
-    }
-
-    /**
-     * Returns the shortcut info that is suitable to be added on the homescreen
-     */
-    public ShortcutInfo getFinalInfo() {
-        final ShortcutInfo badged = new ShortcutInfo(mInfo);
-        // Queue an update task on the worker thread. This ensures that the badged
-        // shortcut eventually gets its icon updated.
-        Launcher.getLauncher(getContext()).getModel()
+  /**
+   * Returns the shortcut info that is suitable to be added on the homescreen
+   */
+  public ShortcutInfo getFinalInfo() {
+    final ShortcutInfo badged = new ShortcutInfo(mInfo);
+    // Queue an update task on the worker thread. This ensures that the badged
+    // shortcut eventually gets its icon updated.
+    Launcher.getLauncher(getContext())
+        .getModel()
         .updateAndBindShortcutInfo(badged, mDetail);
-        return badged;
-    }
+    return badged;
+  }
 
-    public View getIconView() {
-        return mIconView;
-    }
+  public View getIconView() { return mIconView; }
 }

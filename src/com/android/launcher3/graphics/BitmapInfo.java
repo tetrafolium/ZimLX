@@ -16,28 +16,27 @@
 package com.android.launcher3.graphics;
 
 import android.graphics.Bitmap;
-
 import com.android.launcher3.ItemInfoWithIcon;
 
 public class BitmapInfo {
 
-    public Bitmap icon;
-    public int color;
+  public Bitmap icon;
+  public int color;
 
-    public void applyTo(final ItemInfoWithIcon info) {
-        info.iconBitmap = icon;
-        info.iconColor = color;
-    }
+  public void applyTo(final ItemInfoWithIcon info) {
+    info.iconBitmap = icon;
+    info.iconColor = color;
+  }
 
-    public void applyTo(final BitmapInfo info) {
-        info.icon = icon;
-        info.color = color;
-    }
+  public void applyTo(final BitmapInfo info) {
+    info.icon = icon;
+    info.color = color;
+  }
 
-    public static BitmapInfo fromBitmap(final Bitmap bitmap) {
-        BitmapInfo info = new BitmapInfo();
-        info.icon = bitmap;
-        info.color = ColorExtractor.findDominantColorByHue(bitmap);
-        return info;
-    }
+  public static BitmapInfo fromBitmap(final Bitmap bitmap) {
+    BitmapInfo info = new BitmapInfo();
+    info.icon = bitmap;
+    info.color = ColorExtractor.findDominantColorByHue(bitmap);
+    return info;
+  }
 }

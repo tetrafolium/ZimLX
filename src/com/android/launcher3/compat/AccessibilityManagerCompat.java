@@ -23,25 +23,29 @@ import android.view.accessibility.AccessibilityManager;
 
 public class AccessibilityManagerCompat {
 
-    public static boolean isAccessibilityEnabled(final Context context) {
-        return getManager(context).isEnabled();
-    }
+  public static boolean isAccessibilityEnabled(final Context context) {
+    return getManager(context).isEnabled();
+  }
 
-    public static boolean isObservedEventType(final Context context, final int eventType) {
-        // TODO: Use new API once available
-        return isAccessibilityEnabled(context);
-    }
+  public static boolean isObservedEventType(final Context context,
+                                            final int eventType) {
+    // TODO: Use new API once available
+    return isAccessibilityEnabled(context);
+  }
 
-    public static void sendCustomAccessibilityEvent(final View target, final int type, final String text) {
-        if (isObservedEventType(target.getContext(), type)) {
-            AccessibilityEvent event = AccessibilityEvent.obtain(type);
-            target.onInitializeAccessibilityEvent(event);
-            event.getText().add(text);
-            getManager(target.getContext()).sendAccessibilityEvent(event);
-        }
+  public static void sendCustomAccessibilityEvent(final View target,
+                                                  final int type,
+                                                  final String text) {
+    if (isObservedEventType(target.getContext(), type)) {
+      AccessibilityEvent event = AccessibilityEvent.obtain(type);
+      target.onInitializeAccessibilityEvent(event);
+      event.getText().add(text);
+      getManager(target.getContext()).sendAccessibilityEvent(event);
     }
+  }
 
-    private static AccessibilityManager getManager(final Context context) {
-        return (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
-    }
+  private static AccessibilityManager getManager(final Context context) {
+    return (AccessibilityManager)context.getSystemService(
+        Context.ACCESSIBILITY_SERVICE);
+  }
 }

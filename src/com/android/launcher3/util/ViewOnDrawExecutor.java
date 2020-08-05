@@ -20,106 +20,105 @@ import android.os.Process;
 import android.view.View;
 import android.view.View.OnAttachStateChangeListener;
 import android.view.ViewTreeObserver.OnDrawListener;
-
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherModel;
-
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 
 /**
- * An executor which runs all the tasks after the first onDraw is called on the target view.
+ * An executor which runs all the tasks after the first onDraw is called on the
+ * target view.
  */
-public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
-    OnAttachStateChangeListener {
+public class ViewOnDrawExecutor
+    implements Executor, OnDrawListener, Runnable, OnAttachStateChangeListener {
 
-    private final ArrayList<Runnable> mTasks = new ArrayList<>();
+  private final ArrayList<Runnable> mTasks = new ArrayList<>();
 
-    private Launcher mLauncher;
-    private View mAttachedView;
-    private boolean mCompleted;
+  private Launcher mLauncher;
+  private View mAttachedView;
+  private boolean mCompleted;
 
-    private boolean mLoadAnimationCompleted;
-    private boolean mFirstDrawCompleted;
+  private boolean mLoadAnimationCompleted;
+  private boolean mFirstDrawCompleted;
 
-    public void attachTo(final Launcher launcher) {
-        attachTo(launcher, launcher.getWorkspace(), true /* waitForLoadAnimation */);
+  public void attachTo(final Launcher launcher) {
+    attachTo(launcher, launcher.getWorkspace(),
+             true /* waitForLoadAnimation */);
+  }
+
+  public void attachTo(final Launcher launcher, final View attachedView,
+                       final boolean waitForLoadAnimation) {
+    mLauncher = launcher;
+    mAttachedView = attachedView;
+    mAttachedView.addOnAttachStateChangeListener(this);
+    if (!waitForLoadAnimation) {
+      mLoadAnimationCompleted = true;
     }
 
-    public void attachTo(final Launcher launcher, final View attachedView, final boolean waitForLoadAnimation) {
-        mLauncher = launcher;
-        mAttachedView = attachedView;
-        mAttachedView.addOnAttachStateChangeListener(this);
-        if (!waitForLoadAnimation) {
-            mLoadAnimationCompleted = true;
-        }
+    attachObserver();
+  }
 
-        attachObserver();
+  private void attachObserver() {
+    if (!mCompleted) {
+      mAttachedView.getViewTreeObserver().addOnDrawListener(this);
     }
+  }
 
-    private void attachObserver() {
-        if (!mCompleted) {
-            mAttachedView.getViewTreeObserver().addOnDrawListener(this);
-        }
-    }
+  @Override
+  public void execute(final Runnable command) {
+    mTasks.add(command);
+    LauncherModel.setWorkerPriority(Process.THREAD_PRIORITY_BACKGROUND);
+  }
 
-    @Override
-    public void execute(final Runnable command) {
-        mTasks.add(command);
-        LauncherModel.setWorkerPriority(Process.THREAD_PRIORITY_BACKGROUND);
-    }
+  @Override
+  public void onViewAttachedToWindow(final View v) {
+    attachObserver();
+  }
 
-    @Override
-    public void onViewAttachedToWindow(final View v) {
-        attachObserver();
-    }
+  @Override
+  public void onViewDetachedFromWindow(final View v) {}
 
-    @Override
-    public void onViewDetachedFromWindow(final View v) {
-    }
+  @Override
+  public void onDraw() {
+    mFirstDrawCompleted = true;
+    mAttachedView.post(this);
+  }
 
-    @Override
-    public void onDraw() {
-        mFirstDrawCompleted = true;
-        mAttachedView.post(this);
+  public void onLoadAnimationCompleted() {
+    mLoadAnimationCompleted = true;
+    if (mAttachedView != null) {
+      mAttachedView.post(this);
     }
+  }
 
-    public void onLoadAnimationCompleted() {
-        mLoadAnimationCompleted = true;
-        if (mAttachedView != null) {
-            mAttachedView.post(this);
-        }
+  @Override
+  public void run() {
+    // Post the pending tasks after both onDraw and onLoadAnimationCompleted
+    // have been called.
+    if (mLoadAnimationCompleted && mFirstDrawCompleted && !mCompleted) {
+      runAllTasks();
     }
+  }
 
-    @Override
-    public void run() {
-        // Post the pending tasks after both onDraw and onLoadAnimationCompleted have been called.
-        if (mLoadAnimationCompleted && mFirstDrawCompleted && !mCompleted) {
-            runAllTasks();
-        }
+  public void markCompleted() {
+    mTasks.clear();
+    mCompleted = true;
+    if (mAttachedView != null) {
+      mAttachedView.getViewTreeObserver().removeOnDrawListener(this);
+      mAttachedView.removeOnAttachStateChangeListener(this);
     }
+    if (mLauncher != null) {
+      mLauncher.clearPendingExecutor(this);
+    }
+    LauncherModel.setWorkerPriority(Process.THREAD_PRIORITY_DEFAULT);
+  }
 
-    public void markCompleted() {
-        mTasks.clear();
-        mCompleted = true;
-        if (mAttachedView != null) {
-            mAttachedView.getViewTreeObserver().removeOnDrawListener(this);
-            mAttachedView.removeOnAttachStateChangeListener(this);
-        }
-        if (mLauncher != null) {
-            mLauncher.clearPendingExecutor(this);
-        }
-        LauncherModel.setWorkerPriority(Process.THREAD_PRIORITY_DEFAULT);
-    }
+  protected boolean isCompleted() { return mCompleted; }
 
-    protected boolean isCompleted() {
-        return mCompleted;
+  protected void runAllTasks() {
+    for (final Runnable r : mTasks) {
+      r.run();
     }
-
-    protected void runAllTasks() {
-        for (final Runnable r : mTasks) {
-            r.run();
-        }
-        markCompleted();
-    }
+    markCompleted();
+  }
 }

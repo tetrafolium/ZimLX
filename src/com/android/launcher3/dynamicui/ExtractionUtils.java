@@ -25,106 +25,114 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
-
-import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
-
-import java.util.List;
-
 import androidx.core.graphics.ColorUtils;
 import androidx.palette.graphics.Palette;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
+import java.util.List;
 
 /**
- * Contains helper fields and methods related to extracting colors from the wallpaper.
+ * Contains helper fields and methods related to extracting colors from the
+ * wallpaper.
  */
 public class ExtractionUtils {
-    public static final String EXTRACTED_COLORS_PREFERENCE_KEY = "pref_extractedColors";
-    public static final String WALLPAPER_ID_PREFERENCE_KEY = "pref_wallpaperId";
+  public static final String EXTRACTED_COLORS_PREFERENCE_KEY =
+      "pref_extractedColors";
+  public static final String WALLPAPER_ID_PREFERENCE_KEY = "pref_wallpaperId";
 
-    private static final float MIN_CONTRAST_RATIO = 2f;
+  private static final float MIN_CONTRAST_RATIO = 2f;
 
-    /**
-     * Extract colors in the :wallpaper-chooser process, if the wallpaper id has changed.
-     * When the new colors are saved in the LauncherProvider,
-     * Launcher will be notified in Launcher#onSettingsChanged(String, String).
-     */
-    public static void startColorExtractionServiceIfNecessary(final Context context) {
-        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-            return;
+  /**
+   * Extract colors in the :wallpaper-chooser process, if the wallpaper id has
+   * changed. When the new colors are saved in the LauncherProvider, Launcher
+   * will be notified in Launcher#onSettingsChanged(String, String).
+   */
+  public static void
+  startColorExtractionServiceIfNecessary(final Context context) {
+    if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+      return;
+    }
+    // Run on a background thread, since the service is asynchronous anyway.
+    Utilities.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+      @Override
+      public void run() {
+        if (hasWallpaperIdChanged(context)) {
+          startColorExtractionService(context);
         }
-        // Run on a background thread, since the service is asynchronous anyway.
-        Utilities.THREAD_POOL_EXECUTOR.execute(new Runnable() {
-            @Override
-            public void run() {
-                if (hasWallpaperIdChanged(context)) {
-                    startColorExtractionService(context);
-                }
-            }
-        });
-    }
+      }
+    });
+  }
 
-    /**
-     * Starts the {@link ColorExtractionService} without checking the wallpaper id
-     */
-    public static void startColorExtractionService(final Context context) {
-        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-            return;
-        }
-        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(
-                                        Context.JOB_SCHEDULER_SERVICE);
-        jobScheduler.schedule(new JobInfo.Builder(Utilities.COLOR_EXTRACTION_JOB_ID,
-                              new ComponentName(context, ColorExtractionService.class))
-                              .setMinimumLatency(0).build());
+  /**
+   * Starts the {@link ColorExtractionService} without checking the wallpaper id
+   */
+  public static void startColorExtractionService(final Context context) {
+    if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+      return;
     }
+    JobScheduler jobScheduler =
+        (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+    jobScheduler.schedule(
+        new JobInfo
+            .Builder(Utilities.COLOR_EXTRACTION_JOB_ID,
+                     new ComponentName(context, ColorExtractionService.class))
+            .setMinimumLatency(0)
+            .build());
+  }
 
-    private static boolean hasWallpaperIdChanged(final Context context) {
-        if (!Utilities.ATLEAST_NOUGAT) {
-            // TODO: update an id in sharedprefs in onWallpaperChanged broadcast, and read it here.
-            return false;
-        }
-        final SharedPreferences sharedPrefs = Utilities.getPrefs(context);
-        int wallpaperId = getWallpaperId(WallpaperManager.getInstance(context));
-        int savedWallpaperId = sharedPrefs.getInt(ExtractionUtils.WALLPAPER_ID_PREFERENCE_KEY, -1);
-        return wallpaperId != savedWallpaperId;
+  private static boolean hasWallpaperIdChanged(final Context context) {
+    if (!Utilities.ATLEAST_NOUGAT) {
+      // TODO: update an id in sharedprefs in onWallpaperChanged broadcast, and
+      // read it here.
+      return false;
     }
+    final SharedPreferences sharedPrefs = Utilities.getPrefs(context);
+    int wallpaperId = getWallpaperId(WallpaperManager.getInstance(context));
+    int savedWallpaperId =
+        sharedPrefs.getInt(ExtractionUtils.WALLPAPER_ID_PREFERENCE_KEY, -1);
+    return wallpaperId != savedWallpaperId;
+  }
 
-    @TargetApi(Build.VERSION_CODES.N)
-    public static int getWallpaperId(final WallpaperManager wallpaperManager) {
-        return Utilities.ATLEAST_NOUGAT
-               ? wallpaperManager.getWallpaperId(WallpaperManager.FLAG_SYSTEM) : -1;
+  @TargetApi(Build.VERSION_CODES.N)
+  public static int getWallpaperId(final WallpaperManager wallpaperManager) {
+    return Utilities.ATLEAST_NOUGAT
+        ? wallpaperManager.getWallpaperId(WallpaperManager.FLAG_SYSTEM)
+        : -1;
+  }
+
+  public static boolean isSuperLight(final Palette p) {
+    return !isLegibleOnWallpaper(Color.WHITE, p.getSwatches());
+  }
+
+  public static boolean isSuperDark(final Palette p) {
+    return !isLegibleOnWallpaper(Color.BLACK, p.getSwatches());
+  }
+
+  /**
+   * Given a color, returns true if that color is legible on
+   * the given wallpaper color swatches, else returns false.
+   */
+  private static boolean
+  isLegibleOnWallpaper(final int color,
+                       final List<Palette.Swatch> wallpaperSwatches) {
+    int legiblePopulation = 0;
+    int illegiblePopulation = 0;
+    for (Palette.Swatch swatch : wallpaperSwatches) {
+      if (isLegible(color, swatch.getRgb())) {
+        legiblePopulation += swatch.getPopulation();
+      } else {
+        illegiblePopulation += swatch.getPopulation();
+      }
     }
+    return legiblePopulation > illegiblePopulation;
+  }
 
-    public static boolean isSuperLight(final Palette p) {
-        return !isLegibleOnWallpaper(Color.WHITE, p.getSwatches());
-    }
-
-    public static boolean isSuperDark(final Palette p) {
-        return !isLegibleOnWallpaper(Color.BLACK, p.getSwatches());
-    }
-
-    /**
-     * Given a color, returns true if that color is legible on
-     * the given wallpaper color swatches, else returns false.
-     */
-    private static boolean isLegibleOnWallpaper(final int color, final List<Palette.Swatch> wallpaperSwatches) {
-        int legiblePopulation = 0;
-        int illegiblePopulation = 0;
-        for (Palette.Swatch swatch : wallpaperSwatches) {
-            if (isLegible(color, swatch.getRgb())) {
-                legiblePopulation += swatch.getPopulation();
-            } else {
-                illegiblePopulation += swatch.getPopulation();
-            }
-        }
-        return legiblePopulation > illegiblePopulation;
-    }
-
-    /**
-     * @return Whether the foreground color is legible on the background color.
-     */
-    private static boolean isLegible(final int foreground, final int background) {
-        background = ColorUtils.setAlphaComponent(background, 255);
-        return ColorUtils.calculateContrast(foreground, background) >= MIN_CONTRAST_RATIO;
-    }
-
+  /**
+   * @return Whether the foreground color is legible on the background color.
+   */
+  private static boolean isLegible(final int foreground, final int background) {
+    background = ColorUtils.setAlphaComponent(background, 255);
+    return ColorUtils.calculateContrast(foreground, background) >=
+        MIN_CONTRAST_RATIO;
+  }
 }

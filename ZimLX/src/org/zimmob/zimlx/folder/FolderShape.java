@@ -1,8 +1,8 @@
 /*
  *     This file is part of Lawnchair Launcher.
  *
- *     Lawnchair Launcher is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
+ *     Lawnchair Launcher is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as published by
  *     the Free Software Foundation, either version 3 of the License, or
  *     (at your option) any later version.
  *
@@ -12,7 +12,8 @@
  *     GNU General Public License for more details.
  *
  *     You should have received a copy of the GNU General Public License
- *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
+ *     along with Lawnchair Launcher.  If not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 package org.zimmob.zimlx.folder;
@@ -34,189 +35,209 @@ import android.util.SparseArray;
 import android.util.TypedValue;
 import android.util.Xml;
 import android.view.ViewOutlineProvider;
-
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.folder.Folder;
-
+import java.io.IOException;
+import java.util.ArrayList;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.zimmob.zimlx.adaptive.IconShape;
 import org.zimmob.zimlx.adaptive.IconShapeManager;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 public abstract class FolderShape {
-    private static final String TAG = "FolderShape";
+  private static final String TAG = "FolderShape";
 
-    public static FolderShape sInstance = new Circle();
-    public SparseArray<TypedValue> mAttrs;
+  public static FolderShape sInstance = new Circle();
+  public SparseArray<TypedValue> mAttrs;
 
-    public static abstract class PathShape extends FolderShape {
-        public final Path mTmpPath = new Path();
+  public static abstract class PathShape extends FolderShape {
+    public final Path mTmpPath = new Path();
 
-        public final Animator createRevealAnimator(final Folder folder, final Rect startRect, final Rect endRect, final float endRadius, final boolean isReversed) {
-            Path path = new Path();
-            AnimatorUpdateListener newUpdateListener = newUpdateListener(startRect, endRect,
-                    endRadius, path);
-            ValueAnimator ofFloat = ValueAnimator.ofFloat(
-                                        isReversed ? new float[] {1, 0} : new float[] {0, 1});
-            ofFloat.addListener(new AnimatorListenerAdapter() {
-                public ViewOutlineProvider mOldOutlineProvider;
+    public final Animator createRevealAnimator(final Folder folder,
+                                               final Rect startRect,
+                                               final Rect endRect,
+                                               final float endRadius,
+                                               final boolean isReversed) {
+      Path path = new Path();
+      AnimatorUpdateListener newUpdateListener =
+          newUpdateListener(startRect, endRect, endRadius, path);
+      ValueAnimator ofFloat = ValueAnimator.ofFloat(
+          isReversed ? new float[] {1, 0} : new float[] {0, 1});
+      ofFloat.addListener(new AnimatorListenerAdapter() {
+        public ViewOutlineProvider mOldOutlineProvider;
 
-                public void onAnimationEnd(final Animator animator) {
-                    folder.setTranslationZ(0);
-                    folder.setClipPath(null);
-                    folder.setOutlineProvider(this.mOldOutlineProvider);
-                }
-
-                public void onAnimationStart(final Animator animator) {
-                    this.mOldOutlineProvider = folder.getOutlineProvider();
-                    folder.setOutlineProvider(null);
-                    folder.setTranslationZ(-folder.getElevation());
-                }
-            });
-            ofFloat.addUpdateListener(animation -> {
-                path.reset();
-                newUpdateListener.onAnimationUpdate(animation);
-                folder.setClipPath(path);
-            });
-            return ofFloat;
+        public void onAnimationEnd(final Animator animator) {
+          folder.setTranslationZ(0);
+          folder.setClipPath(null);
+          folder.setOutlineProvider(this.mOldOutlineProvider);
         }
 
-        public final void drawShape(final Canvas canvas, final float x, final float y, final float radius, final Paint paint) {
-            this.mTmpPath.reset();
-            addShape(this.mTmpPath, x, y, radius);
-            canvas.drawPath(this.mTmpPath, paint);
+        public void onAnimationStart(final Animator animator) {
+          this.mOldOutlineProvider = folder.getOutlineProvider();
+          folder.setOutlineProvider(null);
+          folder.setTranslationZ(-folder.getElevation());
         }
-
-        public abstract AnimatorUpdateListener newUpdateListener(Rect startRect, Rect endRect, float endRadius, Path path);
+      });
+      ofFloat.addUpdateListener(animation -> {
+        path.reset();
+        newUpdateListener.onAnimationUpdate(animation);
+        folder.setClipPath(path);
+      });
+      return ofFloat;
     }
 
-    public static class AdaptiveIconShape extends PathShape {
-
-        private final IconShape mIconShape;
-
-        public AdaptiveIconShape(final Context context) {
-            mIconShape = IconShapeManager.Companion.getInstance(context).getIconShape();
-            mAttrs = new SparseArray<>();
-            int qsbEdgeRadius = mIconShape.getQsbEdgeRadius();
-            if (qsbEdgeRadius != 0) {
-                TypedValue value = new TypedValue();
-                context.getResources().getValue(qsbEdgeRadius, value, false);
-                mAttrs.append(R.attr.qsbEdgeRadius, value);
-            }
-        }
-
-        @Override
-        public void addShape(final Path path, final float x, final float y, final float radius) {
-            mIconShape.addShape(path, x, y, radius);
-        }
-
-        @Override
-        public AnimatorUpdateListener newUpdateListener(final Rect startRect, final Rect endRect,
-                final float endRadius, final Path path) {
-            float startRadius = startRect.width() / 2f;
-            float[] start = new float[] {startRect.left, startRect.top, startRect.right, startRect.bottom};
-            float[] end = new float[] {endRect.left, endRect.top, endRect.right, endRect.bottom};
-            FloatArrayEvaluator evaluator = new FloatArrayEvaluator();
-            return animation -> {
-                float progress = (float) animation.getAnimatedValue();
-                float[] values = evaluator.evaluate(progress, start, end);
-                mIconShape.addToPath(path,
-                                     values[0], values[1], values[2], values[3],
-                                     startRadius, endRadius, progress);
-            };
-        }
+    public final void drawShape(final Canvas canvas, final float x,
+                                final float y, final float radius,
+                                final Paint paint) {
+      this.mTmpPath.reset();
+      addShape(this.mTmpPath, x, y, radius);
+      canvas.drawPath(this.mTmpPath, paint);
     }
 
-    public static abstract class SimpleRectShape extends FolderShape {
+    public abstract AnimatorUpdateListener newUpdateListener(Rect startRect,
+                                                             Rect endRect,
+                                                             float endRadius,
+                                                             Path path);
+  }
 
-        public final Animator createRevealAnimator(final Folder folder, final Rect startRect, final Rect endRect, final float endRadius, final boolean isReversed) {
-            return new RoundedRectRevealOutlineProvider(getStartRadius(startRect), endRadius, startRect,
-            endRect) {
-                public boolean shouldRemoveElevationDuringAnimation() {
-                    return true;
-                }
-            } .createRevealAnimator(folder, isReversed);
-        }
+  public static class AdaptiveIconShape extends PathShape {
 
-        public abstract float getStartRadius(Rect rect);
+    private final IconShape mIconShape;
+
+    public AdaptiveIconShape(final Context context) {
+      mIconShape =
+          IconShapeManager.Companion.getInstance(context).getIconShape();
+      mAttrs = new SparseArray<>();
+      int qsbEdgeRadius = mIconShape.getQsbEdgeRadius();
+      if (qsbEdgeRadius != 0) {
+        TypedValue value = new TypedValue();
+        context.getResources().getValue(qsbEdgeRadius, value, false);
+        mAttrs.append(R.attr.qsbEdgeRadius, value);
+      }
     }
 
-    public static final class Circle extends SimpleRectShape {
-
-        public void addShape(final Path path, final float x, final float y, final float radius) {
-            path.addCircle(x + radius, y + radius, radius, Path.Direction.CW);
-        }
-
-        public void drawShape(final Canvas canvas, final float x, final float y, final float radius, final Paint paint) {
-            canvas.drawCircle(x + radius, y + radius, radius, paint);
-        }
-
-        public float getStartRadius(final Rect rect) {
-            return ((float) rect.width()) / 2.0f;
-        }
+    @Override
+    public void addShape(final Path path, final float x, final float y,
+                         final float radius) {
+      mIconShape.addShape(path, x, y, radius);
     }
 
-    public static FolderShape getShapeDefinition(final String shape, final float radiusRatio) {
-        switch (shape) {
-        case "Circle":
-            return new Circle();
-        default:
-            throw new IllegalArgumentException("Invalid shape type: " + shape);
-        }
+    @Override
+    public AnimatorUpdateListener
+    newUpdateListener(final Rect startRect, final Rect endRect,
+                      final float endRadius, final Path path) {
+      float startRadius = startRect.width() / 2f;
+      float[] start = new float[] {startRect.left, startRect.top,
+                                   startRect.right, startRect.bottom};
+      float[] end = new float[] {endRect.left, endRect.top, endRect.right,
+                                 endRect.bottom};
+      FloatArrayEvaluator evaluator = new FloatArrayEvaluator();
+      return animation -> {
+        float progress = (float)animation.getAnimatedValue();
+        float[] values = evaluator.evaluate(progress, start, end);
+        mIconShape.addToPath(path, values[0], values[1], values[2], values[3],
+                             startRadius, endRadius, progress);
+      };
+    }
+  }
+
+  public static abstract class SimpleRectShape extends FolderShape {
+
+    public final Animator createRevealAnimator(final Folder folder,
+                                               final Rect startRect,
+                                               final Rect endRect,
+                                               final float endRadius,
+                                               final boolean isReversed) {
+      return new RoundedRectRevealOutlineProvider(
+                 getStartRadius(startRect), endRadius, startRect, endRect) {
+        public boolean shouldRemoveElevationDuringAnimation() { return true; }
+      }.createRevealAnimator(folder, isReversed);
     }
 
-    public static void init(final Context context) {
-        if (Utilities.ATLEAST_OREO) {
-            sInstance = new AdaptiveIconShape(context);
-            return;
-        }
+    public abstract float getStartRadius(Rect rect);
+  }
 
-        ArrayList<FolderShape> shapes = new ArrayList<>();
-        try {
-            XmlPullParser parser = context.getResources().getXml(R.xml.folder_shapes);
-            while (parser.next() != XmlPullParser.END_DOCUMENT) {
-                if (parser.getEventType() == XmlPullParser.START_TAG) {
-                    String name = parser.getName();
-                    if ("shapes".equals(name)) continue;
+  public static final class Circle extends SimpleRectShape {
 
-                    AttributeSet attrs = Xml.asAttributeSet(parser);
-                    TypedArray ta = context.obtainStyledAttributes(attrs, new int[] {R.attr.folderIconRadius});
-                    float radius = ta.getFloat(0, 1);
-                    ta.recycle();
-
-                    FolderShape shape = getShapeDefinition(name, radius);
-
-                    int[] indices = new int[attrs.getAttributeCount()];
-                    for (int i = 0; i < attrs.getAttributeCount(); i++) {
-                        indices[i] = attrs.getAttributeNameResource(i);
-                    }
-                    ta = context.obtainStyledAttributes(attrs, indices);
-                    shape.mAttrs = new SparseArray<>();
-                    for (int i = 0; i < indices.length; i++) {
-                        TypedValue value = new TypedValue();
-                        ta.getValue(i, value);
-                        shape.mAttrs.append(indices[i], value);
-                    }
-                    ta.recycle();
-
-                    shapes.add(shape);
-                }
-            }
-        } catch (XmlPullParserException | IOException e) {
-            Log.d(TAG, "error parsing xml", e);
-        }
-
-        sInstance = shapes.get(0);
+    public void addShape(final Path path, final float x, final float y,
+                         final float radius) {
+      path.addCircle(x + radius, y + radius, radius, Path.Direction.CW);
     }
 
-    public abstract void addShape(Path path, float x, float y, float radius);
+    public void drawShape(final Canvas canvas, final float x, final float y,
+                          final float radius, final Paint paint) {
+      canvas.drawCircle(x + radius, y + radius, radius, paint);
+    }
 
-    public abstract Animator createRevealAnimator(Folder folder, Rect startRect, Rect endRect, float endRadius, boolean isReversed);
+    public float getStartRadius(final Rect rect) {
+      return ((float)rect.width()) / 2.0f;
+    }
+  }
 
-    public abstract void drawShape(Canvas canvas, float x, float y, float radius, Paint paint);
+  public static FolderShape getShapeDefinition(final String shape,
+                                               final float radiusRatio) {
+    switch (shape) {
+    case "Circle":
+      return new Circle();
+    default:
+      throw new IllegalArgumentException("Invalid shape type: " + shape);
+    }
+  }
+
+  public static void init(final Context context) {
+    if (Utilities.ATLEAST_OREO) {
+      sInstance = new AdaptiveIconShape(context);
+      return;
+    }
+
+    ArrayList<FolderShape> shapes = new ArrayList<>();
+    try {
+      XmlPullParser parser = context.getResources().getXml(R.xml.folder_shapes);
+      while (parser.next() != XmlPullParser.END_DOCUMENT) {
+        if (parser.getEventType() == XmlPullParser.START_TAG) {
+          String name = parser.getName();
+          if ("shapes".equals(name))
+            continue;
+
+          AttributeSet attrs = Xml.asAttributeSet(parser);
+          TypedArray ta = context.obtainStyledAttributes(
+              attrs, new int[] {R.attr.folderIconRadius});
+          float radius = ta.getFloat(0, 1);
+          ta.recycle();
+
+          FolderShape shape = getShapeDefinition(name, radius);
+
+          int[] indices = new int[attrs.getAttributeCount()];
+          for (int i = 0; i < attrs.getAttributeCount(); i++) {
+            indices[i] = attrs.getAttributeNameResource(i);
+          }
+          ta = context.obtainStyledAttributes(attrs, indices);
+          shape.mAttrs = new SparseArray<>();
+          for (int i = 0; i < indices.length; i++) {
+            TypedValue value = new TypedValue();
+            ta.getValue(i, value);
+            shape.mAttrs.append(indices[i], value);
+          }
+          ta.recycle();
+
+          shapes.add(shape);
+        }
+      }
+    } catch (XmlPullParserException | IOException e) {
+      Log.d(TAG, "error parsing xml", e);
+    }
+
+    sInstance = shapes.get(0);
+  }
+
+  public abstract void addShape(Path path, float x, float y, float radius);
+
+  public abstract Animator createRevealAnimator(Folder folder, Rect startRect,
+                                                Rect endRect, float endRadius,
+                                                boolean isReversed);
+
+  public abstract void drawShape(Canvas canvas, float x, float y, float radius,
+                                 Paint paint);
 }

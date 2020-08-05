@@ -24,7 +24,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
@@ -32,51 +31,54 @@ import com.android.launcher3.widget.WidgetAddFlowHandler;
 /**
  * Extension of WidgetAddFlowHandler to handle pin item request behavior.
  * <p>
- * No config activity is shown even if it is defined in widget config. And a callback is sent when
- * the widget is bound.
+ * No config activity is shown even if it is defined in widget config. And a
+ * callback is sent when the widget is bound.
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class PinWidgetFlowHandler extends WidgetAddFlowHandler implements Parcelable {
+public class PinWidgetFlowHandler
+    extends WidgetAddFlowHandler implements Parcelable {
 
-    public static final Parcelable.Creator<PinWidgetFlowHandler> CREATOR =
-    new Parcelable.Creator<PinWidgetFlowHandler>() {
+  public static final Parcelable.Creator<PinWidgetFlowHandler> CREATOR =
+      new Parcelable.Creator<PinWidgetFlowHandler>() {
         public PinWidgetFlowHandler createFromParcel(final Parcel source) {
-            return new PinWidgetFlowHandler(source);
+          return new PinWidgetFlowHandler(source);
         }
 
         public PinWidgetFlowHandler[] newArray(final int size) {
-            return new PinWidgetFlowHandler[size];
+          return new PinWidgetFlowHandler[size];
         }
-    };
-    private final PinItemRequest mRequest;
+      };
+  private final PinItemRequest mRequest;
 
-    public PinWidgetFlowHandler(final AppWidgetProviderInfo providerInfo, final PinItemRequest request) {
-        super(providerInfo);
-        mRequest = request;
-    }
+  public PinWidgetFlowHandler(final AppWidgetProviderInfo providerInfo,
+                              final PinItemRequest request) {
+    super(providerInfo);
+    mRequest = request;
+  }
 
-    protected PinWidgetFlowHandler(final Parcel parcel) {
-        super(parcel);
-        mRequest = PinItemRequest.CREATOR.createFromParcel(parcel);
-    }
+  protected PinWidgetFlowHandler(final Parcel parcel) {
+    super(parcel);
+    mRequest = PinItemRequest.CREATOR.createFromParcel(parcel);
+  }
 
-    @Override
-    public void writeToParcel(final Parcel parcel, final int i) {
-        super.writeToParcel(parcel, i);
-        mRequest.writeToParcel(parcel, i);
-    }
+  @Override
+  public void writeToParcel(final Parcel parcel, final int i) {
+    super.writeToParcel(parcel, i);
+    mRequest.writeToParcel(parcel, i);
+  }
 
-    @Override
-    public boolean startConfigActivity(final Launcher launcher, final int appWidgetId, final ItemInfo info,
-                                       final int requestCode) {
-        Bundle extras = new Bundle();
-        extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        mRequest.accept(extras);
-        return false;
-    }
+  @Override
+  public boolean startConfigActivity(final Launcher launcher,
+                                     final int appWidgetId, final ItemInfo info,
+                                     final int requestCode) {
+    Bundle extras = new Bundle();
+    extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+    mRequest.accept(extras);
+    return false;
+  }
 
-    @Override
-    public boolean needsConfigure() {
-        return false;
-    }
+  @Override
+  public boolean needsConfigure() {
+    return false;
+  }
 }

@@ -17,7 +17,6 @@ package com.android.launcher3.model;
 
 import android.content.ComponentName;
 import android.os.UserHandle;
-
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
@@ -27,7 +26,6 @@ import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -36,61 +34,63 @@ import java.util.HashSet;
  */
 public class CacheDataUpdatedTask extends BaseModelUpdateTask {
 
-    public static final int OP_CACHE_UPDATE = 1;
-    public static final int OP_SESSION_UPDATE = 2;
+  public static final int OP_CACHE_UPDATE = 1;
+  public static final int OP_SESSION_UPDATE = 2;
 
-    private final int mOp;
-    private final UserHandle mUser;
-    private final HashSet<String> mPackages;
+  private final int mOp;
+  private final UserHandle mUser;
+  private final HashSet<String> mPackages;
 
-    public CacheDataUpdatedTask(final int op, final UserHandle user, final HashSet<String> packages) {
-        mOp = op;
-        mUser = user;
-        mPackages = packages;
-    }
+  public CacheDataUpdatedTask(final int op, final UserHandle user,
+                              final HashSet<String> packages) {
+    mOp = op;
+    mUser = user;
+    mPackages = packages;
+  }
 
-    @Override
-    public void execute(final LauncherAppState app, final BgDataModel dataModel, final AllAppsList apps) {
-        IconCache iconCache = app.getIconCache();
+  @Override
+  public void execute(final LauncherAppState app, final BgDataModel dataModel,
+                      final AllAppsList apps) {
+    IconCache iconCache = app.getIconCache();
 
-        final ArrayList<AppInfo> updatedApps = new ArrayList<>();
+    final ArrayList<AppInfo> updatedApps = new ArrayList<>();
 
-        ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
-        synchronized (dataModel) {
-            for (ItemInfo info : dataModel.itemsIdMap) {
-                if (info instanceof ShortcutInfo && mUser.equals(info.user)) {
-                    ShortcutInfo si = (ShortcutInfo) info;
-                    ComponentName cn = si.getTargetComponent();
-                    if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
-                            && isValidShortcut(si) && cn != null
-                            && mPackages.contains(cn.getPackageName())) {
-                        iconCache.getTitleAndIcon(si, si.usingLowResIcon);
-                        updatedShortcuts.add(si);
-                    }
-                }
-            }
-            apps.updateIconsAndLabels(mPackages, mUser, updatedApps);
+    ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
+    synchronized (dataModel) {
+      for (ItemInfo info : dataModel.itemsIdMap) {
+        if (info instanceof ShortcutInfo && mUser.equals(info.user)) {
+          ShortcutInfo si = (ShortcutInfo)info;
+          ComponentName cn = si.getTargetComponent();
+          if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
+              isValidShortcut(si) && cn != null &&
+              mPackages.contains(cn.getPackageName())) {
+            iconCache.getTitleAndIcon(si, si.usingLowResIcon);
+            updatedShortcuts.add(si);
+          }
         }
-        bindUpdatedShortcuts(updatedShortcuts, mUser);
-
-        if (!updatedApps.isEmpty()) {
-            scheduleCallbackTask(new CallbackTask() {
-                @Override
-                public void execute(final Callbacks callbacks) {
-                    callbacks.bindAppsAddedOrUpdated(updatedApps);
-                }
-            });
-        }
+      }
+      apps.updateIconsAndLabels(mPackages, mUser, updatedApps);
     }
+    bindUpdatedShortcuts(updatedShortcuts, mUser);
 
-    public boolean isValidShortcut(final ShortcutInfo si) {
-        switch (mOp) {
-        case OP_CACHE_UPDATE:
-            return true;
-        case OP_SESSION_UPDATE:
-            return si.hasPromiseIconUi();
-        default:
-            return false;
+    if (!updatedApps.isEmpty()) {
+      scheduleCallbackTask(new CallbackTask() {
+        @Override
+        public void execute(final Callbacks callbacks) {
+          callbacks.bindAppsAddedOrUpdated(updatedApps);
         }
+      });
     }
+  }
+
+  public boolean isValidShortcut(final ShortcutInfo si) {
+    switch (mOp) {
+    case OP_CACHE_UPDATE:
+      return true;
+    case OP_SESSION_UPDATE:
+      return si.hasPromiseIconUi();
+    default:
+      return false;
+    }
+  }
 }

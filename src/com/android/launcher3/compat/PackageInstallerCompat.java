@@ -19,66 +19,68 @@ package com.android.launcher3.compat;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageInstaller;
-
+import androidx.annotation.NonNull;
 import java.util.HashMap;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-
 public abstract class PackageInstallerCompat {
 
-    public static final int STATUS_INSTALLED = 0;
-    public static final int STATUS_INSTALLING = 1;
-    public static final int STATUS_FAILED = 2;
+  public static final int STATUS_INSTALLED = 0;
+  public static final int STATUS_INSTALLING = 1;
+  public static final int STATUS_FAILED = 2;
 
-    private static final Object sInstanceLock = new Object();
-    private static PackageInstallerCompat sInstance;
+  private static final Object sInstanceLock = new Object();
+  private static PackageInstallerCompat sInstance;
 
-    public static PackageInstallerCompat getInstance(final Context context) {
-        synchronized (sInstanceLock) {
-            if (sInstance == null) {
-                sInstance = new PackageInstallerCompatVL(context);
-            }
-            return sInstance;
-        }
+  public static PackageInstallerCompat getInstance(final Context context) {
+    synchronized (sInstanceLock) {
+      if (sInstance == null) {
+        sInstance = new PackageInstallerCompatVL(context);
+      }
+      return sInstance;
+    }
+  }
+
+  /**
+   * @return a map of active installs to their progress
+   */
+  public abstract HashMap<String, PackageInstaller.SessionInfo>
+  updateAndGetActiveSessionCache();
+
+  public abstract void onStop();
+
+  public static final class PackageInstallInfo {
+    public final ComponentName componentName;
+    public final String packageName;
+    public final int state;
+    public final int progress;
+
+    private PackageInstallInfo(final
+                               @NonNull PackageInstaller.SessionInfo info) {
+      this.state = STATUS_INSTALLING;
+      this.packageName = info.getAppPackageName();
+      this.componentName = new ComponentName(packageName, "");
+      this.progress = (int)(info.getProgress() * 100f);
     }
 
-    /**
-     * @return a map of active installs to their progress
-     */
-    public abstract HashMap<String, PackageInstaller.SessionInfo> updateAndGetActiveSessionCache();
-
-    public abstract void onStop();
-
-    public static final class PackageInstallInfo {
-        public final ComponentName componentName;
-        public final String packageName;
-        public final int state;
-        public final int progress;
-
-        private PackageInstallInfo(final @NonNull PackageInstaller.SessionInfo info) {
-            this.state = STATUS_INSTALLING;
-            this.packageName = info.getAppPackageName();
-            this.componentName = new ComponentName(packageName, "");
-            this.progress = (int) (info.getProgress() * 100f);
-        }
-
-        public PackageInstallInfo(final String packageName, final int state, final int progress) {
-            this.state = state;
-            this.packageName = packageName;
-            this.componentName = new ComponentName(packageName, "");
-            this.progress = progress;
-        }
-
-        public static PackageInstallInfo fromInstallingState(final PackageInstaller.SessionInfo info) {
-            return new PackageInstallInfo(info);
-        }
-
-        public static PackageInstallInfo fromState(final int state, final String packageName) {
-            return new PackageInstallInfo(packageName, state, 0 /* progress */);
-        }
-
+    public PackageInstallInfo(final String packageName, final int state,
+                              final int progress) {
+      this.state = state;
+      this.packageName = packageName;
+      this.componentName = new ComponentName(packageName, "");
+      this.progress = progress;
     }
 
-    public abstract List<PackageInstaller.SessionInfo> getAllVerifiedSessions();
+    public static PackageInstallInfo
+    fromInstallingState(final PackageInstaller.SessionInfo info) {
+      return new PackageInstallInfo(info);
+    }
+
+    public static PackageInstallInfo fromState(final int state,
+                                               final String packageName) {
+      return new PackageInstallInfo(packageName, state, 0 /* progress */);
+    }
+  }
+
+  public abstract List<PackageInstaller.SessionInfo> getAllVerifiedSessions();
 }

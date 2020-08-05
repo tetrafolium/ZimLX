@@ -17,7 +17,6 @@
 package com.android.launcher3.dragndrop;
 
 import android.graphics.Point;
-
 import com.android.launcher3.DropTarget;
 
 /**
@@ -25,53 +24,59 @@ import com.android.launcher3.DropTarget;
  */
 public class DragOptions {
 
-    /**
-     * Whether or not an accessible drag operation is in progress.
-     */
-    public boolean isAccessibleDrag = false;
+  /**
+   * Whether or not an accessible drag operation is in progress.
+   */
+  public boolean isAccessibleDrag = false;
+
+  /**
+   * Specifies the start location for the system DnD, null when using internal
+   * DnD
+   */
+  public Point systemDndStartPoint = null;
+
+  /**
+   * Determines when a pre-drag should transition to a drag. By default, this is
+   * immediate.
+   */
+  public PreDragCondition preDragCondition = null;
+
+  /**
+   * Scale of the icons over the workspace icon size.
+   */
+  public float intrinsicIconScaleFactor = 1f;
+
+  /**
+   * Specifies a condition that must be met before DragListener#onDragStart() is
+   * called. By default, there is no condition and onDragStart() is called
+   * immediately following DragController#startDrag().
+   *
+   * This condition can be overridden, and callbacks are provided for the
+   * following cases:
+   * - The pre-drag starts, but onDragStart() is deferred (onPreDragStart()).
+   * - The pre-drag ends before the condition is met (onPreDragEnd(false)).
+   * - The actual drag starts when the condition is met (onPreDragEnd(true)).
+   */
+  public interface PreDragCondition {
+
+    boolean shouldStartDrag(double distanceDragged);
 
     /**
-     * Specifies the start location for the system DnD, null when using internal DnD
+     * The pre-drag has started, but onDragStart() is
+     * deferred until shouldStartDrag() returns true.
      */
-    public Point systemDndStartPoint = null;
+    void onPreDragStart(DropTarget.DragObject dragObject);
 
     /**
-     * Determines when a pre-drag should transition to a drag. By default, this is immediate.
-     */
-    public PreDragCondition preDragCondition = null;
-
-    /**
-     * Scale of the icons over the workspace icon size.
-     */
-    public float intrinsicIconScaleFactor = 1f;
-
-    /**
-     * Specifies a condition that must be met before DragListener#onDragStart() is called.
-     * By default, there is no condition and onDragStart() is called immediately following
-     * DragController#startDrag().
+     * The pre-drag has ended. This gets called at the same time as
+     * onDragStart() if the condition is met, otherwise at the same time as
+     * onDragEnd().
      *
-     * This condition can be overridden, and callbacks are provided for the following cases:
-     * - The pre-drag starts, but onDragStart() is deferred (onPreDragStart()).
-     * - The pre-drag ends before the condition is met (onPreDragEnd(false)).
-     * - The actual drag starts when the condition is met (onPreDragEnd(true)).
+     * @param dragStarted Whether the pre-drag ended because the actual drag
+     *     started.
+     *                    This will be true if the condition was met, otherwise
+     * false.
      */
-    public interface PreDragCondition {
-
-        boolean shouldStartDrag(double distanceDragged);
-
-        /**
-         * The pre-drag has started, but onDragStart() is
-         * deferred until shouldStartDrag() returns true.
-         */
-        void onPreDragStart(DropTarget.DragObject dragObject);
-
-        /**
-         * The pre-drag has ended. This gets called at the same time as onDragStart()
-         * if the condition is met, otherwise at the same time as onDragEnd().
-         *
-         * @param dragStarted Whether the pre-drag ended because the actual drag started.
-         *                    This will be true if the condition was met, otherwise false.
-         */
-        void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted);
-    }
+    void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted);
+  }
 }

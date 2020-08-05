@@ -19,7 +19,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
 
@@ -30,38 +29,39 @@ import androidx.preference.PreferenceViewHolder;
  */
 public class ButtonPreference extends Preference {
 
-    private boolean mWidgetFrameVisible = false;
+  private boolean mWidgetFrameVisible = false;
 
-    public ButtonPreference(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+  public ButtonPreference(final Context context, final AttributeSet attrs,
+                          final int defStyleAttr, final int defStyleRes) {
+    super(context, attrs, defStyleAttr, defStyleRes);
+  }
+
+  public ButtonPreference(final Context context, final AttributeSet attrs,
+                          final int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+  }
+
+  public ButtonPreference(final Context context, final AttributeSet attrs) {
+    super(context, attrs);
+  }
+
+  public ButtonPreference(final Context context) { super(context); }
+
+  public void setWidgetFrameVisible(final boolean isVisible) {
+    if (mWidgetFrameVisible != isVisible) {
+      mWidgetFrameVisible = isVisible;
+      notifyChanged();
     }
+  }
 
-    public ButtonPreference(final Context context, final AttributeSet attrs, final int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+  @Override
+  public void onBindViewHolder(final PreferenceViewHolder holder) {
+    super.onBindViewHolder(holder);
+
+    ViewGroup widgetFrame =
+        holder.itemView.findViewById(android.R.id.widget_frame);
+    if (widgetFrame != null) {
+      widgetFrame.setVisibility(mWidgetFrameVisible ? View.VISIBLE : View.GONE);
     }
-
-    public ButtonPreference(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public ButtonPreference(final Context context) {
-        super(context);
-    }
-
-    public void setWidgetFrameVisible(final boolean isVisible) {
-        if (mWidgetFrameVisible != isVisible) {
-            mWidgetFrameVisible = isVisible;
-            notifyChanged();
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(final PreferenceViewHolder holder) {
-        super.onBindViewHolder(holder);
-
-        ViewGroup widgetFrame = holder.itemView.findViewById(android.R.id.widget_frame);
-        if (widgetFrame != null) {
-            widgetFrame.setVisibility(mWidgetFrameVisible ? View.VISIBLE : View.GONE);
-        }
-    }
+  }
 }

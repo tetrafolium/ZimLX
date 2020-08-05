@@ -21,7 +21,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Process;
 import android.os.UserHandle;
-
 import com.android.launcher3.util.ContentWriter;
 
 /**
@@ -29,124 +28,122 @@ import com.android.launcher3.util.ContentWriter;
  */
 public class ItemInfo {
 
-    public static final int NO_ID = -1;
+  public static final int NO_ID = -1;
 
-    /**
-     * The id in the settings database for this item
-     */
-    public long id = NO_ID;
+  /**
+   * The id in the settings database for this item
+   */
+  public long id = NO_ID;
 
-    /**
-     * One of {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_SHORTCUT},
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_DEEP_SHORTCUT}
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_FOLDER},
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_APPWIDGET} or
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_CUSTOM_APPWIDGET}.
-     */
-    public int itemType;
+  /**
+   * One of {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
+   * {@link LauncherSettings.Favorites#ITEM_TYPE_SHORTCUT},
+   * {@link LauncherSettings.Favorites#ITEM_TYPE_DEEP_SHORTCUT}
+   * {@link LauncherSettings.Favorites#ITEM_TYPE_FOLDER},
+   * {@link LauncherSettings.Favorites#ITEM_TYPE_APPWIDGET} or
+   * {@link LauncherSettings.Favorites#ITEM_TYPE_CUSTOM_APPWIDGET}.
+   */
+  public int itemType;
 
-    /**
-     * The id of the container that holds this item. For the desktop, this will be
-     * {@link LauncherSettings.Favorites#CONTAINER_DESKTOP}. For the all applications folder it
-     * will be {@link #NO_ID} (since it is not stored in the settings DB). For user folders
-     * it will be the id of the folder.
-     */
-    public long container = NO_ID;
+  /**
+   * The id of the container that holds this item. For the desktop, this will be
+   * {@link LauncherSettings.Favorites#CONTAINER_DESKTOP}. For the all
+   * applications folder it will be {@link #NO_ID} (since it is not stored in
+   * the settings DB). For user folders it will be the id of the folder.
+   */
+  public long container = NO_ID;
 
-    /**
-     * Indicates the screen in which the shortcut appears if the container types is
-     * {@link LauncherSettings.Favorites#CONTAINER_DESKTOP}. (i.e., ignore if the container type is
-     * {@link LauncherSettings.Favorites#CONTAINER_HOTSEAT})
-     */
-    public long screenId = -1;
+  /**
+   * Indicates the screen in which the shortcut appears if the container types
+   * is
+   * {@link LauncherSettings.Favorites#CONTAINER_DESKTOP}. (i.e., ignore if the
+   * container type is
+   * {@link LauncherSettings.Favorites#CONTAINER_HOTSEAT})
+   */
+  public long screenId = -1;
 
-    /**
-     * Indicates the X position of the associated cell.
-     */
-    public int cellX = -1;
+  /**
+   * Indicates the X position of the associated cell.
+   */
+  public int cellX = -1;
 
-    /**
-     * Indicates the Y position of the associated cell.
-     */
-    public int cellY = -1;
+  /**
+   * Indicates the Y position of the associated cell.
+   */
+  public int cellY = -1;
 
-    /**
-     * Indicates the X cell span.
-     */
-    public int spanX = 1;
+  /**
+   * Indicates the X cell span.
+   */
+  public int spanX = 1;
 
-    /**
-     * Indicates the Y cell span.
-     */
-    public int spanY = 1;
+  /**
+   * Indicates the Y cell span.
+   */
+  public int spanY = 1;
 
-    /**
-     * Indicates the minimum X cell span.
-     */
-    public int minSpanX = 1;
+  /**
+   * Indicates the minimum X cell span.
+   */
+  public int minSpanX = 1;
 
-    /**
-     * Indicates the minimum Y cell span.
-     */
-    public int minSpanY = 1;
+  /**
+   * Indicates the minimum Y cell span.
+   */
+  public int minSpanY = 1;
 
-    /**
-     * Indicates the position in an ordered list.
-     */
-    public int rank = 0;
+  /**
+   * Indicates the position in an ordered list.
+   */
+  public int rank = 0;
 
-    /**
-     * Title of the item
-     */
-    public CharSequence title;
+  /**
+   * Title of the item
+   */
+  public CharSequence title;
 
-    /**
-     * Content description of the item.
-     */
-    public CharSequence contentDescription;
+  /**
+   * Content description of the item.
+   */
+  public CharSequence contentDescription;
 
-    public UserHandle user;
+  public UserHandle user;
 
-    public ItemInfo() {
-        user = Process.myUserHandle();
+  public ItemInfo() { user = Process.myUserHandle(); }
+
+  ItemInfo(final ItemInfo info) {
+    copyFrom(info);
+    // tempdebug:
+    LauncherModel.checkItemInfo(this);
+  }
+
+  public void copyFrom(final ItemInfo info) {
+    id = info.id;
+    cellX = info.cellX;
+    cellY = info.cellY;
+    spanX = info.spanX;
+    spanY = info.spanY;
+    rank = info.rank;
+    screenId = info.screenId;
+    itemType = info.itemType;
+    container = info.container;
+    user = info.user;
+    contentDescription = info.contentDescription;
+  }
+
+  public Intent getIntent() { return null; }
+
+  public ComponentName getTargetComponent() {
+    Intent intent = getIntent();
+    if (intent != null) {
+      return intent.getComponent();
+    } else {
+      return null;
     }
+  }
 
-    ItemInfo(final ItemInfo info) {
-        copyFrom(info);
-        // tempdebug:
-        LauncherModel.checkItemInfo(this);
-    }
-
-    public void copyFrom(final ItemInfo info) {
-        id = info.id;
-        cellX = info.cellX;
-        cellY = info.cellY;
-        spanX = info.spanX;
-        spanY = info.spanY;
-        rank = info.rank;
-        screenId = info.screenId;
-        itemType = info.itemType;
-        container = info.container;
-        user = info.user;
-        contentDescription = info.contentDescription;
-    }
-
-    public Intent getIntent() {
-        return null;
-    }
-
-    public ComponentName getTargetComponent() {
-        Intent intent = getIntent();
-        if (intent != null) {
-            return intent.getComponent();
-        } else {
-            return null;
-        }
-    }
-
-    public void writeToValues(final ContentWriter writer) {
-        writer.put(LauncherSettings.Favorites.ITEM_TYPE, itemType)
+  public void writeToValues(final ContentWriter writer) {
+    writer.put(LauncherSettings.Favorites.ITEM_TYPE, itemType)
         .put(LauncherSettings.Favorites.CONTAINER, container)
         .put(LauncherSettings.Favorites.SCREEN, screenId)
         .put(LauncherSettings.Favorites.CELLX, cellX)
@@ -154,54 +151,51 @@ public class ItemInfo {
         .put(LauncherSettings.Favorites.SPANX, spanX)
         .put(LauncherSettings.Favorites.SPANY, spanY)
         .put(LauncherSettings.Favorites.RANK, rank);
+  }
+
+  public void readFromValues(final ContentValues values) {
+    itemType = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
+    container = values.getAsLong(LauncherSettings.Favorites.CONTAINER);
+    screenId = values.getAsLong(LauncherSettings.Favorites.SCREEN);
+    cellX = values.getAsInteger(LauncherSettings.Favorites.CELLX);
+    cellY = values.getAsInteger(LauncherSettings.Favorites.CELLY);
+    spanX = values.getAsInteger(LauncherSettings.Favorites.SPANX);
+    spanY = values.getAsInteger(LauncherSettings.Favorites.SPANY);
+    rank = values.getAsInteger(LauncherSettings.Favorites.RANK);
+  }
+
+  /**
+   * Write the fields of this item to the DB
+   */
+  public void onAddToDatabase(final ContentWriter writer) {
+    if (screenId == Workspace.EXTRA_EMPTY_SCREEN_ID) {
+      // We should never persist an item on the extra empty screen.
+      throw new RuntimeException(
+          "Screen id should not be EXTRA_EMPTY_SCREEN_ID");
     }
 
-    public void readFromValues(final ContentValues values) {
-        itemType = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
-        container = values.getAsLong(LauncherSettings.Favorites.CONTAINER);
-        screenId = values.getAsLong(LauncherSettings.Favorites.SCREEN);
-        cellX = values.getAsInteger(LauncherSettings.Favorites.CELLX);
-        cellY = values.getAsInteger(LauncherSettings.Favorites.CELLY);
-        spanX = values.getAsInteger(LauncherSettings.Favorites.SPANX);
-        spanY = values.getAsInteger(LauncherSettings.Favorites.SPANY);
-        rank = values.getAsInteger(LauncherSettings.Favorites.RANK);
-    }
+    writeToValues(writer);
+    writer.put(LauncherSettings.Favorites.PROFILE_ID, user);
+  }
 
-    /**
-     * Write the fields of this item to the DB
-     */
-    public void onAddToDatabase(final ContentWriter writer) {
-        if (screenId == Workspace.EXTRA_EMPTY_SCREEN_ID) {
-            // We should never persist an item on the extra empty screen.
-            throw new RuntimeException("Screen id should not be EXTRA_EMPTY_SCREEN_ID");
-        }
+  @Override
+  public final String toString() {
+    return getClass().getSimpleName() + "(" + dumpProperties() + ")";
+  }
 
-        writeToValues(writer);
-        writer.put(LauncherSettings.Favorites.PROFILE_ID, user);
-    }
+  protected String dumpProperties() {
+    return "id=" + id +
+        " type=" + LauncherSettings.Favorites.itemTypeToString(itemType) +
+        " container=" +
+        LauncherSettings.Favorites.containerToString((int)container) +
+        " screen=" + screenId + " cell(" + cellX + "," + cellY + ")"
+        + " span(" + spanX + "," + spanY + ")"
+        + " minSpan(" + minSpanX + "," + minSpanY + ")"
+        + " rank=" + rank + " user=" + user + " title=" + title;
+  }
 
-    @Override
-    public final String toString() {
-        return getClass().getSimpleName() + "(" + dumpProperties() + ")";
-    }
-
-    protected String dumpProperties() {
-        return "id=" + id
-               + " type=" + LauncherSettings.Favorites.itemTypeToString(itemType)
-               + " container=" + LauncherSettings.Favorites.containerToString((int) container)
-               + " screen=" + screenId
-               + " cell(" + cellX + "," + cellY + ")"
-               + " span(" + spanX + "," + spanY + ")"
-               + " minSpan(" + minSpanX + "," + minSpanY + ")"
-               + " rank=" + rank
-               + " user=" + user
-               + " title=" + title;
-    }
-
-    /**
-     * Whether this item is disabled.
-     */
-    public boolean isDisabled() {
-        return false;
-    }
+  /**
+   * Whether this item is disabled.
+   */
+  public boolean isDisabled() { return false; }
 }

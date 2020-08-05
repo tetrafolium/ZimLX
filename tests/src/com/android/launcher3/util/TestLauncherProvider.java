@@ -3,7 +3,6 @@ package com.android.launcher3.util;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import com.android.launcher3.LauncherProvider;
 
 /**
@@ -11,44 +10,41 @@ import com.android.launcher3.LauncherProvider;
  */
 public class TestLauncherProvider extends LauncherProvider {
 
-    @Override
-    public boolean onCreate() {
-        return true;
+  @Override
+  public boolean onCreate() {
+    return true;
+  }
+
+  @Override
+  protected synchronized void createDbIfNotExists() {
+    if (mOpenHelper == null) {
+      mOpenHelper = new MyDatabaseHelper(getContext());
+    }
+  }
+
+  public SQLiteOpenHelper getHelper() {
+    createDbIfNotExists();
+    return mOpenHelper;
+  }
+
+  @Override
+  protected void notifyListeners() {}
+
+  private static class MyDatabaseHelper extends DatabaseHelper {
+    public MyDatabaseHelper(final Context context) {
+      super(context, null, null);
+      initIds();
     }
 
     @Override
-    protected synchronized void createDbIfNotExists() {
-        if (mOpenHelper == null) {
-            mOpenHelper = new MyDatabaseHelper(getContext());
-        }
-    }
-
-    public SQLiteOpenHelper getHelper() {
-        createDbIfNotExists();
-        return mOpenHelper;
+    public long getDefaultUserSerial() {
+      return 0;
     }
 
     @Override
-    protected void notifyListeners() {
-    }
+    protected void onEmptyDbCreated() {}
 
-    private static class MyDatabaseHelper extends DatabaseHelper {
-        public MyDatabaseHelper(final Context context) {
-            super(context, null, null);
-            initIds();
-        }
-
-        @Override
-        public long getDefaultUserSerial() {
-            return 0;
-        }
-
-        @Override
-        protected void onEmptyDbCreated() {
-        }
-
-        @Override
-        protected void handleOneTimeDataUpgrade(final SQLiteDatabase db) {
-        }
-    }
+    @Override
+    protected void handleOneTimeDataUpgrade(final SQLiteDatabase db) {}
+  }
 }

@@ -22,40 +22,40 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.view.View;
 
 /**
- * A convenience class to update a view's visibility state after an alpha animation.
+ * A convenience class to update a view's visibility state after an alpha
+ * animation.
  */
-public class AlphaUpdateListener extends AnimationSuccessListener
-    implements AnimatorUpdateListener {
-    private static final float ALPHA_CUTOFF_THRESHOLD = 0.01f;
+public class AlphaUpdateListener
+    extends AnimationSuccessListener implements AnimatorUpdateListener {
+  private static final float ALPHA_CUTOFF_THRESHOLD = 0.01f;
 
-    private View mView;
+  private View mView;
 
-    public AlphaUpdateListener(final View v) {
-        mView = v;
+  public AlphaUpdateListener(final View v) { mView = v; }
+
+  @Override
+  public void onAnimationUpdate(final ValueAnimator arg0) {
+    updateVisibility(mView);
+  }
+
+  @Override
+  public void onAnimationSuccess(final Animator animator) {
+    updateVisibility(mView);
+  }
+
+  @Override
+  public void onAnimationStart(final Animator arg0) {
+    // We want the views to be visible for animation, so fade-in/out is visible
+    mView.setVisibility(View.VISIBLE);
+  }
+
+  public static void updateVisibility(final View view) {
+    if (view.getAlpha() < ALPHA_CUTOFF_THRESHOLD &&
+        view.getVisibility() != View.INVISIBLE) {
+      view.setVisibility(View.INVISIBLE);
+    } else if (view.getAlpha() > ALPHA_CUTOFF_THRESHOLD &&
+               view.getVisibility() != View.VISIBLE) {
+      view.setVisibility(View.VISIBLE);
     }
-
-    @Override
-    public void onAnimationUpdate(final ValueAnimator arg0) {
-        updateVisibility(mView);
-    }
-
-    @Override
-    public void onAnimationSuccess(final Animator animator) {
-        updateVisibility(mView);
-    }
-
-    @Override
-    public void onAnimationStart(final Animator arg0) {
-        // We want the views to be visible for animation, so fade-in/out is visible
-        mView.setVisibility(View.VISIBLE);
-    }
-
-    public static void updateVisibility(final View view) {
-        if (view.getAlpha() < ALPHA_CUTOFF_THRESHOLD && view.getVisibility() != View.INVISIBLE) {
-            view.setVisibility(View.INVISIBLE);
-        } else if (view.getAlpha() > ALPHA_CUTOFF_THRESHOLD
-                   && view.getVisibility() != View.VISIBLE) {
-            view.setVisibility(View.VISIBLE);
-        }
-    }
+  }
 }

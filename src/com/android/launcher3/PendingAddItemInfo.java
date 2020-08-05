@@ -20,18 +20,18 @@ import android.content.ComponentName;
 
 /**
  * Meta data that is used for deferred binding.
- * e.g., this object is used to pass information on draggable targets when they are dropped onto
- * the workspace from another container.
+ * e.g., this object is used to pass information on draggable targets when they
+ * are dropped onto the workspace from another container.
  */
 public class PendingAddItemInfo extends ItemInfo {
 
-    /**
-     * The component that will be created.
-     */
-    public ComponentName componentName;
+  /**
+   * The component that will be created.
+   */
+  public ComponentName componentName;
 
-    @Override
-    protected String dumpProperties() {
-        return super.dumpProperties() + " componentName=" + componentName;
-    }
+  @Override
+  protected String dumpProperties() {
+    return super.dumpProperties() + " componentName=" + componentName;
+  }
 }

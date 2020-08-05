@@ -22,77 +22,75 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-
 import com.android.launcher3.R;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 public class AppDiscoveryItemView extends RelativeLayout {
 
-    private static boolean SHOW_REVIEW_COUNT = false;
+  private static boolean SHOW_REVIEW_COUNT = false;
 
-    private ImageView mImage;
-    private TextView mTitle;
-    private TextView mRatingText;
-    private RatingView mRatingView;
-    private TextView mReviewCount;
-    private TextView mPrice;
-    private OnLongClickListener mOnLongClickListener;
+  private ImageView mImage;
+  private TextView mTitle;
+  private TextView mRatingText;
+  private RatingView mRatingView;
+  private TextView mReviewCount;
+  private TextView mPrice;
+  private OnLongClickListener mOnLongClickListener;
 
-    public AppDiscoveryItemView(final Context context) {
-        this(context, null);
+  public AppDiscoveryItemView(final Context context) { this(context, null); }
+
+  public AppDiscoveryItemView(final Context context, final AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
+
+  public AppDiscoveryItemView(final Context context, final AttributeSet attrs,
+                              final int defStyle) {
+    super(context, attrs, defStyle);
+  }
+
+  @Override
+  protected void onFinishInflate() {
+    super.onFinishInflate();
+    this.mImage = findViewById(R.id.image);
+    this.mTitle = findViewById(R.id.title);
+    this.mRatingText = findViewById(R.id.rating);
+    this.mRatingView = findViewById(R.id.rating_view);
+    this.mPrice = findViewById(R.id.price);
+    this.mReviewCount = findViewById(R.id.review_count);
+  }
+
+  public void init(final OnClickListener clickListener,
+                   final AccessibilityDelegate accessibilityDelegate,
+                   final OnLongClickListener onLongClickListener) {
+    setOnClickListener(clickListener);
+    mImage.setOnClickListener(clickListener);
+    setAccessibilityDelegate(accessibilityDelegate);
+    mOnLongClickListener = onLongClickListener;
+  }
+
+  public void apply(final @NonNull AppDiscoveryAppInfo info) {
+    setTag(info);
+    mImage.setTag(info);
+    mImage.setImageBitmap(info.iconBitmap);
+    mImage.setOnLongClickListener(
+        info.isDragAndDropSupported() ? mOnLongClickListener : null);
+    mTitle.setText(info.title);
+    mPrice.setText(info.priceFormatted != null ? info.priceFormatted : "");
+    mReviewCount.setVisibility(SHOW_REVIEW_COUNT ? View.VISIBLE : View.GONE);
+    if (info.rating >= 0) {
+      mRatingText.setText(new DecimalFormat("#.0").format(info.rating));
+      mRatingView.setRating(info.rating);
+      mRatingView.setVisibility(View.VISIBLE);
+      String reviewCountFormatted =
+          NumberFormat.getInstance().format(info.reviewCount);
+      mReviewCount.setText("(" + reviewCountFormatted + ")");
+    } else {
+      // if we don't have a rating
+      mRatingView.setVisibility(View.GONE);
+      mRatingText.setText("");
+      mReviewCount.setText("");
     }
-
-    public AppDiscoveryItemView(final Context context, final AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public AppDiscoveryItemView(final Context context, final AttributeSet attrs, final int defStyle) {
-        super(context, attrs, defStyle);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        this.mImage = findViewById(R.id.image);
-        this.mTitle = findViewById(R.id.title);
-        this.mRatingText = findViewById(R.id.rating);
-        this.mRatingView = findViewById(R.id.rating_view);
-        this.mPrice = findViewById(R.id.price);
-        this.mReviewCount = findViewById(R.id.review_count);
-    }
-
-    public void init(final OnClickListener clickListener,
-                     final AccessibilityDelegate accessibilityDelegate,
-                     final OnLongClickListener onLongClickListener) {
-        setOnClickListener(clickListener);
-        mImage.setOnClickListener(clickListener);
-        setAccessibilityDelegate(accessibilityDelegate);
-        mOnLongClickListener = onLongClickListener;
-    }
-
-    public void apply(final @NonNull AppDiscoveryAppInfo info) {
-        setTag(info);
-        mImage.setTag(info);
-        mImage.setImageBitmap(info.iconBitmap);
-        mImage.setOnLongClickListener(info.isDragAndDropSupported() ? mOnLongClickListener : null);
-        mTitle.setText(info.title);
-        mPrice.setText(info.priceFormatted != null ? info.priceFormatted : "");
-        mReviewCount.setVisibility(SHOW_REVIEW_COUNT ? View.VISIBLE : View.GONE);
-        if (info.rating >= 0) {
-            mRatingText.setText(new DecimalFormat("#.0").format(info.rating));
-            mRatingView.setRating(info.rating);
-            mRatingView.setVisibility(View.VISIBLE);
-            String reviewCountFormatted = NumberFormat.getInstance().format(info.reviewCount);
-            mReviewCount.setText("(" + reviewCountFormatted + ")");
-        } else {
-            // if we don't have a rating
-            mRatingView.setVisibility(View.GONE);
-            mRatingText.setText("");
-            mReviewCount.setText("");
-        }
-    }
+  }
 }

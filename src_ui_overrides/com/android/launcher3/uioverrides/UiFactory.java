@@ -19,62 +19,53 @@ package com.android.launcher3.uioverrides;
 import android.app.Activity;
 import android.content.Context;
 import android.os.CancellationSignal;
-
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.util.TouchController;
-
 import java.io.PrintWriter;
 
 public class UiFactory {
 
-    public static TouchController[] createTouchControllers(final Launcher launcher) {
-        return new TouchController[] {
-                   launcher.getDragController(), new AllAppsSwipeController(launcher)
-               };
-    }
+  public static TouchController[] createTouchControllers(
+      final Launcher launcher) {
+    return new TouchController[] {launcher.getDragController(),
+                                  new AllAppsSwipeController(launcher)};
+  }
 
-    public static void setOnTouchControllersChangedListener(final Context context, final Runnable listener) {
-    }
+  public static void
+  setOnTouchControllersChangedListener(final Context context,
+                                       final Runnable listener) {}
 
-    public static StateHandler[] getStateHandler(final Launcher launcher) {
-        return new StateHandler[] {
-                   launcher.getAllAppsController(), launcher.getWorkspace()
-               };
-    }
+  public static StateHandler[] getStateHandler(final Launcher launcher) {
+    return new StateHandler[] {launcher.getAllAppsController(),
+                               launcher.getWorkspace()};
+  }
 
-    public static void resetOverview(final Launcher launcher) {
-    }
+  public static void resetOverview(final Launcher launcher) {}
 
-    public static void onLauncherStateOrFocusChanged(final Launcher launcher) {
-    }
+  public static void onLauncherStateOrFocusChanged(final Launcher launcher) {}
 
-    public static void onCreate(final Launcher launcher) {
-    }
+  public static void onCreate(final Launcher launcher) {}
 
-    public static void onStart(final Launcher launcher) {
-    }
+  public static void onStart(final Launcher launcher) {}
 
-    public static void onEnterAnimationComplete(final Context context) {
-    }
+  public static void onEnterAnimationComplete(final Context context) {}
 
-    public static void onLauncherStateOrResumeChanged(final Launcher launcher) {
-    }
+  public static void onLauncherStateOrResumeChanged(final Launcher launcher) {}
 
-    public static void onTrimMemory(final Launcher launcher, final int level) {
-    }
+  public static void onTrimMemory(final Launcher launcher, final int level) {}
 
-    public static void useFadeOutAnimationForLauncherStart(final Launcher launcher,
-            final CancellationSignal cancellationSignal) {
-    }
+  public static void useFadeOutAnimationForLauncherStart(
+      final Launcher launcher, final CancellationSignal cancellationSignal) {}
 
-    public static boolean dumpActivity(final Activity activity, final PrintWriter writer) {
-        return false;
-    }
+  public static boolean dumpActivity(final Activity activity,
+                                     final PrintWriter writer) {
+    return false;
+  }
 
-    public static void prepareToShowOverview(final Launcher launcher) {
-    }
+  public static void prepareToShowOverview(final Launcher launcher) {}
 
-    public static void setBackButtonAlpha(final Launcher launcher, final float alpha, final boolean animate) {
-    }
+  public static void setBackButtonAlpha(final Launcher launcher,
+                                        final float alpha,
+                                        final boolean animate) {}
 }

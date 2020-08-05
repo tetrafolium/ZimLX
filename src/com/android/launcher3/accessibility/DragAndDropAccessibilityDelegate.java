@@ -22,116 +22,123 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.accessibility.AccessibilityEvent;
-
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+import androidx.customview.widget.ExploreByTouchHelper;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-
 import java.util.List;
-
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
-import androidx.customview.widget.ExploreByTouchHelper;
 
 /**
  * Helper class to make drag-and-drop in a {@link CellLayout} accessible.
  */
-public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHelper
-    implements OnClickListener {
-    protected static final int INVALID_POSITION = -1;
+public abstract class DragAndDropAccessibilityDelegate
+    extends ExploreByTouchHelper implements OnClickListener {
+  protected static final int INVALID_POSITION = -1;
 
-    private static final int[] sTempArray = new int[2];
+  private static final int[] sTempArray = new int[2];
 
-    protected final CellLayout mView;
-    protected final Context mContext;
-    protected final LauncherAccessibilityDelegate mDelegate;
+  protected final CellLayout mView;
+  protected final Context mContext;
+  protected final LauncherAccessibilityDelegate mDelegate;
 
-    private final Rect mTempRect = new Rect();
+  private final Rect mTempRect = new Rect();
 
-    public DragAndDropAccessibilityDelegate(final CellLayout forView) {
-        super(forView);
-        mView = forView;
-        mContext = mView.getContext();
-        mDelegate = Launcher.getLauncher(mContext).getAccessibilityDelegate();
+  public DragAndDropAccessibilityDelegate(final CellLayout forView) {
+    super(forView);
+    mView = forView;
+    mContext = mView.getContext();
+    mDelegate = Launcher.getLauncher(mContext).getAccessibilityDelegate();
+  }
+
+  @Override
+  protected int getVirtualViewAt(final float x, final float y) {
+    if (x < 0 || y < 0 || x > mView.getMeasuredWidth() ||
+        y > mView.getMeasuredHeight()) {
+      return INVALID_ID;
+    }
+    mView.pointToCellExact((int)x, (int)y, sTempArray);
+
+    // Map cell to id
+    int id = sTempArray[0] + sTempArray[1] * mView.getCountX();
+    return intersectsValidDropTarget(id);
+  }
+
+  /**
+   * @return the view id of the top left corner of a valid drop region or
+   * {@link #INVALID_POSITION} if there is no such valid region.
+   */
+  protected abstract int intersectsValidDropTarget(int id);
+
+  @Override
+  protected void getVisibleVirtualViews(final List<Integer> virtualViews) {
+    // We create a virtual view for each cell of the grid
+    // The cell ids correspond to cells in reading order.
+    int nCells = mView.getCountX() * mView.getCountY();
+
+    for (int i = 0; i < nCells; i++) {
+      if (intersectsValidDropTarget(i) == i) {
+        virtualViews.add(i);
+      }
+    }
+  }
+
+  @Override
+  protected boolean onPerformActionForVirtualView(final int viewId,
+                                                  final int action,
+                                                  final Bundle args) {
+    if (action == AccessibilityNodeInfoCompat.ACTION_CLICK &&
+        viewId != INVALID_ID) {
+      String confirmation = getConfirmationForIconDrop(viewId);
+      mDelegate.handleAccessibleDrop(mView, getItemBounds(viewId),
+                                     confirmation);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public void onClick(final View v) {
+    onPerformActionForVirtualView(getFocusedVirtualView(),
+                                  AccessibilityNodeInfoCompat.ACTION_CLICK,
+                                  null);
+  }
+
+  @Override
+  protected void onPopulateEventForVirtualView(final int id,
+                                               final AccessibilityEvent event) {
+    if (id == INVALID_ID) {
+      throw new IllegalArgumentException("Invalid virtual view id");
+    }
+    event.setContentDescription(mContext.getString(R.string.action_move_here));
+  }
+
+  @Override
+  protected void
+  onPopulateNodeForVirtualView(final int id,
+                               final AccessibilityNodeInfoCompat node) {
+    if (id == INVALID_ID) {
+      throw new IllegalArgumentException("Invalid virtual view id");
     }
 
-    @Override
-    protected int getVirtualViewAt(final float x, final float y) {
-        if (x < 0 || y < 0 || x > mView.getMeasuredWidth() || y > mView.getMeasuredHeight()) {
-            return INVALID_ID;
-        }
-        mView.pointToCellExact((int) x, (int) y, sTempArray);
+    node.setContentDescription(getLocationDescriptionForIconDrop(id));
+    node.setBoundsInParent(getItemBounds(id));
 
-        // Map cell to id
-        int id = sTempArray[0] + sTempArray[1] * mView.getCountX();
-        return intersectsValidDropTarget(id);
-    }
+    node.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
+    node.setClickable(true);
+    node.setFocusable(true);
+  }
 
-    /**
-     * @return the view id of the top left corner of a valid drop region or
-     * {@link #INVALID_POSITION} if there is no such valid region.
-     */
-    protected abstract int intersectsValidDropTarget(int id);
+  protected abstract String getLocationDescriptionForIconDrop(int id);
 
-    @Override
-    protected void getVisibleVirtualViews(final List<Integer> virtualViews) {
-        // We create a virtual view for each cell of the grid
-        // The cell ids correspond to cells in reading order.
-        int nCells = mView.getCountX() * mView.getCountY();
+  protected abstract String getConfirmationForIconDrop(int id);
 
-        for (int i = 0; i < nCells; i++) {
-            if (intersectsValidDropTarget(i) == i) {
-                virtualViews.add(i);
-            }
-        }
-    }
-
-    @Override
-    protected boolean onPerformActionForVirtualView(final int viewId, final int action, final Bundle args) {
-        if (action == AccessibilityNodeInfoCompat.ACTION_CLICK && viewId != INVALID_ID) {
-            String confirmation = getConfirmationForIconDrop(viewId);
-            mDelegate.handleAccessibleDrop(mView, getItemBounds(viewId), confirmation);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void onClick(final View v) {
-        onPerformActionForVirtualView(getFocusedVirtualView(),
-                                      AccessibilityNodeInfoCompat.ACTION_CLICK, null);
-    }
-
-    @Override
-    protected void onPopulateEventForVirtualView(final int id, final AccessibilityEvent event) {
-        if (id == INVALID_ID) {
-            throw new IllegalArgumentException("Invalid virtual view id");
-        }
-        event.setContentDescription(mContext.getString(R.string.action_move_here));
-    }
-
-    @Override
-    protected void onPopulateNodeForVirtualView(final int id, final AccessibilityNodeInfoCompat node) {
-        if (id == INVALID_ID) {
-            throw new IllegalArgumentException("Invalid virtual view id");
-        }
-
-        node.setContentDescription(getLocationDescriptionForIconDrop(id));
-        node.setBoundsInParent(getItemBounds(id));
-
-        node.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
-        node.setClickable(true);
-        node.setFocusable(true);
-    }
-
-    protected abstract String getLocationDescriptionForIconDrop(int id);
-
-    protected abstract String getConfirmationForIconDrop(int id);
-
-    private Rect getItemBounds(final int id) {
-        int cellX = id % mView.getCountX();
-        int cellY = id / mView.getCountX();
-        LauncherAccessibilityDelegate.DragInfo dragInfo = mDelegate.getDragInfo();
-        mView.cellToRect(cellX, cellY, dragInfo.info.spanX, dragInfo.info.spanY, mTempRect);
-        return mTempRect;
-    }
+  private Rect getItemBounds(final int id) {
+    int cellX = id % mView.getCountX();
+    int cellY = id / mView.getCountX();
+    LauncherAccessibilityDelegate.DragInfo dragInfo = mDelegate.getDragInfo();
+    mView.cellToRect(cellX, cellY, dragInfo.info.spanX, dragInfo.info.spanY,
+                     mTempRect);
+    return mTempRect;
+  }
 }

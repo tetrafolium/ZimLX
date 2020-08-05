@@ -16,18 +16,6 @@
 
 package com.android.launcher3;
 
-import android.view.View;
-import android.view.animation.Interpolator;
-
-import com.android.launcher3.LauncherState.PageAlphaProvider;
-import com.android.launcher3.LauncherStateManager.AnimationConfig;
-import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
-
-import org.zimmob.zimlx.ZimLauncher;
-import org.zimmob.zimlx.views.OptionsPanel;
-
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
@@ -41,108 +29,138 @@ import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.graphics.WorkspaceAndHotseatScrim.SCRIM_PROGRESS;
 import static com.android.launcher3.graphics.WorkspaceAndHotseatScrim.SYSUI_PROGRESS;
 
+import android.view.View;
+import android.view.animation.Interpolator;
+import com.android.launcher3.LauncherState.PageAlphaProvider;
+import com.android.launcher3.LauncherStateManager.AnimationConfig;
+import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
+import org.zimmob.zimlx.ZimLauncher;
+import org.zimmob.zimlx.views.OptionsPanel;
+
 /**
  * Manages the animations between each of the workspace states.
  */
 public class WorkspaceStateTransitionAnimation {
 
-    private final Launcher mLauncher;
-    private final Workspace mWorkspace;
+  private final Launcher mLauncher;
+  private final Workspace mWorkspace;
 
-    private float mNewScale;
+  private float mNewScale;
 
-    public WorkspaceStateTransitionAnimation(final Launcher launcher, final Workspace workspace) {
-        mLauncher = launcher;
-        mWorkspace = workspace;
+  public WorkspaceStateTransitionAnimation(final Launcher launcher,
+                                           final Workspace workspace) {
+    mLauncher = launcher;
+    mWorkspace = workspace;
+  }
+
+  public void setState(final LauncherState toState) {
+    setWorkspaceProperty(toState, NO_ANIM_PROPERTY_SETTER,
+                         new AnimatorSetBuilder(), new AnimationConfig());
+  }
+
+  public void setStateWithAnimation(final LauncherState toState,
+                                    final AnimatorSetBuilder builder,
+                                    final AnimationConfig config) {
+    setWorkspaceProperty(toState, config.getPropertySetter(builder), builder,
+                         config);
+  }
+
+  public float getFinalScale() { return mNewScale; }
+
+  /**
+   * Starts a transition animation for the workspace.
+   */
+  private void setWorkspaceProperty(final LauncherState state,
+                                    final PropertySetter propertySetter,
+                                    final AnimatorSetBuilder builder,
+                                    final AnimationConfig config) {
+    float[] scaleAndTranslation =
+        state.getWorkspaceScaleAndTranslation(mLauncher);
+    mNewScale = scaleAndTranslation[0];
+    PageAlphaProvider pageAlphaProvider =
+        state.getWorkspacePageAlphaProvider(mLauncher);
+    final int childCount = mWorkspace.getChildCount();
+    for (int i = 0; i < childCount; i++) {
+      applyChildState(state, (CellLayout)mWorkspace.getChildAt(i), i,
+                      pageAlphaProvider, propertySetter, builder, config);
     }
 
-    public void setState(final LauncherState toState) {
-        setWorkspaceProperty(toState, NO_ANIM_PROPERTY_SETTER, new AnimatorSetBuilder(),
-                             new AnimationConfig());
+    int elements = state.getVisibleElements(mLauncher);
+    Interpolator fadeInterpolator = builder.getInterpolator(
+        ANIM_WORKSPACE_FADE, pageAlphaProvider.interpolator);
+    boolean playAtomicComponent = config.playAtomicComponent();
+    if (playAtomicComponent) {
+      Interpolator scaleInterpolator =
+          builder.getInterpolator(ANIM_WORKSPACE_SCALE, ZOOM_OUT);
+      propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale,
+                              scaleInterpolator);
+      float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
+      propertySetter.setViewAlpha(mLauncher.getHotseat().getLayout(),
+                                  hotseatIconsAlpha, fadeInterpolator);
+      propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
+                                  hotseatIconsAlpha, fadeInterpolator);
     }
 
-    public void setStateWithAnimation(final LauncherState toState, final AnimatorSetBuilder builder,
-                                      final AnimationConfig config) {
-        setWorkspaceProperty(toState, config.getPropertySetter(builder), builder, config);
+    // Set options view
+    OptionsPanel optionsPanel =
+        ZimLauncher.getLauncher(mLauncher).getOptionsView();
+    propertySetter.setViewAlpha(
+        optionsPanel, (elements & OPTIONS_VIEW) != 0 ? 1 : 0, fadeInterpolator);
+
+    if (!config.playNonAtomicComponent()) {
+      // Only the alpha and scale, handled above, are included in the atomic
+      // animation.
+      return;
     }
 
-    public float getFinalScale() {
-        return mNewScale;
+    Interpolator translationInterpolator =
+        !playAtomicComponent ? LINEAR : ZOOM_OUT;
+    propertySetter.setFloat(mWorkspace, View.TRANSLATION_X,
+                            scaleAndTranslation[1], translationInterpolator);
+    propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
+                            scaleAndTranslation[2], translationInterpolator);
+
+    propertySetter.setViewAlpha(mLauncher.getHotseatSearchBox(),
+                                (elements & HOTSEAT_SEARCH_BOX) != 0 ? 1 : 0,
+                                fadeInterpolator);
+
+    // Set scrim
+    WorkspaceAndHotseatScrim scrim = mLauncher.getDragLayer().getScrim();
+    propertySetter.setFloat(scrim, SCRIM_PROGRESS,
+                            state.getWorkspaceScrimAlpha(mLauncher), LINEAR);
+    propertySetter.setFloat(scrim, SYSUI_PROGRESS, state.hasSysUiScrim ? 1 : 0,
+                            LINEAR);
+  }
+
+  public void applyChildState(final LauncherState state, final CellLayout cl,
+                              final int childIndex) {
+    applyChildState(state, cl, childIndex,
+                    state.getWorkspacePageAlphaProvider(mLauncher),
+                    NO_ANIM_PROPERTY_SETTER, new AnimatorSetBuilder(),
+                    new AnimationConfig());
+  }
+
+  private void applyChildState(final LauncherState state, final CellLayout cl,
+                               final int childIndex,
+                               final PageAlphaProvider pageAlphaProvider,
+                               final PropertySetter propertySetter,
+                               final AnimatorSetBuilder builder,
+                               final AnimationConfig config) {
+    float pageAlpha = pageAlphaProvider.getPageAlpha(childIndex);
+    int drawableAlpha =
+        Math.round(pageAlpha * (state.hasWorkspacePageBackground ? 255 : 0));
+
+    if (config.playNonAtomicComponent()) {
+      propertySetter.setInt(cl.getScrimBackground(), DRAWABLE_ALPHA,
+                            drawableAlpha, ZOOM_OUT);
     }
-
-    /**
-     * Starts a transition animation for the workspace.
-     */
-    private void setWorkspaceProperty(final LauncherState state, final PropertySetter propertySetter,
-                                      final AnimatorSetBuilder builder, final AnimationConfig config) {
-        float[] scaleAndTranslation = state.getWorkspaceScaleAndTranslation(mLauncher);
-        mNewScale = scaleAndTranslation[0];
-        PageAlphaProvider pageAlphaProvider = state.getWorkspacePageAlphaProvider(mLauncher);
-        final int childCount = mWorkspace.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            applyChildState(state, (CellLayout) mWorkspace.getChildAt(i), i, pageAlphaProvider,
-                            propertySetter, builder, config);
-        }
-
-        int elements = state.getVisibleElements(mLauncher);
-        Interpolator fadeInterpolator = builder.getInterpolator(ANIM_WORKSPACE_FADE,
-                                        pageAlphaProvider.interpolator);
-        boolean playAtomicComponent = config.playAtomicComponent();
-        if (playAtomicComponent) {
-            Interpolator scaleInterpolator = builder.getInterpolator(ANIM_WORKSPACE_SCALE, ZOOM_OUT);
-            propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, scaleInterpolator);
-            float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
-            propertySetter.setViewAlpha(mLauncher.getHotseat().getLayout(), hotseatIconsAlpha,
-                                        fadeInterpolator);
-            propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
-                                        hotseatIconsAlpha, fadeInterpolator);
-        }
-
-        // Set options view
-        OptionsPanel optionsPanel = ZimLauncher.getLauncher(mLauncher).getOptionsView();
-        propertySetter.setViewAlpha(optionsPanel, (elements & OPTIONS_VIEW) != 0 ? 1 : 0, fadeInterpolator);
-
-        if (!config.playNonAtomicComponent()) {
-            // Only the alpha and scale, handled above, are included in the atomic animation.
-            return;
-        }
-
-        Interpolator translationInterpolator = !playAtomicComponent ? LINEAR : ZOOM_OUT;
-        propertySetter.setFloat(mWorkspace, View.TRANSLATION_X,
-                                scaleAndTranslation[1], translationInterpolator);
-        propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
-                                scaleAndTranslation[2], translationInterpolator);
-
-        propertySetter.setViewAlpha(mLauncher.getHotseatSearchBox(),
-                                    (elements & HOTSEAT_SEARCH_BOX) != 0 ? 1 : 0, fadeInterpolator);
-
-        // Set scrim
-        WorkspaceAndHotseatScrim scrim = mLauncher.getDragLayer().getScrim();
-        propertySetter.setFloat(scrim, SCRIM_PROGRESS, state.getWorkspaceScrimAlpha(mLauncher),
-                                LINEAR);
-        propertySetter.setFloat(scrim, SYSUI_PROGRESS, state.hasSysUiScrim ? 1 : 0, LINEAR);
+    if (config.playAtomicComponent()) {
+      Interpolator fadeInterpolator = builder.getInterpolator(
+          ANIM_WORKSPACE_FADE, pageAlphaProvider.interpolator);
+      propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
+                              pageAlpha, fadeInterpolator);
     }
-
-    public void applyChildState(final LauncherState state, final CellLayout cl, final int childIndex) {
-        applyChildState(state, cl, childIndex, state.getWorkspacePageAlphaProvider(mLauncher),
-                        NO_ANIM_PROPERTY_SETTER, new AnimatorSetBuilder(), new AnimationConfig());
-    }
-
-    private void applyChildState(final LauncherState state, final CellLayout cl, final int childIndex,
-                                 final PageAlphaProvider pageAlphaProvider, final PropertySetter propertySetter,
-                                 final AnimatorSetBuilder builder, final AnimationConfig config) {
-        float pageAlpha = pageAlphaProvider.getPageAlpha(childIndex);
-        int drawableAlpha = Math.round(pageAlpha * (state.hasWorkspacePageBackground ? 255 : 0));
-
-        if (config.playNonAtomicComponent()) {
-            propertySetter.setInt(cl.getScrimBackground(),
-                                  DRAWABLE_ALPHA, drawableAlpha, ZOOM_OUT);
-        }
-        if (config.playAtomicComponent()) {
-            Interpolator fadeInterpolator = builder.getInterpolator(ANIM_WORKSPACE_FADE,
-                                            pageAlphaProvider.interpolator);
-            propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
-                                    pageAlpha, fadeInterpolator);
-        }
-    }
+  }
 }

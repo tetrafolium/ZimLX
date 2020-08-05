@@ -17,240 +17,259 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
 import androidx.core.app.ActivityOptionsCompat;
-
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import org.zimmob.zimlx.globalsearch.SearchProvider;
 import org.zimmob.zimlx.globalsearch.SearchProviderController;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
+public abstract class BaseGContainerView extends FrameLayout
+    implements View.OnClickListener,
+               SharedPreferences.OnSharedPreferenceChangeListener {
+  private static final String TEXT_ASSIST =
+      "com.google.android.googlequicksearchbox.TEXT_ASSIST";
 
-public abstract class BaseGContainerView extends FrameLayout implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String TEXT_ASSIST = "com.google.android.googlequicksearchbox.TEXT_ASSIST";
+  private final ArgbEvaluator mArgbEvaluator =
+      new ArgbEvaluator(); // mArgbEvaluator
+  private ObjectAnimator mObjectAnimator;
+  protected View mQsbView;
+  private float mQsbButtonElevation;
+  protected QsbConnector mConnectorView;
+  private final Interpolator mADInterpolator =
+      new AccelerateDecelerateInterpolator();
+  private ObjectAnimator mElevationAnimator; // bJ
+  protected boolean qsbHidden;
+  private int mQsbViewId = 0;
+  private boolean mWindowHasFocus;
 
-    private final ArgbEvaluator mArgbEvaluator = new ArgbEvaluator(); //mArgbEvaluator
-    private ObjectAnimator mObjectAnimator;
-    protected View mQsbView;
-    private float mQsbButtonElevation;
-    protected QsbConnector mConnectorView;
-    private final Interpolator mADInterpolator = new AccelerateDecelerateInterpolator();
-    private ObjectAnimator mElevationAnimator; //bJ
-    protected boolean qsbHidden;
-    private int mQsbViewId = 0;
-    private boolean mWindowHasFocus;
+  protected abstract int getQsbView(boolean withMic);
 
-    protected abstract int getQsbView(boolean withMic);
+  public BaseGContainerView(final Context paramContext,
+                            final AttributeSet paramAttributeSet,
+                            final int paramInt) {
+    super(paramContext, paramAttributeSet, paramInt);
+    Utilities.getPrefs(paramContext)
+        .registerOnSharedPreferenceChangeListener(this);
+  }
 
-    public BaseGContainerView(final Context paramContext, final AttributeSet paramAttributeSet, final int paramInt) {
-        super(paramContext, paramAttributeSet, paramInt);
-        Utilities.getPrefs(paramContext).registerOnSharedPreferenceChangeListener(this);
+  public void applyOpaPreference() {
+    int qsbViewId = getQsbView(false);
+    if (qsbViewId != mQsbViewId) {
+      mQsbViewId = qsbViewId;
+      if (mQsbView != null) {
+        removeView(mQsbView);
+      }
+      mQsbView =
+          LayoutInflater.from(getContext()).inflate(mQsbViewId, this, false);
+      mQsbButtonElevation = (float)getResources().getDimensionPixelSize(
+          R.dimen.qsb_button_elevation);
+      addView(mQsbView);
+      mObjectAnimator =
+          ObjectAnimator.ofFloat(mQsbView, "elevation", 0f, mQsbButtonElevation)
+              .setDuration(200L);
+      mObjectAnimator.setInterpolator(mADInterpolator);
+      if (qsbHidden) {
+        hideQsbImmediately();
+      }
+      mQsbView.setOnClickListener(this);
     }
+    loadIcon();
+    applyQsbColor();
+  }
 
-    public void applyOpaPreference() {
-        int qsbViewId = getQsbView(false);
-        if (qsbViewId != mQsbViewId) {
-            mQsbViewId = qsbViewId;
-            if (mQsbView != null) {
-                removeView(mQsbView);
+  protected void applyQsbColor() {}
+
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    applyOpaPreference();
+    applyMinusOnePreference();
+    applyVisibility();
+  }
+
+  private void applyMinusOnePreference() { // bh
+    if (mConnectorView != null) {
+      removeView(mConnectorView);
+      mConnectorView = null;
+    }
+  }
+
+  public void onClick(final View paramView) {
+    SearchProviderController controller =
+        SearchProviderController.Companion.getInstance(getContext());
+    if (controller.isGoogle()) {
+      getContext().sendOrderedBroadcast(
+          getPillAnimationIntent("com.google.nexuslauncher.FAST_TEXT_SEARCH"),
+          null, new BroadcastReceiver() {
+            @Override
+            public void onReceive(final Context context, final Intent intent) {
+              if (getResultCode() == 0) {
+                startQsbActivity(BaseGContainerView.TEXT_ASSIST);
+              } else {
+                loadWindowFocus();
+              }
             }
-            mQsbView = LayoutInflater.from(getContext()).inflate(mQsbViewId, this, false);
-            mQsbButtonElevation = (float) getResources().getDimensionPixelSize(R.dimen.qsb_button_elevation);
-            addView(mQsbView);
-            mObjectAnimator = ObjectAnimator.ofFloat(mQsbView, "elevation", 0f, mQsbButtonElevation).setDuration(200L);
-            mObjectAnimator.setInterpolator(mADInterpolator);
-            if (qsbHidden) {
-                hideQsbImmediately();
-            }
-            mQsbView.setOnClickListener(this);
+          }, null, 0, null, null);
+    } else {
+      SearchProvider provider = controller.getSearchProvider();
+      provider.startSearch(new Function1<Intent, Unit>() {
+        @Override
+        public Unit invoke(final Intent intent) {
+          getContext().startActivity(
+              intent,
+              ActivityOptionsCompat
+                  .makeClipRevealAnimation(mQsbView, 0, 0, mQsbView.getWidth(),
+                                           mQsbView.getWidth())
+                  .toBundle());
+          return null;
         }
+      });
+    }
+  }
+
+  private Intent getPillAnimationIntent(final String action) {
+    int[] qsbLocation = new int[2];
+    mQsbView.getLocationOnScreen(qsbLocation);
+
+    Rect rect = new Rect(qsbLocation[0], qsbLocation[1],
+                         qsbLocation[0] + mQsbView.getWidth(),
+                         qsbLocation[1] + mQsbView.getHeight());
+
+    Intent intent = new Intent(action);
+    setGoogleAnimationStart(rect, intent);
+    intent.setSourceBounds(rect);
+    return intent.putExtra("source_round_left", true)
+        .putExtra("source_round_right", true)
+        .putExtra("source_logo_offset",
+                  midLocation(findViewById(R.id.g_icon), rect))
+        .setPackage("com.google.android.googlequicksearchbox")
+        .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                  Intent.FLAG_ACTIVITY_NEW_TASK);
+  }
+
+  private Point midLocation(final View view, final Rect rect) {
+    int[] location = new int[2];
+    view.getLocationOnScreen(location);
+    Point point = new Point();
+    point.x = (location[0] - rect.left) + (view.getWidth() / 2);
+    point.y = (location[1] - rect.top) + (view.getHeight() / 2);
+    return point;
+  }
+
+  protected void setGoogleAnimationStart(final Rect rect, final Intent intent) {
+  }
+
+  private void loadWindowFocus() {
+    if (hasWindowFocus()) {
+      mWindowHasFocus = true;
+    } else {
+      hideQsbImmediately();
+    }
+  }
+
+  @Override
+  public void onWindowFocusChanged(final boolean newWindowHasFocus) {
+    super.onWindowFocusChanged(newWindowHasFocus);
+    if (!newWindowHasFocus && mWindowHasFocus) {
+      hideQsbImmediately();
+    } else if (newWindowHasFocus && !mWindowHasFocus) {
+      changeVisibility(true);
+    }
+  }
+
+  @Override
+  protected void onWindowVisibilityChanged(final int paramInt) {
+    super.onWindowVisibilityChanged(paramInt);
+    changeVisibility(false);
+  }
+
+  private void hideQsbImmediately() { // bb
+    mWindowHasFocus = false;
+    qsbHidden = true;
+    if (mQsbView != null) {
+      mQsbView.setAlpha(0f);
+      if (mElevationAnimator != null && mElevationAnimator.isRunning()) {
+        mElevationAnimator.end();
+      }
+    }
+    if (mConnectorView != null) {
+      if (mObjectAnimator != null && mObjectAnimator.isRunning()) {
+        mObjectAnimator.end();
+      }
+      mConnectorView.setAlpha(0f);
+    }
+  }
+
+  private void changeVisibility(final boolean makeVisible) { // bc
+    mWindowHasFocus = false;
+    if (qsbHidden) {
+      qsbHidden = false;
+      if (mQsbView != null) {
+        mQsbView.setAlpha(1f);
+        if (mElevationAnimator != null) {
+          mElevationAnimator.start();
+          if (!makeVisible) {
+            mElevationAnimator.end();
+          }
+        }
+      }
+      if (mConnectorView != null) {
+        mConnectorView.setAlpha(1f);
+        mConnectorView.changeVisibility(makeVisible);
+      }
+    }
+  }
+
+  private void startQsbActivity(final String action) {
+    Context context = getContext();
+    try {
+      context.startActivity(
+          new Intent(action)
+              .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK)
+              .setPackage("com.google.android.googlequicksearchbox"));
+    } catch (ActivityNotFoundException ignored) {
+      try {
+        context.startActivity(
+            new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")),
+            Launcher.getLauncher(context)
+                .getActivityLaunchOptions(mQsbView)
+                .toBundle());
+      } catch (ActivityNotFoundException ignored2) {
+      }
+    }
+  }
+
+  private void applyVisibility() {
+    int visibility = View.VISIBLE;
+
+    if (mQsbView != null) {
+      mQsbView.setVisibility(visibility);
+    }
+    if (mConnectorView != null) {
+      mConnectorView.setVisibility(visibility);
+    }
+  }
+
+  @Override
+  public void
+  onSharedPreferenceChanged(final SharedPreferences sharedPreferences,
+                            final String s) {
+    if ("pref_globalSearchProvider".equals(s)) {
+      if (!Utilities.getZimPrefs(getContext()).getUsePillQsb()) {
         loadIcon();
-        applyQsbColor();
+      }
     }
+  }
 
-    protected void applyQsbColor() {
-
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        applyOpaPreference();
-        applyMinusOnePreference();
-        applyVisibility();
-    }
-
-    private void applyMinusOnePreference() { //bh
-        if (mConnectorView != null) {
-            removeView(mConnectorView);
-            mConnectorView = null;
-        }
-    }
-
-    public void onClick(final View paramView) {
-        SearchProviderController controller = SearchProviderController.Companion.getInstance(getContext());
-        if (controller.isGoogle()) {
-            getContext().sendOrderedBroadcast(getPillAnimationIntent("com.google.nexuslauncher.FAST_TEXT_SEARCH"),
-                                              null,
-            new BroadcastReceiver() {
-                @Override
-                public void onReceive(final Context context, final Intent intent) {
-                    if (getResultCode() == 0) {
-                        startQsbActivity(BaseGContainerView.TEXT_ASSIST);
-                    } else {
-                        loadWindowFocus();
-                    }
-                }
-            },
-            null,
-            0,
-            null,
-            null);
-        } else {
-            SearchProvider provider = controller.getSearchProvider();
-            provider.startSearch(new Function1<Intent, Unit>() {
-                @Override
-                public Unit invoke(final Intent intent) {
-                    getContext().startActivity(intent, ActivityOptionsCompat.makeClipRevealAnimation(mQsbView, 0, 0, mQsbView.getWidth(), mQsbView.getWidth()).toBundle());
-                    return null;
-                }
-            });
-        }
-    }
-
-    private Intent getPillAnimationIntent(final String action) {
-        int[] qsbLocation = new int[2];
-        mQsbView.getLocationOnScreen(qsbLocation);
-
-        Rect rect = new Rect(qsbLocation[0],
-                             qsbLocation[1],
-                             qsbLocation[0] + mQsbView.getWidth(),
-                             qsbLocation[1] + mQsbView.getHeight());
-
-        Intent intent = new Intent(action);
-        setGoogleAnimationStart(rect, intent);
-        intent.setSourceBounds(rect);
-        return intent.putExtra("source_round_left", true)
-               .putExtra("source_round_right", true)
-               .putExtra("source_logo_offset", midLocation(findViewById(R.id.g_icon), rect))
-               .setPackage("com.google.android.googlequicksearchbox")
-               .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_NEW_TASK);
-    }
-
-    private Point midLocation(final View view, final Rect rect) {
-        int[] location = new int[2];
-        view.getLocationOnScreen(location);
-        Point point = new Point();
-        point.x = (location[0] - rect.left) + (view.getWidth() / 2);
-        point.y = (location[1] - rect.top) + (view.getHeight() / 2);
-        return point;
-    }
-
-    protected void setGoogleAnimationStart(final Rect rect, final Intent intent) {
-    }
-
-    private void loadWindowFocus() {
-        if (hasWindowFocus()) {
-            mWindowHasFocus = true;
-        } else {
-            hideQsbImmediately();
-        }
-    }
-
-    @Override
-    public void onWindowFocusChanged(final boolean newWindowHasFocus) {
-        super.onWindowFocusChanged(newWindowHasFocus);
-        if (!newWindowHasFocus && mWindowHasFocus) {
-            hideQsbImmediately();
-        } else if (newWindowHasFocus && !mWindowHasFocus) {
-            changeVisibility(true);
-        }
-    }
-
-    @Override
-    protected void onWindowVisibilityChanged(final int paramInt) {
-        super.onWindowVisibilityChanged(paramInt);
-        changeVisibility(false);
-    }
-
-    private void hideQsbImmediately() { //bb
-        mWindowHasFocus = false;
-        qsbHidden = true;
-        if (mQsbView != null) {
-            mQsbView.setAlpha(0f);
-            if (mElevationAnimator != null && mElevationAnimator.isRunning()) {
-                mElevationAnimator.end();
-            }
-        }
-        if (mConnectorView != null) {
-            if (mObjectAnimator != null && mObjectAnimator.isRunning()) {
-                mObjectAnimator.end();
-            }
-            mConnectorView.setAlpha(0f);
-        }
-    }
-
-    private void changeVisibility(final boolean makeVisible) { //bc
-        mWindowHasFocus = false;
-        if (qsbHidden) {
-            qsbHidden = false;
-            if (mQsbView != null) {
-                mQsbView.setAlpha(1f);
-                if (mElevationAnimator != null) {
-                    mElevationAnimator.start();
-                    if (!makeVisible) {
-                        mElevationAnimator.end();
-                    }
-                }
-            }
-            if (mConnectorView != null) {
-                mConnectorView.setAlpha(1f);
-                mConnectorView.changeVisibility(makeVisible);
-            }
-        }
-    }
-
-    private void startQsbActivity(final String action) {
-        Context context = getContext();
-        try {
-            context.startActivity(new Intent(action).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK)
-                                  .setPackage("com.google.android.googlequicksearchbox"));
-        } catch (ActivityNotFoundException ignored) {
-            try {
-                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")),
-                                      Launcher.getLauncher(context).getActivityLaunchOptions(mQsbView).toBundle());
-            } catch (ActivityNotFoundException ignored2) {
-            }
-        }
-    }
-
-    private void applyVisibility() {
-        int visibility = View.VISIBLE;
-
-        if (mQsbView != null) {
-            mQsbView.setVisibility(visibility);
-        }
-        if (mConnectorView != null) {
-            mConnectorView.setVisibility(visibility);
-        }
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String s) {
-        if ("pref_globalSearchProvider".equals(s)) {
-            if (!Utilities.getZimPrefs(getContext()).getUsePillQsb()) {
-                loadIcon();
-            }
-        }
-    }
-
-    private void loadIcon() {
-        SearchProvider provider = SearchProviderController.Companion.getInstance(getContext()).getSearchProvider();
-        ImageView gIcon = mQsbView.findViewById(R.id.g_icon);
-        gIcon.setImageDrawable(provider.getIcon(true));
-    }
+  private void loadIcon() {
+    SearchProvider provider =
+        SearchProviderController.Companion.getInstance(getContext())
+            .getSearchProvider();
+    ImageView gIcon = mQsbView.findViewById(R.id.g_icon);
+    gIcon.setImageDrawable(provider.getIcon(true));
+  }
 }

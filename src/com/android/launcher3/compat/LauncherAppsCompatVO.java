@@ -28,7 +28,7 @@ import android.os.Build;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.UserHandle;
-
+import androidx.annotation.Nullable;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.ShortcutInfo;
@@ -37,120 +37,126 @@ import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageUserKey;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 @TargetApi(26)
 public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
 
-    LauncherAppsCompatVO(final Context context) {
-        super(context);
-    }
+  LauncherAppsCompatVO(final Context context) { super(context); }
 
-    /**
-     * request.accept() will initiate the following flow:
-     * -> go-to-system-process for actual processing (a)
-     * -> callback-to-launcher on UI thread (b)
-     * -> post callback on the worker thread (c)
-     * -> Update model and unpin (in system) any shortcut not in out model. (d)
-     * <p>
-     * Note that (b) will take at-least one frame as it involves posting callback from binder
-     * thread to UI thread.
-     * If (d) happens before we add this shortcut to our model, we will end up unpinning
-     * the shortcut in the system.
-     * Here its the caller's responsibility to add the newly created ShortcutInfo immediately
-     * to the model (which may involves a single post-to-worker-thread). That will guarantee
-     * that (d) happens after model is updated.
-     */
-    @Nullable
-    public static ShortcutInfo createShortcutInfoFromPinItemRequest(
-        final Context context, final PinItemRequest request, final long acceptDelay) {
-        if (request != null
-                && request.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT
-                && request.isValid()) {
+  /**
+   * request.accept() will initiate the following flow:
+   * -> go-to-system-process for actual processing (a)
+   * -> callback-to-launcher on UI thread (b)
+   * -> post callback on the worker thread (c)
+   * -> Update model and unpin (in system) any shortcut not in out model. (d)
+   * <p>
+   * Note that (b) will take at-least one frame as it involves posting callback
+   * from binder thread to UI thread. If (d) happens before we add this shortcut
+   * to our model, we will end up unpinning the shortcut in the system. Here its
+   * the caller's responsibility to add the newly created ShortcutInfo
+   * immediately to the model (which may involves a single
+   * post-to-worker-thread). That will guarantee that (d) happens after model is
+   * updated.
+   */
+  @Nullable
+  public static ShortcutInfo
+  createShortcutInfoFromPinItemRequest(final Context context,
+                                       final PinItemRequest request,
+                                       final long acceptDelay) {
+    if (request != null &&
+        request.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT &&
+        request.isValid()) {
 
-            if (acceptDelay <= 0) {
-                if (!request.accept()) {
-                    return null;
+      if (acceptDelay <= 0) {
+        if (!request.accept()) {
+          return null;
+        }
+      } else {
+        // Block the worker thread until the accept() is called.
+        new LooperExecutor(LauncherModel.getWorkerLooper())
+            .execute(new Runnable() {
+              @Override
+              public void run() {
+                try {
+                  Thread.sleep(acceptDelay);
+                } catch (InterruptedException e) {
+                  // Ignore
                 }
-            } else {
-                // Block the worker thread until the accept() is called.
-                new LooperExecutor(LauncherModel.getWorkerLooper()).execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(acceptDelay);
-                        } catch (InterruptedException e) {
-                            // Ignore
-                        }
-                        if (request.isValid()) {
-                            request.accept();
-                        }
-                    }
-                });
-            }
-
-            ShortcutInfoCompat compat = new ShortcutInfoCompat(request.getShortcutInfo());
-            ShortcutInfo info = new ShortcutInfo(compat, context);
-            // Apply the unbadged icon and fetch the actual icon asynchronously.
-            LauncherIcons li = LauncherIcons.obtain(context);
-            li.createShortcutIcon(compat, false /* badged */).applyTo(info);
-            li.recycle();
-            LauncherAppState.getInstance(context).getModel()
-            .updateAndBindShortcutInfo(info, compat);
-            return info;
-        } else {
-            return null;
-        }
-    }
-
-    public static PinItemRequest getPinItemRequest(final Intent intent) {
-        Parcelable extra = intent.getParcelableExtra(LauncherApps.EXTRA_PIN_ITEM_REQUEST);
-        return extra instanceof PinItemRequest ? (PinItemRequest) extra : null;
-    }
-
-    @Override
-    public ApplicationInfo getApplicationInfo(final String packageName, final int flags, final UserHandle user) {
-        try {
-            ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
-            return (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
-                   ? null : info;
-        } catch (PackageManager.NameNotFoundException e) {
-            return null;
-        }
-    }
-
-    @Override
-    public List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(
-        final @Nullable PackageUserKey packageUser) {
-        List<ShortcutConfigActivityInfo> result = new ArrayList<>();
-        UserHandle myUser = Process.myUserHandle();
-
-        final List<UserHandle> users;
-        final String packageName;
-        if (packageUser == null) {
-            users = UserManagerCompat.getInstance(mContext).getUserProfiles();
-            packageName = null;
-        } else {
-            users = new ArrayList<>(1);
-            users.add(packageUser.mUser);
-            packageName = packageUser.mPackageName;
-        }
-        for (UserHandle user : users) {
-            boolean ignoreTargetSdk = myUser.equals(user);
-            List<LauncherActivityInfo> activities =
-                mLauncherApps.getShortcutConfigActivityList(packageName, user);
-            for (LauncherActivityInfo activityInfo : activities) {
-                if (ignoreTargetSdk || activityInfo.getApplicationInfo().targetSdkVersion
-                        >= Build.VERSION_CODES.O) {
-                    result.add(new ShortcutConfigActivityInfoVO(activityInfo));
+                if (request.isValid()) {
+                  request.accept();
                 }
-            }
-        }
+              }
+            });
+      }
 
-        return result;
+      ShortcutInfoCompat compat =
+          new ShortcutInfoCompat(request.getShortcutInfo());
+      ShortcutInfo info = new ShortcutInfo(compat, context);
+      // Apply the unbadged icon and fetch the actual icon asynchronously.
+      LauncherIcons li = LauncherIcons.obtain(context);
+      li.createShortcutIcon(compat, false /* badged */).applyTo(info);
+      li.recycle();
+      LauncherAppState.getInstance(context)
+          .getModel()
+          .updateAndBindShortcutInfo(info, compat);
+      return info;
+    } else {
+      return null;
     }
+  }
+
+  public static PinItemRequest getPinItemRequest(final Intent intent) {
+    Parcelable extra =
+        intent.getParcelableExtra(LauncherApps.EXTRA_PIN_ITEM_REQUEST);
+    return extra instanceof PinItemRequest ? (PinItemRequest)extra : null;
+  }
+
+  @Override
+  public ApplicationInfo getApplicationInfo(final String packageName,
+                                            final int flags,
+                                            final UserHandle user) {
+    try {
+      ApplicationInfo info =
+          mLauncherApps.getApplicationInfo(packageName, flags, user);
+      return (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
+          ? null
+          : info;
+    } catch (PackageManager.NameNotFoundException e) {
+      return null;
+    }
+  }
+
+  @Override
+  public List<ShortcutConfigActivityInfo>
+  getCustomShortcutActivityList(final @Nullable PackageUserKey packageUser) {
+    List<ShortcutConfigActivityInfo> result = new ArrayList<>();
+    UserHandle myUser = Process.myUserHandle();
+
+    final List<UserHandle> users;
+    final String packageName;
+    if (packageUser == null) {
+      users = UserManagerCompat.getInstance(mContext).getUserProfiles();
+      packageName = null;
+    } else {
+      users = new ArrayList<>(1);
+      users.add(packageUser.mUser);
+      packageName = packageUser.mPackageName;
+    }
+    for (UserHandle user : users) {
+      boolean ignoreTargetSdk = myUser.equals(user);
+      List<LauncherActivityInfo> activities =
+          mLauncherApps.getShortcutConfigActivityList(packageName, user);
+      for (LauncherActivityInfo activityInfo : activities) {
+        if (ignoreTargetSdk ||
+            activityInfo.getApplicationInfo().targetSdkVersion >=
+                Build.VERSION_CODES.O) {
+          result.add(new ShortcutConfigActivityInfoVO(activityInfo));
+        }
+      }
+    }
+
+    return result;
+  }
 }
