@@ -270,11 +270,9 @@ public class UserEventDispatcher {
                                final Target dstTarget) {
     LauncherEvent event =
         newLauncherEvent(newCommandAction(command), srcTarget);
-    if (command == Action.Command.STOP) {
-      if (mAppOrTaskLaunch || !mSessionStarted) {
-        mSessionStarted = false;
-        return;
-      }
+    if ((command == Action.Command.STOP) && (mAppOrTaskLaunch || !mSessionStarted)) {
+      mSessionStarted = false;
+      return;
     }
 
     if (dstTarget != null) {

@@ -218,11 +218,9 @@ public class NotificationFooterLayout extends FrameLayout {
     mIconRow.removeView(child);
     mNotifications.remove(child.getTag());
     updateOverflowEllipsisVisibility();
-    if (mIconRow.getChildCount() == 0) {
-      // There are no more icons in the footer, so hide it.
-      if (mContainer != null) {
-        mContainer.removeFooter();
-      }
+    // There are no more icons in the footer, so hide it.
+    if ((mIconRow.getChildCount() == 0) && (mContainer != null)) {
+      mContainer.removeFooter();
     }
   }
 

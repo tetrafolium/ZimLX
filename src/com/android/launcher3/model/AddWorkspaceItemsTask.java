@@ -72,19 +72,15 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
       List<ItemInfo> filteredItems = new ArrayList<>();
       for (Pair<ItemInfo, Object> entry : mItemList) {
         ItemInfo item = entry.first;
-        if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
-            item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
-          // Short-circuit this logic if the icon exists somewhere on the
-          // workspace
-          if (shortcutExists(dataModel, item.getIntent(), item.user)) {
-            continue;
-          }
+        // Short-circuit this logic if the icon exists somewhere on the
+        // workspace
+        if ((item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
+            item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) && (shortcutExists(dataModel, item.getIntent(), item.user))) {
+          continue;
         }
 
-        if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-          if (item instanceof AppInfo) {
-            item = ((AppInfo)item).makeShortcut();
-          }
+        if ((item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) && (item instanceof AppInfo)) {
+          item = ((AppInfo)item).makeShortcut();
         }
         if (item != null) {
           filteredItems.add(item);

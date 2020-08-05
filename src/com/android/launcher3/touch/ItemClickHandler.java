@@ -93,10 +93,8 @@ public class ItemClickHandler {
         Utilities.getZimPrefs(Launcher.mContext).updateSortApps();
       }
 
-    } else if (tag instanceof LauncherAppWidgetInfo) {
-      if (v instanceof PendingAppWidgetHostView) {
-        onClickPendingWidget((PendingAppWidgetHostView)v, launcher);
-      }
+    } else if ((tag instanceof LauncherAppWidgetInfo) && (v instanceof PendingAppWidgetHostView)) {
+      onClickPendingWidget((PendingAppWidgetHostView)v, launcher);
     }
   }
 

@@ -388,19 +388,17 @@ public abstract class PagedView<T extends View & PageIndicator>
   }
 
   private void sendScrollAccessibilityEvent() {
-    if (isObservedEventType(getContext(),
-                            AccessibilityEvent.TYPE_VIEW_SCROLLED)) {
-      if (mCurrentPage != getNextPage()) {
-        AccessibilityEvent ev =
-            AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_SCROLLED);
-        ev.setScrollable(true);
-        ev.setScrollX(getScrollX());
-        ev.setScrollY(getScrollY());
-        ev.setMaxScrollX(mMaxScrollX);
-        ev.setMaxScrollY(0);
+    if ((isObservedEventType(getContext(),
+                            AccessibilityEvent.TYPE_VIEW_SCROLLED)) && (mCurrentPage != getNextPage())) {
+      AccessibilityEvent ev =
+          AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_SCROLLED);
+      ev.setScrollable(true);
+      ev.setScrollX(getScrollX());
+      ev.setScrollY(getScrollY());
+      ev.setMaxScrollX(mMaxScrollX);
+      ev.setMaxScrollY(0);
 
-        sendAccessibilityEventUnchecked(ev);
-      }
+      sendAccessibilityEventUnchecked(ev);
     }
   }
 
@@ -736,12 +734,10 @@ public abstract class PagedView<T extends View & PageIndicator>
         getChildAt(getCurrentPage() - 1).requestFocus(direction);
         return true;
       }
-    } else if (direction == View.FOCUS_RIGHT) {
-      if (getCurrentPage() < getPageCount() - 1) {
-        snapToPage(getCurrentPage() + 1);
-        getChildAt(getCurrentPage() + 1).requestFocus(direction);
-        return true;
-      }
+    } else if ((direction == View.FOCUS_RIGHT) && (getCurrentPage() < getPageCount() - 1)) {
+      snapToPage(getCurrentPage() + 1);
+      getChildAt(getCurrentPage() + 1).requestFocus(direction);
+      return true;
     }
     return false;
   }
@@ -762,11 +758,9 @@ public abstract class PagedView<T extends View & PageIndicator>
         getPageAt(mCurrentPage - 1)
             .addFocusables(views, direction, focusableMode);
       }
-    } else if (direction == View.FOCUS_RIGHT) {
-      if (mCurrentPage < getPageCount() - 1) {
-        getPageAt(mCurrentPage + 1)
-            .addFocusables(views, direction, focusableMode);
-      }
+    } else if ((direction == View.FOCUS_RIGHT) && (mCurrentPage < getPageCount() - 1)) {
+      getPageAt(mCurrentPage + 1)
+          .addFocusables(views, direction, focusableMode);
     }
   }
 

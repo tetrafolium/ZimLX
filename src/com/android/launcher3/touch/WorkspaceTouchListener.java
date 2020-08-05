@@ -133,13 +133,11 @@ public class WorkspaceTouchListener
       result = false;
     }
 
-    if (action == ACTION_UP || action == ACTION_POINTER_UP) {
-      if (!mWorkspace.isTouchActive()) {
-        final CellLayout currentPage =
-            (CellLayout)mWorkspace.getChildAt(mWorkspace.getCurrentPage());
-        if (currentPage != null) {
-          mWorkspace.onWallpaperTap(ev);
-        }
+    if ((action == ACTION_UP || action == ACTION_POINTER_UP) && (!mWorkspace.isTouchActive())) {
+      final CellLayout currentPage =
+          (CellLayout)mWorkspace.getChildAt(mWorkspace.getCurrentPage());
+      if (currentPage != null) {
+        mWorkspace.onWallpaperTap(ev);
       }
     }
 

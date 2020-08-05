@@ -653,15 +653,13 @@ public class LoaderTask implements Runnable {
                   int status = c.restoreFlag &
                                ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED &
                                ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
-                  if (!wasProviderReady) {
-                    // If provider was not previously ready, update the
-                    // status and UI flag.
-
-                    // Id would be valid only if the widget restore broadcast
-                    // was received.
-                    if (isIdValid) {
-                      status |= LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
-                    }
+                  // If provider was not previously ready, update the
+                  // status and UI flag.
+                  
+                  // Id would be valid only if the widget restore broadcast
+                  // was received.
+                  if ((!wasProviderReady) && (isIdValid)) {
+                    status |= LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
                   }
                   appWidgetInfo.restoreStatus = status;
                 } else {

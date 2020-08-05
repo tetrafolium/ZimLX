@@ -888,15 +888,13 @@ public class Folder extends AbstractFloatingView
       }
     }
 
-    if (target != this) {
-      if (mOnExitAlarm.alarmPending()) {
-        mOnExitAlarm.cancelAlarm();
-        if (!success) {
-          mSuppressFolderDeletion = true;
-        }
-        mScrollPauseAlarm.cancelAlarm();
-        completeDragExit();
+    if ((target != this) && (mOnExitAlarm.alarmPending())) {
+      mOnExitAlarm.cancelAlarm();
+      if (!success) {
+        mSuppressFolderDeletion = true;
       }
+      mScrollPauseAlarm.cancelAlarm();
+      completeDragExit();
     }
 
     mDeleteFolderOnDropCompleted = false;

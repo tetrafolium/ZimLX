@@ -397,13 +397,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
       layout.markCellsAsUnoccupiedForView(mDragInfo.cell);
     }
 
-    if (mOutlineProvider != null) {
-      if (dragObject.dragView != null) {
-        Bitmap preview = dragObject.dragView.getPreviewBitmap();
+    if ((mOutlineProvider != null) && (dragObject.dragView != null)) {
+      Bitmap preview = dragObject.dragView.getPreviewBitmap();
 
-        // The outline is used to visualize where the item will land if dropped
-        mOutlineProvider.generateDragOutline(preview);
-      }
+      // The outline is used to visualize where the item will land if dropped
+      mOutlineProvider.generateDragOutline(preview);
     }
 
     updateChildrenLayersEnabled();
@@ -974,13 +972,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
   private void addInScreen(final View child, final long container,
                            final long screenId, final int x, final int y,
                            final int spanX, final int spanY) {
-    if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-      if (getScreenWithId(screenId) == null) {
-        Log.e(TAG, "Skipping child, screenId " + screenId + " not found");
-        // DEBUGGING - Print out the stack trace to see where we are adding from
-        new Throwable().printStackTrace();
-        return;
-      }
+    if ((container == LauncherSettings.Favorites.CONTAINER_DESKTOP) && (getScreenWithId(screenId) == null)) {
+      Log.e(TAG, "Skipping child, screenId " + screenId + " not found");
+      // DEBUGGING - Print out the stack trace to see where we are adding from
+      new Throwable().printStackTrace();
+      return;
     }
     if (screenId == EXTRA_EMPTY_SCREEN_ID) {
       // This should never happen
@@ -1136,12 +1132,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     super.onPageEndTransition();
     updateChildrenLayersEnabled();
 
-    if (mDragController.isDragging()) {
-      if (workspaceInModalState()) {
-        // If we are in springloaded mode, then force an event to check if the
-        // current touch is under a new page (to scroll to)
-        mDragController.forceTouchMove();
-      }
+    if ((mDragController.isDragging()) && (workspaceInModalState())) {
+      // If we are in springloaded mode, then force an event to check if the
+      // current touch is under a new page (to scroll to)
+      mDragController.forceTouchMove();
     }
 
     if (mStripScreensOnPageStopMoving) {
@@ -2580,11 +2574,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mReorderAlarm.setAlarm(REORDER_TIMEOUT);
       }
 
-      if (mDragMode == DRAG_MODE_CREATE_FOLDER ||
-          mDragMode == DRAG_MODE_ADD_TO_FOLDER || !nearestDropOccupied) {
-        if (mDragTargetLayout != null) {
-          mDragTargetLayout.revertTempState();
-        }
+      if ((mDragMode == DRAG_MODE_CREATE_FOLDER ||
+          mDragMode == DRAG_MODE_ADD_TO_FOLDER || !nearestDropOccupied) && (mDragTargetLayout != null)) {
+        mDragTargetLayout.revertTempState();
       }
     }
   }
@@ -2607,10 +2599,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                                              final float centerY) {
     CellLayout layout = null;
     // Test to see if we are over the hotseat first
-    if (mLauncher.getHotseat() != null && !isDragWidget(d)) {
-      if (isPointInSelfOverHotseat(d.x, d.y)) {
-        layout = mLauncher.getHotseat().getLayout();
-      }
+    if ((mLauncher.getHotseat() != null && !isDragWidget(d)) && (isPointInSelfOverHotseat(d.x, d.y))) {
+      layout = mLauncher.getHotseat().getLayout();
     }
 
     int nextPage = getNextPage();
@@ -3518,12 +3508,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     final PackageUserKey packageUserKey = new PackageUserKey(null, null);
     final HashSet<Long> folderIds = new HashSet<>();
     mapOverItems(MAP_RECURSE, (info, v) -> {
-      if (info instanceof ShortcutInfo && v instanceof BubbleTextView &&
-          packageUserKey.updateFromItemInfo(info)) {
-        if (updatedBadges.contains(packageUserKey)) {
-          ((BubbleTextView)v).applyBadgeState(info, true /* animate */);
-          folderIds.add(info.container);
-        }
+      if ((info instanceof ShortcutInfo && v instanceof BubbleTextView &&
+          packageUserKey.updateFromItemInfo(info)) && (updatedBadges.contains(packageUserKey))) {
+        ((BubbleTextView)v).applyBadgeState(info, true /* animate */);
+        folderIds.add(info.container);
       }
       // process all the shortcuts
       return false;

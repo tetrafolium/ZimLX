@@ -105,19 +105,17 @@ public class ZimLauncher extends NexusLauncherActivity
   public void onRequestPermissionsResult(final int requestCode,
                                          final String[] permissions,
                                          final int[] grantResults) {
-    if (requestCode == REQUEST_PERMISSION_STORAGE_ACCESS) {
-      if (ActivityCompat.shouldShowRequestPermissionRationale(
-              this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle(R.string.title_storage_permission_required)
-            .setMessage(R.string.content_storage_permission_required)
-            .setCancelable(false)
-            .setNegativeButton(android.R.string.no, null)
-            .setPositiveButton(
-                android.R.string.yes,
-                (dialog, which) -> Utilities.requestStoragePermission(this))
-            .show();
-      }
+    if ((requestCode == REQUEST_PERMISSION_STORAGE_ACCESS) && (ActivityCompat.shouldShowRequestPermissionRationale(
+              this, android.Manifest.permission.READ_EXTERNAL_STORAGE))) {
+      new androidx.appcompat.app.AlertDialog.Builder(this)
+          .setTitle(R.string.title_storage_permission_required)
+          .setMessage(R.string.content_storage_permission_required)
+          .setCancelable(false)
+          .setNegativeButton(android.R.string.no, null)
+          .setPositiveButton(
+              android.R.string.yes,
+              (dialog, which) -> Utilities.requestStoragePermission(this))
+          .show();
     }
     if (requestCode == REQUEST_PERMISSION_LOCATION_ACCESS) {
       ZimAppKt.getZimApp(this).getSmartspace().updateWeatherData();

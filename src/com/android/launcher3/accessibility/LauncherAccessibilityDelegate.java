@@ -153,11 +153,9 @@ public class LauncherAccessibilityDelegate
 
       if (item.container >= 0) {
         info.addAction(mActions.get(MOVE_TO_WORKSPACE));
-      } else if (item instanceof LauncherAppWidgetInfo) {
-        if (!getSupportedResizeActions(host, (LauncherAppWidgetInfo)item)
-                 .isEmpty()) {
-          info.addAction(mActions.get(RESIZE));
-        }
+      } else if ((item instanceof LauncherAppWidgetInfo) && (!getSupportedResizeActions(host, (LauncherAppWidgetInfo)item)
+                 .isEmpty())) {
+        info.addAction(mActions.get(RESIZE));
       }
     }
 

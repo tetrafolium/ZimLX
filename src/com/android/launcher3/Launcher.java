@@ -352,12 +352,10 @@ public class Launcher extends BaseDraggingActivity
 
     boolean internalStateHandled =
         InternalStateHandler.handleCreate(this, getIntent());
-    if (internalStateHandled) {
-      if (savedInstanceState != null) {
-        // InternalStateHandler has already set the appropriate state.
-        // We dont need to do anything.
-        savedInstanceState.remove(RUNTIME_STATE);
-      }
+    if ((internalStateHandled) && (savedInstanceState != null)) {
+      // InternalStateHandler has already set the appropriate state.
+      // We dont need to do anything.
+      savedInstanceState.remove(RUNTIME_STATE);
     }
     restoreState(savedInstanceState);
 
@@ -2184,32 +2182,30 @@ public class Launcher extends BaseDraggingActivity
       }
     }
 
-    if (animateIcons) {
-      // Animate to the correct page
-      if (newItemsScreenId > -1) {
-        long currentScreenId =
-            mWorkspace.getScreenIdForPageIndex(mWorkspace.getNextPage());
-        final int newScreenIndex =
-            mWorkspace.getPageIndexForScreenId(newItemsScreenId);
-        final Runnable startBounceAnimRunnable = () -> {
-          anim.playTogether(bounceAnims);
-          anim.start();
-        };
-        if (newItemsScreenId != currentScreenId) {
-          // We post the animation slightly delayed to prevent slowdowns
-          // when we are loading right after we return to launcher.
-          mWorkspace.postDelayed(() -> {
-            if (mWorkspace != null) {
-              AbstractFloatingView.closeAllOpenViews(Launcher.this, false);
-              mWorkspace.snapToPage(newScreenIndex);
-              mWorkspace.postDelayed(startBounceAnimRunnable,
-                                     NEW_APPS_ANIMATION_DELAY);
-            }
-          }, NEW_APPS_PAGE_MOVE_DELAY);
-        } else {
-          mWorkspace.postDelayed(startBounceAnimRunnable,
-                                 NEW_APPS_ANIMATION_DELAY);
-        }
+    // Animate to the correct page
+    if ((animateIcons) && (newItemsScreenId > -1)) {
+      long currentScreenId =
+          mWorkspace.getScreenIdForPageIndex(mWorkspace.getNextPage());
+      final int newScreenIndex =
+          mWorkspace.getPageIndexForScreenId(newItemsScreenId);
+      final Runnable startBounceAnimRunnable = () -> {
+        anim.playTogether(bounceAnims);
+        anim.start();
+      };
+      if (newItemsScreenId != currentScreenId) {
+        // We post the animation slightly delayed to prevent slowdowns
+        // when we are loading right after we return to launcher.
+        mWorkspace.postDelayed(() -> {
+          if (mWorkspace != null) {
+            AbstractFloatingView.closeAllOpenViews(Launcher.this, false);
+            mWorkspace.snapToPage(newScreenIndex);
+            mWorkspace.postDelayed(startBounceAnimRunnable,
+                                   NEW_APPS_ANIMATION_DELAY);
+          }
+        }, NEW_APPS_PAGE_MOVE_DELAY);
+      } else {
+        mWorkspace.postDelayed(startBounceAnimRunnable,
+                               NEW_APPS_ANIMATION_DELAY);
       }
     }
     workspace.requestLayout();

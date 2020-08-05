@@ -516,15 +516,13 @@ public class FocusLogic {
   private static int inspectMatrix(final int x, final int y, final int cntX,
                                    final int cntY, final int[][] matrix) {
     int newIconIndex = NOOP;
-    if (isValid(x, y, cntX, cntY)) {
-      if (matrix[x][y] != -1) {
-        newIconIndex = matrix[x][y];
-        if (DEBUG) {
-          Log.v(TAG, String.format("\t\tinspect: \t[x, y]=[%d, %d] %d", x, y,
-                                   matrix[x][y]));
-        }
-        return newIconIndex;
+    if ((isValid(x, y, cntX, cntY)) && (matrix[x][y] != -1)) {
+      newIconIndex = matrix[x][y];
+      if (DEBUG) {
+        Log.v(TAG, String.format("\t\tinspect: \t[x, y]=[%d, %d] %d", x, y,
+                                 matrix[x][y]));
       }
+      return newIconIndex;
     }
     return newIconIndex;
   }

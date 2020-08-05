@@ -94,10 +94,8 @@ public class FiveSecsProvider extends ContentProvider {
     String callingPkg = getCallingPackage();
     WallpaperInfo info =
         WallpaperManager.getInstance(getContext()).getWallpaperInfo();
-    if (info != null) {
-      if (info.getPackageName().equals(callingPkg))
-        return;
-    }
+    if ((info != null) && (info.getPackageName().equals(callingPkg)))
+      return;
     if ("org.kustom.widget".equals(callingPkg))
       return;
     throw new SecurityException("Unauthorized");

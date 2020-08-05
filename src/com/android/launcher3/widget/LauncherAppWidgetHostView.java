@@ -148,10 +148,8 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     } else {
       for (int i = 0; i < viewGroup.getChildCount(); i++) {
         View child = viewGroup.getChildAt(i);
-        if (child instanceof ViewGroup) {
-          if (checkScrollableRecursively((ViewGroup)child)) {
-            return true;
-          }
+        if ((child instanceof ViewGroup) && (checkScrollableRecursively((ViewGroup)child))) {
+          return true;
         }
       }
     }
@@ -298,31 +296,29 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
 
   @Override
   public boolean onKeyUp(final int keyCode, final KeyEvent event) {
-    if (event.isTracking()) {
-      if (!mChildrenFocused && keyCode == KeyEvent.KEYCODE_ENTER) {
-        mChildrenFocused = true;
-        ArrayList<View> focusableChildren = getFocusables(FOCUS_FORWARD);
-        focusableChildren.remove(this);
-        int childrenCount = focusableChildren.size();
-        switch (childrenCount) {
-        case 0:
-          mChildrenFocused = false;
-          break;
-        case 1: {
-          if (getTag() instanceof ItemInfo) {
-            ItemInfo item = (ItemInfo)getTag();
-            if (item.spanX == 1 && item.spanY == 1) {
-              focusableChildren.get(0).performClick();
-              mChildrenFocused = false;
-              return true;
-            }
+    if ((event.isTracking()) && (!mChildrenFocused && keyCode == KeyEvent.KEYCODE_ENTER)) {
+      mChildrenFocused = true;
+      ArrayList<View> focusableChildren = getFocusables(FOCUS_FORWARD);
+      focusableChildren.remove(this);
+      int childrenCount = focusableChildren.size();
+      switch (childrenCount) {
+      case 0:
+        mChildrenFocused = false;
+        break;
+      case 1: {
+        if (getTag() instanceof ItemInfo) {
+          ItemInfo item = (ItemInfo)getTag();
+          if (item.spanX == 1 && item.spanY == 1) {
+            focusableChildren.get(0).performClick();
+            mChildrenFocused = false;
+            return true;
           }
-          // continue;
         }
-        default:
-          focusableChildren.get(0).requestFocus();
-          return true;
-        }
+        // continue;
+      }
+      default:
+        focusableChildren.get(0).requestFocus();
+        return true;
       }
     }
     return super.onKeyUp(keyCode, event);

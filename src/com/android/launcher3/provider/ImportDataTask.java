@@ -138,15 +138,13 @@ public class ImportDataTask {
         }
 
         // Wait until we found a provider with matching authority.
-        if (sourceAuthority.equals(info.authority)) {
-          if (TextUtils.isEmpty(info.readPermission) ||
+        if ((sourceAuthority.equals(info.authority)) && (TextUtils.isEmpty(info.readPermission) ||
               context.checkPermission(info.readPermission, Process.myPid(),
                                       Process.myUid()) ==
-                  PackageManager.PERMISSION_GRANTED) {
-            // All checks passed, run the import task.
-            return new ImportDataTask(context, sourceAuthority)
-                .importWorkspace();
-          }
+                  PackageManager.PERMISSION_GRANTED)) {
+          // All checks passed, run the import task.
+          return new ImportDataTask(context, sourceAuthority)
+              .importWorkspace();
         }
       }
     }

@@ -87,13 +87,11 @@ public class DragPreviewProvider {
       mView.getDrawingRect(clipRect);
 
       boolean textVisible = false;
-      if (mView instanceof FolderIcon) {
-        // For FolderIcons the text can bleed into the icon area, and so we need
-        // to hide the text completely (which can't be achieved by clipping).
-        if (((FolderIcon)mView).getTextVisible()) {
-          ((FolderIcon)mView).setTextVisible(false);
-          textVisible = true;
-        }
+      // For FolderIcons the text can bleed into the icon area, and so we need
+      // to hide the text completely (which can't be achieved by clipping).
+      if ((mView instanceof FolderIcon) && (((FolderIcon)mView).getTextVisible())) {
+        ((FolderIcon)mView).setTextVisible(false);
+        textVisible = true;
       }
       destCanvas.translate(-mView.getScrollX() + blurSizeOutline / 2,
                            -mView.getScrollY() + blurSizeOutline / 2);

@@ -72,19 +72,17 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
       for (int i = 0; i < apps.size(); i++) {
         final AppInfo appInfo = apps.get(i);
         final ComponentName tgtComp = appInfo.getTargetComponent();
-        if (tgtComp != null &&
-            tgtComp.getPackageName().equals(mInstallInfo.packageName)) {
-          if (appInfo instanceof PromiseAppInfo) {
-            final PromiseAppInfo promiseAppInfo = (PromiseAppInfo)appInfo;
-            if (mInstallInfo.state ==
-                PackageInstallerCompat.STATUS_INSTALLING) {
-              promiseAppInfo.level = mInstallInfo.progress;
-              updated = promiseAppInfo;
-            } else if (mInstallInfo.state ==
-                       PackageInstallerCompat.STATUS_FAILED) {
-              apps.removePromiseApp(appInfo);
-              removed.add(appInfo);
-            }
+        if ((tgtComp != null &&
+            tgtComp.getPackageName().equals(mInstallInfo.packageName)) && (appInfo instanceof PromiseAppInfo)) {
+          final PromiseAppInfo promiseAppInfo = (PromiseAppInfo)appInfo;
+          if (mInstallInfo.state ==
+              PackageInstallerCompat.STATUS_INSTALLING) {
+            promiseAppInfo.level = mInstallInfo.progress;
+            updated = promiseAppInfo;
+          } else if (mInstallInfo.state ==
+                     PackageInstallerCompat.STATUS_FAILED) {
+            apps.removePromiseApp(appInfo);
+            removed.add(appInfo);
           }
         }
       }

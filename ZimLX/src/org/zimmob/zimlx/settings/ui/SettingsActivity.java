@@ -528,11 +528,9 @@ public class SettingsActivity extends SettingsBaseActivity
         if (preference instanceof ControlledPreference) {
           PreferenceController controller =
               ((ControlledPreference)preference).getController();
-          if (controller != null) {
-            if (!controller.onPreferenceAdded(preference)) {
-              i--;
-              continue;
-            }
+          if ((controller != null) && (!controller.onPreferenceAdded(preference))) {
+            i--;
+            continue;
           }
         }
 
@@ -749,10 +747,8 @@ public class SettingsActivity extends SettingsBaseActivity
 
     protected boolean appendPreference(final Preference pref,
                                        final @Nullable PreferenceGroup target) {
-      if (target == null) {
-        if ((target = getPreferenceScreen()) == null) {
-          return false;
-        }
+      if ((target == null) && ((target = getPreferenceScreen()) == null)) {
+        return false;
       }
       if (pref.getIcon() != null) {
         pref.setIcon(pref.getIcon());

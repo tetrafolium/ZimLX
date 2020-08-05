@@ -190,15 +190,13 @@ public class AllAppsList {
       // to the removed list.
       for (int i = data.size() - 1; i >= 0; i--) {
         final AppInfo applicationInfo = data.get(i);
-        if (user.equals(applicationInfo.user) &&
+        if ((user.equals(applicationInfo.user) &&
             packageName.equals(
-                applicationInfo.componentName.getPackageName())) {
-          if (!findActivity(matches, applicationInfo.componentName)) {
-            Log.w(TAG,
-                  "Shortcut will be removed due to app component name change.");
-            removed.add(applicationInfo);
-            data.remove(i);
-          }
+                applicationInfo.componentName.getPackageName())) && (!findActivity(matches, applicationInfo.componentName))) {
+          Log.w(TAG,
+                "Shortcut will be removed due to app component name change.");
+          removed.add(applicationInfo);
+          data.remove(i);
         }
       }
 

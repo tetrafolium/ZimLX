@@ -55,10 +55,8 @@ public class ShortcutMenuAccessibilityDelegate
                                   final boolean fromKeyboard) {
     if ((host.getParent() instanceof DeepShortcutView)) {
       info.addAction(mActions.get(ADD_TO_WORKSPACE));
-    } else if (host instanceof NotificationMainView) {
-      if (((NotificationMainView)host).canChildBeDismissed()) {
-        info.addAction(mActions.get(DISMISS_NOTIFICATION));
-      }
+    } else if ((host instanceof NotificationMainView) && (((NotificationMainView)host).canChildBeDismissed())) {
+      info.addAction(mActions.get(DISMISS_NOTIFICATION));
     }
   }
 

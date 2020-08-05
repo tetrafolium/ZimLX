@@ -153,10 +153,8 @@ public class IconCache {
     } catch (PackageManager.NameNotFoundException e) {
       resources = null;
     }
-    if (resources != null) {
-      if (iconId != 0) {
-        return getFullResIcon(resources, iconId);
-      }
+    if ((resources != null) && (iconId != 0)) {
+      return getFullResIcon(resources, iconId);
     }
     return getFullResDefaultActivityIcon();
   }

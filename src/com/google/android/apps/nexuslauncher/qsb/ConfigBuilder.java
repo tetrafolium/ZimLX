@@ -263,11 +263,9 @@ public class ConfigBuilder {
         int spanGroupIndex = spanSizeLookup.getSpanGroupIndex(
             childViewHolder.getLayoutPosition(), allAppsCols);
         if (spanGroupIndex >= 0) {
-          if (i4 >= 0) {
-            if (spanGroupIndex != i4) {
-              view = childViewHolder.itemView;
-              break;
-            }
+          if ((i4 >= 0) && (spanGroupIndex != i4)) {
+            view = childViewHolder.itemView;
+            break;
           }
           i4 = spanGroupIndex;
           int index = ((GridLayoutManager.LayoutParams)

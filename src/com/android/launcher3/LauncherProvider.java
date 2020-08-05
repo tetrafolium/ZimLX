@@ -209,10 +209,8 @@ public class LauncherProvider extends ContentProvider {
 
     // In very limited cases, we support system|signature permission apps to
     // modify the db.
-    if (Binder.getCallingPid() != Process.myPid()) {
-      if (!initializeExternalAdd(initialValues)) {
-        return null;
-      }
+    if ((Binder.getCallingPid() != Process.myPid()) && (!initializeExternalAdd(initialValues))) {
+      return null;
     }
 
     SQLiteDatabase db = mOpenHelper.getWritableDatabase();

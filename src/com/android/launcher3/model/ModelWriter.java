@@ -460,17 +460,15 @@ public class ModelWriter {
       synchronized (mBgDataModel) {
         checkItemInfoLocked(itemId, item, mStackTrace);
 
-        if (item.container != Favorites.CONTAINER_DESKTOP &&
-            item.container != Favorites.CONTAINER_HOTSEAT) {
-          // Item is in a folder, make sure this folder exists
-          if (!mBgDataModel.folders.containsKey(item.container)) {
-            // An items container is being set to a that of an item which is not
-            // in the list of Folders.
-            String msg = "item: " + item +
-                         " container being set to: " + item.container +
-                         ", not in the list of folders";
-            Log.e(TAG, msg);
-          }
+        // Item is in a folder, make sure this folder exists
+        if ((item.container != Favorites.CONTAINER_DESKTOP &&
+            item.container != Favorites.CONTAINER_HOTSEAT) && (!mBgDataModel.folders.containsKey(item.container))) {
+          // An items container is being set to a that of an item which is not
+          // in the list of Folders.
+          String msg = "item: " + item +
+                       " container being set to: " + item.container +
+                       ", not in the list of folders";
+          Log.e(TAG, msg);
         }
 
         // Items are added/removed from the corresponding FolderInfo elsewhere,

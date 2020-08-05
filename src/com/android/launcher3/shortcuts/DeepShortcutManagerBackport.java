@@ -111,21 +111,19 @@ public class DeepShortcutManagerBackport {
             Integer.parseInt(resource.substring(1)));
         while ((eventType = parseXml.nextToken()) !=
                XmlPullParser.END_DOCUMENT) {
-          if (eventType == XmlPullParser.START_TAG) {
-            if (parseXml.getName().equals("shortcut")) {
-              ShortcutInfoCompat info =
-                  parseShortcut(context, activity, resourcesForApplication,
-                                packageName, parseXml);
+          if ((eventType == XmlPullParser.START_TAG) && (parseXml.getName().equals("shortcut"))) {
+            ShortcutInfoCompat info =
+                parseShortcut(context, activity, resourcesForApplication,
+                              packageName, parseXml);
 
-              if (info != null && info.getId() != null) {
-                for (ResolveInfo ri : pm.queryIntentActivities(
-                         ShortcutInfoCompatBackport.stripPackage(
-                             info.makeIntent()),
-                         0)) {
-                  if (ri.isDefault || ri.activityInfo.exported) {
-                    shortcutInfoCompats.add(info);
-                    break;
-                  }
+            if (info != null && info.getId() != null) {
+              for (ResolveInfo ri : pm.queryIntentActivities(
+                       ShortcutInfoCompatBackport.stripPackage(
+                           info.makeIntent()),
+                       0)) {
+                if (ri.isDefault || ri.activityInfo.exported) {
+                  shortcutInfoCompats.add(info);
+                  break;
                 }
               }
             }

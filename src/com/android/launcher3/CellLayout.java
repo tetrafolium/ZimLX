@@ -1590,21 +1590,19 @@ public class CellLayout extends ViewGroup {
         // For each view that isn't in the cluster, we see if the leading edge
         // of the cluster is contacting the edge of that view. If so, we add
         // that view to the cluster.
-        if (!cluster.views.contains(v) && v != dragView) {
-          if (cluster.isViewTouchingEdge(v, whichEdge)) {
-            LayoutParams lp = (LayoutParams)v.getLayoutParams();
-            if (!lp.canReorder) {
-              // The push solution includes the all apps button, this is not
-              // viable.
-              fail = true;
-              break;
-            }
-            cluster.addView(v);
-            CellAndSpan c = currentState.map.get(v);
-
-            // Adding view to cluster, mark it as not occupied.
-            mTmpOccupied.markCells(c, false);
+        if ((!cluster.views.contains(v) && v != dragView) && (cluster.isViewTouchingEdge(v, whichEdge))) {
+          LayoutParams lp = (LayoutParams)v.getLayoutParams();
+          if (!lp.canReorder) {
+            // The push solution includes the all apps button, this is not
+            // viable.
+            fail = true;
+            break;
           }
+          cluster.addView(v);
+          CellAndSpan c = currentState.map.get(v);
+
+          // Adding view to cluster, mark it as not occupied.
+          mTmpOccupied.markCells(c, false);
         }
       }
       pushDistance--;

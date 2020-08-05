@@ -511,12 +511,10 @@ public class AppWidgetResizeFrame
     int y = (int)ev.getY();
 
     getHitRect(hitRect);
-    if (hitRect.contains(x, y)) {
-      if (beginResizeIfPointInRegion(x - getLeft(), y - getTop())) {
-        mXDown = x;
-        mYDown = y;
-        return true;
-      }
+    if ((hitRect.contains(x, y)) && (beginResizeIfPointInRegion(x - getLeft(), y - getTop()))) {
+      mXDown = x;
+      mYDown = y;
+      return true;
     }
     return false;
   }

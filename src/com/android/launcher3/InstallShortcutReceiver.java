@@ -202,15 +202,13 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     }
     PendingInstallShortcutInfo info = createPendingInfo(context, data);
     if (info != null) {
-      if (!info.isLauncherActivity()) {
-        // Since its a custom shortcut, verify that it is safe to launch.
-        if (!new PackageManagerHelper(context).hasPermissionForActivity(
-                info.launchIntent, null)) {
-          // Target cannot be launched, or requires some special permission to
-          // launch
-          Log.e(TAG, "Ignoring malicious intent " + info.launchIntent.toUri(0));
-          return;
-        }
+      // Since its a custom shortcut, verify that it is safe to launch.
+      if ((!info.isLauncherActivity()) && (!new PackageManagerHelper(context).hasPermissionForActivity(
+                info.launchIntent, null))) {
+        // Target cannot be launched, or requires some special permission to
+        // launch
+        Log.e(TAG, "Ignoring malicious intent " + info.launchIntent.toUri(0));
+        return;
       }
       queuePendingShortcutInfo(info, context);
     }
